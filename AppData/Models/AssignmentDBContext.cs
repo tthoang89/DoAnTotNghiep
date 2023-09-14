@@ -31,7 +31,7 @@ namespace AppData.Models
         public DbSet<Voucher> Vouchers { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Data Source=DESKTOP-UOIH77U\SQLEXPRESS;Initial Catalog=AppBanQuanAoThoiTrangNam;Integrated Security=True");
+            optionsBuilder.UseSqlServer(@"Data Source=THUYNHU\SQLEXPRESS;Initial Catalog=AppBanQuanAoThoiTrangNam;Integrated Security=True");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
