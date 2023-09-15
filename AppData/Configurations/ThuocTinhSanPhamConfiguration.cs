@@ -3,14 +3,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace AppData.Configurations
 {
-    public class ThuocTinhLoaiSPConfiguration : IEntityTypeConfiguration<ThuocTinhLoaiSP>
+    public class ThuocTinhSanPhamConfiguration : IEntityTypeConfiguration<ThuocTinhSanPham>
     {
-        public void Configure(EntityTypeBuilder<ThuocTinhLoaiSP> builder)   
+        public void Configure(EntityTypeBuilder<ThuocTinhSanPham> builder)   
         {
             builder.ToTable("ThuocTinhSanPham");
             builder.HasKey(x => x.ID);
             builder.HasOne(x => x.ThuocTinh).WithMany(x => x.ThuocTinhLoaiSPs).HasForeignKey(x => x.IDThuocTinh);
-            builder.HasOne(x => x.LoaiSP).WithMany(x => x.ThuocTinhLoaiSPs).HasForeignKey(x => x.IDLoaiSP);
+            builder.HasOne(x => x.SanPham).WithMany(x => x.ThuocTinhSanPhams).HasForeignKey(x => x.IDSanPham);
         }
     }
 }

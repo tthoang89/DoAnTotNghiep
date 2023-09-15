@@ -22,16 +22,18 @@ namespace AppData.Models
         public DbSet<KhuyenMai> KhuyenMais { get; set; }
         public DbSet<LichSuTichDiem> LichSuTichDiems { get; set; }
         public DbSet<LoaiSP> LoaiSPs { get; set; }
-        public DbSet<NguoiDung> NguoiDungs { get; set; }
+        public DbSet<KhachHang> KhachHangs { get; set; }
+        public DbSet<NhanVien> NhanViens { get; set; }
+        public DbSet<DanhGia> DanhGias { get; set; }
         public DbSet<QuyDoiDiem> QuyDoiDiems { get; set; }
         public DbSet<SanPham> SanPhams { get; set; }
         public DbSet<ThuocTinh> ThuocTinhs { get; set; }
-        public DbSet<ThuocTinhLoaiSP> ThuocTinhSanPhams { get; set; }
+        public DbSet<ThuocTinhSanPham> ThuocTinhSanPhams { get; set; }
         public DbSet<VaiTro> VaiTros { get; set; }
         public DbSet<Voucher> Vouchers { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Data Source=THUYNHU\SQLEXPRESS;Initial Catalog=AppBanQuanAoThoiTrangNam;Integrated Security=True");
+            optionsBuilder.UseSqlServer(@"Data Source=TAM-LAPTOP\SQLEXPRESS;Initial Catalog=AppBanQuanAoThoiTrangNam;Integrated Security=True");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

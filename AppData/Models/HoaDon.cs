@@ -12,10 +12,10 @@
         public int TienShip { get; set; }
         public string PhuongThucThanhToan { get; set; }
         public int TrangThaiGiaoHang { get; set; }
-        public Guid? IDNguoiDung { get; set; }
+        public Guid? IDNhanVien { get; set; }
         public Guid? IDVoucher { get; set; }
         public virtual IEnumerable<LichSuTichDiem> LichSuTichDiems { get; set; }
-        public virtual NguoiDung? NguoiDung { get; set; }
+        public virtual NhanVien? NhanVien { get; set; }
         public virtual Voucher? Voucher { get; set; }
         public virtual IEnumerable<ChiTietHoaDon> ChiTietHoaDons { get; set; }
     }

@@ -1,17 +1,21 @@
 ﻿using AppData.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
 namespace AppData.Configurations
 {
-    public class NguoiDungConfiguration : IEntityTypeConfiguration<NguoiDung>
+    internal class KhachHangConfiguration : IEntityTypeConfiguration<KhachHang>
     {
-        public void Configure(EntityTypeBuilder<NguoiDung> builder)
+        public void Configure(EntityTypeBuilder<KhachHang> builder)
         {
-            builder.ToTable("NguoiDung");
-            builder.HasKey(x => x.IDNguoiDung);
-            builder.Property(x => x.Ten).HasColumnType("nvarchar(15)");
-            builder.Property(x => x.TenDem).HasColumnType("nvarchar(15)");
-            builder.Property(x => x.Ho).HasColumnType("nvarchar(15)");
+            builder.ToTable("KhachHang");
+            builder.HasKey(x => x.IDKhachHang);
+            builder.Property(x => x.Ten).HasColumnType("nvarchar(100)");
             builder.Property(x => x.Password).HasColumnType("varchar(15)");
             builder.Property(x => x.GioiTinh).HasColumnType("int");
             builder.Property(x => x.NgaySinh).HasColumnType("datetime");
@@ -20,8 +24,6 @@ namespace AppData.Configurations
             builder.Property(x => x.SDT).HasColumnType("varchar(10)");
             builder.Property(x => x.DiemTich).HasColumnType("int");
             builder.Property(x => x.TrangThai).HasColumnType("int");
-            builder.HasOne(x => x.VaiTro).WithMany(x => x.NguoiDungs).HasForeignKey(x => x.IDVaiTro);
-            builder.HasOne(x => x.GioHang).WithOne(x => x.NguoiDung).HasForeignKey<GioHang>();
         }
     }
 }
