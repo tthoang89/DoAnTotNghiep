@@ -26,3 +26,17 @@ C:\Users\FPTSHOP\Desktop\DATN\AppData\obj\Debug\net6.0\refint\AppData.dll
 C:\Users\FPTSHOP\Desktop\DATN\AppData\obj\Debug\net6.0\AppData.pdb
 C:\Users\FPTSHOP\Desktop\DATN\AppData\obj\Debug\net6.0\AppData.genruntimeconfig.cache
 C:\Users\FPTSHOP\Desktop\DATN\AppData\obj\Debug\net6.0\ref\AppData.dll
+E:\DuAnThucTap\DuAnTotNghiep\AppData\bin\Debug\net6.0\AppData.deps.json
+E:\DuAnThucTap\DuAnTotNghiep\AppData\bin\Debug\net6.0\AppData.runtimeconfig.json
+E:\DuAnThucTap\DuAnTotNghiep\AppData\bin\Debug\net6.0\AppData.dll
+E:\DuAnThucTap\DuAnTotNghiep\AppData\bin\Debug\net6.0\AppData.pdb
+E:\DuAnThucTap\DuAnTotNghiep\AppData\obj\Debug\net6.0\AppData.csproj.AssemblyReference.cache
+E:\DuAnThucTap\DuAnTotNghiep\AppData\obj\Debug\net6.0\AppData.GeneratedMSBuildEditorConfig.editorconfig
+E:\DuAnThucTap\DuAnTotNghiep\AppData\obj\Debug\net6.0\AppData.AssemblyInfoInputs.cache
+E:\DuAnThucTap\DuAnTotNghiep\AppData\obj\Debug\net6.0\AppData.AssemblyInfo.cs
+E:\DuAnThucTap\DuAnTotNghiep\AppData\obj\Debug\net6.0\AppData.csproj.CoreCompileInputs.cache
+E:\DuAnThucTap\DuAnTotNghiep\AppData\obj\Debug\net6.0\AppData.dll
+E:\DuAnThucTap\DuAnTotNghiep\AppData\obj\Debug\net6.0\refint\AppData.dll
+E:\DuAnThucTap\DuAnTotNghiep\AppData\obj\Debug\net6.0\AppData.pdb
+E:\DuAnThucTap\DuAnTotNghiep\AppData\obj\Debug\net6.0\AppData.genruntimeconfig.cache
+E:\DuAnThucTap\DuAnTotNghiep\AppData\obj\Debug\net6.0\ref\AppData.dll

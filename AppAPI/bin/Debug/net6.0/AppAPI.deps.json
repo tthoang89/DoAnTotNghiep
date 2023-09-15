@@ -9,6 +9,8 @@
       "AppAPI/1.0.0": {
         "dependencies": {
           "AppData": "1.0.0",
+          "Microsoft.EntityFrameworkCore": "6.0.21",
+          "Microsoft.EntityFrameworkCore.SqlServer": "6.0.21",
           "Swashbuckle.AspNetCore": "6.2.3"
         },
         "runtime": {
