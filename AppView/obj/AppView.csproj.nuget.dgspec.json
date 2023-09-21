@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "E:\\DuAnThucTap\\DuAnTotNghiep\\AppView\\AppView.csproj": {}
+    "D:\\Kỳ 7 Cshap Dự Án Tốt Nghiệp\\DuAnTotNghiep\\AppView\\AppView.csproj": {}
   },
   "projects": {
-    "E:\\DuAnThucTap\\DuAnTotNghiep\\AppData\\AppData.csproj": {
+    "D:\\Kỳ 7 Cshap Dự Án Tốt Nghiệp\\DuAnTotNghiep\\AppData\\AppData.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\DuAnThucTap\\DuAnTotNghiep\\AppData\\AppData.csproj",
+        "projectUniqueName": "D:\\Kỳ 7 Cshap Dự Án Tốt Nghiệp\\DuAnTotNghiep\\AppData\\AppData.csproj",
         "projectName": "AppData",
-        "projectPath": "E:\\DuAnThucTap\\DuAnTotNghiep\\AppData\\AppData.csproj",
-        "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
-        "outputPath": "E:\\DuAnThucTap\\DuAnTotNghiep\\AppData\\obj\\",
+        "projectPath": "D:\\Kỳ 7 Cshap Dự Án Tốt Nghiệp\\DuAnTotNghiep\\AppData\\AppData.csproj",
+        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+        "outputPath": "D:\\Kỳ 7 Cshap Dự Án Tốt Nghiệp\\DuAnTotNghiep\\AppData\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\HP\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -65,7 +65,8 @@
             "net47",
             "net471",
             "net472",
-            "net48"
+            "net48",
+            "net481"
           ],
           "assetTargetFallback": true,
           "warn": true,
@@ -74,24 +75,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.301\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.401\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "E:\\DuAnThucTap\\DuAnTotNghiep\\AppView\\AppView.csproj": {
+    "D:\\Kỳ 7 Cshap Dự Án Tốt Nghiệp\\DuAnTotNghiep\\AppView\\AppView.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\DuAnThucTap\\DuAnTotNghiep\\AppView\\AppView.csproj",
+        "projectUniqueName": "D:\\Kỳ 7 Cshap Dự Án Tốt Nghiệp\\DuAnTotNghiep\\AppView\\AppView.csproj",
         "projectName": "AppView",
-        "projectPath": "E:\\DuAnThucTap\\DuAnTotNghiep\\AppView\\AppView.csproj",
-        "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
-        "outputPath": "E:\\DuAnThucTap\\DuAnTotNghiep\\AppView\\obj\\",
+        "projectPath": "D:\\Kỳ 7 Cshap Dự Án Tốt Nghiệp\\DuAnTotNghiep\\AppView\\AppView.csproj",
+        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+        "outputPath": "D:\\Kỳ 7 Cshap Dự Án Tốt Nghiệp\\DuAnTotNghiep\\AppView\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\HP\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -106,8 +107,8 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "E:\\DuAnThucTap\\DuAnTotNghiep\\AppData\\AppData.csproj": {
-                "projectPath": "E:\\DuAnThucTap\\DuAnTotNghiep\\AppData\\AppData.csproj"
+              "D:\\Kỳ 7 Cshap Dự Án Tốt Nghiệp\\DuAnTotNghiep\\AppData\\AppData.csproj": {
+                "projectPath": "D:\\Kỳ 7 Cshap Dự Án Tốt Nghiệp\\DuAnTotNghiep\\AppData\\AppData.csproj"
               }
             }
           }
@@ -139,7 +140,8 @@
             "net47",
             "net471",
             "net472",
-            "net48"
+            "net48",
+            "net481"
           ],
           "assetTargetFallback": true,
           "warn": true,
@@ -151,7 +153,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.301\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.401\\RuntimeIdentifierGraph.json"
         }
       }
     }
