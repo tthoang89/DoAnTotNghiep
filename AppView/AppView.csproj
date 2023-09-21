@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="wwwroot\sass\**" />
+    <Content Remove="wwwroot\sass\**" />
+    <EmbeddedResource Remove="wwwroot\sass\**" />
+    <None Remove="wwwroot\sass\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Views\Home\CheckOut.cshtml" />
+    <Content Remove="Views\Home\Shop.cshtml" />
+  </ItemGroup>
+
+</Project>
