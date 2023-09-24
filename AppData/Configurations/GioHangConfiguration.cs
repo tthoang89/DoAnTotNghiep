@@ -8,8 +8,9 @@ namespace AppData.Configurations
         public void Configure(EntityTypeBuilder<GioHang> builder)
         {
             builder.ToTable("GioHang");
-            builder.HasKey(x => x.IDNguoiDung);
+            builder.HasKey(x => x.IDKhachHang);
             builder.Property(x => x.NgayTao).HasColumnType("datetime");
+            builder.HasOne(x => x.KhachHang).WithOne(x => x.GioHang).HasForeignKey<KhachHang>();
         }
     }
 }

@@ -13,6 +13,7 @@
         public virtual IEnumerable<ChiTietKhuyenMai> ChiTietKhuyenMais { get; set; }
         public virtual IEnumerable<ChiTietGioHang> ChiTietGioHangs { get; set; }
         public virtual IEnumerable<ChiTietHoaDon> ChiTietHoaDons { get; set; }
+        public virtual IEnumerable<DanhGia> DanhGias { get; set; }
         public virtual IEnumerable<Anh> Anhs { get; set; }
         public virtual SanPham SanPham { get; set; }
     }
