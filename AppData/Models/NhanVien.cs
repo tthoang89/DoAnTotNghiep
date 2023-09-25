@@ -11,6 +11,7 @@ namespace AppData.Models
         public Guid ID { get; set; }
         public string Ten { get; set; }
         public string Email { get; set; }
+        public string PassWord { get; set; }
         public string SDT { get; set; }
         public string 
             DiaChi { get; set; }
