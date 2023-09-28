@@ -44,7 +44,7 @@ namespace AppAPI.Controllers
             var chitietgiohang = chiTietGioHangServices.GetById(id);
             if (chitietgiohang != null)
             {
-                return chiTietGioHangServices.Update(id, IdBienThe, IdKhachHang, soluong);
+                return chiTietGioHangServices.Update(chitietgiohang.ID, IdBienThe, IdKhachHang, soluong);
             }
             else
             {

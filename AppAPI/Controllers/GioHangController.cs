@@ -45,7 +45,7 @@ namespace AppAPI.Controllers
             var gioHang = gioHangServices.GetById(id);
             if (gioHang != null)
             {
-                return gioHangServices.Update(id, ngaytao);
+                return gioHangServices.Update(gioHang.IDKhachHang, ngaytao);
             }
             else
             {
