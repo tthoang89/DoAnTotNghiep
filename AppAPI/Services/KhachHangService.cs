@@ -7,9 +7,9 @@ namespace AppAPI.Services
     public class KhachHangService : IKhachHangService
     {
         private readonly AssignmentDBContext _dbContext;
-        public KhachHangService(AssignmentDBContext dbContext)
+        public KhachHangService()
         {
-            _dbContext = dbContext;
+            _dbContext = new AssignmentDBContext();
         }
 
         public bool Add(KhachHang nv)

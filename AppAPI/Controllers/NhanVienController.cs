@@ -12,7 +12,7 @@ namespace AppAPI.Controllers
     public class NhanVienController : ControllerBase
     {
         private readonly INhanVienService nhanVienService;
-        public NhanVienController(NhanVienService nhanVienService)
+        public NhanVienController(INhanVienService nhanVienService)
         {
             this.nhanVienService = nhanVienService;
         }
@@ -32,7 +32,7 @@ namespace AppAPI.Controllers
 
         // POST api/<NhanVienController>
         [HttpPost]
-        public bool Post( string ten, string email, string sdt, string diachi, Guid idVaiTro, int trangthai)
+        public string Post( string ten, string email, string sdt, string diachi, Guid idVaiTro, int trangthai, string password)
         {
             var nv = new NhanVien
             {
@@ -40,6 +40,7 @@ namespace AppAPI.Controllers
                 Ten = ten,
                 Email = email,
                 SDT = sdt,
+                PassWord = password,
                 DiaChi = diachi,
                 TrangThai = trangthai,
                 IDVaiTro = idVaiTro

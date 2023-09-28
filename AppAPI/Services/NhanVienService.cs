@@ -8,22 +8,22 @@ namespace AppAPI.Services
     public class NhanVienService : INhanVienService
     {
         private readonly AssignmentDBContext _dbContext;
-        public NhanVienService(AssignmentDBContext dbContext)
+        public NhanVienService()
         {
-            _dbContext = dbContext;
+            _dbContext = new AssignmentDBContext();
         }
-        public bool Add(NhanVien nv)
+        public string Add(NhanVien nv)
         {
             try
             {
                 _dbContext.NhanViens.Add(nv);
                 _dbContext.SaveChanges();
-                return true;
+                return "true";
             }
-            catch (Exception)
+            catch (Exception e)
             {
 
-                return false;
+                return e.Message;
             }
         }
 

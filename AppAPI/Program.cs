@@ -21,9 +21,10 @@ builder.Services.AddScoped<IKhachHangService, KhachHangService>();
 builder.Services.AddScoped<ILishSuTichDiemServices, LishSuTichDiemServices>();
 builder.Services.AddScoped<ILoaiSPService, LoaiSPService>();
 builder.Services.AddScoped<INhanVienService, NhanVienService>();
-builder.Services.AddScoped<IQuanLyNguoiDungService, QuanLyNguoiDungService>();
+//builder.Services.AddScoped<IQuanLyNguoiDungService, QuanLyNguoiDungService>();
 builder.Services.AddScoped<ISanPhamService, SanPhamService>();
 builder.Services.AddScoped<IVoucherServices, VoucherServices>();
+builder.Services.AddScoped<IVaiTroService, VaiTroSevice>();
 
 
 var app = builder.Build();

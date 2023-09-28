@@ -17,7 +17,7 @@ namespace AppData.Models
             DiaChi { get; set; }
         public int TrangThai { get; set; }
         public Guid IDVaiTro { get; set; }
-        public virtual IEnumerable<HoaDon> HoaDons { get; set; }
-        public virtual VaiTro VaiTro { get; set; }
+        public virtual IEnumerable<HoaDon>? HoaDons { get; set; }
+        public virtual VaiTro? VaiTro { get; set; }
     }
 }

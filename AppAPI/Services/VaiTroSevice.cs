@@ -8,9 +8,9 @@ namespace AppAPI.Services
     {
         private readonly AssignmentDBContext dBContext;
 
-        public VaiTroSevice(AssignmentDBContext dBContext)
+        public VaiTroSevice()
         {
-            this.dBContext = dBContext;
+            this.dBContext = new AssignmentDBContext();
         }
 
         public async Task<VaiTro> CreateVaiTro(VaiTro vaiTro)
