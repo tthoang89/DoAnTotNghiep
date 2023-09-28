@@ -23,7 +23,7 @@ namespace AppAPI.Services
             catch (Exception e)
             {
 
-                return e.Message;
+                return e.InnerException.Message;
             }
         }
 
