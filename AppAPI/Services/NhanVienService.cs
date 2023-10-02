@@ -59,8 +59,7 @@ namespace AppAPI.Services
 
         public bool Update(NhanVien nv)
         {
-            try
-            {
+           
                 var kh = _dbContext.NhanViens.FirstOrDefault(x => x.ID == nv.ID);
                 if (kh != null)
                 {
@@ -69,12 +68,6 @@ namespace AppAPI.Services
                     return true;
                 }
                 return false;
-            }
-            catch (Exception)
-            {
-
-                return false;
-            }
         }
     }
 }

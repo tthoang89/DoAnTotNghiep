@@ -1,6 +1,7 @@
 ﻿using AppAPI.IServices;
 using AppAPI.Services;
 using AppData.Models;
+using AppData.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -17,7 +18,7 @@ namespace AppAPI.Controllers
             this.nhanVienService = nhanVienService;
         }
         // GET: api/<NhanVienController>
-        [HttpGet]
+        [HttpGet("GetALl")]
         public List<NhanVien> GetAllNhanVien()
         {
             return nhanVienService.GetAll();
@@ -31,26 +32,21 @@ namespace AppAPI.Controllers
         }
 
         // POST api/<NhanVienController>
-        [HttpPost]
-        public string Post( string ten, string email, string sdt, string diachi, Guid idVaiTro, int trangthai, string password)
+        [HttpPost("DangKyNhanVien")]
+        public async Task<IActionResult> DangKyNhanVien(NhanVienViewmodel nhanVien)
         {
-            var nv = new NhanVien
+            var nv = await nhanVienService.RegisterNhanVien(nhanVien);
+            if (nv == null)
             {
-                ID = Guid.NewGuid(),
-                Ten = ten,
-                Email = email,
-                SDT = sdt,
-                PassWord = password,
-                DiaChi = diachi,
-                TrangThai = trangthai,
-                IDVaiTro = idVaiTro
-            };
-            return nhanVienService.Add(nv);
+                return BadRequest();
+            }
+
+            return Ok("Đăng ký thành công");
         }
 
         // PUT api/<NhanVienController>/5
         [HttpPut("{id}")]
-        public bool Put(Guid id, string ten, string email, string sdt, string diachi, Guid idVaiTro, int trangthai)
+        public bool Put(Guid id, string ten, string email, string sdt, string diachi, Guid idVaiTro, int trangthai, string password)
         {
             var nv = nhanVienService.GetById(id);
             if (nv != null)
@@ -61,6 +57,7 @@ namespace AppAPI.Controllers
                 nv.DiaChi   = diachi;
                 nv.TrangThai = trangthai;
                 nv.IDVaiTro = idVaiTro;
+                nv.PassWord = password;
                 return nhanVienService.Update(nv);
             }
             return false;

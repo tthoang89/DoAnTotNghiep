@@ -1,6 +1,7 @@
 ﻿using AppAPI.IServices;
 using AppAPI.Services;
 using AppData.Models;
+using AppData.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
@@ -12,96 +13,77 @@ namespace AppAPI.Controllers
     [ApiController]
     public class QuanLyNguoiDungController : ControllerBase
     {
-        private IQuanLyNguoiDungService _service;
-        private List<KhachHang> listKH;
-        private List<NhanVien> listNV;
+        private IQuanLyNguoiDungService service;
 
-        public QuanLyNguoiDungController(IQuanLyNguoiDungService service, List<KhachHang> listKH, List<NhanVien> listNV)
+        public QuanLyNguoiDungController()
         {
-            this._service = service;
-            this.listKH = listKH;
-            this.listNV = listNV;
+            this.service = new QuanLyNguoiDungService();
         }
-
-
-
 
         // POST api/<DangNhapController>
         [HttpPost("DangNhap")]
-        public IActionResult Post(string email, string password)
+        public async Task<IActionResult> Post(string email, string password)
         {
-            bool result = _service.DangNhap(email, password);
+            var result = await service.Login(email, password);
             if(result)
             {
-                return Ok();
+                return Ok("Dang nhap thanh cong");
             }
             else
             {
-                return BadRequest();
+                return BadRequest("Dang nhap that bai");
             }
         }
 
+        //// POST api/<DangKyController>
+        //[HttpPost("DangKyNhanVien")]
+        //public async Task<IActionResult>DangKyNhanVien(NhanVienViewmodel nhanVien )
+        //{
+        //    var nv = await service.RegisterNhanVien(nhanVien);
+        //    if(nv == null) 
+        //    {
+        //        return BadRequest();
+        //    }
+
+        //        return Ok("Đăng ký thành công");    
+        //}
         // POST api/<DangKyController>
         [HttpPost("DangKyKhachHang")]
-        public IActionResult DangKyKhachHang(string ten, DateTime ngaysinh, string password, int gioitinh, string email, int trangThai, string diachi, string sdt, int diemtich)
+        public async Task<IActionResult> DangKyKhachHang(KhachHangViewModel khachHang)
         {
-            var khachHang = new KhachHang
+            var kh = await service.RegisterKhachHang(khachHang);
+            if (kh == null)
             {
-                IDKhachHang = Guid.NewGuid(),
-                Ten = ten,
-                NgaySinh = ngaysinh,
-                Password = password,
-                GioiTinh = gioitinh,
-                Email = email,
-                TrangThai = trangThai,
-                DiaChi = diachi,
-                SDT = sdt,
-                DiemTich = diemtich,
-            };
-                listKH.Add(khachHang);
-                return Ok("Đăng ký thành công");    
-        }
-        [HttpPost("DangKyNhanVien")]
-        public IActionResult DangKyNhanVien(string ten, string email,string password, string sdt, string diachi, Guid idVaiTro, int trangthai)
-        {
-            var nv = new NhanVien
-            {
-                ID = Guid.NewGuid(),
-                Ten = ten,
-                Email = email,
-                PassWord = password,
-                SDT = sdt,
-                DiaChi = diachi,
-                TrangThai = trangthai,
-                IDVaiTro = idVaiTro
-            };
-            listNV.Add(nv);
+                return BadRequest();
+            }
+
             return Ok("Đăng ký thành công");
         }
-        [HttpPost("DoiMatKhauKhachHang")]
-        public IActionResult DoiMatKhauKH(string email, string oldPassword,string newPassword)
+
+        [HttpPut("DoiMatKhauNhanVien")]
+        public async Task<IActionResult> DoiMatKhauNV(string email, string oldPassword,string newPassword)
         {
-            bool result = _service.DoiMatKhauKH(email, oldPassword, newPassword);
-            if (result)
+            var dmk = await service.ChangePasswordNhanVien(email, oldPassword, newPassword);
+            if (!dmk)
             {
-                return Ok("Đổi mật khẩu khách hàng thành công");
+                return Ok("Đổi mật khẩu thành công");
             }
             else
             {
-                return BadRequest("Đổi mật khẩu khách hàng không thành công");
+                return BadRequest("Đổi mật khẩu không thành công");
             }
         }
-        [HttpPost("DoiMatKhauNhanViem")]
-        public IActionResult DoiMatKhauNV(string email, string oldPassword, string newPassword)
+        [HttpPut("DoiMatKhauKhachHang")]
+        public async Task<IActionResult> DoiMatKhauKhachHang(string email, string oldPassword, string newPassword)
         {
-            bool result = _service.DoiMatKhauNV(email, oldPassword, newPassword);
-            if (result)
+            var dmk = await service.ChangePasswordKhachHang(email, oldPassword, newPassword);
+            if (!dmk)
             {
-                return Ok("Đổi mật khẩu nhân viên thành công");
+                return Ok("Đổi mật khẩu   thành công");
             }
             else
             {
-                return BadRequest("Đổi mật khẩu nhân viên không thành công");
+                return BadRequest("Đổi mật khẩu không thành công");
             }
         }
     }
