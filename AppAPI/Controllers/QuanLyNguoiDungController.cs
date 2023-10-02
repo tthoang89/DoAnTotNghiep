@@ -60,23 +60,23 @@ namespace AppAPI.Controllers
             return Ok("Đăng ký thành công");
         }
 
-        [HttpPut("DoiMatKhauNhanVien")]
-        public async Task<IActionResult> DoiMatKhauNV(string email, string oldPassword,string newPassword)
-        {
-            var dmk = await service.ChangePasswordNhanVien(email, oldPassword, newPassword);
-            if (!dmk)
-            {
-                return Ok("Đổi mật khẩu thành công");
-            }
-            else
-            {
-                return BadRequest("Đổi mật khẩu không thành công");
-            }
-        }
+        //[HttpPut("DoiMatKhauNhanVien")]
+        //public async Task<IActionResult> DoiMatKhauNV(string email, string oldPassword,string newPassword)
+        //{
+        //    var dmk = await service.ChangePasswordNhanVien(email, oldPassword, newPassword);
+        //    if (!dmk)
+        //    {
+        //        return Ok("Đổi mật khẩu thành công");
+        //    }
+        //    else
+        //    {
+        //        return BadRequest("Đổi mật khẩu không thành công");
+        //    }
+        //}
         [HttpPut("DoiMatKhauKhachHang")]
-        public async Task<IActionResult> DoiMatKhauKhachHang(string email, string oldPassword, string newPassword)
+        public async Task<IActionResult> DoiMatKhau(string email, string oldPassword, string newPassword)
         {
-            var dmk = await service.ChangePasswordKhachHang(email, oldPassword, newPassword);
+            var dmk = await service.ChangePassword(email, oldPassword, newPassword);
             if (!dmk)
             {
                 return Ok("Đổi mật khẩu   thành công");

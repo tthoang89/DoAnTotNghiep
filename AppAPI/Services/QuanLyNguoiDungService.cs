@@ -20,7 +20,7 @@ namespace AppAPI.Services
            
         }
 
-        public async Task<bool> ChangePasswordKhachHang(string email, string password, string newPassword)
+        public async Task<bool> ChangePassword(string email, string password, string newPassword)
         {
             var kh = await context.KhachHangs.FirstOrDefaultAsync(h => h.Email == email);
             if (kh != null && kh.Email == email && kh.Password == password)
@@ -31,18 +31,6 @@ namespace AppAPI.Services
             }
             var nv = await context.NhanViens.FirstOrDefaultAsync(h => h.Email == email);
             if (nv != null && nv.Email == email && nv.PassWord == password)
-            {
-                nv.PassWord = newPassword;
-                await context.SaveChangesAsync();
-                return true;
-            }
-            return false;
-        }
-
-        public async Task<bool> ChangePasswordNhanVien(string email, string password, string newPassword)
-        {
-            var nv = await context.NhanViens.FirstOrDefaultAsync(h => h.Email == email);
-            if (nv != null)
             {
                 nv.PassWord = newPassword;
                 await context.SaveChangesAsync();
@@ -88,20 +76,20 @@ namespace AppAPI.Services
             return kh;
         }
 
-        public async Task<List<NhanVien>> RegisterNhanVien(NhanVienViewmodel nhanVien)
-        {
-            var kh = new NhanVien
-            {
-                ID = Guid.NewGuid(),
-                Ten = nhanVien.Name,
-                Email = nhanVien.Email,
-                PassWord = nhanVien.Password,
-                IDVaiTro = nhanVien.IDVaiTro
-            };
-            context.NhanViens.Add(kh);
-            await context.SaveChangesAsync();
-            return await context.NhanViens.ToListAsync();
-        }
+        //public async Task<List<NhanVien>> RegisterNhanVien(NhanVienViewmodel nhanVien)
+        //{
+        //    var kh = new NhanVien
+        //    {
+        //        ID = Guid.NewGuid(),
+        //        Ten = nhanVien.Name,
+        //        Email = nhanVien.Email,
+        //        PassWord = nhanVien.Password,
+        //        IDVaiTro = nhanVien.IDVaiTro
+        //    };
+        //    context.NhanViens.Add(kh);
+        //    await context.SaveChangesAsync();
+        //    return await context.NhanViens.ToListAsync();
+        //}
     }
 }
         
