@@ -273,7 +273,6 @@ namespace AppAPI.Services
                                                      ID = bt.ID,
                                                      SoLuong = bt.SoLuong,
                                                      Ten = sp.Ten,
-                                                     Anh = bt.Anh,
                                                      GiaBan = bt.GiaBan,
                                                      TrangThai = bt.TrangThai,
                                                      GiaTris = (from gt in _context.GiaTris
@@ -380,9 +379,6 @@ namespace AppAPI.Services
                     _context.ChiTietBienThes.RemoveRange(listCTBT);
                     await _context.SaveChangesAsync();
                     //Xóa Ảnh
-                    var listAnh = await _context.Anhs.Where(c => c.IDBienThe == bt.ID).ToListAsync();
-                    _context.Anhs.RemoveRange(listAnh);
-                    await _context.SaveChangesAsync();
                 }
                 _context.BienThes.RemoveRange(listBT);
                 await _context.SaveChangesAsync();

@@ -16,7 +16,7 @@ namespace AppAPI.IServices
         #endregion
 
         #region Anh
-        Task<List<Anh>> GetAnhByIdBienThe(Guid idBienThe);
+        //Task<List<Anh>> GetAnhByIdBienThe(Guid idBienThe);
         //Task<string> SaveFile(IFormFile file);
         Task<bool> DeleteAnh(Guid id);
         #endregion

@@ -9,6 +9,7 @@
         public DateTime NgayLuu { get; set; }
         public virtual BienThe BienThe { get; set; }
         public virtual GiaTri GiaTri { get; set; }
+        public virtual IEnumerable<Anh> Anhs { get; set; }
 
     }
 }

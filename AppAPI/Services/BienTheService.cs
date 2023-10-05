@@ -21,9 +21,6 @@ namespace AppAPI.Services
             //Xóa Chi tiết biến thể
             var listctbt = await _context.ChiTietBienThes.Where(c => c.IDBienThe == id).ToListAsync();
             _context.ChiTietBienThes.RemoveRange(listctbt);
-            // Xóa list ảnh
-            var listAnh = await _context.Anhs.Where(c => c.IDBienThe == id).ToListAsync();
-            _context.Anhs.RemoveRange(listAnh);
             //Xóa BT
             _context.BienThes.Remove(bienthe);
             await _context.SaveChangesAsync();
@@ -42,7 +39,6 @@ namespace AppAPI.Services
                                   SoLuong = bt.SoLuong,
                                   GiaBan = bt.GiaBan,
                                   TrangThai = bt.TrangThai,
-                                  Anh = bt.Anh,
                                   GiaTris = (from gt in _context.GiaTris
                                              join ctbt in _context.ChiTietBienThes on gt.ID equals ctbt.IDGiaTri
                                              where ctbt.IDBienThe == bt.ID
@@ -67,7 +63,6 @@ namespace AppAPI.Services
                                    ID = bt.ID,
                                    SoLuong = bt.SoLuong,
                                    Ten = sp.Ten,
-                                   Anh = bt.Anh,
                                    GiaBan = bt.GiaBan,
                                    TrangThai = bt.TrangThai,
                                    GiaTris = (from gt in _context.GiaTris
@@ -120,7 +115,6 @@ namespace AppAPI.Services
                 bienthe.SoLuong = request.SoLuong;
                 bienthe.GiaBan = request.GiaBan;
                 bienthe.TrangThai = request.TrangThai;
-                bienthe.Anh = request.Anh;
                 _context.BienThes.Update(bienthe);
                 await _context.SaveChangesAsync();
 
@@ -161,7 +155,6 @@ namespace AppAPI.Services
                     TrangThai = request.TrangThai,
                     GiaBan = request.GiaBan,
                     IDSanPham = request.IDSanPham,
-                    Anh = request.Anh,
                 };
                 await _context.BienThes.AddAsync(bienThe);
                 await _context.SaveChangesAsync();
@@ -185,10 +178,6 @@ namespace AppAPI.Services
         #endregion
         #region Anh
 
-        public async Task<List<Anh>> GetAnhByIdBienThe(Guid idBienThe)
-        {
-            return await _context.Anhs.Where(c => c.IDBienThe == idBienThe).ToListAsync();
-        }
         public async Task<bool> DeleteAnh(Guid id)
         {
             var a = await _context.Anhs.FindAsync(id);
