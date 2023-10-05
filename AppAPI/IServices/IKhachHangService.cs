@@ -5,10 +5,10 @@ namespace AppAPI.IServices
 {
     public interface IKhachHangService
     {
-        public Task<KhachHang> Add(KhachHangViewModel nv);
+        Task<KhachHang> Add(KhachHangViewModel nv);
         public KhachHang GetById(Guid id);
         public bool Delete(Guid id);
-        public bool Update(Guid id, string email , string password);
+        public bool Update(KhachHang khachHang);
         public List<KhachHang> GetAll();
     }
 }

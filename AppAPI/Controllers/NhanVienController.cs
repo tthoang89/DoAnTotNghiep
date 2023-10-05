@@ -18,7 +18,7 @@ namespace AppAPI.Controllers
             this.nhanVienService = nhanVienService;
         }
         // GET: api/<NhanVienController>
-        [HttpGet("GetALl")]
+        [HttpGet("GetAll")]
         public List<NhanVien> GetAllNhanVien()
         {
             return nhanVienService.GetAll();
@@ -33,13 +33,9 @@ namespace AppAPI.Controllers
 
         // POST api/<NhanVienController>
         [HttpPost("DangKyNhanVien")]
-        public async Task<IActionResult> DangKyNhanVien(NhanVienViewmodel nhanVien)
-        {
-            var nv = await nhanVienService.RegisterNhanVien(nhanVien);
-            if (nv == null)
-            {
-                return BadRequest();
-            }
+        public async Task<IActionResult> DangKyNhanVien(string ten, string email, string sdt, string diachi, Guid idVaiTro, int trangthai, string password)
+        { 
+            nhanVienService.Add(ten,email, sdt, diachi,idVaiTro,trangthai,password);
 
             return Ok("Đăng ký thành công");
         }
@@ -53,11 +49,11 @@ namespace AppAPI.Controllers
             {
                 nv.Ten = ten;
                 nv.Email = email;
+                nv.PassWord = password;
                 nv.SDT = sdt;
                 nv.DiaChi   = diachi;
                 nv.TrangThai = trangthai;
                 nv.IDVaiTro = idVaiTro;
-                nv.PassWord = password;
                 return nhanVienService.Update(nv);
             }
             return false;

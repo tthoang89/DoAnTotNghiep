@@ -25,7 +25,7 @@ namespace AppAPI.Controllers
         public async Task<IActionResult> Post(string email, string password)
         {
             var result = await service.Login(email, password);
-            if(result)
+            if (result)
             {
                 return Ok("Dang nhap thanh cong");
             }
@@ -35,19 +35,19 @@ namespace AppAPI.Controllers
             }
         }
 
-        //// POST api/<DangKyController>
+        // POST api/<DangKyController>
         //[HttpPost("DangKyNhanVien")]
-        //public async Task<IActionResult>DangKyNhanVien(NhanVienViewmodel nhanVien )
+        //public async Task<IActionResult> DangKyNhanVien(NhanVienViewModel nhanVien)
         //{
         //    var nv = await service.RegisterNhanVien(nhanVien);
-        //    if(nv == null) 
+        //    if (nv == null)
         //    {
         //        return BadRequest();
         //    }
 
-        //        return Ok("Đăng ký thành công");    
+        //    return Ok("Đăng ký thành công");
         //}
-        // POST api/<DangKyController>
+        //POST api/<DangKyController>
         [HttpPost("DangKyKhachHang")]
         public async Task<IActionResult> DangKyKhachHang(KhachHangViewModel khachHang)
         {
@@ -73,17 +73,17 @@ namespace AppAPI.Controllers
         //        return BadRequest("Đổi mật khẩu không thành công");
         //    }
         //}
-        [HttpPut("DoiMatKhauKhachHang")]
+        [HttpPut("DoiMatKhau")]
         public async Task<IActionResult> DoiMatKhau(string email, string oldPassword, string newPassword)
         {
             var dmk = await service.ChangePassword(email, oldPassword, newPassword);
             if (!dmk)
             {
-                return Ok("Đổi mật khẩu   thành công");
+                return Ok("Đổi mật khẩu khong  thành công");
             }
             else
             {
-                return BadRequest("Đổi mật khẩu không thành công");
+                return BadRequest("Đổi mật khẩu  thành công");
             }
         }
     }

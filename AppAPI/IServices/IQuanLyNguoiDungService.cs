@@ -7,7 +7,8 @@ namespace AppAPI.IServices
     {
         Task<bool> Login(string email, string password);
         Task<KhachHang> RegisterKhachHang(KhachHangViewModel khachHang);
+        Task<NhanVien> RegisterNhanVien(NhanVienViewModel nhanVien);
         Task<bool> ChangePassword(string email, string password, string newPassword);
-       
+
     }
 }
