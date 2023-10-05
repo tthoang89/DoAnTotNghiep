@@ -21,7 +21,7 @@ namespace AppAPI.Controllers
         [HttpGet]
         public async  Task<IActionResult> GetAllVaiTros()
         {
-            var vaitro = await _vaiTroService.GetAllVaiTro();
+            var vaitro =  _vaiTroService.GetAllVaiTro();
             return Ok(vaitro);
         }
 
@@ -29,7 +29,7 @@ namespace AppAPI.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var vaitro = await _vaiTroService.GetVaiTroById(id);
+            var vaitro = _vaiTroService.GetVaiTroById(id);
             if(vaitro == null)
             {
                 return NotFound();
@@ -39,30 +39,24 @@ namespace AppAPI.Controllers
 
         // POST api/<VaiTroController>
         [HttpPost]
-        public async Task<IActionResult> AddVaiTro(VaiTro vaiTro)
+        public bool AddVaiTro(string ten, int trangthai)
         {
-            if(vaiTro == null)
-            {
-                return BadRequest();
-            }
-            else
-            {
-                var vaitro = await _vaiTroService.CreateVaiTro(vaiTro);
-                return Ok(vaitro);
-            }
+           return _vaiTroService.CreateVaiTro(ten, trangthai);
         }
 
 
         // PUT api/<VaiTroController>/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateVaiTro(Guid id, VaiTro vaiTro)
+        public  IActionResult UpdateVaiTro(Guid id, string ten, int trnagthai)
         {
-            var vt = await _vaiTroService.UpdateVaiTro(id, vaiTro);
-            if(vt == null)
+            var vt = _vaiTroService.GetVaiTroById(id);
+           if(vt!= null)
             {
-                return NotFound();
+                _vaiTroService.UpdateVaiTro(vt.ID, ten,trnagthai);
+                return Ok();
             }
-            return Ok(vt);
+           return BadRequest();
+            
             
         }
 
@@ -70,7 +64,7 @@ namespace AppAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteVaiTro(Guid id)
         {
-            var vt = await _vaiTroService.DeleteVaiTro(id);
+            var vt =  _vaiTroService.DeleteVaiTro(id);
             return Ok();
         }
     }

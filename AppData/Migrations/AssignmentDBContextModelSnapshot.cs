@@ -304,17 +304,16 @@ namespace AppData.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("DiaChi")
-                        .IsRequired()
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int>("DiemTich")
+                    b.Property<int?>("DiemTich")
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("varchar(50)");
 
-                    b.Property<int>("GioiTinh")
+                    b.Property<int?>("GioiTinh")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("NgaySinh")
@@ -325,14 +324,13 @@ namespace AppData.Migrations
                         .HasColumnType("varchar(15)");
 
                     b.Property<string>("SDT")
-                        .IsRequired()
                         .HasColumnType("varchar(10)");
 
                     b.Property<string>("Ten")
                         .IsRequired()
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int>("TrangThai")
+                    b.Property<int?>("TrangThai")
                         .HasColumnType("int");
 
                     b.HasKey("IDKhachHang");
@@ -456,7 +454,7 @@ namespace AppData.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<int>("TrangThai")
+                    b.Property<int?>("TrangThai")
                         .HasColumnType("int");
 
                     b.HasKey("ID");

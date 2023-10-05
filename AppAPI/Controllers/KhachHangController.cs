@@ -1,7 +1,10 @@
 ﻿using AppAPI.IServices;
+using AppAPI.Services;
 using AppData.IRepositories;
 using AppData.Models;
 using AppData.Repositories;
+using AppData.ViewModels;
+using AppData.ViewModels.SanPham;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -32,46 +35,22 @@ namespace AppAPI.Controllers
         }
 
         // POST api/<SanPhamController>
-        [HttpPost]
-        public bool Post(string ten, DateTime ngaysinh, string password, int gioitinh, string email, int trangThai, string diachi, string sdt, int diemtich, Guid idvaitro)
+        [HttpPost("add")]
+        public async Task<IActionResult> Pots(KhachHangViewModel model)
         {
-            var khachHang = new KhachHang
-            {
-                IDKhachHang = Guid.NewGuid(),
-                Ten = ten,
-                NgaySinh = ngaysinh,
-                Password = password,
-                GioiTinh = gioitinh,
-                Email = email,
-                TrangThai = trangThai,
-                DiaChi = diachi,
-                SDT = sdt,
-                DiemTich = diemtich
-            };
-            return _khachHangService.Add(khachHang);
-
-        }   
+            if (model == null) return BadRequest();
+            var kh = await _khachHangService.Add(model);
+            return Ok(kh);
+        }
 
         // PUT api/<SanPhamController>/5
         [HttpPut("{id}")]
-        public  bool Put(Guid id, string ten, DateTime ngaysinh, string password, int gioitinh, string email, int trangThai, string diachi, string sdt, int diemtich, Guid idvaitro)
+        public  bool Put(Guid id, KhachHangViewModel model)
         {
-            var result = _khachHangService.GetById(id);
-            if (result == null)
-            {
-                return false;
-            }
-            result.Ten = ten;
-            result.NgaySinh = ngaysinh;
-            result.Password = password;
-            result.Email = email;
-            result.GioiTinh= gioitinh;
-            result.TrangThai    = trangThai;
-            result.DiaChi = diachi;
-            result.SDT = sdt;
-            result.DiemTich = diemtich;
-            result.IDVaiTro= idvaitro;
-            return _khachHangService.Update(result);
+            var result = _khachHangService.Update(id, model.Email, model.Password);
+           if(!result) return false;
+           return true;
+            
         }
 
         // DELETE api/<SanPhamController>/5

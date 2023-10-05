@@ -12,10 +12,10 @@ namespace AppData.Models
         public string Ten { get; set; }
         public string Email { get; set; }
         public string PassWord { get; set; }
-        public string SDT { get; set; }
-        public string 
+        public string? SDT { get; set; }
+        public string? 
             DiaChi { get; set; }
-        public int TrangThai { get; set; }
+        public int? TrangThai { get; set; }
         public Guid IDVaiTro { get; set; }
         public virtual IEnumerable<HoaDon>? HoaDons { get; set; }
         public virtual VaiTro? VaiTro { get; set; }

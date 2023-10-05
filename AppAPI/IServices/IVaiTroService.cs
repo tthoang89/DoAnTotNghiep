@@ -1,14 +1,16 @@
 ﻿using AppData.Models;
 using AppData.ViewModels.SanPham;
+using System;
+using System.Security.Cryptography.X509Certificates;
 
 namespace AppAPI.IServices
 {
     public interface IVaiTroService
     {
-        Task<List<VaiTro>> GetAllVaiTro();
-        Task<VaiTro> GetVaiTroById(Guid id);
-        Task<VaiTro> CreateVaiTro(VaiTro vaiTro);
-        Task<bool> DeleteVaiTro(Guid id);
-        Task<VaiTro> UpdateVaiTro(Guid id,  VaiTro vaiTro);
+        public List<VaiTro> GetAllVaiTro();
+        public VaiTro GetVaiTroById(Guid id);
+        public bool CreateVaiTro(string ten, int trangthai);
+        public bool DeleteVaiTro(Guid id);
+        public bool UpdateVaiTro(Guid id, string ten, int trangthai);
     }
 }

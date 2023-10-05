@@ -1,79 +1,95 @@
-﻿//using AppAPI.IServices;
-//using AppData.Models;
+﻿using AppAPI.IServices;
+using AppData.IRepositories;
+using AppData.Models;
+using AppData.Repositories;
+using AppData.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
-//namespace AppAPI.Services
-//{
-//    public class QuanLyNguoiDungService : IQuanLyNguoiDungService
-//    {
-//        private List<KhachHang> listKhachHang;
-//        private List<NhanVien> listNhanVien;
+namespace AppAPI.Services
+{
+    public class QuanLyNguoiDungService : IQuanLyNguoiDungService
+    {
+        private readonly IAllRepository<NhanVien> reposNV;
+        private readonly IAllRepository<KhachHang> reposKH;
+        AssignmentDBContext context = new AssignmentDBContext();
 
-//        public QuanLyNguoiDungService(List<KhachHang> listKhachHang, List<NhanVien> listNhanVien)
-//        {
-//            this.listKhachHang = listKhachHang;
-//            this.listNhanVien = listNhanVien;
-//        }
-//        public bool DangKyKhachHang(KhachHang khachHang)
-//        {
-//            bool khDaCo = listKhachHang.Any( x=> x.Email == khachHang.Email);
-//            if (!khDaCo)
-//            {
-//                return true;
-//            }
-//            else
-//            {
-//                return false;
-//            }
-//        }
+        public QuanLyNguoiDungService()
+        {
+            reposNV = new AllRepository<NhanVien>(context, context.NhanViens);
+            reposKH = new AllRepository<KhachHang>(context, context.KhachHangs);
+           
+        }
 
-//        public bool DangKyNhanVien(NhanVien nhanVien)
-//        {
-//            bool nvDaCo = listNhanVien.Any(a=> a.Email == nhanVien.Email);
-//            if (!nvDaCo)
-//            {
-//                return true;
-//            }
-//            else
-//            { 
-//                return false; 
-//            }
-//        }
+        public async Task<bool> ChangePassword(string email, string password, string newPassword)
+        {
+            var kh = await context.KhachHangs.FirstOrDefaultAsync(h => h.Email == email);
+            if (kh != null && kh.Email == email && kh.Password == password)
+            {
+                kh.Password = newPassword;
+                await context.SaveChangesAsync();
+                return true;
+            }
+            var nv = await context.NhanViens.FirstOrDefaultAsync(h => h.Email == email);
+            if (nv != null && nv.Email == email && nv.PassWord == password)
+            {
+                nv.PassWord = newPassword;
+                await context.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
 
-//        public bool DangNhap(string email, string password)
-//        {
-//            KhachHang kh = listKhachHang.FirstOrDefault(x=>x.Email == email && x.Password == password); 
-//            if (kh != null)
-//            {
-//                return true;
-//            }
-//            NhanVien nhanVien = listNhanVien.FirstOrDefault(n=>n.Email == email && n.PassWord == password);
-//            if (nhanVien != null)
-//            {
-//                return true;
-//            }
-//            return false;
-//        }
+        public async Task<bool> Login(string email, string password)
+        {
+            var nv = await context.NhanViens.FirstOrDefaultAsync(a => a.Email == email && a.PassWord == password);
+            if (nv != null && nv.Email == email && nv.PassWord == password)
+            {
+                return true;
+            }
+            var kh = await context.KhachHangs.FirstOrDefaultAsync(x => x.Email == email && x.Password == password);
+            if (kh != null &&kh.Email == email && kh.Password == password)
+            {
+                return true;
+            }
+            return false;
+        }
 
-//        public bool DoiMatKhauKH(string email, string oldPassword, string newPassword)
-//        {
-//            KhachHang khachHang = listKhachHang.FirstOrDefault(x => x.Email == email && x.Password == oldPassword);
-//            if (khachHang != null)
-//            {
-//                khachHang.Password = newPassword;
-//                return true;
-//            }
-//            return false;
-//        }
+        public async Task<KhachHang> RegisterKhachHang(KhachHangViewModel khachHang)
+        {
+            KhachHang kh = new KhachHang()
+            {
+                IDKhachHang = Guid.NewGuid(),
+                Ten = khachHang.Name,
+                Email = khachHang.Email,
+                Password = khachHang.Password,
+                IDVaiTro = khachHang.IDVaiTro
+            };
+            await context.KhachHangs.AddAsync(kh);
+            //await context.SaveChangesAsync();
+            GioHang gioHang = new GioHang()
+            {
+                IDKhachHang = kh.IDKhachHang,
+                NgayTao = DateTime.Now,
+            };
+            await context.GioHangs.AddAsync(gioHang);
+            await context.SaveChangesAsync();
+            return kh;
+        }
 
-//        public bool DoiMatKhauNV(string email, string oldPassword, string newPassword)
-//        {
-//            NhanVien nhanVien = listNhanVien.FirstOrDefault(n=>n.Email == email && n.PassWord==oldPassword);
-//            if (nhanVien != null)
-//            {
-//                nhanVien.PassWord = newPassword;
-//                return true;
-//            }
-//            return false;
-//        }
-//    }
-//}
+        //public async Task<List<NhanVien>> RegisterNhanVien(NhanVienViewmodel nhanVien)
+        //{
+        //    var kh = new NhanVien
+        //    {
+        //        ID = Guid.NewGuid(),
+        //        Ten = nhanVien.Name,
+        //        Email = nhanVien.Email,
+        //        PassWord = nhanVien.Password,
+        //        IDVaiTro = nhanVien.IDVaiTro
+        //    };
+        //    context.NhanViens.Add(kh);
+        //    await context.SaveChangesAsync();
+        //    return await context.NhanViens.ToListAsync();
+        //}
+    }
+}
+        

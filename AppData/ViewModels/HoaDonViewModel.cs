@@ -12,6 +12,9 @@ namespace AppData.ViewModels
         public string DiaChi { get; set; }
         public int TienShip { get; set; }
         public Guid? IDNhanVien { get; set; }
-        public Guid? IDVoucher { get; set; }
+        public string? TenVoucher { get; set; }
+        //tích điểm, dùng điểm
+        public Guid? IDNguoiDung { get; set; }
+        public int Diem { get; set; }
     }
 }
