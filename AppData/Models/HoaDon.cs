@@ -12,6 +12,17 @@
         public int TienShip { get; set; }
         public string PhuongThucThanhToan { get; set; }
         public int TrangThaiGiaoHang { get; set; }
+        //Các trạng thái của đơn hàng
+        /*
+         * 1-đơn nháp
+         * 2-Chờ bàn giao 
+         * 3-Đã bàn giao-Đang giao
+         * 4-Đã bàn giao-Đang hoàn hàng
+         * 5-Hoàn hàng thành công
+         * 6-Giao hàng thành công
+         * 7-Đơn hủy
+         * 8-Hàng thất lạc- hư hỏng
+         */
         public Guid? IDNhanVien { get; set; }
         public Guid? IDVoucher { get; set; }
         public virtual IEnumerable<LichSuTichDiem> LichSuTichDiems { get; set; }
