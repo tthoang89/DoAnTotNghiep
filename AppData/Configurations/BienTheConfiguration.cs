@@ -15,6 +15,7 @@ namespace AppData.Configurations
             builder.Property(x => x.NgayTao).HasColumnType("Datetime");
             builder.Property(x => x.TrangThai).HasColumnType("int");
             builder.HasOne(x => x.SanPham).WithMany(x => x.BienThes).HasForeignKey(x => x.IDSanPham);
+            builder.HasOne(x => x.KhuyenMai).WithMany(x => x.BienThes).HasForeignKey(x => x.IDKhuyenMai);
         }
     }
 }

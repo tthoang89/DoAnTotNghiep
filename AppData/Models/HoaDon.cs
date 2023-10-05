@@ -18,5 +18,6 @@
         public virtual NhanVien? NhanVien { get; set; }
         public virtual Voucher? Voucher { get; set; }
         public virtual IEnumerable<ChiTietHoaDon> ChiTietHoaDons { get; set; }
+        public virtual IEnumerable<ChiTietPTTT> ChiTietPTTTs { get; set; }
     }
 }

@@ -15,7 +15,6 @@ namespace AppData.Models
         public DbSet<ChiTietBienThe> ChiTietBienThes { get; set; }
         public DbSet<ChiTietGioHang> ChiTietGioHangs { get; set; }
         public DbSet<ChiTietHoaDon> ChiTietHoaDons { get; set; }
-        public DbSet<ChiTietKhuyenMai> ChiTietKhuyenMais { get; set; }
         public DbSet<GiaTri> GiaTris { get; set; }
         public DbSet<GioHang> GioHangs { get; set; }
         public DbSet<HoaDon> HoaDons { get; set; }
@@ -32,6 +31,8 @@ namespace AppData.Models
         public DbSet<VaiTro> VaiTros { get; set; }
         public DbSet<Voucher> Vouchers { get; set; }
         public DbSet<Anh> Anhs { get; set; }
+        public DbSet<ChiTietPTTT> ChiTietPTTTs { get; set; }
+        public DbSet<PhuongThucThanhToan> PhuongThucThanhToans { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(@"Data Source=DESKTOP-UOIH77U\SQLEXPRESS;Initial Catalog=AppBanQuanAoThoiTrangNam;Integrated Security=True");

@@ -46,8 +46,7 @@ namespace AppAPI.Controllers
                 TrangThai = trangThai,
                 DiaChi = diachi,
                 SDT = sdt,
-                DiemTich = diemtich,
-                IDVaiTro = idvaitro
+                DiemTich = diemtich
             };
             return _khachHangService.Add(khachHang);
 

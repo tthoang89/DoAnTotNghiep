@@ -1,5 +1,5 @@
-﻿@model IEnumerable< AppData.Models.SanPham>
-@using AppData.Models
+﻿@using AppData.Models
+@model IEnumerable<SanPham>
 
 @{
     ViewData["Title"] = "Privacy Policy";
@@ -201,7 +201,7 @@
                         <div class="col-lg-4 col-md-6 col-sm-6">
                             <div class="product__item">
                                 <div class="product__item__pic set-bg">
-                                    <img src="~/img/@bthe.Anh">
+                                    @*<img src="~/img/@bthe.Anh">*@
                                 </div>
                                 <div class="product__item__text">
                                     <h6>@item.Ten</h6>

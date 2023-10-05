@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 
 namespace AppData.Models
 {
-    public class Anh
+    public class PhuongThucThanhToan
     {
         public Guid ID { get; set; }
         public string Ten { get; set; }
-        public Guid IDChiTietBienThe { get; set; }
         public int TrangThai { get; set; }
-        public virtual ChiTietBienThe ChiTietBienThe { get; set; }
+        public virtual IEnumerable<ChiTietPTTT> ChiTietPTTTs { get; set; }
     }
 }
