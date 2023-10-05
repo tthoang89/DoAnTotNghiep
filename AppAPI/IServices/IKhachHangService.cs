@@ -1,13 +1,14 @@
 ﻿using AppData.Models;
+using AppData.ViewModels;
 
 namespace AppAPI.IServices
 {
     public interface IKhachHangService
     {
-        public bool Add(KhachHang nv);
+        public Task<KhachHang> Add(KhachHangViewModel nv);
         public KhachHang GetById(Guid id);
         public bool Delete(Guid id);
-        public bool Update(KhachHang nv);
+        public bool Update(Guid id, string email , string password);
         public List<KhachHang> GetAll();
     }
 }

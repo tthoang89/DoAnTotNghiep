@@ -13,50 +13,56 @@ namespace AppAPI.Services
             this.dBContext = new AssignmentDBContext();
         }
 
-        public async Task<VaiTro> CreateVaiTro(VaiTro vaiTro)
+        public bool CreateVaiTro(string ten, int trangthai)
         {
-            dBContext.VaiTros.Add(vaiTro);
-            await dBContext.SaveChangesAsync();
-            return vaiTro;
+            var vaitro = new VaiTro();
+            vaitro.ID = Guid.NewGuid();
+            vaitro.Ten = ten;
+            vaitro.TrangThai = trangthai;
+            dBContext.VaiTros.Add(vaitro);
+            dBContext.SaveChanges();
+            return true;
+
         }
 
-        public async Task<bool> DeleteVaiTro(Guid id)
+        public bool DeleteVaiTro(Guid id)
         {
-            var vt = await dBContext.VaiTros.FindAsync(id);
-            if( vt!= null)
+            var vt =  dBContext.VaiTros.FirstOrDefault(a=>a.ID == id);
+            if (vt != null)
             {
                 dBContext.VaiTros.Remove(vt);
-                await dBContext.SaveChangesAsync();
                 return true;
             }
             return false;
-
         }
 
-        public async Task<List<VaiTro>> GetAllVaiTro()
+        public List<VaiTro> GetAllVaiTro()
         {
-            return await dBContext.VaiTros.ToListAsync();
+            return  dBContext.VaiTros.ToList();
         }
 
-        public async Task<VaiTro> GetVaiTroById(Guid id)
+        public VaiTro GetVaiTroById(Guid id)
         {
-            return await dBContext.VaiTros.FirstOrDefaultAsync(x => x.ID == id);
+            return  dBContext.VaiTros.FirstOrDefault(x => x.ID == id);
         }
 
-        public async Task<VaiTro> UpdateVaiTro(Guid id, VaiTro vaiTro)
+        public bool UpdateVaiTro(Guid id, string ten, int trangthai)
         {
-            var vaitro = await dBContext.VaiTros.FindAsync(id);
-            if (vaitro== null)
+            var vaitro =  dBContext.VaiTros.FirstOrDefault(a=>a.ID == id);
+            if (vaitro == null)
             {
-                return null;
+                return false;
             }
             else
             {
-                vaitro.Ten = vaiTro.Ten;
-                vaitro.TrangThai = vaiTro.TrangThai;
-                await dBContext.SaveChangesAsync();
-                return vaitro;
+                vaitro.Ten = ten;
+                vaitro.TrangThai = trangthai;
+                dBContext.VaiTros.Update(vaitro);
+                dBContext.SaveChanges();
+                return true;
             }
         }
+
+        
     }
 }

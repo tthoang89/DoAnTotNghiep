@@ -19,20 +19,35 @@ namespace AppAPI.Controllers
         }
 
         // GET: api/<HoaDOnController>
-        [HttpGet]
+        [HttpGet("GetAll")]
         public List<HoaDon> Get()
         {
             return _iHoaDonService.GetAllHoaDon();
         }
-        [HttpPost]
-        public bool CreateHoaDon(HoaDonViewModel hoaDon)
+        [HttpGet("TimKiem")]
+        public List<HoaDon> TimKiemVaLoc(string ten, int? loc)
         {
-            return _iHoaDonService.CreateHoaDon(hoaDon.ChiTietHoaDons, hoaDon);
+            return _iHoaDonService.TimKiemVaLocHoaDon(ten, loc);
+        }
+        [HttpGet("CheckVoucher")]
+        public int CheckVoucher(string ten, int tongtien)
+        {
+            return _iHoaDonService.CheckVoucher(ten, tongtien);
+        }
+        [HttpGet("LichSuGiaoDich")]
+        public List<HoaDon> LichSuGiaoDich(Guid idNguoidung)
+        {
+            return _iHoaDonService.LichSuGiaoDich(idNguoidung);
+        }
+        [HttpPost]
+        public bool CreateHoaDon(HoaDonViewModel hoaDon,int tongtien)
+        {
+            return _iHoaDonService.CreateHoaDon(hoaDon.ChiTietHoaDons, hoaDon,tongtien);
         }
         [HttpPut]
-        public bool UpdateTrangThai(Guid idhoadon, int trangthai)
+        public bool UpdateTrangThai(Guid idhoadon, int trangthai,Guid idnhanvien)
         {
-            return _iHoaDonService.UpdateTrangThaiGiaoHang(idhoadon, trangthai);
+            return _iHoaDonService.UpdateTrangThaiGiaoHang(idhoadon, trangthai,idnhanvien);
         }
     }
 }

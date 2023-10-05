@@ -15,7 +15,14 @@
 
   <ItemGroup>
     <Content Remove="Views\Home\CheckOut.cshtml" />
-    <Content Remove="Views\Home\Shop.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AppData\AppData.csproj" />
   </ItemGroup>
 
 </Project>

@@ -2,6 +2,8 @@
 using AppData.IRepositories;
 using AppData.Models;
 using AppData.Repositories;
+using AppData.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace AppAPI.Services
 {
@@ -12,19 +14,19 @@ namespace AppAPI.Services
         {
             _dbContext = new AssignmentDBContext();
         }
-        public string Add(NhanVien nv)
+        public async Task<List<NhanVien>> RegisterNhanVien(NhanVienViewmodel nhanVien)
         {
-            try
+            var kh = new NhanVien
             {
-                _dbContext.NhanViens.Add(nv);
-                _dbContext.SaveChanges();
-                return "true";
-            }
-            catch (Exception e)
-            {
-
-                return e.InnerException.Message;
-            }
+                ID = Guid.NewGuid(),
+                Ten = nhanVien.Name,
+                Email = nhanVien.Email,
+                PassWord = nhanVien.Password,
+                IDVaiTro = nhanVien.IDVaiTro
+            };
+            _dbContext.NhanViens.Add(kh);
+            await _dbContext.SaveChangesAsync();
+            return await _dbContext.NhanViens.ToListAsync();
         }
 
         public bool Delete(Guid id)
@@ -59,8 +61,7 @@ namespace AppAPI.Services
 
         public bool Update(NhanVien nv)
         {
-            try
-            {
+           
                 var kh = _dbContext.NhanViens.FirstOrDefault(x => x.ID == nv.ID);
                 if (kh != null)
                 {
@@ -69,12 +70,6 @@ namespace AppAPI.Services
                     return true;
                 }
                 return false;
-            }
-            catch (Exception)
-            {
-
-                return false;
-            }
         }
     }
 }

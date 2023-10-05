@@ -10,7 +10,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<IChiTietKhuyenMaiServices,ChiTietKhuyenMaiServices>();
+//builder.Services.AddScoped<IChiTietKhuyenMaiServices,ChiTietKhuyenMaiServices>();
 builder.Services.AddScoped<IChiTietGioHangServices, ChiTietGioHangServices>();
 builder.Services.AddScoped<IGioHangServices, GioHangServices>();
 builder.Services.AddScoped<IQuyDoiDiemServices, QuyDoiDiemServices>();
@@ -21,7 +21,7 @@ builder.Services.AddScoped<IKhachHangService, KhachHangService>();
 builder.Services.AddScoped<ILishSuTichDiemServices, LishSuTichDiemServices>();
 builder.Services.AddScoped<ILoaiSPService, LoaiSPService>();
 builder.Services.AddScoped<INhanVienService, NhanVienService>();
-//builder.Services.AddScoped<IQuanLyNguoiDungService, QuanLyNguoiDungService>();
+builder.Services.AddScoped<IQuanLyNguoiDungService, QuanLyNguoiDungService>();
 builder.Services.AddScoped<ISanPhamService, SanPhamService>();
 builder.Services.AddScoped<IVoucherServices, VoucherServices>();
 builder.Services.AddScoped<IVaiTroService, VaiTroSevice>();

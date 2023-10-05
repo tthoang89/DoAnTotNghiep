@@ -1,17 +1,22 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AppData.ViewModels;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Diagnostics;
+using System.Text.Json.Serialization;
 
 namespace AppView.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly HttpClient _httpClient;
 
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
+            _httpClient = new HttpClient();
+            _httpClient.BaseAddress = new Uri("https://localhost:7095/api/");
         }
-
         public IActionResult Index()
         {
             return View();
@@ -56,5 +61,17 @@ namespace AppView.Controllers
         {
             return View();
         }
+        public IActionResult Shop()
+        {
+            HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/getAll").Result;
+            List<SanPhamViewModel> lstSanpham = new List<SanPhamViewModel>();
+            if(response.IsSuccessStatusCode)
+            {
+                lstSanpham = JsonConvert.DeserializeObject<List<SanPhamViewModel>>(response.Content.ReadAsStringAsync().Result);
+            }
+            return View(lstSanpham);
+        }
+        //https://localhost:5001/
+        //https://localhost:7095/api
     }
 }

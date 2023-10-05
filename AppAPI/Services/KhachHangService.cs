@@ -1,5 +1,6 @@
 ﻿using AppAPI.IServices;
 using AppData.Models;
+using AppData.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace AppAPI.Services
@@ -12,19 +13,24 @@ namespace AppAPI.Services
             _dbContext = new AssignmentDBContext();
         }
 
-        public bool Add(KhachHang nv)
+        public async Task<KhachHang> Add(KhachHangViewModel nv)
         {
-            try
+            KhachHang kh = new KhachHang()
             {
-                _dbContext.KhachHangs.Add(nv);
-                _dbContext.SaveChanges();
-                return true;
-            }
-            catch (Exception)
-            {
+                IDKhachHang = Guid.NewGuid(),
+                Ten = nv.Email,
+                Password = nv.Password,
 
-                return false;
-            }
+            };
+            await _dbContext.KhachHangs.AddAsync(kh);
+            await _dbContext.SaveChangesAsync();
+            GioHang gh = new GioHang()
+            {
+                IDKhachHang = kh.IDKhachHang,
+            };
+            await _dbContext.GioHangs.AddAsync(gh);
+            await _dbContext.SaveChangesAsync();
+            return kh;
         }
 
         public bool Delete(Guid id)
@@ -58,24 +64,40 @@ namespace AppAPI.Services
 
         }
 
-        public bool Update(KhachHang nv)
+        public bool Update(Guid id, string email, string password)
         {
-            try
+            var kh= _dbContext.KhachHangs.FirstOrDefault(a=>a.IDKhachHang == id);
+            if (kh != null)
             {
-                var kh = _dbContext.KhachHangs.FirstOrDefault(x => x.IDKhachHang == nv.IDKhachHang);
-                if (kh != null)
-                {
-                    _dbContext.KhachHangs.Update(kh);
-                    _dbContext.SaveChanges();
-                    return true;
-                }
-                return false;
+                kh.Email = email;
+                kh.Password = password;
+                _dbContext.KhachHangs.Update(kh);   
+                _dbContext.SaveChanges();
+                return true;
             }
-            catch (Exception)
-            {
-
-                return false;
-            }
+            return false;
         }
+
+
+
+        //public bool Update(KhachHang nv)
+        //{
+        //    try
+        //    {
+        //        var kh = _dbContext.KhachHangs.FirstOrDefault(x => x.IDKhachHang == nv.IDKhachHang);
+        //        if (kh != null)
+        //        {
+        //            _dbContext.KhachHangs.Update(kh);
+        //            _dbContext.SaveChanges();
+        //            return true;
+        //        }
+        //        return false;
+        //    }
+        //    catch (Exception)
+        //    {
+
+        //        return false;
+        //    }
+        //}
     }
 }

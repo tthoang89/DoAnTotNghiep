@@ -1,0 +1,194 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin</title>
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="~/Client/plugins/fontawesome-free/css/all.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/Client/dist/css/adminlte.min.css">
+</head>
+<body class="hold-transition sidebar-mini">
+    <div class="wrapper">
+        <!-- Navbar -->
+        <marquee class="fixed-bottom"><span class="text-danger" style="font-size: 20px">(THÔNG BÁO)</span>  Tất cả các tài khoản Nhân viên cần đắng ký với chủ cửa hàng </marquee>
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light fixed">
+            <!-- Left navbar links -->
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="pushmenu" href="#" role="button">
+                        <i class="fas fa-bars"></i>
+                    </a>
+                </li>
+            </ul>
+            <!-- Right navbar links -->
+            <ul class="navbar-nav ml-auto">
+                <!-- Navbar Search -->
+                <div class="dropdown">
+                    <button class=" btn " data-toggle="dropdown">
+                        <i class="mr-2 fas fa-user"></i>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" asp-controller="Admin" asp-action="MyAccount">My Account</a>
+                        <a class="dropdown-item" asp-controller="Admin" asp-action="SingOut">Sign Out</a>
+                        <a class="dropdown-item" asp-controller="Admin" asp-action="Register">Create New Account</a>
+                    </div>
+                </div>
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+                        <i class="fas fa-expand-arrows-alt"></i>
+                    </a>
+                </li>
+                <!--Tạo màu-->
+                @* <li class="nav-item">
+                <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
+                <i class="fas fa-th-large"></i>
+                </a>
+                </li>*@
+            </ul>
+        </nav>
+        <!-- /.navbar -->
+        <!-- Main Sidebar Container -->
+        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+            <!-- Brand Logo -->
+            <a asp-controller="Admin" asp-action="HomePage" class="brand-link">
+                <img src="~/Client/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+                <span class="brand-text font-weight-light">Admin Reputation </span>
+            </a>
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="true">
+                        <!-- Add icons to the links using the .nav-icon class
+                        with font-awesome or any other icon font library -->
+                        @*<li class="nav-header">Manager</li>*@
+                        <li class="nav-item">
+                            <a asp-controller="" asp-action="" class="nav-link">
+                                <i class="far fa-list nav-icon"></i>
+                                <p>Nhân Viên</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-controller="" asp-action="" class="nav-link">
+                                <i class="far fa-list nav-icon"></i>
+                                <p>Vai trò</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-controller="" asp-action="" class="nav-link">
+                                <i class="far fa-list nav-icon"></i>
+                                <p>Khách hàng</p>
+                            </a>
+                        </li>
+                        <!-- -------------------------------------------------------------- -->
+                        <li class="nav-item">
+                            <a asp-controller="" asp-action="" class="nav-link">
+                                <i class="far fa-list nav-icon"></i>
+                                <p>Loại sản phẩm</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-controller="" asp-action="" class="nav-link">
+                                <i class="far fa-list nav-icon"></i>
+                                <p>Sản phẩm</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-controller="" asp-action="" class="nav-link">
+                                <i class="far fa-list nav-icon"></i>
+                                <p>Biến thể</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-controller="" asp-action="" class="nav-link">
+                                <i class="far fa-list nav-icon"></i>
+                                <p>Ảnh</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-controller="" asp-action="" class="nav-link">
+                                <i class="far fa-list nav-icon"></i>
+                                <p>Thuộc tính</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-controller="" asp-action="" class="nav-link">
+                                <i class="far fa-list nav-icon"></i>
+                                <p>Giá trị</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-controller="" asp-action="" class="nav-link">
+                                <i class="far fa-list nav-icon"></i>
+                                <p>Chi tiết biến thể</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-controller="" asp-action="" class="nav-link">
+                                <i class="far fa-list nav-icon"></i>
+                                <p>Thuộc tính sản phẩm</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-controller="" asp-action="" class="nav-link">
+                                <i class="far fa-list nav-icon"></i>
+                                <p>Khuyến mãi</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-controller="" asp-action="" class="nav-link">
+                                <i class="far fa-list nav-icon"></i>
+                                <p>Voucher</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-controller="" asp-action="" class="nav-link">
+                                <i class="far fa-list nav-icon"></i>
+                                <p>Hóa đơn</p>
+                            </a>
+                        </li>
+
+                    </ul>
+                </nav>
+                <!-- /.sidebar-menu -->
+            </div>
+            <!-- /.sidebar -->
+        </aside>
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            @RenderBody()
+        </div>
+        <!-- /.content-wrapper -->
+        <footer class="main-footer ">
+            <div class="float-right d-none d-sm-block">
+                <b>Version</b> 3.2.0-rc
+            </div>
+
+        </footer>
+
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+        <!-- /.control-sidebar -->
+    </div>
+    <!-- ./wrapper -->
+    <!-- jQuery -->
+    <script src="~/Client/plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="~/Client/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- InputMask -->
+    <script src="~/Client/plugins/moment/moment.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="~/Client/dist/js/adminlte.min.js"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="~/Client/dist/js/demo.js"></script>
+    <!-- Page specific script -->
+@*aaaaaaaaaaaaaaa*@
+</body>
+</html>
+

@@ -5,12 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using AppData.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AppData.Configurations
 {
     internal class DanhGiaConfiguration : IEntityTypeConfiguration<DanhGia>
     {
-        public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<DanhGia> builder)
+        public void Configure(EntityTypeBuilder<DanhGia> builder)
         {
             builder.ToTable("DanhGia");
             builder.HasKey(x => x.ID);
