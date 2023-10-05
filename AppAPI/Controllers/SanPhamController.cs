@@ -32,12 +32,25 @@ namespace AppAPI.Controllers
             if(sanPham == null) return NotFound();
             return Ok(sanPham);
         }
-        //[HttpGet("timKiemNC")]
-        //public async Task<IActionResult> TimKiemSanPham(SanPhamTimKiemNangCao sp)
-        //{
-        //    var listSP = await _sanPhamServices.TimKiemSanPham(sp);
-        //    return Ok(listSP);
-        //}
+        [HttpGet("getById/{idLsp}")]
+        public async Task<IActionResult> GetSanPhamByIdDanhMuc(Guid idLsp)
+        {
+            var sanPham = await _sanPhamServices.GetSanPhamByIdDanhMuc(idLsp);
+            if (sanPham == null) return NotFound();
+            return Ok(sanPham);
+        }
+        [HttpGet("checkTrungTen")]
+        public async Task<IActionResult> CheckTrung(SanPhamRequest request)
+        {
+            var listSP = _sanPhamServices.CheckTrungTenSP(request);
+            return Ok(listSP);
+        }
+        [HttpPost("timKiemNC")]
+        public async Task<IActionResult> TimKiemSanPham(SanPhamTimKiemNangCao sp)
+        {
+            var listSP = await _sanPhamServices.TimKiemSanPham(sp);
+            return Ok(listSP);
+        }
         [HttpPost("save")]
         public async Task<IActionResult> CreateOrUpdateSanPham(SanPhamRequest request)
         {

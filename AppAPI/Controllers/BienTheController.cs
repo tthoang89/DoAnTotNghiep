@@ -35,8 +35,15 @@ namespace AppAPI.Controllers
             {
                 await _bienTheService.SaveBienThe(bt);
             }
-
             return Ok();
+        }
+        [HttpPost("getBTByIdValues")]
+        public async Task<IActionResult> GetByValues([FromBody] BienTheTruyVan requests)
+        {
+            if (requests == null) return BadRequest();
+            
+            var bt = await _bienTheService.GetBTByListGiaTri(requests);
+            return Ok(bt);
         }
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteBienThe(Guid id)

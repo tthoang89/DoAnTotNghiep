@@ -21,6 +21,18 @@ namespace AppAPI.Controllers
             var listTT = await _sanPhamService.GetAllThuocTinh();
             return Ok(listTT);
         }
+        [HttpGet("getbyid/{idtt}")]
+        public async Task<IActionResult> GetById(Guid idtt)
+        {
+            var result = await _sanPhamService.GetByID(idtt);
+            return Ok(result);
+        }
+        [HttpGet("checktrung")]
+        public async Task<IActionResult> CheckTrungTT(ThuocTinhRequest request)
+        {
+            var result = await _sanPhamService.CheckTrungTT(request);
+            return Ok(result);
+        }
         [HttpPost("save")]
         public async Task<IActionResult> CreateOrUpdateThuocTinh(ThuocTinhRequest Request)
         {

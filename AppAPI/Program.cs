@@ -26,7 +26,7 @@ builder.Services.AddScoped<ISanPhamService, SanPhamService>();
 builder.Services.AddScoped<IVoucherServices, VoucherServices>();
 builder.Services.AddScoped<IVaiTroService, VaiTroSevice>();
 
-
+builder.Services.AddControllersWithViews().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -17,7 +17,7 @@ namespace AppAPI.Services
         {
             var lsp = await _context.LoaiSPs.FindAsync(id);
             if (lsp == null) throw new Exception($"Không tìm thấy Loại sản phẩm: {id}");
-            // Kiểm tra xem có SP thuộc loaiSP này k
+            // Check LoaiSP đag đc sử dụng k
             if(_context.SanPhams.Any(c=>c.IDLoaiSP == id)) return false;
             _context.LoaiSPs.Remove(lsp);
             await _context.SaveChangesAsync();
@@ -51,6 +51,7 @@ namespace AppAPI.Services
             {
                 LoaiSP loaiSP = new LoaiSP()
                 {
+                    ID = new Guid(),
                     Ten = lsp.Ten,
                     IDLoaiSPCha = lsp.IDLoaiSPCha,
                     TrangThai = lsp.TrangThai,

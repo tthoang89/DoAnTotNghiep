@@ -8,8 +8,9 @@ namespace AppAPI.IServices
     {
         #region SanPham
         Task<List<SanPhamViewModel>> GetAllSanPham();
-        Task<List<SanPham>> TimKiemSanPham(SanPhamTimKiemNangCao sp);
+        Task<List<SanPhamViewModel>> TimKiemSanPham(SanPhamTimKiemNangCao sp);
         Task<SanPhamViewModel> GetSanPhamById(Guid id);
+        Task<List<SanPhamViewModel>> GetSanPhamByIdDanhMuc(Guid idloaisp);
         Task<SanPham> SaveSanPham(SanPhamRequest request);
         Task<bool> DeleteSanPham(Guid id);
         bool CheckTrungTenSP(SanPhamRequest lsp);
@@ -17,8 +18,10 @@ namespace AppAPI.IServices
 
         #region ThuocTinh
         Task<List<ThuocTinhRequest>> GetAllThuocTinh();
+        Task<ThuocTinhRequest> GetByID(Guid idtt);
         Task<ThuocTinh> SaveThuocTinh(ThuocTinhRequest tt);
         Task<bool> DeleteThuocTinh(Guid id);
+        Task<bool> CheckTrungTT(ThuocTinhRequest tt);
         #endregion       
     }
 }

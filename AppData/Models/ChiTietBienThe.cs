@@ -6,7 +6,9 @@
         public int TrangThai { get; set; }
         public Guid IDBienThe { get; set; }
         public Guid IDGiaTri { get; set; }
+        public DateTime NgayLuu { get; set; }
         public virtual BienThe BienThe { get; set; }
         public virtual GiaTri GiaTri { get; set; }
+
     }
 }
