@@ -18,7 +18,6 @@ namespace AppData.Models
         public string? SDT { get; set; }
         public int? DiemTich { get; set; }
         public int? TrangThai { get; set; }
-        public Guid IDVaiTro { get; set; }
         public virtual GioHang? GioHang { get; set; }
         public virtual IEnumerable<LichSuTichDiem>? LichSuTichDiems { get; set; }
         public virtual IEnumerable<DanhGia>? DanhGias { get; set; }
