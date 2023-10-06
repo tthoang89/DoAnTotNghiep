@@ -54,7 +54,7 @@
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
-            <a asp-controller="Admin" asp-action="HomePage" class="brand-link">
+            <a asp-controller="VaiTro" asp-action="HomePageAdmin" class="brand-link">
                 <img src="~/Client/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
                 <span class="brand-text font-weight-light">Admin Reputation </span>
             </a>
@@ -66,19 +66,19 @@
                         with font-awesome or any other icon font library -->
                         @*<li class="nav-header">Manager</li>*@
                         <li class="nav-item">
-                            <a asp-controller="" asp-action="" class="nav-link">
+                            <a asp-controller="NhanVien" asp-action="Show" class="nav-link">
                                 <i class="far fa-list nav-icon"></i>
                                 <p>Nhân Viên</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a asp-controller="" asp-action="" class="nav-link">
+                            <a asp-controller="VaiTro" asp-action="Show" class="nav-link">
                                 <i class="far fa-list nav-icon"></i>
                                 <p>Vai trò</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a asp-controller="" asp-action="" class="nav-link">
+                            <a asp-controller="KhachHang" asp-action="Show" class="nav-link">
                                 <i class="far fa-list nav-icon"></i>
                                 <p>Khách hàng</p>
                             </a>
@@ -176,6 +176,7 @@
         </aside>
         <!-- /.control-sidebar -->
     </div>
+    @await RenderSectionAsync("Scripts", required: false)
     <!-- ./wrapper -->
     <!-- jQuery -->
     <script src="~/Client/plugins/jquery/jquery.min.js"></script>
