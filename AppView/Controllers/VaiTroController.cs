@@ -74,7 +74,7 @@ namespace AppView.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid Id, VaiTro vaiTro)
         {
-            string apiURL = $"https://localhost:7095/api/VaiTro/id={Id}&RoleName={vaiTro.Ten}&Status={vaiTro.TrangThai}";
+            string apiURL = $"https://localhost:7095/api/VaiTro/id={vaiTro.ID}?ten={vaiTro.Ten}&trnagthai={vaiTro.TrangThai}";
             var content = new StringContent(JsonConvert.SerializeObject(vaiTro), Encoding.UTF8, "application/json");
             var response = await _httpClient.PutAsync(apiURL, content);
             if (response.IsSuccessStatusCode)

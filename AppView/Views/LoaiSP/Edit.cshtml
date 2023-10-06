@@ -1,4 +1,4 @@
-﻿@model AppData.Models.NhanVien
+﻿@model AppData.ViewModels.SanPham.LoaiSPRequest
 
 @{
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
@@ -8,36 +8,21 @@
 
 <h1>Edit</h1>
 
-<h4>NhanVien</h4>
+<h4>LoaiSPRequest</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
+                <label asp-for="ID" class="control-label"></label>
+                <input asp-for="ID" class="form-control" />
+                <span asp-validation-for="ID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="Ten" class="control-label"></label>
                 <input asp-for="Ten" class="form-control" />
                 <span asp-validation-for="Ten" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PassWord" class="control-label"></label>
-                <input asp-for="PassWord" class="form-control" />
-                <span asp-validation-for="PassWord" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SDT" class="control-label"></label>
-                <input asp-for="SDT" class="form-control" />
-                <span asp-validation-for="SDT" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DiaChi" class="control-label"></label>
-                <input asp-for="DiaChi" class="form-control" />
-                <span asp-validation-for="DiaChi" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="TrangThai" class="control-label"></label>
@@ -45,12 +30,12 @@
                 <span asp-validation-for="TrangThai" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <lable>Vai Trò</lable>
+                <lable>Loại SP Cha</lable>
                 <div>
-                    <select class="form-control" name="IDVaiTro">
-                        @foreach (var VaiTro in dBContext.VaiTros.ToList())
+                    <select class="form-control" name="IDLoaiSPCha">
+                        @foreach (var cha in dBContext.LoaiSPs.ToList())
                         {
-                            <option value="@VaiTro.ID">@VaiTro.Ten</option>
+                            <option value="@cha.ID">@cha.Ten</option>
                         }
                     </select>
                 </div>
