@@ -12,7 +12,7 @@ namespace AppView.Controllers
         {
             _httpClient = new HttpClient();
         }
-        // GET: UserController
+        
         public async Task<IActionResult> Show()
         {
             string apiUrl = "https://localhost:7095/api/NhanVien/GetAll";
@@ -40,7 +40,7 @@ namespace AppView.Controllers
             return View();
         }
 
-        // GET: UserController/Details/5
+        
         public async Task<IActionResult> Details(Guid id)
         {
             string apiUrl = $"https://localhost:7095/api/NhanVien/{id}";
@@ -52,7 +52,7 @@ namespace AppView.Controllers
         }
 
 
-        // GET: UserController/Edit/5
+        
         [HttpGet]
         public async Task<IActionResult> Edit(Guid id)
         {
@@ -62,7 +62,7 @@ namespace AppView.Controllers
             var user = JsonConvert.DeserializeObject<NhanVien>(apidata);
             return View(user);
         }
-        // POST: UserController/Edit/5
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid Id, NhanVien nv)
@@ -76,14 +76,6 @@ namespace AppView.Controllers
             }
             return View(nv);
         }
-        [HttpGet]
-        public async Task<IActionResult> Edit2(Guid id)
-        {
-            string apiUrl = $"https://localhost:7109/api/User/{id}";
-            var response = await _httpClient.GetAsync(apiUrl);
-            string apidata = await response.Content.ReadAsStringAsync();
-            var user = JsonConvert.DeserializeObject<NhanVien>(apidata);
-            return View(user);
-        }
+       
     }
 }
