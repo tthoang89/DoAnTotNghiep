@@ -7,6 +7,7 @@ using AppData.ViewModels;
 using AppData.ViewModels.SanPham;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security;
 
 namespace AppAPI.Controllers
 {
@@ -31,26 +32,42 @@ namespace AppAPI.Controllers
         public KhachHang GetKhachHangById(Guid id)
         {
             var kh = _khachHangService.GetById(id);
-            return kh;  
+            return kh;
         }
 
         // POST api/<SanPhamController>
-        [HttpPost("add")]
-        public async Task<IActionResult> Pots(KhachHangViewModel model)
+        [HttpPost]
+        public async Task<IActionResult> Post(KhachHangViewModel khachHang)
         {
-            if (model == null) return BadRequest();
-            var kh = await _khachHangService.Add(model);
-            return Ok(kh);
-        }
+            var kh = await _khachHangService.Add(khachHang);
+            if (kh == null)
+            {
+                return BadRequest();
+            }
 
+            return Ok("Đăng ký thành công");
+        }
         // PUT api/<SanPhamController>/5
         [HttpPut("{id}")]
-        public  bool Put(Guid id, KhachHangViewModel model)
+        public bool Put(Guid id, string ten, string email, string password, string diachi, DateTime ngaysinh, int gioitinh, int diemtisch, int trnagthai, string sdt)
         {
-            var result = _khachHangService.Update(id, model.Email, model.Password);
-           if(!result) return false;
-           return true;
-            
+            var nv = _khachHangService.GetById(id);
+            if (nv != null)
+            {
+                nv.Ten = ten;
+                nv.NgaySinh = ngaysinh;
+                nv.DiaChi = diachi;
+                nv.TrangThai = trnagthai;
+                nv.SDT = sdt;
+                nv.Email = email;
+                nv.Password = password;
+                nv.GioiTinh = gioitinh;
+                nv.DiemTich = diemtisch;
+                return _khachHangService.Update(nv);
+
+            }
+            return false;
+
         }
 
         // DELETE api/<SanPhamController>/5

@@ -14,7 +14,9 @@ namespace AppData.ViewModels
         public string MoTa { get; set; }
         public int TrangThai { get; set; }
         public string LoaiSP { get; set; }
-        public string Image { get; set; }
+        public List<string> ListImage { get; set; }
+        public int GiaBan { get; set; }
+        public int GiaGoc { get; set; }
         public List<ThuocTinh> ThuocTinhs { get; set; } 
         public List<BienTheViewModel> BienThes { get; set; }
     }

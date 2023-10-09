@@ -2,6 +2,7 @@
 using AppData.Models;
 using AppData.ViewModels;
 using AppData.ViewModels.SanPham;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace AppAPI.Services
@@ -17,27 +18,14 @@ namespace AppAPI.Services
         public async Task<bool> DeleteBienThe(Guid id)
         {
             var bienthe = await _context.BienThes.FindAsync(id);
-            if (bienthe == null) throw new Exception($"Không tìm thấy biến thể có Id: {id}");
-
             //Xóa Chi tiết biến thể
             var listctbt = await _context.ChiTietBienThes.Where(c => c.IDBienThe == id).ToListAsync();
-            listctbt.RemoveRange(0, listctbt.Count);
-            await _context.SaveChangesAsync();
-            // Xóa list ảnh
-            var listAnh = await _context.Anhs.Where(c => c.IDBienThe == id).ToListAsync();
-            listAnh.RemoveRange(0, listAnh.Count);
-            await _context.SaveChangesAsync();
+            _context.ChiTietBienThes.RemoveRange(listctbt);
             //Xóa BT
             _context.BienThes.Remove(bienthe);
             await _context.SaveChangesAsync();
             return true;
         }
-
-        public Task<List<Anh>> GetAnhByIdBienThe(Guid idBienThe)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<BienTheViewModel> GetBienTheById(Guid idBienThe)
         {
             if (!_context.BienThes.Any(c => c.ID == idBienThe)) throw new Exception($"Không tìm thấy Sản phẩm có Id: {idBienThe}");
@@ -51,7 +39,6 @@ namespace AppAPI.Services
                                   SoLuong = bt.SoLuong,
                                   GiaBan = bt.GiaBan,
                                   TrangThai = bt.TrangThai,
-                                  Anh = bt.Anh,
                                   GiaTris = (from gt in _context.GiaTris
                                              join ctbt in _context.ChiTietBienThes on gt.ID equals ctbt.IDGiaTri
                                              where ctbt.IDBienThe == bt.ID
@@ -76,7 +63,6 @@ namespace AppAPI.Services
                                    ID = bt.ID,
                                    SoLuong = bt.SoLuong,
                                    Ten = sp.Ten,
-                                   Anh = bt.Anh,
                                    GiaBan = bt.GiaBan,
                                    TrangThai = bt.TrangThai,
                                    GiaTris = (from gt in _context.GiaTris
@@ -91,7 +77,34 @@ namespace AppAPI.Services
 
 
             return query;
-        }        
+        }
+        // Truy vấn BT thông qua list Giá trị
+        public async Task<BienTheViewModel> GetBTByListGiaTri(BienTheTruyVan bttv)
+        {
+            var query = await (from ctbt in _context.ChiTietBienThes
+                               join bt in _context.BienThes on ctbt.IDBienThe equals bt.ID
+                               join sp in _context.SanPhams on bt.IDSanPham equals sp.ID
+                               where sp.ID == bttv.idSp
+                               select ctbt).ToListAsync();
+
+            var results = from p in query
+                          group p.IDGiaTri by p.IDBienThe into g
+                          select new { IdBienThe = g.Key, GiaTris = g.ToList() };
+            Guid idbt = Guid.Empty;
+            foreach (var item in results)
+            {
+                var areEquivalent = (item.GiaTris.Count() == bttv.lstIdGTri.Count()) && !item.GiaTris.Except(bttv.lstIdGTri).Any();
+                if (areEquivalent == true)
+                {
+                    idbt = item.IdBienThe;
+                    break;
+                }
+
+            }
+            var bthe = await GetBienTheById(idbt);
+            return bthe;
+        }
+
         public async Task<BienThe> SaveBienThe(BienTheRequest request)
         {
             // Check tồn tại
@@ -102,7 +115,6 @@ namespace AppAPI.Services
                 bienthe.SoLuong = request.SoLuong;
                 bienthe.GiaBan = request.GiaBan;
                 bienthe.TrangThai = request.TrangThai;
-                bienthe.Anh = request.Anh;
                 _context.BienThes.Update(bienthe);
                 await _context.SaveChangesAsync();
 
@@ -123,18 +135,26 @@ namespace AppAPI.Services
                         await _context.SaveChangesAsync();
                     }
                 }
+                //Xóa CTBT không còn SD
+                var lstIdCTBT = await _context.ChiTietBienThes.Where(c => c.IDBienThe == bienthe.ID).OrderByDescending(c => c.NgayLuu).Select(c => c.ID).Take(request.ListIdGiaTri.Count).ToListAsync();
+                var lstDelete = await _context.ChiTietBienThes.Where(c => !lstIdCTBT.Contains(c.ID) & c.IDBienThe == bienthe.ID).ToListAsync();
+                _context.ChiTietBienThes.RemoveRange(lstDelete);
+                await _context.SaveChangesAsync();
                 return bienthe;
             }
             else //Tạo mới
             {
+                var sp = await _context.SanPhams.FindAsync(request.IDSanPham);
+                if (sp.TrangThai == 0) { request.TrangThai = 0; }
+                else { request.TrangThai = 1; };
                 BienThe bienThe = new BienThe()
                 {
+                    ID = new Guid(),
                     SoLuong = request.SoLuong,
                     NgayTao = DateTime.Now,
                     TrangThai = request.TrangThai,
                     GiaBan = request.GiaBan,
                     IDSanPham = request.IDSanPham,
-                    Anh = request.Anh,
                 };
                 await _context.BienThes.AddAsync(bienThe);
                 await _context.SaveChangesAsync();
@@ -144,6 +164,7 @@ namespace AppAPI.Services
                 {
                     ChiTietBienThe ctbt = new ChiTietBienThe()
                     {
+                        ID = new Guid(),
                         IDGiaTri = id,
                         IDBienThe = bienThe.ID,
                         TrangThai = 1,
@@ -155,23 +176,20 @@ namespace AppAPI.Services
             };
         }
         #endregion
-        //#region Anh
-        //public Task<bool> SaveAnh(Anh img)
-        //{
-        //    throw new NotImplementedException();
-        //}
-        //public async Task<bool> DeleteAnh(Guid id)
-        //{
-        //    var a = await _context.Anhs.FindAsync(id);
-        //    if (a == null)
-        //    {
-        //        _context.Anhs.Remove(a);
-        //        await _context.SaveChangesAsync();
-        //        return true;
-        //    }
-        //    return false;
-        //}
-        //#endregion
+        #region Anh
+
+        public async Task<bool> DeleteAnh(Guid id)
+        {
+            var a = await _context.Anhs.FindAsync(id);
+            if (a == null)
+            {
+                _context.Anhs.Remove(a);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
+        #endregion
     }
 
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AppData.ViewModels
 {
-    public class NhanVienViewmodel
+    public class NhanVienViewModel
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

@@ -90,6 +90,9 @@ namespace AppData.Migrations
                     b.Property<Guid>("IDGiaTri")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("NgayLuu")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("TrangThai")
                         .HasColumnType("int");
 
@@ -566,6 +569,9 @@ namespace AppData.Migrations
 
                     b.Property<Guid>("IDThuocTinh")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("NgayLuu")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("ID");
 

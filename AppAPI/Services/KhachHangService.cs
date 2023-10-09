@@ -18,15 +18,17 @@ namespace AppAPI.Services
             KhachHang kh = new KhachHang()
             {
                 IDKhachHang = Guid.NewGuid(),
-                Ten = nv.Email,
+                Ten = nv.Name,
+                Email = nv.Email,
                 Password = nv.Password,
 
             };
             await _dbContext.KhachHangs.AddAsync(kh);
-            await _dbContext.SaveChangesAsync();
+            //await _dbContext.SaveChangesAsync();
             GioHang gh = new GioHang()
             {
                 IDKhachHang = kh.IDKhachHang,
+                NgayTao = DateTime.Now,
             };
             await _dbContext.GioHangs.AddAsync(gh);
             await _dbContext.SaveChangesAsync();
@@ -64,19 +66,40 @@ namespace AppAPI.Services
 
         }
 
-        public bool Update(Guid id, string email, string password)
+        public bool Update(KhachHang khachHang)
         {
-            var kh= _dbContext.KhachHangs.FirstOrDefault(a=>a.IDKhachHang == id);
+            var kh = _dbContext.KhachHangs.FirstOrDefault(x => x.IDKhachHang == khachHang.IDKhachHang);
             if (kh != null)
             {
-                kh.Email = email;
-                kh.Password = password;
-                _dbContext.KhachHangs.Update(kh);   
+                kh.Ten = khachHang.Ten;
+                kh.SDT = khachHang.SDT;
+                kh.Email = khachHang.Email;
+                kh.Password = khachHang.Password;
+                kh.GioiTinh = khachHang.GioiTinh;
+                kh.DiaChi = khachHang.DiaChi;
+                kh.NgaySinh = khachHang.NgaySinh;
+                kh.DiemTich = khachHang.DiemTich;
+                kh.TrangThai = khachHang.TrangThai;
+                _dbContext.KhachHangs.Update(kh);
                 _dbContext.SaveChanges();
                 return true;
             }
             return false;
         }
+
+        //public bool Update(Guid id, string email, string password)
+        //{
+        //    var kh= _dbContext.KhachHangs.FirstOrDefault(a=>a.IDKhachHang == id);
+        //    if (kh != null)
+        //    {
+        //        kh.Email = email;
+        //        kh.Password = password;
+        //        _dbContext.KhachHangs.Update(kh);   
+        //        _dbContext.SaveChanges();
+        //        return true;
+        //    }
+        //    return false;
+        //}
 
 
 

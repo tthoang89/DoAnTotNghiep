@@ -1,32 +1,33 @@
 ﻿using AppAPI.IServices;
-using AppData.IRepositories;
 using AppData.Models;
-using AppData.Repositories;
 using AppData.ViewModels;
-using Microsoft.EntityFrameworkCore;
 
 namespace AppAPI.Services
 {
     public class NhanVienService : INhanVienService
     {
         private readonly AssignmentDBContext _dbContext;
+
         public NhanVienService()
         {
             _dbContext = new AssignmentDBContext();
         }
-        public async Task<List<NhanVien>> RegisterNhanVien(NhanVienViewmodel nhanVien)
+
+        public bool Add(string ten, string email, string sdt, string diachi, Guid idVaiTro, int trangthai, string password)
         {
-            var kh = new NhanVien
-            {
-                ID = Guid.NewGuid(),
-                Ten = nhanVien.Name,
-                Email = nhanVien.Email,
-                PassWord = nhanVien.Password,
-                IDVaiTro = nhanVien.IDVaiTro
-            };
-            _dbContext.NhanViens.Add(kh);
-            await _dbContext.SaveChangesAsync();
-            return await _dbContext.NhanViens.ToListAsync();
+            var nv = new NhanVien();
+            nv.ID = Guid.NewGuid();
+            nv.Ten = ten;
+            nv.Email = email;
+            nv.PassWord = password;
+            nv.DiaChi = diachi;
+            nv.SDT = sdt;
+            nv.IDVaiTro = idVaiTro;
+            nv.TrangThai = trangthai;
+             _dbContext.NhanViens.Add(nv);
+            _dbContext.SaveChanges();
+            return true;
+            
         }
 
         public bool Delete(Guid id)
@@ -51,7 +52,8 @@ namespace AppAPI.Services
 
         public List<NhanVien> GetAll()
         {
-           return _dbContext.NhanViens.ToList();
+            return _dbContext.NhanViens
+                .ToList();
         }
 
         public NhanVien GetById(Guid id)
@@ -61,15 +63,20 @@ namespace AppAPI.Services
 
         public bool Update(NhanVien nv)
         {
-           
-                var kh = _dbContext.NhanViens.FirstOrDefault(x => x.ID == nv.ID);
-                if (kh != null)
-                {
-                    _dbContext.NhanViens.Update(kh);
-                    _dbContext.SaveChanges();
-                    return true;
-                }
-                return false;
+            var kh = _dbContext.NhanViens.FirstOrDefault(x => x.ID == nv.ID);
+            if (kh != null)
+            {
+                kh.Ten = nv.Ten;
+                kh.Email = nv.Email;
+                kh.PassWord = nv.PassWord;
+                kh.SDT = nv.SDT;
+                kh.DiaChi = nv.DiaChi;
+                kh.TrangThai = nv.TrangThai;
+                kh.IDVaiTro = nv.IDVaiTro; _dbContext.NhanViens.Update(kh);
+                _dbContext.SaveChanges();
+                return true;
+            }
+            return false;
         }
     }
 }

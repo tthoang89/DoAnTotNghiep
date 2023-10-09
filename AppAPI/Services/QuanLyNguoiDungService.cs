@@ -17,20 +17,20 @@ namespace AppAPI.Services
         {
             reposNV = new AllRepository<NhanVien>(context, context.NhanViens);
             reposKH = new AllRepository<KhachHang>(context, context.KhachHangs);
-           
+
         }
 
         public async Task<bool> ChangePassword(string email, string password, string newPassword)
         {
-            var kh = await context.KhachHangs.FirstOrDefaultAsync(h => h.Email == email);
-            if (kh != null && kh.Email == email && kh.Password == password)
+            var kh = await context.KhachHangs.FirstOrDefaultAsync(h => h.Email == email && h.Password == password);
+            if (kh != null)
             {
                 kh.Password = newPassword;
                 await context.SaveChangesAsync();
                 return true;
             }
-            var nv = await context.NhanViens.FirstOrDefaultAsync(h => h.Email == email);
-            if (nv != null && nv.Email == email && nv.PassWord == password)
+            var nv = await context.NhanViens.FirstOrDefaultAsync(h => h.Email == email && h.PassWord == password);
+            if (kh != null)
             {
                 nv.PassWord = newPassword;
                 await context.SaveChangesAsync();
@@ -42,12 +42,12 @@ namespace AppAPI.Services
         public async Task<bool> Login(string email, string password)
         {
             var nv = await context.NhanViens.FirstOrDefaultAsync(a => a.Email == email && a.PassWord == password);
-            if (nv != null && nv.Email == email && nv.PassWord == password)
+            if (nv != null)
             {
                 return true;
             }
             var kh = await context.KhachHangs.FirstOrDefaultAsync(x => x.Email == email && x.Password == password);
-            if (kh != null &&kh.Email == email && kh.Password == password)
+            if (kh != null)
             {
                 return true;
             }
@@ -61,8 +61,7 @@ namespace AppAPI.Services
                 IDKhachHang = Guid.NewGuid(),
                 Ten = khachHang.Name,
                 Email = khachHang.Email,
-                Password = khachHang.Password,
-                IDVaiTro = khachHang.IDVaiTro
+                Password = khachHang.Password
             };
             await context.KhachHangs.AddAsync(kh);
             //await context.SaveChangesAsync();
@@ -76,20 +75,20 @@ namespace AppAPI.Services
             return kh;
         }
 
-        //public async Task<List<NhanVien>> RegisterNhanVien(NhanVienViewmodel nhanVien)
-        //{
-        //    var kh = new NhanVien
-        //    {
-        //        ID = Guid.NewGuid(),
-        //        Ten = nhanVien.Name,
-        //        Email = nhanVien.Email,
-        //        PassWord = nhanVien.Password,
-        //        IDVaiTro = nhanVien.IDVaiTro
-        //    };
-        //    context.NhanViens.Add(kh);
-        //    await context.SaveChangesAsync();
-        //    return await context.NhanViens.ToListAsync();
-        //}
+        public async Task<NhanVien> RegisterNhanVien(NhanVienViewModel nhanVien)
+        {
+            var kh = new NhanVien
+            {
+                ID = Guid.NewGuid(),
+                Ten = nhanVien.Name,
+                Email = nhanVien.Email,
+                PassWord = nhanVien.Password,
+                IDVaiTro = nhanVien.IDVaiTro
+            };
+            context.NhanViens.Add(kh);
+            await context.SaveChangesAsync();
+            return kh;
+        }
+
     }
 }
-        

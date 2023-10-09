@@ -35,7 +35,7 @@ namespace AppData.Models
         public DbSet<PhuongThucThanhToan> PhuongThucThanhToans { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Data Source=DESKTOP-UOIH77U\SQLEXPRESS;Initial Catalog=AppBanQuanAoThoiTrangNam;Integrated Security=True");
+            optionsBuilder.UseSqlServer(@"Data Source=DESKTOP-UBD0I1G\SQLEXPRESS;Initial Catalog=DuAnTotNghiep;User ID=phonglhph24259;Password=123");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
