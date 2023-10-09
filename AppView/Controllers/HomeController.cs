@@ -71,6 +71,21 @@ namespace AppView.Controllers
             }
             return View(lstSanpham);
         }
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View();
+        }
+        //[HttpPost]
+        //public IActionResult Login(NhanVienViewModel nhanVien)
+        //{
+        //    StringContent 
+        //    HttpResponseMessage response = _httpClient.PostAsync(_httpClient.BaseAddress + $"QuanLyNguoiDung/DangNhap",); 
+        //}
+        public IActionResult Register()
+        {
+            return View();
+        }
         //https://localhost:5001/
         //https://localhost:7095/api
     }

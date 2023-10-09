@@ -1,4 +1,8 @@
-﻿@model AppView.Models.UserViewModel
+﻿@using AppData.ViewModels;
+@model NhanVienViewModel
+@{
+    Layout = "_Layout";
+}
 
 <div class="row" style="margin-top:10px">
     <div class=col-4></div>
@@ -19,7 +23,7 @@
                     <div class="form-outline mb-4">
                         <label class="form-label" asp-for="Password">Password</label>
                         <input type="password" asp-for="Password" class="form-control" />
-                        <span asp-validation-for="Email" class="text-danger"></span>
+                        <span asp-validation-for="Password" class="text-danger"></span>
                     </div>
 
                     <!-- 2 column grid layout -->
@@ -42,7 +46,7 @@
                     <button type="submit" class="btn btn-primary btn-block mb-4">Login</button>
                     <!-- Register buttons -->
                     <div class="text-center">
-                        <p>Not a member? <a asp-controller="Login" asp-action="Register">Register now!</a></p>
+                        <p>Not a member? <a asp-controller="Home" asp-action="Register">Register now!</a></p>
                     </div>
                 </form>
             </div>
