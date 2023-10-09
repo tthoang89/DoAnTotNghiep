@@ -1,0 +1,46 @@
+﻿@model IEnumerable<AppData.Models.VaiTro>
+
+@{
+    ViewData["Title"] = "Show";
+}
+
+<h1>Danh sách Vai Trò</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>          
+            <th>
+                @Html.DisplayNameFor(model => model.Ten)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TrangThai)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+           
+            <td>
+                @Html.DisplayFor(modelItem => item.Ten)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TrangThai)
+            </td>
+            <td>
+                    <a class="btn btn-secondary" href='@Url.Action("Edit", "VaiTro", new { id = item.ID })'>
+                        <span>EDIT<i class="fa-edit"></i></span>
+                    </a>
+                    <a class="btn btn-primary" href='@Url.Action("Details", "VaiTro", new { id = item.ID })'>
+                        <span>DETAILS<i class="fa-eye"></i></span>
+                    </a>
+                  
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
