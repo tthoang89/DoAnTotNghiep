@@ -22,6 +22,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=VaiTro}/{action=HomePageAdmin}/{id?}");
+    pattern: "{controller=Home}/{action=Index}");
 
 app.Run();

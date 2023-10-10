@@ -1,4 +1,5 @@
-﻿using AppData.ViewModels;
+﻿using AppData.Models;
+using AppData.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Diagnostics;
@@ -63,6 +64,11 @@ namespace AppView.Controllers
         }
         public IActionResult Shop()
         {
+            HttpResponseMessage responseLoaiSP = _httpClient.GetAsync(_httpClient.BaseAddress + "LoaiSP/getAll").Result;
+            if (responseLoaiSP.IsSuccessStatusCode)
+            {
+                ViewData["listLoaiSP"] = JsonConvert.DeserializeObject<List<LoaiSP>>(responseLoaiSP.Content.ReadAsStringAsync().Result);
+            }
             HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/getAll").Result;
             List<SanPhamViewModel> lstSanpham = new List<SanPhamViewModel>();
             if(response.IsSuccessStatusCode)
@@ -71,7 +77,6 @@ namespace AppView.Controllers
             }
             return View(lstSanpham);
         }
-        //https://localhost:5001/
         //https://localhost:7095/api
     }
 }
