@@ -1,12 +1,15 @@
 ﻿using AppAPI.IServices;
+using AppData.IRepositories;
 using AppData.Models;
+using AppData.Repositories;
 using AppData.ViewModels;
 
 namespace AppAPI.Services
 {
     public class NhanVienService : INhanVienService
     {
-        private readonly AssignmentDBContext _dbContext;
+        private readonly 
+        AssignmentDBContext _dbContext;
 
         public NhanVienService()
         {
@@ -24,7 +27,7 @@ namespace AppAPI.Services
             nv.SDT = sdt;
             nv.IDVaiTro = idVaiTro;
             nv.TrangThai = trangthai;
-             _dbContext.NhanViens.Add(nv);
+            _dbContext.NhanViens.Add(nv);
             _dbContext.SaveChanges();
             return true;
             

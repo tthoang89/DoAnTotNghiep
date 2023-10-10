@@ -11,11 +11,9 @@ namespace AppView.Controllers
     public class LoaiSPController : Controller
     {
         private readonly HttpClient _httpClient;
-        private readonly AssignmentDBContext _context;
         public LoaiSPController()
         {
             _httpClient = new HttpClient();
-            _context = new AssignmentDBContext();
         }
         public async Task<IActionResult> Show()
         {
