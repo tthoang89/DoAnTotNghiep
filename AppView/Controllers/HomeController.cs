@@ -11,6 +11,7 @@ namespace AppView.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly HttpClient _httpClient;
+        private readonly string KeyCart = "GioHang";
 
         public HomeController(ILogger<HomeController> logger)
         {
@@ -27,12 +28,6 @@ namespace AppView.Controllers
         {
             return View();
         }
-
-        //[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        //public IActionResult Error()
-        //{
-        //    return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        //}
         public IActionResult AboutUs()
         {
             return View();
@@ -50,18 +45,7 @@ namespace AppView.Controllers
         {
             return View();
         }
-        public IActionResult BlogDetails()
-        {
-            return View();
-        }
-        public IActionResult Contacts()
-        {
-            return View();
-        }
-        public IActionResult Blog()
-        {
-            return View();
-        }
+        
         public IActionResult Shop()
         {
             HttpResponseMessage responseLoaiSP = _httpClient.GetAsync(_httpClient.BaseAddress + "LoaiSP/getAll").Result;
@@ -77,22 +61,74 @@ namespace AppView.Controllers
             }
             return View(lstSanpham);
         }
+        #region Cart
+        [HttpGet]
+        public IActionResult ShoppingCart()
+        {
+            //List<BienTheViewModel>? bienThes = JsonConvert.DeserializeObject<List<BienTheViewModel>>(HttpContext.Session.GetString(KeyCart));
+            return View();
+        }
+        public void AddToCart(Guid IDBienThe)
+        { 
+            HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + $"BienThe/getBienTheById/{IDBienThe}").Result;
+            if (response.IsSuccessStatusCode)
+            {
+                List<BienTheViewModel> bienThes;
+                BienTheViewModel bienThe = JsonConvert.DeserializeObject<BienTheViewModel>(response.Content.ReadAsStringAsync().Result);
+                string? result = HttpContext.Session.GetString(KeyCart);
+                if (string.IsNullOrEmpty(result))
+                {
+                    bienThes = new List<BienTheViewModel>() { bienThe };
+                }
+                else
+                {
+                    bienThes = JsonConvert.DeserializeObject<List<BienTheViewModel>>(result);
+                    bienThes.Add(bienThe);
+                }
+                HttpContext.Session.SetString(KeyCart, JsonConvert.SerializeObject(bienThes));
+            }
+        }
+        #endregion
+
+        #region Login
         [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
-        //[HttpPost]
-        //public IActionResult Login(NhanVienViewModel nhanVien)
-        //{
-        //    StringContent 
-        //    HttpResponseMessage response = _httpClient.PostAsync(_httpClient.BaseAddress + $"QuanLyNguoiDung/DangNhap",); 
-        //}
+        [HttpPost]
+        public IActionResult Login(NhanVienViewModel nhanVien)
+        {
+            //https://localhost:7095/api/QuanLyNguoiDung/DangNhap?email=tam%40gmail.com&password=chungtam2003
+            string email = nhanVien.Email.Replace("@","%40");
+            HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + $"QuanLyNguoiDung/DangNhap?email={email}&password={nhanVien.Password}").Result;
+            if (response.IsSuccessStatusCode)
+            {
+                HttpContext.Session.SetString("UserName",JsonConvert.DeserializeObject<NhanVien>(response.Content.ReadAsStringAsync().Result).Ten);                
+            }
+            return RedirectToAction("Index");
+        }
         public IActionResult Register()
+        {
+            return View();
+        }
+        #endregion
+
+        #region Other
+        public IActionResult BlogDetails()
+        {
+            return View();
+        }
+        public IActionResult Contacts()
+        {
+            return View();
+        }
+        public IActionResult Blog()
         {
             return View();
         }
         //https://localhost:5001/
         //https://localhost:7095/api
+        #endregion
     }
 }

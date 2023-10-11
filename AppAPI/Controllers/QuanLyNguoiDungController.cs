@@ -22,7 +22,7 @@ namespace AppAPI.Controllers
         }
 
         // POST api/<DangNhapController>
-        [HttpPost("DangNhap")]
+        [HttpGet("DangNhap")]
         public async Task<IActionResult> Post(string email, string password)
         {
             var result = await service.Login(email, password);
