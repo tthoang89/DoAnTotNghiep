@@ -16,7 +16,7 @@ namespace AppAPI.Services
         #region ThuocTinh
         public async Task<List<ThuocTinhRequest>> GetAllThuocTinh()
         {
-            var listtt = await (from tt in _context.ThuocTinhs
+            var listtt = await (from tt in _context.ThuocTinhs.AsNoTracking()
                                 select new ThuocTinhRequest()
                                 {
                                     ID = tt.ID,
@@ -45,7 +45,7 @@ namespace AppAPI.Services
                 foreach (var gt in tt.GiaTriRequests)
                 {
                     // Check TT đã có GT này
-                    var gtr = await _context.GiaTris.Where(c => c.IdThuocTinh == exist.ID && c.ID == gt.ID).FirstOrDefaultAsync();
+                    var gtr = await _context.GiaTris.AsNoTracking().Where(c => c.IdThuocTinh == exist.ID && c.ID == gt.ID).FirstOrDefaultAsync();
 
                     if (gtr == null) // Chưa có -> Tạo GT
                     {
@@ -94,7 +94,7 @@ namespace AppAPI.Services
             if (tt != null)
             {
                 // Xóa toàn bộ giá trị 
-                var listgtr = await _context.GiaTris.Where(c => c.IdThuocTinh == tt.ID).ToListAsync();
+                var listgtr = await _context.GiaTris.AsNoTracking().Where(c => c.IdThuocTinh == tt.ID).ToListAsync();
                 listgtr.RemoveRange(0, listgtr.Count);
                 await _context.SaveChangesAsync();
                 // Xóa thuộc tính
@@ -106,7 +106,7 @@ namespace AppAPI.Services
         }
         public async Task<bool> CheckTrungTT(ThuocTinhRequest tt)
         {
-            if (!_context.ThuocTinhs.Any(c => c.Ten == tt.Ten && c.ID != tt.ID))
+            if (!_context.ThuocTinhs.AsNoTracking().Any(c => c.Ten == tt.Ten && c.ID != tt.ID))
             {
                 return true;
             }
@@ -115,14 +115,14 @@ namespace AppAPI.Services
 
         public async Task<ThuocTinhRequest> GetByID(Guid idtt)
         {
-            var result = await (from tt in _context.ThuocTinhs
+            var result = await (from tt in _context.ThuocTinhs.AsNoTracking()
                                 where tt.ID == idtt
                                 select new ThuocTinhRequest()
                                 {
                                     ID = tt.ID,
                                     Ten = tt.Ten,
                                     TrangThai = tt.TrangThai,
-                                    GiaTriRequests = (from gt in _context.GiaTris
+                                    GiaTriRequests = (from gt in _context.GiaTris.AsNoTracking()
                                                       where gt.IdThuocTinh == tt.ID
                                                       select new GiaTriRequest()
                                                       {
@@ -142,38 +142,41 @@ namespace AppAPI.Services
         public async Task<List<SanPhamViewModel>> TimKiemSanPham(SanPhamTimKiemNangCao sptk)
         {
             // Lấy ds Sản phẩm cùng loại sp của chúng
-            var sanphams = (from sp in _context.SanPhams
-                            join bt in _context.BienThes on sp.ID equals bt.IDSanPham
-                            join lsp in _context.LoaiSPs on sp.IDLoaiSP equals lsp.ID
+            var sanphams = (from sp in _context.SanPhams.AsNoTracking()
+                            join bt in _context.BienThes.AsNoTracking() on sp.ID equals bt.IDSanPham
+                            join lsp in _context.LoaiSPs.AsNoTracking() on sp.IDLoaiSP equals lsp.ID
                             select new { sp, bt });
             // Tìm tên
             if (!string.IsNullOrEmpty(sptk.KeyWord))
             {
-                sanphams = sanphams.Where(c => c.sp.Ten.ToLower().Contains(sptk.KeyWord.ToLower()));
+                sanphams = sanphams.AsNoTracking().Where(c => c.sp.Ten.ToLower().Contains(sptk.KeyWord.ToLower()));
             }
             // Loại sp
             if (sptk.IdLoaiSP.Count() > 0)
             {
-                sanphams = sanphams.Where(c => sptk.IdLoaiSP.Contains(c.sp.IDLoaiSP));
+                sanphams = sanphams.AsNoTracking().Where(c => sptk.IdLoaiSP.Contains(c.sp.IDLoaiSP));
             }
             // Khoảng giá
             if (sptk.GiaMax != 0 && sptk.GiaMin != 0)
             {
-                sanphams = sanphams.Where(c => c.bt.GiaBan >= sptk.GiaMin && c.bt.GiaBan <= sptk.GiaMax);
+                sanphams = sanphams.AsNoTracking().Where(c => c.bt.GiaBan >= sptk.GiaMin && c.bt.GiaBan <= sptk.GiaMax);
             }
-            var result = await sanphams.Select(c => new SanPhamViewModel()
+            var result = await sanphams.AsNoTracking().Select(c => new SanPhamViewModel()
             {
                 ID = c.sp.ID,
                 Ten = c.sp.Ten,
-                MoTa = c.sp.MoTa,
-                TrangThai = c.sp.TrangThai
+                TrangThai = c.sp.TrangThai,
+                LoaiSP = _context.LoaiSPs.FirstOrDefault(s => s.ID == c.sp.IDLoaiSP).Ten,
+                IdBT = _context.BienThes.FirstOrDefault(s => s.IDSanPham == c.sp.ID && s.TrangThai == 3).ID,
+                ListImage = (from img in _context.Anhs.AsNoTracking() join btimg in _context.AnhBienThes on img.ID equals btimg.IdAnh where btimg.IdBienThe == c.bt.ID select img.Ten).ToList(),
+
             }).ToListAsync();
             return result;
         }
         //CHECK TRÙNG TÊN SP
         public bool CheckTrungTenSP(SanPhamRequest lsp)
         {
-            if (!_context.SanPhams.Any(c => c.Ten == lsp.Ten && c.ID != lsp.ID))
+            if (!_context.SanPhams.AsNoTracking().Any(c => c.Ten == lsp.Ten && c.ID != lsp.ID))
             {
                 return true;
             }
@@ -182,28 +185,26 @@ namespace AppAPI.Services
         // LẤY DS SẢN PHẨM
         public async Task<List<SanPhamViewModel>> GetAllSanPham()
         {
-            var sanphams = await (from sp in _context.SanPhams
-                                  join lsp in _context.LoaiSPs on sp.IDLoaiSP equals lsp.ID
-                                  join bt in _context.BienThes on sp.ID equals bt.IDSanPham
-                                  where bt.TrangThai == 1 // Sản phẩm hoạt động
+            var sanphams = await (from sp in _context.SanPhams.AsNoTracking()
+                                  join lsp in _context.LoaiSPs.AsNoTracking() on sp.IDLoaiSP equals lsp.ID
+                                  join bt in _context.BienThes.AsNoTracking() on sp.ID equals bt.IDSanPham
+                                  where sp.TrangThai == 1 && bt.IsDefault == true// Sản phẩm hoạt động
                                   select new SanPhamViewModel()
                                   {
                                       ID = sp.ID,
                                       Ten = sp.Ten,
-                                      MoTa = sp.MoTa,
                                       TrangThai = sp.TrangThai,
                                       LoaiSP = lsp.Ten,
+                                      IdBT = bt.ID,
+                                      ListImage = (from img in _context.Anhs.AsNoTracking()
+                                                   join abt in _context.AnhBienThes.AsNoTracking()
+                                                   on img.ID equals abt.IdAnh
+                                                   where abt.IdBienThe == bt.ID
+                                                   select img.Ten).ToList(),
                                       GiaGoc = bt.GiaBan,
-                                      ThuocTinhs = (from tt in _context.ThuocTinhs
-                                                    join ttsp in _context.ThuocTinhSanPhams
-                                                    on tt.ID equals ttsp.IDThuocTinh
-                                                    where ttsp.IDSanPham == sp.ID
-                                                    select new ThuocTinh()
-                                                    {
-                                                        ID = tt.ID,
-                                                        Ten = tt.Ten
-                                                    }).ToList(),
-
+                                      GiaBan = bt.IDKhuyenMai == null ? bt.GiaBan : (from km in _context.KhuyenMais.AsNoTracking()
+                                                                                     where km.ID == bt.IDKhuyenMai
+                                                                                     select bt.GiaBan * (100 - km.GiaTri) / 100).FirstOrDefault()
                                   }).ToListAsync();
             return sanphams;
         }
@@ -211,71 +212,102 @@ namespace AppAPI.Services
         public async Task<List<SanPhamViewModel>> GetSanPhamByIdDanhMuc(Guid idloaisp)
         {
             var lsp = await _context.LoaiSPs.FindAsync(idloaisp);
-            if (lsp.IDLoaiSPCha == null)
+            if (lsp.IDLoaiSPCha == null) // Danh mục cha -> Lấy sp của toàn bộ danh mục con
             {
-                var lspc = await _context.LoaiSPs.Where(c => c.IDLoaiSPCha == lsp.ID).ToListAsync();
-                var result = await (from sp in _context.SanPhams
-                                    join ct in lspc on sp.IDLoaiSP equals ct.ID
-                                    join bt in _context.BienThes on sp.ID equals bt.IDSanPham
+                // Loại sp con
+                var lspc = await _context.LoaiSPs.AsNoTracking().Where(c => c.IDLoaiSPCha == lsp.ID).Select(c => c.ID).ToListAsync();
+
+                var result = await (from sp in _context.SanPhams.AsNoTracking()
+                                    join cate in _context.LoaiSPs.AsNoTracking() on sp.IDLoaiSP equals cate.ID
+                                    join bt in _context.BienThes.AsNoTracking() on sp.ID equals bt.IDSanPham
+                                    where sp.TrangThai == 1 && bt.IsDefault == true
+                                           && lspc.Contains(sp.IDLoaiSP)
                                     select new SanPhamViewModel()
                                     {
                                         ID = sp.ID,
                                         Ten = sp.Ten,
                                         TrangThai = sp.TrangThai,
-                                        LoaiSP = ct.Ten,
-                                        MoTa = sp.MoTa
+                                        LoaiSP = cate.Ten,
+                                        IdBT = bt.ID,
+                                        ListImage = (from img in _context.Anhs.AsNoTracking()
+                                                     join abt in _context.AnhBienThes.AsNoTracking() on img.ID equals abt.IdAnh
+                                                     where abt.IdBienThe == bt.ID
+                                                     select img.Ten).ToList(),
+                                        GiaGoc = bt.GiaBan,
+                                        GiaBan = bt.IDKhuyenMai == null ? bt.GiaBan : (from km in _context.KhuyenMais.AsNoTracking()
+                                                                                       where km.ID == bt.IDKhuyenMai
+                                                                                       select bt.GiaBan * (100 - km.GiaTri) / 100).FirstOrDefault()
                                     }).ToListAsync();
                 return result;
             }
             else
             {
-                var result = await (from sp in _context.SanPhams
-                                    join ct in _context.LoaiSPs on sp.IDLoaiSP equals ct.ID
-                                    join bt in _context.BienThes on sp.ID equals bt.IDSanPham
-                                    where ct.ID == idloaisp
+                var result = await (from sp in _context.SanPhams.AsNoTracking()
+                                    join loaisp in _context.LoaiSPs.AsNoTracking() on sp.IDLoaiSP equals lsp.ID
+                                    join bt in _context.BienThes.AsNoTracking() on sp.ID equals bt.IDSanPham
+                                    where sp.TrangThai == 1 && bt.IsDefault == true// Sản phẩm hoạt động
+                                    && loaisp.ID == idloaisp
                                     select new SanPhamViewModel()
                                     {
                                         ID = sp.ID,
                                         Ten = sp.Ten,
                                         TrangThai = sp.TrangThai,
-                                        LoaiSP = ct.Ten,
-                                        MoTa = sp.MoTa
+                                        LoaiSP = lsp.Ten,
+                                        IdBT = bt.ID,
+                                        ListImage = (from img in _context.Anhs.AsNoTracking()
+                                                     join abt in _context.AnhBienThes.AsNoTracking()
+                                                     on img.ID equals abt.IdAnh
+                                                     where abt.IdBienThe == bt.ID
+                                                     select img.Ten).ToList(),
+                                        GiaGoc = bt.GiaBan,
+                                        GiaBan = bt.IDKhuyenMai == null ? bt.GiaBan : (from km in _context.KhuyenMais.AsNoTracking()
+                                                                                       where km.ID == bt.IDKhuyenMai
+                                                                                       select bt.GiaBan * (100 - km.GiaTri) / 100).FirstOrDefault()
                                     }).ToListAsync();
                 return result;
             }
         }
         // Hiển thị Sản phẩm và Biến thể qua IdSP
-        public async Task<SanPhamViewModel> GetSanPhamById(Guid idsp)
+        public async Task<SanPhamDetail> GetSanPhamById(Guid idsp)
         {
-            var sanpham = await (from sp in _context.SanPhams
-                                 join lsp in _context.LoaiSPs on sp.IDLoaiSP equals lsp.ID
+            var sanpham = await (from sp in _context.SanPhams.AsNoTracking()
+                                 join lsp in _context.LoaiSPs.AsNoTracking() on sp.IDLoaiSP equals lsp.ID
                                  where sp.ID == idsp
-                                 select new SanPhamViewModel()
+                                 select new SanPhamDetail()
                                  {
                                      ID = sp.ID,
                                      Ten = sp.Ten,
                                      MoTa = sp.MoTa,
                                      TrangThai = sp.TrangThai,
                                      LoaiSP = lsp.Ten,
-                                     ThuocTinhs = (from tt in _context.ThuocTinhs
-                                                   join ttsp in _context.ThuocTinhSanPhams
+                                     ThuocTinhs = (from tt in _context.ThuocTinhs.AsNoTracking()
+                                                   join ttsp in _context.ThuocTinhSanPhams.AsNoTracking()
                                                    on tt.ID equals ttsp.IDThuocTinh
                                                    where ttsp.IDSanPham == sp.ID
-                                                   select new ThuocTinh()
+                                                   select new ThuocTinhRequest()
                                                    {
                                                        ID = tt.ID,
-                                                       Ten = tt.Ten
+                                                       Ten = tt.Ten,
+                                                       GiaTriRequests = (from gt in _context.GiaTris.AsNoTracking()
+                                                                         where gt.IdThuocTinh == tt.ID
+                                                                         select new GiaTriRequest()
+                                                                         {
+                                                                             ID = gt.ID,
+                                                                             Ten = gt.Ten
+                                                                         }).ToList(),
                                                    }).ToList(),
-                                     BienThes = (from bt in _context.BienThes
+                                     BienThes = (from bt in _context.BienThes.AsNoTracking()
                                                  where bt.IDSanPham == sp.ID
                                                  select new BienTheViewModel()
                                                  {
                                                      ID = bt.ID,
-                                                     SoLuong = bt.SoLuong,
                                                      Ten = sp.Ten,
-                                                     GiaBan = bt.GiaBan,
+                                                     SoLuong = bt.SoLuong,
+                                                     GiaGoc = bt.GiaBan,
+                                                     GiaBan = bt.IDKhuyenMai == null ? bt.GiaBan : (from km in _context.KhuyenMais where bt.IDKhuyenMai == km.ID select ((100 - km.GiaTri) / 100) * bt.GiaBan).FirstOrDefault(),
                                                      TrangThai = bt.TrangThai,
-                                                     GiaTris = (from gt in _context.GiaTris
+                                                     Anh = (from img in _context.Anhs.AsNoTracking() join btimg in _context.AnhBienThes on img.ID equals btimg.IdAnh where btimg.IdBienThe == bt.ID select img.Ten).ToList(),
+                                                     GiaTris = (from gt in _context.GiaTris.AsNoTracking()
                                                                 join ctbt in _context.ChiTietBienThes on gt.ID equals ctbt.IDGiaTri
                                                                 where ctbt.IDBienThe == bt.ID
                                                                 select new GiaTriRequest()
@@ -305,7 +337,7 @@ namespace AppAPI.Services
                 foreach (var id in request.ListIdThuocTinh)
                 {
                     // Check SP đã có TT này chưa
-                    var ttspExist = await _context.ThuocTinhSanPhams.FirstOrDefaultAsync(c => c.IDSanPham == sanpham.ID && c.IDThuocTinh == id);
+                    var ttspExist = await _context.ThuocTinhSanPhams.AsNoTracking().FirstOrDefaultAsync(c => c.IDSanPham == sanpham.ID && c.IDThuocTinh == id);
                     if (ttspExist == null) // Chưa có -> tạo SP-TT
                     {
                         ThuocTinhSanPham ttsp = new ThuocTinhSanPham()
@@ -326,8 +358,8 @@ namespace AppAPI.Services
                     }
                 }
                 // Xóa TT-SP mà sản phẩm không còn nữa
-                var idTTSP = await _context.ThuocTinhSanPhams.OrderByDescending(c => c.NgayLuu).Take(request.ListIdThuocTinh.Count).Select(c => c.ID).ToListAsync();
-                var lstdelete = await _context.ThuocTinhSanPhams.Where(c => !idTTSP.Contains(c.ID) && c.IDSanPham == sanpham.ID).ToListAsync();
+                var idTTSPSD = await _context.ThuocTinhSanPhams.AsNoTracking().OrderByDescending(c => c.NgayLuu).Take(request.ListIdThuocTinh.Count).Select(c => c.ID).ToListAsync();
+                var lstdelete = await _context.ThuocTinhSanPhams.AsNoTracking().Where(c => !idTTSPSD.Contains(c.ID) && c.IDSanPham == sanpham.ID).ToListAsync();
                 _context.ThuocTinhSanPhams.RemoveRange(lstdelete);
                 await _context.SaveChangesAsync();
                 return sanpham;
@@ -367,15 +399,15 @@ namespace AppAPI.Services
             {
                 var sp = await _context.SanPhams.FindAsync(id);
                 // Xóa TT-SP
-                var listTTSP = await _context.ThuocTinhSanPhams.Where(c => c.IDSanPham == id).ToListAsync();
+                var listTTSP = await _context.ThuocTinhSanPhams.AsNoTracking().Where(c => c.IDSanPham == id).ToListAsync();
                 _context.ThuocTinhSanPhams.RemoveRange(listTTSP);
                 await _context.SaveChangesAsync();
                 // Xóa Biến thể : Xóa CTBT, Ảnh -> Xóa BT
-                var listBT = await _context.BienThes.Where(c => c.IDSanPham == id).ToListAsync();
+                var listBT = await _context.BienThes.AsNoTracking().Where(c => c.IDSanPham == id).ToListAsync();
                 foreach (var bt in listBT)
                 {
                     //Xóa CTBT
-                    var listCTBT = await _context.ChiTietBienThes.Where(c => c.IDBienThe == bt.ID).ToListAsync();
+                    var listCTBT = await _context.ChiTietBienThes.AsNoTracking().Where(c => c.IDBienThe == bt.ID).ToListAsync();
                     _context.ChiTietBienThes.RemoveRange(listCTBT);
                     await _context.SaveChangesAsync();
                     //Xóa Ảnh

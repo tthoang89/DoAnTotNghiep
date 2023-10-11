@@ -4,6 +4,7 @@ using AppData.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppData.Migrations
 {
     [DbContext(typeof(AssignmentDBContext))]
-    partial class AssignmentDBContextModelSnapshot : ModelSnapshot
+    [Migration("20231011065855_AddBTisDefault")]
+    partial class AddBTisDefault
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -73,7 +75,7 @@ namespace AppData.Migrations
                     b.Property<int>("GiaBan")
                         .HasColumnType("int");
 
-                    b.Property<Guid?>("IDKhuyenMai")
+                    b.Property<Guid>("IDKhuyenMai")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("IDSanPham")
@@ -686,7 +688,9 @@ namespace AppData.Migrations
                 {
                     b.HasOne("AppData.Models.KhuyenMai", "KhuyenMai")
                         .WithMany("BienThes")
-                        .HasForeignKey("IDKhuyenMai");
+                        .HasForeignKey("IDKhuyenMai")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("AppData.Models.SanPham", "SanPham")
                         .WithMany("BienThes")

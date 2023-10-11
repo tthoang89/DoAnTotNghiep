@@ -26,4 +26,8 @@
     <ProjectReference Include="..\AppData\AppData.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\img\variants\" />
+  </ItemGroup>
+
 </Project>

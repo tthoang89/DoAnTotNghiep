@@ -37,6 +37,7 @@ namespace AppAPI.Controllers
             }
             return Ok();
         }
+        
         [HttpPost("getBTByIdValues")]
         public async Task<IActionResult> GetByValues([FromBody] BienTheTruyVan requests)
         {
@@ -44,6 +45,12 @@ namespace AppAPI.Controllers
             
             var bt = await _bienTheService.GetBTByListGiaTri(requests);
             return Ok(bt);
+        }
+        [HttpPost("setBTDefault/{idbt}")]
+        public async Task<IActionResult> SetBTDefault(Guid idbt)
+        {
+            _bienTheService.SetBienTheDefault(idbt);
+            return Ok();
         }
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteBienThe(Guid id)

@@ -12,8 +12,10 @@ namespace AppData.ViewModels.SanPham
         public int SoLuong { get; set; }
         public int GiaBan { get; set; }
         public int TrangThai { get; set; }
-        public string Anh { get; set; }
         public Guid IDSanPham { get; set; }
+        public Guid? IDKhuyenMai { get; set; }
         public List<Guid> ListIdGiaTri { get; set; }
+        public List<string> LstImagePath { get; set; }
+
     }
 }

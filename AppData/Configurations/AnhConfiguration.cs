@@ -16,7 +16,6 @@ namespace AppData.Configurations
             builder.ToTable("Anh");
             builder.HasKey(x => x.ID);
             builder.Property(x => x.TrangThai).HasColumnType("int").IsRequired();
-            builder.HasOne(x => x.ChiTietBienThe).WithMany(x => x.Anhs).HasForeignKey(x => x.IDChiTietBienThe);
         }
     }
 }

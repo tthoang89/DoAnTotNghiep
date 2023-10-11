@@ -32,7 +32,7 @@ namespace AppAPI.Controllers
             if(sanPham == null) return NotFound();
             return Ok(sanPham);
         }
-        [HttpGet("getById/{idLsp}")]
+        [HttpGet("getByIdLsp/{idLsp}")]
         public async Task<IActionResult> GetSanPhamByIdDanhMuc(Guid idLsp)
         {
             var sanPham = await _sanPhamServices.GetSanPhamByIdDanhMuc(idLsp);

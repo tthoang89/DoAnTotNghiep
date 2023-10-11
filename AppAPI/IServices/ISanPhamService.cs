@@ -9,7 +9,7 @@ namespace AppAPI.IServices
         #region SanPham
         Task<List<SanPhamViewModel>> GetAllSanPham();
         Task<List<SanPhamViewModel>> TimKiemSanPham(SanPhamTimKiemNangCao sp);
-        Task<SanPhamViewModel> GetSanPhamById(Guid id);
+        Task<SanPhamDetail> GetSanPhamById(Guid id);
         Task<List<SanPhamViewModel>> GetSanPhamByIdDanhMuc(Guid idloaisp);
         Task<SanPham> SaveSanPham(SanPhamRequest request);
         Task<bool> DeleteSanPham(Guid id);

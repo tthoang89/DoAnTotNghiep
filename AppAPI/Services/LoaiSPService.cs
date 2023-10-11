@@ -26,7 +26,7 @@ namespace AppAPI.Services
 
         public async Task<List<LoaiSP>> GetAllLoaiSP()
         {
-            return await _context.LoaiSPs.ToListAsync();
+            return await _context.LoaiSPs.AsNoTracking().ToListAsync();
         }
 
         public async Task<LoaiSP> GetLoaiSPById(Guid id)

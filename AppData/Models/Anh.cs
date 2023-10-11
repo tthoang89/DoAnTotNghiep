@@ -10,8 +10,7 @@ namespace AppData.Models
     {
         public Guid ID { get; set; }
         public string Ten { get; set; }
-        public Guid IDChiTietBienThe { get; set; }
         public int TrangThai { get; set; }
-        public virtual ChiTietBienThe ChiTietBienThe { get; set; }
+        public virtual IEnumerable<AnhBienThe> AnhBienThes { get; set; }
     }
 }

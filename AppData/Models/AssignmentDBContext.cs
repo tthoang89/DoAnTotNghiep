@@ -31,11 +31,12 @@ namespace AppData.Models
         public DbSet<VaiTro> VaiTros { get; set; }
         public DbSet<Voucher> Vouchers { get; set; }
         public DbSet<Anh> Anhs { get; set; }
+        public DbSet<AnhBienThe> AnhBienThes { get; set; }
         public DbSet<ChiTietPTTT> ChiTietPTTTs { get; set; }
         public DbSet<PhuongThucThanhToan> PhuongThucThanhToans { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Data Source=DESKTOP-UBD0I1G\SQLEXPRESS;Initial Catalog=DuAnTotNghiep;User ID=phonglhph24259;Password=123");
+            optionsBuilder.UseSqlServer(@"Data Source=LAPTOP-G189FU38\SQLEXPRESS;Initial Catalog=AppBanQuanAoThoiTrangNam;Integrated Security=True");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

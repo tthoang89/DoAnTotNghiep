@@ -13,12 +13,16 @@ namespace AppAPI.IServices
         Task<BienTheViewModel> GetBTByListGiaTri(BienTheTruyVan bttv);
         Task<BienThe> SaveBienThe(BienTheRequest bt);
         Task<bool> DeleteBienThe(Guid id);
-        #endregion
+        void SetBienTheDefault(Guid idbt);
 
+        #endregion
         #region Anh
-        //Task<List<Anh>> GetAnhByIdBienThe(Guid idBienThe);
-        //Task<string> SaveFile(IFormFile file);
+        Task<string> SaveFile(string imagePath); // Lưu file ảnh vào wwwroot trả về tên ảnh
+        void SaveAnh(string tenAnh, Guid idbt); //Lưu ảnh
         Task<bool> DeleteAnh(Guid id);
+        List<string> GetListImg(List<string> imagePath); // Trả về list đường dẫn ảnh ko trùng lặp
+        bool CheckImageExist(string imagePath);
+
         #endregion
     }
 }
