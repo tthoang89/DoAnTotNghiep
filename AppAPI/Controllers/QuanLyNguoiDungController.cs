@@ -4,6 +4,7 @@ using AppData.Models;
 using AppData.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -21,18 +22,20 @@ namespace AppAPI.Controllers
         }
 
         // POST api/<DangNhapController>
-        [HttpPost("DangNhap")]
+        [HttpGet("DangNhap")]
         public async Task<IActionResult> Post(string email, string password)
         {
             var result = await service.Login(email, password);
-            if (result)
+            if (result != null)
             {
-                return Ok("Dang nhap thanh cong");
+                return Ok(result);
             }
             else
             {
-                return BadRequest("Dang nhap that bai");
+                ModelState.AddModelError(string.Empty, "Dang nhap that bai, ban nhap sai email hoac password");
+                //return BadRequest("Dang nhap that bai");
             }
+            return BadRequest("dang nhap that bai");
         }
 
         // POST api/<DangKyController>

@@ -16,6 +16,6 @@
         public virtual IEnumerable<AnhBienThe> BienTheAnhs { get; set; }
         public virtual IEnumerable<DanhGia> DanhGias { get; set; }
         public virtual SanPham SanPham { get; set; }
-        public virtual KhuyenMai KhuyenMai { get; set; }
+        public virtual KhuyenMai? KhuyenMai { get; set; }
     }
 }

@@ -14,6 +14,6 @@ namespace AppData.ViewModels.SanPham
         public Guid ID { get; set; }
         public string Ten { get; set; }
         public int TrangThai { get; set; }
-        public List<GiaTriRequest> GiaTriRequests { get; set; }
+        public List<GiaTriRequest>? GiaTriRequests { get; set; }
     }
 }

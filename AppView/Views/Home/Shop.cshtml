@@ -1,10 +1,11 @@
-﻿@using AppData.Models
-@model IEnumerable<SanPham>
+﻿@using AppData.ViewModels
+@using AppData.Models;
+@model IEnumerable<SanPhamViewModel>
 
 @{
     ViewData["Title"] = "Privacy Policy";
-    var listbt = ViewData["listBienThe"] as List<BienThe>;
     var listLoaiSP = ViewData["listLoaiSP"] as List<LoaiSP>;
+    Layout = "_Layout";
 }
 <!-- Breadcrumb Section Begin -->
 <section class="breadcrumb-option">
@@ -45,21 +46,24 @@
                                 <div class="card-heading">
                                     <a data-toggle="collapse" data-target="#collapseOne">Categories</a>
                                 </div>
-                                <div id="collapseOne" class="collapse show" data-parent="#accordionExample">
-                                    <div class="card-body">
-                                        <div class="shop__sidebar__categories">
-                                            <div class="shop__sidebar__tags">
-                                                @foreach (var item in listLoaiSP)
-                                                {
+                                @if(listLoaiSP != null)
+                                {
+                                    <div id="collapseOne" class="collapse show" data-parent="#accordionExample">
+                                        <div class="card-body">
+                                            <div class="shop__sidebar__categories">
+                                                <div class="shop__sidebar__tags">
+                                                    @foreach (var item in listLoaiSP)
+                                                    {
 
-                                                    <a href="/Home/LocLoaiSP/@item.ID">@item.Ten</a>
+                                                        <a href="/Home/LocLoaiSP/@item.ID">@item.Ten</a>
 
-                                                }
+                                                    }
+                                                </div>
+
                                             </div>
-
                                         </div>
                                     </div>
-                                </div>
+                                }  
                             </div>
                             <div class="card">
                                 <div class="card-heading">
@@ -194,24 +198,23 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    @foreach (var item in Model)
-                    {
-                        var bthe = listbt.Where(c => c.IDSanPham.Equals(item.ID)).FirstOrDefault();
-                        <div class="col-lg-4 col-md-6 col-sm-6">
-                            <div class="product__item">
-                                <div class="product__item__pic set-bg">
-                                    @*<img src="~/img/@bthe.Anh">*@
-                                </div>
-                                <div class="product__item__text">
-                                    <h6>@item.Ten</h6>
-                                    <a href="/GioHang/AddToCart/@bthe.ID" class="add-cart" style="color:red">+ ADD TO CART</a>
-                                    <h5 style="color:red">@bthe.GiaBan.ToString("n0") VND</h5>
+                    <div class="row">
+                        @foreach (var item in Model)
+                        {
+                            <div class="col-lg-4 col-md-6 col-sm-6">
+                                <div class="product__item">
+                                    <div class="product__item__pic set-bg">
+                                    <img src="/img/product/product-2.jpg">
+                                    </div>
+                                    <div class="product__item__text">
+                                        <h6>@item.Ten</h6>
+                                    <a href="/Home/AddToCart/@item.ID" class="add-cart" style="color:red">+ ADD TO CART</a>
+                                        <h5 style="color:red">@item.GiaBan.ToString("n0") VND</h5>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    }
-                </div>
+                        }
+                    </div>
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="product__pagination">

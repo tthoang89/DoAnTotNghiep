@@ -2,6 +2,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(cfg =>
+{
+    cfg.IdleTimeout = new TimeSpan(1,0,0);
+});
 
 var app = builder.Build();
 
@@ -20,8 +25,10 @@ app.UseRouting();
 
 app.UseAuthorization();
 
+app.UseSession();
+
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=VaiTro}/{action=HomePageAdmin}/{id?}");
+    pattern: "{controller=Home}/{action=Index}");
 
 app.Run();

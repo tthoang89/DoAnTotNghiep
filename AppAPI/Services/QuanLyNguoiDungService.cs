@@ -39,19 +39,19 @@ namespace AppAPI.Services
             return false;
         }
 
-        public async Task<bool> Login(string email, string password)
+        public async Task<object> Login(string email, string password)
         {
             var nv = await context.NhanViens.FirstOrDefaultAsync(a => a.Email == email && a.PassWord == password);
             if (nv != null)
             {
-                return true;
+                return nv;
             }
             var kh = await context.KhachHangs.FirstOrDefaultAsync(x => x.Email == email && x.Password == password);
             if (kh != null)
             {
-                return true;
+                return kh;
             }
-            return false;
+            return null;
         }
 
         public async Task<KhachHang> RegisterKhachHang(KhachHangViewModel khachHang)
