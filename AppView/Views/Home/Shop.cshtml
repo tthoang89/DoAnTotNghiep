@@ -208,8 +208,8 @@
                                     </div>
                                     <div class="product__item__text">
                                         <h6>@item.Ten</h6>
-                                    <a href="/Home/AddToCart/@item.ID" class="add-cart" style="color:red">+ ADD TO CART</a>
-                                        @*<h5 style="color:red">@item.GiaBan.ToString("n0") VND</h5>*@
+                                    <a asp-action="AddToCart" asp-controller="Home" asp-route-id="@item.IdBT" class="add-cart" style="color:red">+ ADD TO CART</a>
+                                        <h5 style="color:red">@item.GiaBan.ToString("n0") VND</h5>
                                     </div>
                                 </div>
                             </div>

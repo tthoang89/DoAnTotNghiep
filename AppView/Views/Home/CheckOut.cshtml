@@ -1,8 +1,9 @@
 ﻿@model AppData.ViewModels.HoaDonViewModel
 @using AppData.Models;
 @{
-	long tongtien = (long)ViewData["TongTien"];
+	string tongtien = TempData["TongTien"] as string;
 	long tienship = 0;
+	Layout = "_Layout";
 }
 <!-- Breadcrumb Section Begin -->
 <section class="breadcrumb-option">
@@ -26,7 +27,7 @@
 <section class="checkout spad">
 	<div class="container">
 		<div class="checkout__form">
-			<form asp-action="TaoHoaDon" asp-controller="ThanhToan">
+			<form asp-action="Pay" asp-controller="Home">
 				<div class="row">
 					<div class="col-lg-8 col-md-6">
 						<h6 class="coupon__code">
@@ -119,9 +120,9 @@
 							<li>04. Cluten free mini dozen <span>$ 110.0</span></li>
 							</ul>*@
 							<ul class="checkout__order__products">
-								<li>Subtotal <span>@tongtien.ToString("n0") VNĐ</span></li>
-								<li>Fee <span id="fee">@tienship.ToString("n0") VNĐ</span></li>
-								<li>Total <span id="total">0 VNĐ</span></li>
+@*								<li>Subtotal <span>@tongtien.ToString("n0") VNĐ</span></li>
+*@								<li>Fee <span id="fee">@tienship.ToString("n0") VNĐ</span></li>
+								<li>Total <span id="total">@tongtien VNĐ</span></li>
 							</ul>
 							@*<div class="checkout__input__checkbox">
 							<label for="acc-or">
@@ -245,7 +246,7 @@
 					success: function(data) {
 						document.getElementById("fee").innerHTML = data.data.total + " VNĐ";
                         document.getElementById("tienship").value = data.data.total;
-						document.getElementById("total").innerHTML = data.data.total + @tongtien + " VNĐ";
+						//document.getElementById("total").innerHTML = data.data.total + tongtien + " VNĐ";
                         document.getElementById("diachi").value = strProvince + ", " + strDistrict + ", " + strProvince;
 					},
 					error: function(reponse) {

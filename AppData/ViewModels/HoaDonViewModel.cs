@@ -1,4 +1,5 @@
-﻿using AppData.Models;
+﻿using AppData.Migrations;
+using AppData.Models;
 
 namespace AppData.ViewModels
 {
@@ -11,6 +12,7 @@ namespace AppData.ViewModels
         public string PhuongThucThanhToan { get; set; }
         public string DiaChi { get; set; }
         public int TienShip { get; set; }
+        public int TongTien { get; set; }
         public Guid? IDNhanVien { get; set; }
         public string? TenVoucher { get; set; }
         //tích điểm, dùng điểm

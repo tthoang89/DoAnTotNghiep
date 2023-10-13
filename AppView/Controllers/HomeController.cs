@@ -36,15 +36,6 @@ namespace AppView.Controllers
         {
             return View();
         }
-        //public IActionResult CheckOut(long tongtien)
-        //{
-        //    ViewData["TongTien"] = tongtien;
-        //    return View();
-        //}
-        public IActionResult CheckOut()
-        {
-            return View();
-        }
         
         public IActionResult Shop()
         {
@@ -65,12 +56,23 @@ namespace AppView.Controllers
         [HttpGet]
         public IActionResult ShoppingCart()
         {
-            //List<BienTheViewModel>? bienThes = JsonConvert.DeserializeObject<List<BienTheViewModel>>(HttpContext.Session.GetString(KeyCart));
-            return View();
+            List<BienTheViewModel> bienThes = new List<BienTheViewModel>();
+            if (HttpContext.Session.GetString(KeyCart) != null)
+            {
+				bienThes = JsonConvert.DeserializeObject<List<BienTheViewModel>>(HttpContext.Session.GetString(KeyCart));
+			}      
+            long tongtien = 0;
+            foreach(var x in bienThes)
+            {
+                tongtien += x.GiaBan;
+            }
+            TempData["TongTien"] = tongtien.ToString("n0");
+            TempData["ListBienThe"] = bienThes;
+            return View(bienThes);
         }
-        public void AddToCart(Guid IDBienThe)
+        public void AddToCart(Guid id)
         { 
-            HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + $"BienThe/getBienTheById/{IDBienThe}").Result;
+            HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + $"BienThe/getBienTheById/{id}").Result;
             if (response.IsSuccessStatusCode)
             {
                 List<BienTheViewModel> bienThes;
@@ -78,12 +80,22 @@ namespace AppView.Controllers
                 string? result = HttpContext.Session.GetString(KeyCart);
                 if (string.IsNullOrEmpty(result))
                 {
+                    bienThe.SoLuong = 1;
                     bienThes = new List<BienTheViewModel>() { bienThe };
                 }
                 else
                 {
                     bienThes = JsonConvert.DeserializeObject<List<BienTheViewModel>>(result);
-                    bienThes.Add(bienThe);
+                    if (bienThes.Contains(bienThe))
+                    {
+                        //Sua 
+                        bienThe.SoLuong++;
+                    }
+                    else
+                    {
+                        bienThe.SoLuong = 1;
+                        bienThes.Add(bienThe);
+                    }                    
                 }
                 HttpContext.Session.SetString(KeyCart, JsonConvert.SerializeObject(bienThes));
             }
@@ -112,6 +124,43 @@ namespace AppView.Controllers
         {
             return View();
         }
+        public IActionResult Profile()
+        {
+            return View();
+        }
+        #endregion
+
+        #region CheckOut
+        [HttpGet]
+        public IActionResult CheckOut()
+        {
+			return View();
+        }
+        [HttpPost]
+        public IActionResult Pay(HoaDonViewModel hoaDon)
+        {
+            List<ChiTietHoaDonViewModel> lstChiTietHoaDon = new List<ChiTietHoaDonViewModel>();
+            foreach(var item in TempData["ListBienThe"] as List<BienTheViewModel>)
+            {
+                ChiTietHoaDonViewModel chiTietHoaDon = new ChiTietHoaDonViewModel();
+                chiTietHoaDon.IDBienThe = item.ID;
+                chiTietHoaDon.SoLuong = item.SoLuong;
+                chiTietHoaDon.DonGia = item.GiaBan;
+                lstChiTietHoaDon.Add(chiTietHoaDon);
+            }
+            hoaDon.ChiTietHoaDons = lstChiTietHoaDon;
+            hoaDon.PhuongThucThanhToan = "Mac dinh";
+            hoaDon.DiaChi = "Mac dinh";
+            hoaDon.TienShip = 0;
+            HttpResponseMessage response = _httpClient.PostAsJsonAsync("HoaDon/CreateHoaDon", hoaDon).Result;
+            if (response.IsSuccessStatusCode) return RedirectToAction("Index");
+            else return BadRequest();
+        }
+        //public IActionResult CheckOut(long tongtien)
+        //{
+        //    ViewData["TongTien"] = tongtien;
+        //    return View();
+        //}
         #endregion
 
         #region Other

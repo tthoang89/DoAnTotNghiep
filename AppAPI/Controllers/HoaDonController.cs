@@ -40,9 +40,9 @@ namespace AppAPI.Controllers
             return _iHoaDonService.LichSuGiaoDich(idNguoidung);
         }
         [HttpPost]
-        public bool CreateHoaDon(HoaDonViewModel hoaDon,int tongtien)
+        public bool CreateHoaDon(HoaDonViewModel hoaDon)
         {
-            return _iHoaDonService.CreateHoaDon(hoaDon.ChiTietHoaDons, hoaDon,tongtien);
+            return _iHoaDonService.CreateHoaDon(hoaDon.ChiTietHoaDons, hoaDon);
         }
         [HttpPut]
         public bool UpdateTrangThai(Guid idhoadon, int trangthai,Guid idnhanvien)

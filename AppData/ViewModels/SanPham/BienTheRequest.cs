@@ -15,7 +15,7 @@ namespace AppData.ViewModels.SanPham
         public Guid IDSanPham { get; set; }
         public Guid? IDKhuyenMai { get; set; }
         public List<Guid> ListIdGiaTri { get; set; }
-        public List<string> LstImagePath { get; set; }
+        public List<string>? LstImagePath { get; set; }
 
     }
 }

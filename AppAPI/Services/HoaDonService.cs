@@ -61,7 +61,7 @@ namespace AppAPI.Services
         }
 
         //Thanh toan online
-        public bool CreateHoaDon(List<ChiTietHoaDonViewModel> chiTietHoaDons, HoaDonViewModel hoaDon,int tongtien)
+        public bool CreateHoaDon(List<ChiTietHoaDonViewModel> chiTietHoaDons, HoaDonViewModel hoaDon)
         {
             try
             {
@@ -112,7 +112,7 @@ namespace AppAPI.Services
                             KhachHang khachHang = reposKhachHang.GetAll().FirstOrDefault(p=>p.IDKhachHang == hoaDon.IDNguoiDung);
                             if (hoaDon.Diem == 0)
                             {
-                                khachHang.DiemTich += tongtien / quyDoiDiem.TiLeTichDiem;
+                                khachHang.DiemTich += hoaDon.TongTien / quyDoiDiem.TiLeTichDiem;
                                 reposKhachHang.Update(khachHang);
                                 LichSuTichDiem lichSuTichDiem = new LichSuTichDiem()
                                 {
@@ -120,7 +120,7 @@ namespace AppAPI.Services
                                     IDKhachHang = hoaDon.IDNguoiDung,
                                     IDQuyDoiDiem = quyDoiDiem.ID,
                                     IDHoaDon = hoaDon1.ID,
-                                    Diem = tongtien / quyDoiDiem.TiLeTichDiem,
+                                    Diem = hoaDon.TongTien / quyDoiDiem.TiLeTichDiem,
                                     TrangThai = 1
                                 };
                                 reposLichSuTichDiem.Add(lichSuTichDiem);
