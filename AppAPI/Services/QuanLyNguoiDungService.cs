@@ -39,20 +39,45 @@ namespace AppAPI.Services
             return false;
         }
 
-        public async Task<object> Login(string email, string password)
+        public async Task<LoginViewModel> Login(string email, string password)
         {
-            var nv = await context.NhanViens.FirstOrDefaultAsync(a => a.Email == email && a.PassWord == password);
-            if (nv != null)
+            var nv = await  context.NhanViens.FirstOrDefaultAsync(a => a.Email == email && a.PassWord == password);
+            if(nv != null)
             {
-                return nv;
+                return new LoginViewModel 
+                { 
+                    Email = email, 
+                    Password = password ,
+                    vaiTro = 0
+                };
             }
             var kh = await context.KhachHangs.FirstOrDefaultAsync(x => x.Email == email && x.Password == password);
-            if (kh != null)
+            if(kh != null)
             {
-                return kh;
+                return new LoginViewModel
+                {
+                    Email = email,
+                    Password = password,
+                    vaiTro = 1
+                };
             }
             return null;
         }
+
+        //public async Task<object> Login(string email, string password)
+        //{
+        //    var nv = await context.NhanViens.FirstOrDefaultAsync(a => a.Email == email && a.PassWord == password);
+        //    if (nv != null)
+        //    {
+        //        return nv;
+        //    }
+        //    var kh = await context.KhachHangs.FirstOrDefaultAsync(x => x.Email == email && x.Password == password);
+        //    if (kh != null)
+        //    {
+        //        return kh;
+        //    }
+        //    return null;
+        //}
 
         public async Task<KhachHang> RegisterKhachHang(KhachHangViewModel khachHang)
         {

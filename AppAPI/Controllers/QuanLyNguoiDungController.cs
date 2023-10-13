@@ -23,19 +23,29 @@ namespace AppAPI.Controllers
 
         // POST api/<DangNhapController>
         [HttpGet("DangNhap")]
-        public async Task<IActionResult> Post(string email, string password)
+        public async Task<IActionResult>Login(string email, string password)
         {
-            var result = await service.Login(email, password);
-            if (result != null)
+            LoginViewModel login = await service.Login(email, password);
+            if(login == null)
             {
-                return Ok(result);
+                ModelState.AddModelError(string.Empty, "Dang nhap that bai, ban nhap sai email hoac password");
+                return BadRequest(ModelState);
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "Dang nhap that bai, ban nhap sai email hoac password");
-                //return BadRequest("Dang nhap that bai");
+                return Ok(login);
             }
-            return BadRequest("dang nhap that bai");
+            //var result = await service.Login(email, password,  vaitro);
+            //if (result != null)
+            //{
+            //    return Ok(result);
+            //}
+            //else
+            //{
+            //    ModelState.AddModelError(string.Empty, "Dang nhap that bai, ban nhap sai email hoac password");
+            //    //return BadRequest("Dang nhap that bai");
+            //}
+            //return BadRequest("dang nhap that bai");
         }
 
         // POST api/<DangKyController>
