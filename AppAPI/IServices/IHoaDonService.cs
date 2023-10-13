@@ -5,7 +5,7 @@ namespace AppAPI.IServices
 {
     public interface IHoaDonService
     {
-        public bool CreateHoaDon(List<ChiTietHoaDonViewModel> chiTietHoaDons,HoaDonViewModel hoaDon,int tongtien);
+        public bool CreateHoaDon(List<ChiTietHoaDonViewModel> chiTietHoaDons,HoaDonViewModel hoaDon);
         public List<HoaDon> GetAllHoaDon();
         public List<ChiTietHoaDon> GetAllChiTietHoaDon(Guid idHoaDon);
         public bool UpdateTrangThaiGiaoHang(Guid idHoaDon, int trangThai,Guid idNhanVien);
