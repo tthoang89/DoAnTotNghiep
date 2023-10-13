@@ -231,7 +231,6 @@ namespace AppAPI.Services
                 var lstAnhDelete = await _context.AnhBienThes.Where(c => !lstAnhSD.Contains(c.ID)).ToListAsync();
                 _context.AnhBienThes.RemoveRange(lstAnhDelete);
                 await _context.SaveChangesAsync();
-
                 return bienthe;
             }
             else //Tạo mới

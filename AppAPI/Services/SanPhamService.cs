@@ -145,7 +145,7 @@ namespace AppAPI.Services
             var sanphams = (from sp in _context.SanPhams.AsNoTracking()
                             join bt in _context.BienThes.AsNoTracking() on sp.ID equals bt.IDSanPham
                             join lsp in _context.LoaiSPs.AsNoTracking() on sp.IDLoaiSP equals lsp.ID
-                            select new { sp, bt });
+                            select new { sp, bt, lsp });
             // Tìm tên
             if (!string.IsNullOrEmpty(sptk.KeyWord))
             {
@@ -166,10 +166,17 @@ namespace AppAPI.Services
                 ID = c.sp.ID,
                 Ten = c.sp.Ten,
                 TrangThai = c.sp.TrangThai,
-                LoaiSP = _context.LoaiSPs.FirstOrDefault(s => s.ID == c.sp.IDLoaiSP).Ten,
-                IdBT = _context.BienThes.FirstOrDefault(s => s.IDSanPham == c.sp.ID && s.TrangThai == 3).ID,
-                ListImage = (from img in _context.Anhs.AsNoTracking() join btimg in _context.AnhBienThes on img.ID equals btimg.IdAnh where btimg.IdBienThe == c.bt.ID select img.Ten).ToList(),
-
+                LoaiSP = c.lsp.Ten,
+                IdBT = c.bt.ID,
+                Image = (from img in _context.Anhs.AsNoTracking()
+                             join abt in _context.AnhBienThes.AsNoTracking()
+                             on img.ID equals abt.IdAnh
+                             where abt.IdBienThe == c.bt.ID
+                             select img.Ten).FirstOrDefault(),
+                GiaGoc = c.bt.GiaBan,
+                GiaBan = c.bt.IDKhuyenMai == null ? c.bt.GiaBan : (from km in _context.KhuyenMais.AsNoTracking()
+                                                               where km.ID == c.bt.IDKhuyenMai
+                                                               select c.bt.GiaBan * (100 - km.GiaTri) / 100).FirstOrDefault()
             }).ToListAsync();
             return result;
         }
@@ -196,11 +203,11 @@ namespace AppAPI.Services
                                       TrangThai = sp.TrangThai,
                                       LoaiSP = lsp.Ten,
                                       IdBT = bt.ID,
-                                      ListImage = (from img in _context.Anhs.AsNoTracking()
+                                      Image = (from img in _context.Anhs.AsNoTracking()
                                                    join abt in _context.AnhBienThes.AsNoTracking()
                                                    on img.ID equals abt.IdAnh
                                                    where abt.IdBienThe == bt.ID
-                                                   select img.Ten).ToList(),
+                                                   select img.Ten).FirstOrDefault(),
                                       GiaGoc = bt.GiaBan,
                                       GiaBan = bt.IDKhuyenMai == null ? bt.GiaBan : (from km in _context.KhuyenMais.AsNoTracking()
                                                                                      where km.ID == bt.IDKhuyenMai
@@ -229,10 +236,10 @@ namespace AppAPI.Services
                                         TrangThai = sp.TrangThai,
                                         LoaiSP = cate.Ten,
                                         IdBT = bt.ID,
-                                        ListImage = (from img in _context.Anhs.AsNoTracking()
+                                        Image = (from img in _context.Anhs.AsNoTracking()
                                                      join abt in _context.AnhBienThes.AsNoTracking() on img.ID equals abt.IdAnh
                                                      where abt.IdBienThe == bt.ID
-                                                     select img.Ten).ToList(),
+                                                     select img.Ten).FirstOrDefault(),
                                         GiaGoc = bt.GiaBan,
                                         GiaBan = bt.IDKhuyenMai == null ? bt.GiaBan : (from km in _context.KhuyenMais.AsNoTracking()
                                                                                        where km.ID == bt.IDKhuyenMai
@@ -254,11 +261,11 @@ namespace AppAPI.Services
                                         TrangThai = sp.TrangThai,
                                         LoaiSP = lsp.Ten,
                                         IdBT = bt.ID,
-                                        ListImage = (from img in _context.Anhs.AsNoTracking()
+                                        Image = (from img in _context.Anhs.AsNoTracking()
                                                      join abt in _context.AnhBienThes.AsNoTracking()
                                                      on img.ID equals abt.IdAnh
                                                      where abt.IdBienThe == bt.ID
-                                                     select img.Ten).ToList(),
+                                                     select img.Ten).FirstOrDefault(),
                                         GiaGoc = bt.GiaBan,
                                         GiaBan = bt.IDKhuyenMai == null ? bt.GiaBan : (from km in _context.KhuyenMais.AsNoTracking()
                                                                                        where km.ID == bt.IDKhuyenMai
@@ -411,6 +418,8 @@ namespace AppAPI.Services
                     _context.ChiTietBienThes.RemoveRange(listCTBT);
                     await _context.SaveChangesAsync();
                     //Xóa Ảnh
+                    var listanhbt = await _context.AnhBienThes.AsNoTracking().Where(c => c.IdBienThe == bt.ID).ToListAsync();
+                    _context.AnhBienThes.RemoveRange(listanhbt);
                 }
                 _context.BienThes.RemoveRange(listBT);
                 await _context.SaveChangesAsync();
