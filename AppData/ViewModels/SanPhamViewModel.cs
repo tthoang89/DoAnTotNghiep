@@ -14,7 +14,7 @@ namespace AppData.ViewModels
         public int TrangThai { get; set; }
         public string LoaiSP { get; set; }
         public Guid? IdBT { get; set; } // Id của biến thể mặc định
-        public List<string>? ListImage { get; set; } // Của biến thể mặc định
+        public string Image { get; set; } // Của biến thể mặc định
         public int? GiaBan { get; set; }//Của biến thể mặc định sau khi nhân vs khuyến mãi
         public int? GiaGoc { get; set; }//Của biến thể mặc định
     }
