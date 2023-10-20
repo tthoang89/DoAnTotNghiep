@@ -1,9 +1,9 @@
 ﻿using AppData.Models;
 using AppData.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis;
 using Newtonsoft.Json;
-using System.Diagnostics;
-using System.Text.Json.Serialization;
+using X.PagedList;
 
 namespace AppView.Controllers
 {
@@ -37,7 +37,7 @@ namespace AppView.Controllers
             return View();
         }
         
-        public IActionResult Shop()
+        public IActionResult Shop(int? pages)
         {
             HttpResponseMessage responseLoaiSP = _httpClient.GetAsync(_httpClient.BaseAddress + "LoaiSP/getAll").Result;
             if (responseLoaiSP.IsSuccessStatusCode)
@@ -50,7 +50,10 @@ namespace AppView.Controllers
             {
                 lstSanpham = JsonConvert.DeserializeObject<List<SanPhamViewModel>>(response.Content.ReadAsStringAsync().Result);
             }
-            return View(lstSanpham);
+            int pageSize = 20;
+            int pageNumber = pages == null || pages < 0 ? 1 : pages.Value;
+            PagedList<SanPhamViewModel> lst = new PagedList<SanPhamViewModel>(lstSanpham, pageNumber, pageSize);
+            return View(lst);
         }
         #region Cart
         [HttpGet]
@@ -67,10 +70,11 @@ namespace AppView.Controllers
                 tongtien += x.GiaBan;
             }
             TempData["TongTien"] = tongtien.ToString("n0");
-            TempData["ListBienThe"] = bienThes;
+            TempData["ListBienThe"] = JsonConvert.SerializeObject(bienThes);
             return View(bienThes);
         }
-        public void AddToCart(Guid id)
+        [HttpPost]
+        public ActionResult AddToCart(string id)
         { 
             HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + $"BienThe/getBienTheById/{id}").Result;
             if (response.IsSuccessStatusCode)
@@ -95,10 +99,12 @@ namespace AppView.Controllers
                     {
                         bienThe.SoLuong = 1;
                         bienThes.Add(bienThe);
-                    }                    
+                    }
                 }
                 HttpContext.Session.SetString(KeyCart, JsonConvert.SerializeObject(bienThes));
+                return Json(new { success = true, message = "Add to cart successfully" });
             }
+            else return Json(new { success = false, message = "Add to cart fail" });
         }
         #endregion
 
@@ -140,7 +146,8 @@ namespace AppView.Controllers
         public IActionResult Pay(HoaDonViewModel hoaDon)
         {
             List<ChiTietHoaDonViewModel> lstChiTietHoaDon = new List<ChiTietHoaDonViewModel>();
-            foreach(var item in TempData["ListBienThe"] as List<BienTheViewModel>)
+            string temp = TempData["ListBienThe"] as string;
+            foreach(var item in JsonConvert.DeserializeObject<List<BienTheViewModel>>(temp))
             {
                 ChiTietHoaDonViewModel chiTietHoaDon = new ChiTietHoaDonViewModel();
                 chiTietHoaDon.IDBienThe = item.ID;
@@ -152,7 +159,10 @@ namespace AppView.Controllers
             hoaDon.PhuongThucThanhToan = "Mac dinh";
             hoaDon.DiaChi = "Mac dinh";
             hoaDon.TienShip = 0;
-            HttpResponseMessage response = _httpClient.PostAsJsonAsync("HoaDon/CreateHoaDon", hoaDon).Result;
+            hoaDon.Diem = 0;
+            string tongTien = TempData["TongTien"] as string;
+            hoaDon.TongTien = Convert.ToInt32(tongTien.Replace(",",""));
+            HttpResponseMessage response = _httpClient.PostAsJsonAsync("HoaDon", hoaDon).Result;
             if (response.IsSuccessStatusCode) return RedirectToAction("Index");
             else return BadRequest();
         }

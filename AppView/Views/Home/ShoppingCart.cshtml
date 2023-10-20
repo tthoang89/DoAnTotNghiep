@@ -1,12 +1,7 @@
 ﻿@using AppData.ViewModels;
 @model List<BienTheViewModel>
 @{
-    Layout = "_Layout";
-    //long tongTien = 0;
-    //if (ViewData["TongTien"] != null)
-    //{
-    //    tongTien = (long)ViewData["TongTien"];
-    //}    
+    Layout = "_Layout"; 
     string tongTien = TempData.Peek("TongTien") as string;
 }
     <!-- Breadcrumb Section Begin -->

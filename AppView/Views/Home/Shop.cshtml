@@ -1,6 +1,7 @@
 ﻿@using AppData.ViewModels
 @using AppData.Models;
-@model IEnumerable<SanPhamViewModel>
+@using X.PagedList.Mvc.Core;
+@model X.PagedList.IPagedList<SanPhamViewModel>
 
 @{
     ViewData["Title"] = "Privacy Policy";
@@ -208,21 +209,20 @@
                                     </div>
                                     <div class="product__item__text">
                                         <h6>@item.Ten</h6>
-                                    <a asp-action="AddToCart" asp-controller="Home" asp-route-id="@item.IdBT" class="add-cart" style="color:red">+ ADD TO CART</a>
-                                        <h5 style="color:red">@item.GiaBan.ToString("n0") VND</h5>
+                                    <a onclick="addCart('@item.IdBT')" class="add-cart">+ ADD TO CART</a>
+                                    <h5 style="color:red">@item.GiaBan.ToString("n0") VND</h5>
                                     </div>
                                 </div>
                             </div>
                         }
+                    
                     </div>
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="product__pagination">
-                            <a class="active" href="#">1</a>
-                            <a href="#">2</a>
-                            <a href="#">3</a>
-                            <span>...</span>
-                            <a href="#">21</a>
+                            <a class="active">
+                                @Html.PagedListPager(Model,page=>Url.Action("Shop",new {pages=page}))
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -231,3 +231,30 @@
     </div>
 </section>
 <!-- Shop Section End -->
+<script src="~/js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">
+    function addCart(idBT)
+    {
+        $.ajax({
+            async: true,
+            type: 'POST',
+            dataType: "json",
+            data: {id: idBT},
+            url: '/Home/AddToCart',
+            success: function(response)
+            {
+                if(response.success == true){
+                    toastr.success(response.message, 'Success Alert', {timeOut : 300});
+                    debugger;
+                }else{
+                    toastr.error(response.message, 'Error Alert', { timeOut: 300 });
+                }
+            },
+            error: function(response)
+            {
+                console.log(response);
+                toastr.error(response.message, 'Error Alert', { timeOut: 300 });
+            }
+        });
+    }
+</script>

@@ -1,7 +1,7 @@
 ﻿@model AppData.ViewModels.HoaDonViewModel
 @using AppData.Models;
 @{
-	string tongtien = TempData["TongTien"] as string;
+	string tongtien = TempData.Peek("TongTien") as string;
 	long tienship = 0;
 	Layout = "_Layout";
 }
@@ -40,12 +40,64 @@
 						<div class="row">
 							<div class="col-lg-12">
 								<div class="checkout__input">
-									<p>Tên người nhận<span>*</span></p>
-									<input type="text" asp-for="Ten">
+									<label for="firstName">Tên</label>
+									<input type="text" class="form-control" id="firstName" placeholder="" value="" required="" style="height:38px">
+									<div class="invalid-feedback"> Valid first name is required. </div>
 								</div>
 							</div>
 						</div>
-						<div class="checkout__input">
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="checkout__input">
+									<label for="firstName">SĐT</label>
+									<input type="text" class="form-control" id="firstName" placeholder="" value="" required="" style="height:38px">
+									<div class="invalid-feedback"> Valid first name is required. </div>
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="checkout__input">
+									<label for="firstName">Email</label>
+									<input type="text" class="form-control" id="firstName" placeholder="" value="" required="" style="height:38px">
+									<div class="invalid-feedback"> Valid first name is required. </div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="checkout__input">
+									<label for="firstName">Tỉnh</label>
+									<select class="custom-select d-block w-100" id="province" required="">
+									</select>
+									<div class="invalid-feedback"> Valid first name is required. </div>
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="checkout__input">
+									<label for="firstName">Huyện</label>
+									<select class="custom-select d-block w-100" id="district" required="">
+									</select>
+									<div class="invalid-feedback"> Valid first name is required. </div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="checkout__input">
+									<label for="firstName">Xã</label>
+									<select class="custom-select d-block w-100" id="ward" required="">
+									</select>
+									<div class="invalid-feedback"> Valid first name is required. </div>
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="checkout__input">
+									<label for="firstName">Địa chỉ</label>
+									<input type="text" class="form-control" id="firstName" placeholder="" required="" style="height:38px">
+									<div class="invalid-feedback"> Valid first name is required. </div>
+								</div>
+							</div>
+						</div>
+						@*<div class="checkout__input">
 							<p>Province<span>*</span></p>
 							<select id="province"></select>
 						</div>
@@ -60,33 +112,8 @@
 						<div class="checkout__input">
 							<p>Services<span>*</span></p>
 							<select id="service"></select>
-						</div>
-						@*<div class="checkout__input">
-						<p>Postcode / ZIP<span>*</span></p>
-						<input type="text">
 						</div>*@
-						<div class="row">
-							<div class="col-lg-6">
-								<div class="checkout__input">
-									<p>Phone<span>*</span></p>
-									<input type="text" asp-for="SDT">
-								</div>
-							</div>
-							<div class="col-lg-6">
-								<div class="checkout__input">
-									<p>Email<span>*</span></p>
-									<input type="text" asp-for="Email">
-									<input asp-for="TienShip" id="tienship" style="display: none">
-									<input asp-for="DiaChi" id="diachi" style="display: none" />
-								</div>
-							</div>
-						</div>
 						<div class="checkout__input__checkbox">
-							@*<label for="acc">
-							Create an account?
-							<input type="checkbox" id="acc">
-							<span class="checkmark"></span>
-							</label>*@
 							<p>
 								Create an account by entering the information below. If you are a returning customer
 								please login at the top of the page
@@ -235,12 +262,11 @@
 			$("#ward").change(function() {
 				var value1 = document.getElementById("ward").value;
 				var value2 = document.getElementById("district").value;
-				var value3 = document.getElementById("service").value;
 			    strWard = document.getElementById(value1).innerHTML;
 				$.ajax({
 					type: "GET",
-					url: "https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee?to_ward_code=" + value1 + "&to_district_id=" + value2 + "&weight=1&from_district_id=1542&from_ward_code=21211&from&service_id=" + value3,
-					headers: { token: '9f4e42e4-fde8-11ed-a281-3aa62a37e0a5', shop_id: 4228407 },
+					url: "https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee?shop_id=4643378?to_ward_code=" + value1 + "&to_district_id=" + value2 + "&weight=100&service_type_id=2",
+					headers: {token: '9f4e42e4-fde8-11ed-a281-3aa62a37e0a5'},
 					contentType: "application/json; charset=utf-8",
 					dataType: "json",
 					success: function(data) {
