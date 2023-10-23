@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using Newtonsoft.Json;
 using X.PagedList;
+using AppView.Test;
 
 namespace AppView.Controllers
 {
@@ -117,7 +118,7 @@ namespace AppView.Controllers
         [HttpPost]
         public IActionResult Login(NhanVienViewModel nhanVien)
         {
-            //https://localhost:7095/api/QuanLyNguoiDung/DangNhap?email=tam%40gmail.com&password=chungtam2003
+            //https://localhost:7095/api/QuanLyNguoiDung/DangNhap?email=tam%40gmail.com&password=chungtam200396
             string email = nhanVien.Email.Replace("@","%40");
             HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + $"QuanLyNguoiDung/DangNhap?email={email}&password={nhanVien.Password}").Result;
             if (response.IsSuccessStatusCode)
@@ -143,7 +144,7 @@ namespace AppView.Controllers
 			return View();
         }
         [HttpPost]
-        public IActionResult Pay(HoaDonViewModel hoaDon)
+        public ActionResult Pay(HoaDonViewModel hoaDon)
         {
             List<ChiTietHoaDonViewModel> lstChiTietHoaDon = new List<ChiTietHoaDonViewModel>();
             string temp = TempData["ListBienThe"] as string;
@@ -157,14 +158,12 @@ namespace AppView.Controllers
             }
             hoaDon.ChiTietHoaDons = lstChiTietHoaDon;
             hoaDon.PhuongThucThanhToan = "Mac dinh";
-            hoaDon.DiaChi = "Mac dinh";
-            hoaDon.TienShip = 0;
             hoaDon.Diem = 0;
             string tongTien = TempData["TongTien"] as string;
             hoaDon.TongTien = Convert.ToInt32(tongTien.Replace(",",""));
             HttpResponseMessage response = _httpClient.PostAsJsonAsync("HoaDon", hoaDon).Result;
-            if (response.IsSuccessStatusCode) return RedirectToAction("Index");
-            else return BadRequest();
+            if (response.IsSuccessStatusCode) return Json(new { success = true, message = "Pay successfully" });
+            else return Json(new { success = false, message = "Pay fail" }); ;
         }
         //public IActionResult CheckOut(long tongtien)
         //{
