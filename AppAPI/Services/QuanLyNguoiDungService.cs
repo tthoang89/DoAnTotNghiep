@@ -39,25 +39,28 @@ namespace AppAPI.Services
             return false;
         }
 
-        public async Task<LoginViewModel> Login(string email, string password)
+        public async Task<LoginViewModel> Login(string lg, string password)
         {
-            var nv = await  context.NhanViens.FirstOrDefaultAsync(a => a.Email == email && a.PassWord == password);
+            var nv = await  context.NhanViens.FirstOrDefaultAsync(a => (a.Email == lg || a.SDT == lg) && a.PassWord == password);
             if(nv != null)
             {
                 return new LoginViewModel 
                 { 
-                    Email = email, 
-                    Password = password ,
+                    Email = nv.Email, 
+                    Ten = nv.Ten,
+                    SDT = nv.SDT,
                     vaiTro = 0
                 };
             }
-            var kh = await context.KhachHangs.FirstOrDefaultAsync(x => x.Email == email && x.Password == password);
+            var kh = await context.KhachHangs.FirstOrDefaultAsync(x => (x.Email == lg || x.SDT == lg) && x.Password == password);
             if(kh != null)
             {
                 return new LoginViewModel
                 {
-                    Email = email,
-                    Password = password,
+                    Email = kh.Email,
+                    Ten = kh.Ten,
+                    SDT = kh.SDT,
+                    DiemTich = kh.DiemTich,
                     vaiTro = 1
                 };
             }

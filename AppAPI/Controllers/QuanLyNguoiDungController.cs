@@ -23,12 +23,12 @@ namespace AppAPI.Controllers
 
         // POST api/<DangNhapController>
         [HttpGet("DangNhap")]
-        public async Task<IActionResult>Login(string email, string password)
+        public async Task<IActionResult>Login(string lg, string password)
         {
-            LoginViewModel login = await service.Login(email, password);
+            LoginViewModel login = await service.Login(lg, password);
             if(login == null)
             {
-                ModelState.AddModelError(string.Empty, "Dang nhap that bai, ban nhap sai email hoac password");
+                ModelState.AddModelError(string.Empty, "Dang nhap that bai");
                 return BadRequest(ModelState);
             }
             else
