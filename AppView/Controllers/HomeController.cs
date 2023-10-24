@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using Newtonsoft.Json;
 using X.PagedList;
-using AppView.Test;
 
 namespace AppView.Controllers
 {
@@ -116,22 +115,31 @@ namespace AppView.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Login(NhanVienViewModel nhanVien)
+        public IActionResult Login(string email, string password)
         {
             //https://localhost:7095/api/QuanLyNguoiDung/DangNhap?email=tam%40gmail.com&password=chungtam200396
-            string email = nhanVien.Email.Replace("@","%40");
-            HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + $"QuanLyNguoiDung/DangNhap?email={email}&password={nhanVien.Password}").Result;
+            string tempEmail = email.Replace("@","%40");
+            HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + $"QuanLyNguoiDung/DangNhap?email={tempEmail}&password={password}").Result;
             if (response.IsSuccessStatusCode)
             {
-                HttpContext.Session.SetString("UserName",JsonConvert.DeserializeObject<NhanVien>(response.Content.ReadAsStringAsync().Result).Ten);                
+                HttpContext.Session.SetString("UserName",response.Content.ReadAsStringAsync().Result);
+                return RedirectToAction("Index");
             }
-            return RedirectToAction("Index");
+            else return BadRequest();
         }
         public IActionResult Register()
         {
             return View();
         }
-        public IActionResult Profile()
+        [HttpPost]
+        public IActionResult Register(KhachHangViewModel khachHang)
+        {
+            khachHang.Id = Guid.NewGuid();
+            HttpResponseMessage response = _httpClient.PostAsJsonAsync(_httpClient.BaseAddress + "KhachHang", khachHang).Result;
+            if(response.IsSuccessStatusCode) return RedirectToAction("Login");
+            return BadRequest();
+		}
+		public IActionResult Profile()
         {
             return View();
         }
