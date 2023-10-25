@@ -44,10 +44,26 @@ namespace AppAPI.Controllers
         {
             return _iHoaDonService.CreateHoaDon(hoaDon.ChiTietHoaDons, hoaDon);
         }
+        [HttpPost("Offline")]
+        public bool CreateHoaDonOffline(HoaDonViewModel hoaDon)
+        {
+            return _iHoaDonService.CreateHoaDonOffline(hoaDon.ChiTietHoaDons, hoaDon);
+        }
         [HttpPut]
         public bool UpdateTrangThai(Guid idhoadon, int trangthai,Guid idnhanvien)
         {
             return _iHoaDonService.UpdateTrangThaiGiaoHang(idhoadon, trangthai,idnhanvien);
         }
+        [HttpPut("UpdateHoaDon")]
+        public bool UpDateHoaDon(HoaDon hoaDon)
+        {
+            return _iHoaDonService.UpdateHoaDon(hoaDon);
+        }
+        [HttpDelete]
+        public bool Delete(Guid id)
+        {
+            return _iHoaDonService.DeleteHoaDon(id);
+        }
+
     }
 }

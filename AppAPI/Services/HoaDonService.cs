@@ -162,6 +162,64 @@ namespace AppAPI.Services
             }
         }
 
+        public bool CreateHoaDonOffline(List<ChiTietHoaDonViewModel> chiTietHoaDons, HoaDonViewModel hoaDon)
+        {
+            try
+            {
+                if (chiTietHoaDons != null)
+                {
+                    HoaDon hoaDon1 = new HoaDon();
+                    hoaDon1.ID = Guid.NewGuid();
+                    hoaDon1.IDNhanVien = null;
+                    hoaDon1.IDVoucher = null;
+                    hoaDon1.TenNguoiNhan = hoaDon.Ten;
+                    hoaDon1.SDT = hoaDon.SDT;
+                    hoaDon1.Email = hoaDon.Email;
+                    hoaDon1.NgayTao = DateTime.Now;
+                    hoaDon1.DiaChi = hoaDon.DiaChi;
+                    hoaDon1.TienShip = hoaDon.TienShip;
+                    hoaDon1.PhuongThucThanhToan = hoaDon.PhuongThucThanhToan;
+                    hoaDon1.TrangThaiGiaoHang = 2;
+                    if (reposHoaDon.Add(hoaDon1))
+                    {
+                        foreach (var x in chiTietHoaDons)
+                        {
+                            ChiTietHoaDon chiTietHoaDon = new ChiTietHoaDon();
+                            chiTietHoaDon.ID = Guid.NewGuid();
+                            chiTietHoaDon.IDHoaDon = hoaDon1.ID;
+                            chiTietHoaDon.IDBienThe = x.IDBienThe;
+                            chiTietHoaDon.SoLuong = x.SoLuong;
+                            chiTietHoaDon.DonGia = x.DonGia;
+                            chiTietHoaDon.TrangThai = 1;
+                            reposChiTietHoaDon.Add(chiTietHoaDon);
+                            var bienThe = reposBienThe.GetAll().FirstOrDefault(p => p.ID == x.IDBienThe);
+                            bienThe.SoLuong -= chiTietHoaDon.SoLuong;
+                            reposBienThe.Update(bienThe);
+                        }
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public bool DeleteHoaDon(Guid id)
+        {
+            HoaDon hoaDon = reposHoaDon.GetAll().FirstOrDefault(p=>p.ID == id);
+            return reposHoaDon.Delete(hoaDon);
+        }
+
         public List<ChiTietHoaDon> GetAllChiTietHoaDon(Guid idHoaDon)
         {
             return reposChiTietHoaDon.GetAll().Where(x => x.IDHoaDon == idHoaDon).ToList();
@@ -197,6 +255,23 @@ namespace AppAPI.Services
                 return locGiamDan;
             } 
             return timkiem;
+        }
+
+        public bool UpdateHoaDon(HoaDon hoaDon)
+        {
+            var update = reposHoaDon.GetAll().FirstOrDefault(p=>p.ID == hoaDon.ID);
+            update.IDNhanVien = null;
+            update.IDVoucher = null;
+            update.TenNguoiNhan = hoaDon.TenNguoiNhan;
+            update.SDT = hoaDon.SDT;
+            update.Email = hoaDon.Email;
+            update.NgayTao = hoaDon.NgayTao;
+            update.DiaChi = hoaDon.DiaChi;
+            update.TienShip = hoaDon.TienShip;
+            update.PhuongThucThanhToan = hoaDon.PhuongThucThanhToan;
+            update.TrangThaiGiaoHang = hoaDon.TrangThaiGiaoHang;
+            return reposHoaDon.Update(update);
+
         }
 
         public bool UpdateTrangThaiGiaoHang(Guid idHoaDon, int trangThai, Guid idNhanVien)
