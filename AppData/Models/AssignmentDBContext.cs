@@ -38,7 +38,8 @@ namespace AppData.Models
         {
             optionsBuilder.UseSqlServer(@"Data Source=LAPTOP-A15NGLBG\SQLEXPRESS;Initial Catalog=AppBanQuanAoThoiTrangNam;Integrated Security=True");
         }
-
+        //THUYNHU\SQLEXPRESS
+        //DESKTOP-UOIH77U\SQLEXPRESS
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
