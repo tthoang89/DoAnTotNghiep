@@ -1,5 +1,6 @@
 ﻿@{
     var username = Context.Session.GetString("UserName");
+    var role = Context.Session.GetString("Role");
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -56,8 +57,11 @@
                                            </a>
                                            @*<i class="arrow_carrot-down"></i>*@        
                                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                               <li><a class="dropdown-item" asp-controller="Login" asp-action="Profile">PROFILE</a></li>
-                                               <li><a class="dropdown-item" asp-controller="Login" asp-action="LogOut">LOGOUT</a></li>
+                                               <li><a class="dropdown-item" asp-controller="Home" asp-action="Profile">Thông tin cá nhân</a></li>
+                                               @if(role == "0"){
+                                                    <li><a class="dropdown-item" asp-controller="Login" asp-action="Profile">Quản lý cửa hàng</a></li>
+                                                }            
+                                               <li><a class="dropdown-item" asp-controller="Home" asp-action="LogOut">LOGOUT</a></li>
                                            </ul>
                                        </span>
                                     }
