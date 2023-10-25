@@ -46,6 +46,7 @@ namespace AppAPI.Services
             {
                 return new LoginViewModel 
                 { 
+                    Id = nv.ID,
                     Email = nv.Email, 
                     Ten = nv.Ten,
                     SDT = nv.SDT,
@@ -57,6 +58,7 @@ namespace AppAPI.Services
             {
                 return new LoginViewModel
                 {
+                    Id = kh.IDKhachHang,
                     Email = kh.Email,
                     Ten = kh.Ten,
                     SDT = kh.SDT,
