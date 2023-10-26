@@ -15,6 +15,12 @@ namespace AppAPI.Controllers
         {
             this._bienTheService = new BienTheService();
         }
+        [HttpGet("getAll")]
+        public async Task<IActionResult> GetAllBT()
+        {
+            var listbt = await _bienTheService.GetAllBienThe();
+            return Ok(listbt);
+        }
         [HttpGet("getBienTheByIdSP/{id}")]
         public async Task<IActionResult> GetBTByIdSp(Guid id)
         {

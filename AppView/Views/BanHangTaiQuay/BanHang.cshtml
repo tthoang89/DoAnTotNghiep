@@ -1,0 +1,125 @@
+﻿@using AppData.Models
+@using AppData.ViewModels
+@{
+    ViewData["Title"] = "BanHang";
+    <link rel="stylesheet" href="~/css/banhangtaiquay.css" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    var lsthdcho = ViewData["lsthdcho"] as List<HoaDon>;
+    var lstbt = ViewData["lstbthe"] as List<BienTheViewModel>;
+}
+<div class="contain-fluid" style="overflow-x: hidden">
+    <!--Thanh hóa đơn-->
+    <div class="row" style="background:#5372F0">
+        <div class="col-md-2 col-sm-12">
+            <a href="@Url.Action("TaoHoaDon", "BanHangTaiQuay")" class="btn btn-success text-white" style="margin:3px"><i class="fas fa-random"></i> Tạo hóa đơn</a>
+        </div>
+        <div class="col-md-10 col-sm-12">
+            <div class="tabbill">
+                <div class="icon"><i id="left" class="fa-solid fa-angle-left"></i></div>
+                <ul class="tabs-box">
+                    @{
+                        var index = 1;
+                        @foreach (var item in lsthdcho)
+                        {
+                            <li class="tab">
+                                <span>
+                                    <a onclick="link()">Hóa đơn @index</a>
+                                    <a style="padding-left: 10px;" onclick="remove()">
+                                        <i class="fas fa-times"></i>
+                                    </a>
+                                </span>
+                            </li>
+                            index++;
+                        }
+                    }
+                </ul>
+                <div class="icon"><i id="right" class="fa-solid fa-angle-right"></i></div>
+            </div>
+        </div>
+    </div>
+    <!--Thanh bán hàng-->
+    <div class="row">
+        <div class="col-md-5 col-sm-12 h-700px">
+            <ul class="product-list">
+                @foreach (var item in lstbt)
+                {
+                    <li>
+                        <a href="#">
+                            <div class="product-item">
+                                @{
+                                    var anh = item.Anh.Any() ? item.Anh[0] : string.Empty;
+                                }
+                                <img src="~/img/variants/@anh">
+                            </div>
+                            <div class="product-detail">
+                                <h4>@item.Ten</h4>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <p style="flex-basis: 59.5%;"><b>@item.GiaBan.ToString("n0")</b></p>
+                                    <p style="flex-basis: 49.5%;">SL: @item.SoLuong</p>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
+        <div class="col-md-7 col-sm-12 h-700px">
+            <div id="partialGioHang">
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/js/jquery-3.3.1.min.js"></script>
+<script src="~/js/bantaiquay.js"></script>
+<script type="text/javascript">
+            $('#partialGioHang').load("/BanHangTaiQuay/GioHangTaiQuay")
+
+    $(function () {
+               $("li").click(function (e) {
+               e.preventDefault();
+               $("li").removeClass("active");
+               $(this).addClass("active");
+           });
+       });
+       const tabsBox = document.querySelector(".tabs-box"),
+       allTabs = tabsBox.querySelectorAll(".tab"),
+       arrowIcons = document.querySelectorAll(".icon i");
+
+       let isDragging = false;
+
+       const handleIcons = (scrollVal) => {
+           let maxScrollableWidth = tabsBox.scrollWidth - tabsBox.clientWidth;
+           arrowIcons[0].parentElement.style.display = scrollVal <= 0 ? "none" : "flex";
+           arrowIcons[1].parentElement.style.display = maxScrollableWidth - scrollVal <= 1 ? "none" : "flex";
+       }
+
+       arrowIcons.forEach(icon => {
+           icon.addEventListener("click", () => {
+               // if clicked icon is left, reduce 350 from tabsBox scrollLeft else add
+               let scrollWidth = tabsBox.scrollLeft += icon.id === "left" ? -340 : 340;
+               handleIcons(scrollWidth);
+           });
+       });
+
+       allTabs.forEach(tab => {
+           tab.addEventListener("click", () => {
+               tabsBox.querySelector(".active").classList.remove("active");
+               tab.classList.add("active");
+           });
+       });
+
+       const dragging = (e) => {
+           if(!isDragging) return;
+           tabsBox.classList.add("dragging");
+           tabsBox.scrollLeft -= e.movementX;
+           handleIcons(tabsBox.scrollLeft)
+       }
+
+       const dragStop = () => {
+           isDragging = false;
+           tabsBox.classList.remove("dragging");
+       }
+       tabsBox.addEventListener("mousedown", () => isDragging = true);
+       tabsBox.addEventListener("mousemove", dragging);
+       document.addEventListener("mouseup", dragStop);
+</script>

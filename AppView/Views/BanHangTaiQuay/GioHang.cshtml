@@ -1,0 +1,66 @@
+﻿@using AppData.ViewModels
+@model List<BienTheViewModel>
+
+@{
+    ViewData["Title"] = "GioHang";
+    <style>
+        .cart {
+            display: block;
+            padding-top: 1px;
+            padding-left: 1px;
+            width: 100%;
+        }
+
+        .cart-items {
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            -webkit-box-flex: 1;
+            flex: 1;
+            background: #eee;
+            padding: 0 0.8rem;
+        }
+
+        .column-left {
+            position: relative;
+        }
+
+        .cell-order {
+            width: 3rem;
+            min-width: 3rem;
+            max-width: 3rem;
+            text-align: center;
+        }
+
+        .cell-action {
+            width: 4rem;
+        }
+
+        .sub-column {
+            height: 25%;
+        }
+    </style>
+}
+<div class="cart" style="display:flex; width:100%">
+    <div class="cart-items" style="display:flex; width:100%">
+        <div class="column-left">
+            <div class="cell-order">
+                STT
+            </div>
+            <div class="cell-action">
+                <i class="fa-solid fa-trash"></i>
+            </div>
+        </div>
+
+        <div class="column">
+            <div class="sub-column">
+                Tên
+            </div>
+            <div class="sub-column">
+                SL
+            </div>
+        </div>
+        <div class="column">Đơn giá</div>
+        <div class="column">Giá bán</div>
+        <div class="column"><i class="fa-solid fa-circle-plus"></i></div>
+    </div>
+</div>
