@@ -1,5 +1,7 @@
 ﻿using AppAPI.IServices;
+using AppData.IRepositories;
 using AppData.Models;
+using AppData.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -11,9 +13,12 @@ namespace AppAPI.Controllers
     public class KhuyenMaiController : ControllerBase
     {
         private readonly IKhuyenMaiServices _khuyenmai;
+      
         public KhuyenMaiController(IKhuyenMaiServices khuyenmai)
         {
           this._khuyenmai = khuyenmai;
+           
+
         }
 
         // GET: api/<KhuyenMaiController>
@@ -22,6 +27,12 @@ namespace AppAPI.Controllers
         {
             return _khuyenmai.GetAll();
         }
+        [Route("GetAllBienThe")]
+        [HttpGet]
+        public List<BienThe> GetAllBienThe()
+        {
+            return _khuyenmai.GetAllBienThe();
+        }
 
         // GET api/<KhuyenMaiController>/5
         [HttpGet("{id}")]
@@ -29,22 +40,42 @@ namespace AppAPI.Controllers
         {
             return _khuyenmai.GetById(id);
         }
+        [Route("TimKiemTenKM")]
+        [HttpGet]
+        public List<KhuyenMai> GetByTen(string Ten)
+        {
+            return _khuyenmai.GetKMByName(Ten);
+        }
 
         // POST api/<KhuyenMaiController>
         [HttpPost]
-        public bool Post(string ten, int giatri, DateTime NgayApDung, DateTime NgayKetThuc, string mota, int trangthai)
+        public bool Post(KhuyenMaiView kmv)
         {
-            return _khuyenmai.Add(ten, giatri, NgayApDung, NgayKetThuc, mota, trangthai);
+            return _khuyenmai.Add(kmv);
+        }
+        [Route("AddKmVoBT")]
+        [HttpPut]
+        // PUT api/<KhuyenMaiController>/5 
+        public bool AddKMVoBienThe(List<Guid> bienThes,Guid IdKhuyenMai)
+        {
+            return _khuyenmai.AdKMVoBT(bienThes,IdKhuyenMai);
+        }
+        [Route("Add1km1BT")]
+        [HttpPut]
+        public bool Add1KMVo1BT(Guid id,Guid IdKhuyenMai)
+        {
+            return _khuyenmai.Ad1KMVo1BT(id, IdKhuyenMai);
         }
 
         // PUT api/<KhuyenMaiController>/5
-        [HttpPut("{id}")]
-        public bool Put(Guid id, string ten, int giatri, DateTime NgayApDung, DateTime NgayKetThuc, string mota, int trangthai)
+        [Route("UpdateKM")]
+        [HttpPut]
+        public bool Put(KhuyenMaiView kmv)
         {
-            var khuyenmai= _khuyenmai.GetById(id);
+            var khuyenmai = _khuyenmai.GetById(kmv.ID);
             if (khuyenmai != null)
             {
-                return _khuyenmai.Update(khuyenmai.ID,ten, giatri, NgayApDung, NgayKetThuc, mota, trangthai);
+                return _khuyenmai.Update(kmv);  
             }
             else
             {

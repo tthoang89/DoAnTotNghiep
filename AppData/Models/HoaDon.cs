@@ -8,9 +8,9 @@
         public string? TenNguoiNhan { get; set; }
         public string? SDT { get; set; }
         public string? Email { get; set; }
-        public string DiaChi { get; set; }
+        public string? DiaChi { get; set; }
         public int TienShip { get; set; }
-        public string PhuongThucThanhToan { get; set; }
+        public string? PhuongThucThanhToan { get; set; }
         public int TrangThaiGiaoHang { get; set; }
         //Các trạng thái của đơn hàng
         /*
@@ -22,13 +22,14 @@
          * 6-Giao hàng thành công
          * 7-Đơn hủy
          * 8-Hàng thất lạc- hư hỏng
+         * 9-Hóa đơn chờ
          */
         public Guid? IDNhanVien { get; set; }
         public Guid? IDVoucher { get; set; }
-        public virtual IEnumerable<LichSuTichDiem> LichSuTichDiems { get; set; }
+        public virtual IEnumerable<LichSuTichDiem>? LichSuTichDiems { get; set; }
         public virtual NhanVien? NhanVien { get; set; }
         public virtual Voucher? Voucher { get; set; }
-        public virtual IEnumerable<ChiTietHoaDon> ChiTietHoaDons { get; set; }
-        public virtual IEnumerable<ChiTietPTTT> ChiTietPTTTs { get; set; }
+        public virtual IEnumerable<ChiTietHoaDon>? ChiTietHoaDons { get; set; }
+        public virtual IEnumerable<ChiTietPTTT>? ChiTietPTTTs { get; set; }
     }
 }

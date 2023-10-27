@@ -14,7 +14,7 @@ namespace AppData.ViewModels
         public int TienShip { get; set; }
         public int TongTien { get; set; }
         public Guid? IDNhanVien { get; set; }
-        public string? TenVoucher { get; set; }
+        public string TenVoucher { get; set; }
         //tích điểm, dùng điểm
         public Guid? IDNguoiDung { get; set; }
         public int Diem { get; set; }

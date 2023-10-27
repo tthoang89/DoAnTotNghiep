@@ -2,6 +2,7 @@
 using AppData.IRepositories;
 using AppData.Models;
 using AppData.Repositories;
+using AppData.ViewModels;
 
 namespace AppAPI.Services
 {
@@ -13,23 +14,24 @@ namespace AppAPI.Services
         {
             _allRepository= new AllRepository<Voucher>(context,context.Vouchers);
         }
-        public bool Add(string ten, int hinhthucgiamgia, int sotiencan, int giatri, DateTime NgayApDung, DateTime NgayKetThuc, int soluong, string mota, int trangthai)
+        public bool Add(VoucherView voucherview)
         {
+            voucherview.Id=Guid.NewGuid();
             var voucher= new Voucher();
-            voucher.ID=Guid.NewGuid();
-            voucher.Ten=ten;
-            voucher.HinhThucGiamGia=hinhthucgiamgia;
-            voucher.SoTienCan=sotiencan;
-            voucher.GiaTri = giatri;
-            voucher.NgayApDung=NgayApDung;
-            voucher.NgayKetThuc=NgayKetThuc;
+            voucher.ID=voucherview.Id;
+            voucher.Ten=voucherview.Ten;
+            voucher.HinhThucGiamGia=voucherview.HinhThucGiamGia;
+            voucher.SoTienCan=voucherview.SoTienCan;
+            voucher.GiaTri = voucherview.GiaTri;
+            voucher.NgayApDung=voucherview.NgayApDung;
+            voucher.NgayKetThuc=voucherview.NgayKetThuc;
             if (voucher.NgayApDung > voucher.NgayKetThuc)
             {
                 return false;
             }
-            voucher.SoLuong=soluong;
-            voucher.MoTa = mota;
-            voucher.TrangThai=trangthai;
+            voucher.SoLuong=voucherview.SoLuong;
+            voucher.MoTa = voucherview.MoTa;
+            voucher.TrangThai=voucherview.TrangThai;
             return _allRepository.Add(voucher);
         }
 
@@ -57,24 +59,25 @@ namespace AppAPI.Services
             return _allRepository.GetAll().FirstOrDefault(x => x.ID == Id);
         }
 
-        public bool Update(Guid Id, string ten, int hinhthucgiamgia, int sotiencan, int giatri, DateTime NgayApDung, DateTime NgayKetThuc, int soluong, string mota, int trangthai)
+        public bool Update(Guid id,VoucherView voucherview)
         {
-            var voucher= _allRepository.GetAll().FirstOrDefault(x => x.ID == Id);
+            var voucher= _allRepository.GetAll().FirstOrDefault(x => x.ID == id);
             if (voucher != null)
             {
-                voucher.Ten = ten;
-                voucher.HinhThucGiamGia = hinhthucgiamgia;
-                voucher.SoTienCan = sotiencan;
-                voucher.GiaTri = giatri;
-                voucher.NgayApDung = NgayApDung;
-                voucher.NgayKetThuc = NgayKetThuc;
+                voucher.ID = voucherview.Id;
+                voucher.Ten = voucherview.Ten;
+                voucher.HinhThucGiamGia = voucherview.HinhThucGiamGia;
+                voucher.SoTienCan = voucherview.SoTienCan;
+                voucher.GiaTri = voucherview.GiaTri;
+                voucher.NgayApDung = voucherview.NgayApDung;
+                voucher.NgayKetThuc = voucherview.NgayKetThuc;
                 if (voucher.NgayApDung > voucher.NgayKetThuc)
                 {
                     return false;
                 }
-                voucher.SoLuong = soluong;
-                voucher.MoTa = mota;
-                voucher.TrangThai = trangthai;
+                voucher.SoLuong = voucherview.SoLuong;
+                voucher.MoTa = voucherview.MoTa;
+                voucher.TrangThai = voucherview.TrangThai;
                 return _allRepository.Update(voucher);
             }
             else
