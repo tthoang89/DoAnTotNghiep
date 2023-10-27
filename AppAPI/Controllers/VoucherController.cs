@@ -1,5 +1,6 @@
 ﻿using AppAPI.IServices;
 using AppData.Models;
+using AppData.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -32,19 +33,19 @@ namespace AppAPI.Controllers
 
         // POST api/<VoucherController>
         [HttpPost]
-        public bool Post(string ten, int hinhthucgiamgia, int sotiencan, int giatri, DateTime NgayApDung, DateTime NgayKetThuc, int soluong, string mota, int trangthai)
+        public bool Post(VoucherView voucher)
         {
-            return _services.Add(ten, hinhthucgiamgia, sotiencan, giatri,NgayApDung,NgayKetThuc, soluong, mota, trangthai);
+            return _services.Add(voucher);
         }
 
         // PUT api/<VoucherController>/5
         [HttpPut("{id}")]
-        public bool Put(Guid id, string ten, int hinhthucgiamgia, int sotiencan, int giatri, DateTime NgayApDung, DateTime NgayKetThuc, int soluong, string mota, int trangthai)
+        public bool Put(Guid id, VoucherView voucherview)
         {
             var voucher= _services.GetById(id);
             if(voucher != null)
             {
-                return _services.Update(voucher.ID,ten, hinhthucgiamgia, sotiencan, giatri, NgayApDung, NgayKetThuc, soluong, mota, trangthai);
+                return _services.Update(voucher.ID,voucherview);
             }
             else
             {

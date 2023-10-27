@@ -1,6 +1,7 @@
 ﻿using AppAPI.IServices;
 using AppAPI.Services;
 using AppData.Models;
+using AppData.ViewModels.BanOffline;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,6 +12,7 @@ namespace AppAPI.Controllers
     public class ChiTietHoaDonController : ControllerBase
     {
         private readonly IChiTietHoaDonService _idchiTietHoaDon;
+
         public ChiTietHoaDonController()
         {
             _idchiTietHoaDon = new ChiTietHoaDonService();
@@ -20,20 +22,25 @@ namespace AppAPI.Controllers
         {
             return _idchiTietHoaDon.GetAllCTHoaDon();
         }
-        [HttpPost]
-        public bool Create(ChiTietHoaDon chiTietHoaDon)
+        [HttpGet("getByIdHD/{idhd}")]
+        public async Task<IActionResult> GetById(Guid idhd)
         {
-            return _idchiTietHoaDon.CreateCTHoaDon(chiTietHoaDon);
+            var lsp = await _idchiTietHoaDon.GetHDCTByIdHD(idhd);
+            if (lsp == null) return NotFound();
+            return Ok(lsp);
         }
-        [HttpPut]
-        public bool Update(ChiTietHoaDon chiTietHoaDon)
+        [HttpPost("saveHDCT")]
+        public async Task<IActionResult> Save(HoaDonChiTietRequest request)
         {
-            return _idchiTietHoaDon.UpdateCTHoaDon(chiTietHoaDon);
+            if (request == null) return BadRequest();
+            var hdct = await _idchiTietHoaDon.SaveCTHoaDon(request);
+            return Ok(hdct);
         }
-        [HttpDelete]
-        public bool Delete(Guid id)
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> DeleteLoaiSP(Guid id)
         {
-            return _idchiTietHoaDon.DeleteCTHoaDon(id);
+            var loaiSP = await _idchiTietHoaDon.DeleteCTHoaDon(id);
+            return Ok();
         }
     }
 }

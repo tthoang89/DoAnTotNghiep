@@ -1,49 +1,50 @@
-﻿@model AppData.Models.KhuyenMai
+﻿@model AppData.ViewModels.KhuyenMaiView
 
 @{
     ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
 <h1>Create</h1>
 
-<h4>KhuyenMai</h4>
+<h4>KhuyenMaiView</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Ten" class="control-label"></label>
+                <label class="control-label">Tên</label>
                 <input asp-for="Ten" class="form-control" />
                 <span asp-validation-for="Ten" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="GiaTri" class="control-label"></label>
+                <label class="control-label">Giá Trị</label>
                 <input asp-for="GiaTri" class="form-control" />
                 <span asp-validation-for="GiaTri" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="NgayApDung" class="control-label"></label>
+                <label class="control-label">Ngày Áp Dụng</label>
                 <input asp-for="NgayApDung" class="form-control" />
                 <span asp-validation-for="NgayApDung" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="NgayKetThuc" class="control-label"></label>
+                <label class="control-label"> Ngày Kết Thúc</label>
                 <input asp-for="NgayKetThuc" class="form-control" />
                 <span asp-validation-for="NgayKetThuc" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="MoTa" class="control-label"></label>
+                <label class="control-label"> Mô tả </label>
                 <input asp-for="MoTa" class="form-control" />
                 <span asp-validation-for="MoTa" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="TrangThai" class="control-label"></label>
+                <label class="control-label"> Trạng Thái</label>
                 <input asp-for="TrangThai" class="form-control" />
                 <span asp-validation-for="TrangThai" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" class="btn btn-success" value="Thêm Khuyến Mãi" />
             </div>
         </form>
     </div>

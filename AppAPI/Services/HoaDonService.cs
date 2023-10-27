@@ -3,6 +3,7 @@ using AppData.IRepositories;
 using AppData.Models;
 using AppData.Repositories;
 using AppData.ViewModels;
+using AppData.ViewModels.BanOffline;
 using System.Security.Cryptography.Xml;
 
 namespace AppAPI.Services
@@ -16,7 +17,9 @@ namespace AppAPI.Services
         private readonly IAllRepository<QuyDoiDiem> reposQuyDoiDiem;
         private readonly IAllRepository<LichSuTichDiem> reposLichSuTichDiem;
         private readonly IAllRepository<KhachHang> reposKhachHang;
-        
+        private readonly IAllRepository<SanPham> reposSanPham;
+
+
         AssignmentDBContext context = new AssignmentDBContext();
 
         public HoaDonService()
@@ -24,10 +27,12 @@ namespace AppAPI.Services
             reposHoaDon = new AllRepository<HoaDon>(context, context.HoaDons);
             reposChiTietHoaDon = new AllRepository<ChiTietHoaDon>(context, context.ChiTietHoaDons);
             reposBienThe = new AllRepository<BienThe>(context, context.BienThes);
-            reposVoucher = new AllRepository<Voucher>(context,context.Vouchers);
+            reposVoucher = new AllRepository<Voucher>(context, context.Vouchers);
             reposQuyDoiDiem = new AllRepository<QuyDoiDiem>(context, context.QuyDoiDiems);
             reposLichSuTichDiem = new AllRepository<LichSuTichDiem>(context, context.LichSuTichDiems);
             reposKhachHang = new AllRepository<KhachHang>(context, context.KhachHangs);
+            reposSanPham = new AllRepository<SanPham>(context, context.SanPhams);
+            context = new AssignmentDBContext();
         }
 
         public int CheckVoucher(string ten, int tongtien)
@@ -35,7 +40,7 @@ namespace AppAPI.Services
             var voucher = reposVoucher.GetAll().FirstOrDefault(p => p.Ten == ten);
             if (voucher != null)
             {
-                if (tongtien >= voucher.SoTienCan && DateTime.Compare(voucher.NgayApDung,DateTime.Now) <= 0 && DateTime.Compare(DateTime.Now,voucher.NgayKetThuc) <= 0 && voucher.SoLuong > 0)
+                if (tongtien >= voucher.SoTienCan && DateTime.Compare(voucher.NgayApDung, DateTime.Now) <= 0 && DateTime.Compare(DateTime.Now, voucher.NgayKetThuc) <= 0 && voucher.SoLuong > 0)
                 {
                     if (voucher.HinhThucGiamGia == 1)
                     {
@@ -47,7 +52,7 @@ namespace AppAPI.Services
                         tongtien = tongtien - (tongtien * voucher.GiaTri / 100);
                         return tongtien;
                     }
-                    
+
                 }
                 else
                 {
@@ -65,7 +70,7 @@ namespace AppAPI.Services
         {
             try
             {
-                var voucher = reposVoucher.GetAll().FirstOrDefault(p=>p.Ten == hoaDon.TenVoucher);
+                var voucher = reposVoucher.GetAll().FirstOrDefault(p => p.Ten == hoaDon.TenVoucher);
                 if (chiTietHoaDons != null)
                 {
                     HoaDon hoaDon1 = new HoaDon();
@@ -98,7 +103,7 @@ namespace AppAPI.Services
                             chiTietHoaDon.IDHoaDon = hoaDon1.ID;
                             chiTietHoaDon.IDBienThe = x.IDBienThe;
                             chiTietHoaDon.SoLuong = x.SoLuong;
-                            chiTietHoaDon.DonGia = x.DonGia; 
+                            chiTietHoaDon.DonGia = x.DonGia;
                             chiTietHoaDon.TrangThai = 1;
                             reposChiTietHoaDon.Add(chiTietHoaDon);
                             var bienThe = reposBienThe.GetAll().FirstOrDefault(p => p.ID == x.IDBienThe);
@@ -109,7 +114,7 @@ namespace AppAPI.Services
                         if (hoaDon.IDNguoiDung != null)
                         {
                             QuyDoiDiem quyDoiDiem = reposQuyDoiDiem.GetAll().First();
-                            KhachHang khachHang = reposKhachHang.GetAll().FirstOrDefault(p=>p.IDKhachHang == hoaDon.IDNguoiDung);
+                            KhachHang khachHang = reposKhachHang.GetAll().FirstOrDefault(p => p.IDKhachHang == hoaDon.IDNguoiDung);
                             if (hoaDon.Diem == 0)
                             {
                                 khachHang.DiemTich += hoaDon.TongTien / quyDoiDiem.TiLeTichDiem;
@@ -129,7 +134,7 @@ namespace AppAPI.Services
                             {
                                 if (khachHang.DiemTich >= hoaDon.Diem)
                                 {
-                                    khachHang.DiemTich =khachHang.DiemTich - hoaDon.Diem;
+                                    khachHang.DiemTich = khachHang.DiemTich - hoaDon.Diem;
                                     reposKhachHang.Update(khachHang);
                                     LichSuTichDiem lichSuTichDiem = new LichSuTichDiem()
                                     {
@@ -152,7 +157,7 @@ namespace AppAPI.Services
                     }
                 }
                 else
-                {
+                { 
                     return false;
                 }
             }
@@ -161,47 +166,21 @@ namespace AppAPI.Services
                 return false;
             }
         }
+       
 
-        public bool CreateHoaDonOffline(List<ChiTietHoaDonViewModel> chiTietHoaDons, HoaDonViewModel hoaDon)
+        public bool CreateHoaDonOffline(HoaDonNhap hdnhap)
         {
             try
             {
-                if (chiTietHoaDons != null)
+                HoaDon hoaDon1 = new HoaDon();
+                hoaDon1.ID = Guid.NewGuid();
+                hoaDon1.IDNhanVien = hdnhap.IdNhanVien;
+                hoaDon1.NgayTao = DateTime.Now;
+                hoaDon1.TrangThaiGiaoHang = 1;
+                hoaDon1.TienShip = 0;
+                if (reposHoaDon.Add(hoaDon1))
                 {
-                    HoaDon hoaDon1 = new HoaDon();
-                    hoaDon1.ID = Guid.NewGuid();
-                    hoaDon1.IDNhanVien = null;
-                    hoaDon1.IDVoucher = null;
-                    hoaDon1.TenNguoiNhan = hoaDon.Ten;
-                    hoaDon1.SDT = hoaDon.SDT;
-                    hoaDon1.Email = hoaDon.Email;
-                    hoaDon1.NgayTao = DateTime.Now;
-                    hoaDon1.DiaChi = hoaDon.DiaChi;
-                    hoaDon1.TienShip = hoaDon.TienShip;
-                    hoaDon1.PhuongThucThanhToan = hoaDon.PhuongThucThanhToan;
-                    hoaDon1.TrangThaiGiaoHang = 2;
-                    if (reposHoaDon.Add(hoaDon1))
-                    {
-                        foreach (var x in chiTietHoaDons)
-                        {
-                            ChiTietHoaDon chiTietHoaDon = new ChiTietHoaDon();
-                            chiTietHoaDon.ID = Guid.NewGuid();
-                            chiTietHoaDon.IDHoaDon = hoaDon1.ID;
-                            chiTietHoaDon.IDBienThe = x.IDBienThe;
-                            chiTietHoaDon.SoLuong = x.SoLuong;
-                            chiTietHoaDon.DonGia = x.DonGia;
-                            chiTietHoaDon.TrangThai = 1;
-                            reposChiTietHoaDon.Add(chiTietHoaDon);
-                            var bienThe = reposBienThe.GetAll().FirstOrDefault(p => p.ID == x.IDBienThe);
-                            bienThe.SoLuong -= chiTietHoaDon.SoLuong;
-                            reposBienThe.Update(bienThe);
-                        }
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
+                    return true;
                 }
                 else
                 {
@@ -216,7 +195,10 @@ namespace AppAPI.Services
 
         public bool DeleteHoaDon(Guid id)
         {
-            HoaDon hoaDon = reposHoaDon.GetAll().FirstOrDefault(p=>p.ID == id);
+            HoaDon hoaDon = reposHoaDon.GetAll().FirstOrDefault(p => p.ID == id);
+            var lsthdct = reposChiTietHoaDon.GetAll().Where(c => c.IDHoaDon == hoaDon.ID).ToList();
+            context.ChiTietHoaDons.RemoveRange(lsthdct);
+            context.SaveChanges();
             return reposHoaDon.Delete(hoaDon);
         }
 
@@ -230,36 +212,37 @@ namespace AppAPI.Services
             return reposHoaDon.GetAll();
         }
 
+        
         public List<HoaDon> LichSuGiaoDich(Guid idNguoiDung)
         {
-            var idhoadon  = reposLichSuTichDiem.GetAll().Where(p=>p.IDKhachHang == idNguoiDung).ToList();
+            var idhoadon = reposLichSuTichDiem.GetAll().Where(p => p.IDKhachHang == idNguoiDung).ToList();
             List<HoaDon> lichSuGiaoDich = new List<HoaDon>();
             foreach (var item in idhoadon)
             {
-                lichSuGiaoDich.Add(reposHoaDon.GetAll().FirstOrDefault(p=>p.ID == item.IDHoaDon));
+                lichSuGiaoDich.Add(reposHoaDon.GetAll().FirstOrDefault(p => p.ID == item.IDHoaDon));
             }
             return lichSuGiaoDich;
         }
 
         public List<HoaDon> TimKiemVaLocHoaDon(string ten, int? loc)
         {
-            List<HoaDon> timkiem = reposHoaDon.GetAll().Where(p=>p.TenNguoiNhan.ToLower().Contains(ten.ToLower())).ToList();
+            List<HoaDon> timkiem = reposHoaDon.GetAll().Where(p => p.TenNguoiNhan.ToLower().Contains(ten.ToLower())).ToList();
             if (loc == 0)
             {
-                List<HoaDon> locTangDan = timkiem.OrderBy(p=>p.NgayTao).ToList();
+                List<HoaDon> locTangDan = timkiem.OrderBy(p => p.NgayTao).ToList();
                 return locTangDan;
             }
-            else if(loc == 1)
+            else if (loc == 1)
             {
                 List<HoaDon> locGiamDan = timkiem.OrderByDescending(p => p.NgayTao).ToList();
                 return locGiamDan;
-            } 
+            }
             return timkiem;
         }
 
         public bool UpdateHoaDon(HoaDon hoaDon)
         {
-            var update = reposHoaDon.GetAll().FirstOrDefault(p=>p.ID == hoaDon.ID);
+            var update = reposHoaDon.GetAll().FirstOrDefault(p => p.ID == hoaDon.ID);
             update.IDNhanVien = null;
             update.IDVoucher = null;
             update.TenNguoiNhan = hoaDon.TenNguoiNhan;
@@ -276,8 +259,8 @@ namespace AppAPI.Services
 
         public bool UpdateTrangThaiGiaoHang(Guid idHoaDon, int trangThai, Guid idNhanVien)
         {
-            var update = reposHoaDon.GetAll().FirstOrDefault(p=>p.ID == idHoaDon);
-            List<ChiTietHoaDon> chitiethoadon = reposChiTietHoaDon.GetAll().Where(p=>p.IDHoaDon == idHoaDon).ToList();
+            var update = reposHoaDon.GetAll().FirstOrDefault(p => p.ID == idHoaDon);
+            List<ChiTietHoaDon> chitiethoadon = reposChiTietHoaDon.GetAll().Where(p => p.IDHoaDon == idHoaDon).ToList();
             if (update != null)
             {
                 if (trangThai == 5)

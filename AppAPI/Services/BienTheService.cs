@@ -53,6 +53,31 @@ namespace AppAPI.Services
             await _context.SaveChangesAsync();
             return true;
         }
+        //GetAll
+        public async Task<List<BienTheViewModel>> GetAllBienThe()
+        {
+            var lstbthe = await(from sp in _context.SanPhams
+                             join bt in _context.BienThes on sp.ID equals bt.IDSanPham
+                             select new BienTheViewModel()
+                             {
+                                 ID = bt.ID,
+                                 Ten = sp.Ten,
+                                 SoLuong = bt.SoLuong,
+                                 GiaGoc = bt.GiaBan,
+                                 GiaBan = bt.IDKhuyenMai == null ? bt.GiaBan : (from kh in _context.KhuyenMais where bt.IDKhuyenMai == kh.ID select kh.GiaTri * bt.GiaBan).FirstOrDefault(),
+                                 TrangThai = bt.TrangThai,
+                                 Anh = (from img in _context.Anhs.AsNoTracking() join btimg in _context.AnhBienThes on img.ID equals btimg.IdAnh where btimg.IdBienThe == bt.ID select img.Ten).ToList(),
+                                 GiaTris = (from gt in _context.GiaTris
+                                            join ctbt in _context.ChiTietBienThes on gt.ID equals ctbt.IDGiaTri
+                                            where ctbt.IDBienThe == bt.ID
+                                            select new GiaTriRequest()
+                                            {
+                                                ID = gt.ID,
+                                                Ten = gt.Ten
+                                            }).ToList()
+                             }).ToListAsync();
+            return lstbthe;
+        }
         //Lấy BT theo ID
         public async Task<BienTheViewModel> GetBienTheById(Guid idBienThe)
         {
@@ -422,6 +447,8 @@ namespace AppAPI.Services
             }
             return null;
         }
+
+        
         #endregion
     }
 

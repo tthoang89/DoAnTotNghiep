@@ -2,6 +2,7 @@
 using AppAPI.Services;
 using AppData.Models;
 using AppData.ViewModels;
+using AppData.ViewModels.BanOffline;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -45,9 +46,9 @@ namespace AppAPI.Controllers
             return _iHoaDonService.CreateHoaDon(hoaDon.ChiTietHoaDons, hoaDon);
         }
         [HttpPost("Offline")]
-        public bool CreateHoaDonOffline(HoaDonViewModel hoaDon)
+        public bool CreateHoaDonOffline(HoaDonNhap hdnhap)
         {
-            return _iHoaDonService.CreateHoaDonOffline(hoaDon.ChiTietHoaDons, hoaDon);
+            return _iHoaDonService.CreateHoaDonOffline(hdnhap);
         }
         [HttpPut]
         public bool UpdateTrangThai(Guid idhoadon, int trangthai,Guid idnhanvien)
@@ -59,7 +60,7 @@ namespace AppAPI.Controllers
         {
             return _iHoaDonService.UpdateHoaDon(hoaDon);
         }
-        [HttpDelete]
+        [HttpDelete("deleteHoaDon/{id}")]
         public bool Delete(Guid id)
         {
             return _iHoaDonService.DeleteHoaDon(id);

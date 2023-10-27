@@ -8,6 +8,7 @@ namespace AppAPI.IServices
     public interface IBienTheService
     {
         #region BienThe
+        Task<List<BienTheViewModel>> GetAllBienThe();
         Task<List<BienTheViewModel>> GetBienTheByIdSanPham(Guid idSanPham);
         Task<BienTheViewModel> GetBienTheById(Guid idBienThe);
         Task<BienTheViewModel> GetBTByListGiaTri(BienTheTruyVan bttv);
