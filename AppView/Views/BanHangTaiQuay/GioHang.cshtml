@@ -1,66 +1,91 @@
-﻿@using AppData.ViewModels
-@model List<BienTheViewModel>
+﻿@using AppData.ViewModels.BanOffline
+@model List<HoaDonChiTietViewModel>
 
 @{
     ViewData["Title"] = "GioHang";
-    <style>
-        .cart {
-            display: block;
-            padding-top: 1px;
-            padding-left: 1px;
-            width: 100%;
-        }
-
-        .cart-items {
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-            -webkit-box-flex: 1;
-            flex: 1;
-            background: #eee;
-            padding: 0 0.8rem;
-        }
-
-        .column-left {
-            position: relative;
-        }
-
-        .cell-order {
-            width: 3rem;
-            min-width: 3rem;
-            max-width: 3rem;
-            text-align: center;
-        }
-
-        .cell-action {
-            width: 4rem;
-        }
-
-        .sub-column {
-            height: 25%;
-        }
-    </style>
 }
-<div class="cart" style="display:flex; width:100%">
-    <div class="cart-items" style="display:flex; width:100%">
-        <div class="column-left">
-            <div class="cell-order">
-                STT
-            </div>
-            <div class="cell-action">
-                <i class="fa-solid fa-trash"></i>
-            </div>
-        </div>
 
-        <div class="column">
-            <div class="sub-column">
-                Tên
+<div class = "cthd">
+    @{
+        var index = 1;
+        var tsl = 0;
+        var ttien = 0;
+    }
+
+    <div class="cart">
+        @foreach (var item in Model)
+        {
+            <div class="cart-item">
+                <div class="cell-order">@index</div>
+                <div class="cell-active">
+                    <button class="btn" onclick="deleteHDCT('@item.Id','@item.IdHoaDon')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+                <div class="cell-content">
+                    <div class="cell-content-top">
+                        <div class="cell-code">Mã sản phẩm</div>
+                        <div class="cell-name">@item.Ten</div>
+                    </div>
+                    <div class="cell-content-bottom">
+                        <div class="cell-quantity">
+                            <input type="number" style="width:90px" value="@item.SoLuong">
+                        </div>
+                        <div class="cell-changeprice">@item.DonGia.ToString("n0")</div>
+                        <div class="cell-changeprice"><b>@((item.DonGia*item.SoLuong).ToString("n0"))</b></div>
+                    </div>
+                </div>
+                <div class="cell-add">
+                    <button class="btn">
+                        <i class="fa-solid fa-circle-plus"></i>
+                    </button>
+                </div>
             </div>
-            <div class="sub-column">
-                SL
-            </div>
-        </div>
-        <div class="column">Đơn giá</div>
-        <div class="column">Giá bán</div>
-        <div class="column"><i class="fa-solid fa-circle-plus"></i></div>
+            index++;
+            tsl += @item.SoLuong;
+            ttien += (@item.SoLuong * @item.DonGia);
+        }
     </div>
+
+    <div class="row" style="margin-top:30px; font-size:15px">
+        <div class='col-6'>
+            <input class="form-control" type="text" placeholder="Ghi chú đơn hàng" />
+        </div>
+        <div class='col-1'>
+            <p>SL: @tsl </p>
+        </div>
+        <div class='col-3'>
+            <p>Tổng tiền hàng: </p>
+        </div>
+        <div class='col-2'>
+            <p style="text-align:right; padding-right:20px">@ttien.ToString("n0")</p>
+        </div>
+    </div>
+
+    <div class="row" style="margin-top:5px">
+        <button class="btn btn-primary btn-block">Thanh toán</button>
+    </div>
+
 </div>
+<script type="text/javascript">
+    function loadData(idhd){
+        $('.cthd').load("/BanHangTaiQuay/getCTHD/" + idhd);
+    }
+    function deleteHDCT(idcthd,idhd){
+      $.ajax({
+          url: "/BanHangTaiQuay/deleteHdct/"+idcthd,
+          type: "DELETE",
+          contentType: "application/json;charset=UTF-8",
+          dataType: "json",
+          success: function(response) {
+              loadData(idhd);
+              console.log("Thành công");
+          },
+          error: function(response) {
+              alert("Xóa thất bại");
+          }
+      });
+    }
+
+</script>
+

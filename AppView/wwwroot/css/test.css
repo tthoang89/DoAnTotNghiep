@@ -1,17 +1,13 @@
-﻿
+﻿/* Import Google font - Poppins */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
-
-* {
-    overflow-y: hidden;
-}
-
 .tabbill {
     padding-top: 5px;
     position: relative;
+    overflow-x: hidden;
     overflow-y: hidden;
+    max-width: 1000px;
     height: 45px;
     background: #5372F0;
-    font-family: 'Poppins', sans-serif;
 }
 
     .tabbill .icon {
@@ -39,7 +35,7 @@
     width: 35px;
     height: 35px;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 1rem;
     text-align: center;
     line-height: 35px;
     border-radius: 50%;
@@ -61,7 +57,9 @@
     display: flex;
     list-style: none;
     overflow-x: hidden;
+    overflow-y: hidden;
     scroll-behavior: smooth;
+    height: 45px;
 }
 
 .tabs-box.dragging {
@@ -71,10 +69,11 @@
 
 .tabs-box .tab {
     cursor: pointer;
-    font-size: 0.88rem;
+    font-size:0.9rem;
+    min-width:120px;
     white-space: nowrap;
     background: #5372F0;
-    padding: 10px 17px;
+    padding: 8px 15px;
     border: 1px solid #5372F0;
     color: #fff;
     -webkit-border-top-left-radius: 8px;
@@ -84,6 +83,11 @@
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
 }
+
+    .tabs-box .tab:first-child {
+        margin-left: 20px;
+    }
+
     .tabs-box .tab:hover {
         background: #3d59c9;
     }
@@ -114,33 +118,23 @@
     .product-list li {
         position: relative;
         width: 50%;
-        padding: 10px;
+        padding: 5px;
         box-sizing: border-box;
         height: 72px;
         border: 1px solid transparent;
         border-radius: 5px;
+        overflow-x: hidden;
     }
-
-        .product-list li a {
-            display: block;
-            text-decoration: none;
+        .product-list li:hover {
+            border: 2px solid #4d9bf7;
+            border-radius: 4px;
         }
-
-            .product-list li a:hover {
-                border: 1px solid #4d9bf7;
-                border-radius: 4px;
-                display: block;
-                text-decoration: none;
-                width: 100%;
-                height: 100%;
-            }
-
 .product-item {
     pointer-events: none;
     float: left;
     align-items: center;
-    width: 48px;
-    height: 48px;
+    width: 54px;
+    height: 55px;
     min-width: 48px;
     align-items: center;
 }
@@ -155,13 +149,13 @@
 }
 
     .product-detail h4 {
-        font-size: 10px;
+        font-size: 14px;
         color: black;
-        font-weight:500;
+        font-weight: 500;
     }
 
     .product-detail p {
-        font-size: 10px;
+        font-size: 14px;
         color: blue;
         font-weight: 500;
     }
@@ -175,4 +169,95 @@
     border-radius: 5px;
     object-fit: cover;
     object-position: center;
+}
+/*GioHang*/
+.cart {
+    border: 1px solid transparent;
+    padding: 5px;
+    font-size: 0.9rem;
+    overflow-x: hidden;
+    width: 100%;
+}
+
+.cart-item {
+    display: inline-flex;
+    grid-template-columns: auto auto;
+    -webkit-box-flex: 1;
+    flex: 1;
+    box-shadow: 0 1px 8px rgba(102,115,143,0.5);
+    border-radius: 5px;
+    width: 100%;
+}
+
+    .cart-item:hover {
+        border: 2px solid #4d9bf7;
+        border-radius: 5px;
+    }
+
+.cell-order {
+    width: 5%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cell-active {
+    width: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cell-content {
+    -webkit-box-orient: vertical;
+    overflow-x: hidden;
+    width: 76%;
+}
+
+.cell-content-top {
+    -webkit-box-direction: normal;
+    display: flex;
+    flex-wrap: nowrap;
+    width: 100%;
+}
+
+.cell-code {
+    padding-top: calc(0.17rem);
+    width: 30%;
+    word-break: break-word;
+    text-align: left;
+}
+
+.cell-name {
+    padding-top: calc(0.17rem);
+    word-break: break-word;
+    text-align: left;
+    width: 70%;
+}
+
+.cell-add {
+    width: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 8%;
+}
+
+.cell-content-bottom {
+    -webkit-box-direction: normal;
+    display: flex;
+    flex-wrap: nowrap;
+    margin-top: 10px;
+    overflow-x: hidden;
+    width: 100%;
+}
+
+.cell-quantity {
+    width: 40%;
+}
+
+.cell-changeprice {
+    width: 10rem;
+    text-align: right;
+    width: 30%;
 }

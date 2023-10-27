@@ -2,8 +2,9 @@
 @using AppData.ViewModels
 @{
     ViewData["Title"] = "BanHang";
-    <link rel="stylesheet" href="~/css/banhangtaiquay.css" type="text/css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="~/css/test.css" type="text/css">
+    <script src="~/js/bantaiquay.js" defer></script>
     var lsthdcho = ViewData["lsthdcho"] as List<HoaDon>;
     var lstbt = ViewData["lstbthe"] as List<BienTheViewModel>;
 }
@@ -16,35 +17,37 @@
         <div class="col-md-10 col-sm-12">
             <div class="tabbill">
                 <div class="icon"><i id="left" class="fa-solid fa-angle-left"></i></div>
-                <ul class="tabs-box">
-                    @{
-                        var index = 1;
-                        @foreach (var item in lsthdcho)
-                        {
-                            <li class="tab">
-                                <span>
-                                    <a onclick="link()">Hóa đơn @index</a>
-                                    <a style="padding-left: 10px;" onclick="remove()">
-                                        <i class="fas fa-times"></i>
-                                    </a>
-                                </span>
-                            </li>
-                            index++;
+                @if (lsthdcho != null)
+                {
+                    <ul class="tabs-box">
+                        @{
+                            var index = 1;
+                            foreach (var item in lsthdcho)
+                            {
+                                <li class="tab" onclick="gethdct('@item.ID')">
+                                    <span value="@item.ID">
+                                        <a>Hoá đơn @index</a>
+                                        <a style="padding-left: 10px;" onclick="deletehd('@item.ID')"><i class="fas fa-times"></i></a>
+                                    </span>
+                                </li>
+                                index++;
+                            }
                         }
-                    }
-                </ul>
+                    </ul>
+                }
                 <div class="icon"><i id="right" class="fa-solid fa-angle-right"></i></div>
             </div>
         </div>
     </div>
     <!--Thanh bán hàng-->
     <div class="row">
-        <div class="col-md-5 col-sm-12 h-700px">
+        <div class="col-md-5 col-sm-12">
             <ul class="product-list">
-                @foreach (var item in lstbt)
+                @if (lstbt != null)
                 {
-                    <li>
-                        <a href="#">
+                    @foreach (var item in lstbt)
+                    {
+                        <li onclick="addHDCT('@item.ID',@item.GiaBan)">
                             <div class="product-item">
                                 @{
                                     var anh = item.Anh.Any() ? item.Anh[0] : string.Empty;
@@ -58,68 +61,79 @@
                                     <p style="flex-basis: 49.5%;">SL: @item.SoLuong</p>
                                 </div>
                             </div>
-                        </a>
-                    </li>
+                        </li>
+                    }
                 }
             </ul>
         </div>
-        <div class="col-md-7 col-sm-12 h-700px">
+        <div class="col-md-7 col-sm-12">
             <div id="partialGioHang">
             </div>
         </div>
     </div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="~/js/jquery-3.3.1.min.js"></script>
-<script src="~/js/bantaiquay.js"></script>
+<script>
+    function deletehd(idhd) {
+    var ans = confirm("Bạn có chắc chắn xóa Đơn Nháp này?");
+    if (ans) {
+        $.ajax({
+            url: "/BanHangTaiQuay/deleteHDCho/" + idhd,
+            type: "DELETE",
+            contentType: "application/json;charset=UTF-8",
+            dataType: "json",
+            success: function(response) {
+                if (response.success == true) {
+                    toastr.success(response.message, 'Success Alert', { timeOut: 300 });
+                } else {
+                    toastr.error(response.message, 'Error Alert', { timeOut: 300 });
+                }
+            },
+            error: function(response) {
+                console.log(response);
+                toastr.error(response.message, 'Error Alert', { timeOut: 300 });
+            }
+        });
+    }
+    }
+</script>
 <script type="text/javascript">
-            $('#partialGioHang').load("/BanHangTaiQuay/GioHangTaiQuay")
 
-    $(function () {
-               $("li").click(function (e) {
-               e.preventDefault();
-               $("li").removeClass("active");
-               $(this).addClass("active");
-           });
-       });
-       const tabsBox = document.querySelector(".tabs-box"),
-       allTabs = tabsBox.querySelectorAll(".tab"),
-       arrowIcons = document.querySelectorAll(".icon i");
 
-       let isDragging = false;
-
-       const handleIcons = (scrollVal) => {
-           let maxScrollableWidth = tabsBox.scrollWidth - tabsBox.clientWidth;
-           arrowIcons[0].parentElement.style.display = scrollVal <= 0 ? "none" : "flex";
-           arrowIcons[1].parentElement.style.display = maxScrollableWidth - scrollVal <= 1 ? "none" : "flex";
-       }
-
-       arrowIcons.forEach(icon => {
-           icon.addEventListener("click", () => {
-               // if clicked icon is left, reduce 350 from tabsBox scrollLeft else add
-               let scrollWidth = tabsBox.scrollLeft += icon.id === "left" ? -340 : 340;
-               handleIcons(scrollWidth);
-           });
-       });
-
-       allTabs.forEach(tab => {
-           tab.addEventListener("click", () => {
-               tabsBox.querySelector(".active").classList.remove("active");
-               tab.classList.add("active");
-           });
-       });
-
-       const dragging = (e) => {
-           if(!isDragging) return;
-           tabsBox.classList.add("dragging");
-           tabsBox.scrollLeft -= e.movementX;
-           handleIcons(tabsBox.scrollLeft)
-       }
-
-       const dragStop = () => {
-           isDragging = false;
-           tabsBox.classList.remove("dragging");
-       }
-       tabsBox.addEventListener("mousedown", () => isDragging = true);
-       tabsBox.addEventListener("mousemove", dragging);
-       document.addEventListener("mouseup", dragStop);
+</script>
+<script type="text/javascript">
+    function addHDCT(idbt,dongia){
+      var activeTab = $(".tabs-box .tab").filter(".active");
+      var elementValue = activeTab.find("span").attr("value");
+      var request = {IdHoaDon:elementValue, IdBienThe: idbt, DonGia: dongia,SoLuong:1}
+      console.log(request);
+      $.ajax({
+          url: "/BanHangTaiQuay/addHdct",
+          async: false,
+          type: 'POST',
+          dataType: 'json',
+          data:request,
+          success: function(response) {
+              gethdct(request.IdHoaDon);
+          },
+          error: function(response) {
+              alert("Thêm Thất bại");
+          }
+      });
+    }
+    function gethdct(idhd){
+        $('#partialGioHang').load("/BanHangTaiQuay/getCTHD/" + idhd);
+    }
+</script>
+<script>
+    $(document).ready(function(){
+        $(function () {
+        $(".tab").click(function (e) {
+            e.preventDefault();
+            $(".tab").removeClass("active");
+            $(this).addClass("active");
+        });
+        });
+    });
 </script>
