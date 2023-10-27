@@ -56,6 +56,92 @@ namespace AppView.Controllers
             PagedList<SanPhamViewModel> lst = new PagedList<SanPhamViewModel>(lstSanpham, pageNumber, pageSize);
             return View(lst);
         }
+        #region Filter
+        public IActionResult GetFilteredProducts([FromBody] FilterData filter)
+        {
+            HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/getAll").Result;
+            List<SanPhamViewModel> lstSanpham = new List<SanPhamViewModel>();
+            lstSanpham = JsonConvert.DeserializeObject<List<SanPhamViewModel>>(response.Content.ReadAsStringAsync().Result);
+            List<SanPhamViewModel> lstSanphamfn = new List<SanPhamViewModel>();
+            if (filter.priceRange != null && filter.priceRange.Count > 0 && !filter.priceRange.Contains("all"))
+            {
+                foreach (var item in filter.priceRange)
+                {
+                    if (item == "1")
+                    {
+                        foreach (var x in lstSanpham.Where(p => p.GiaBan < 100).ToList())
+                        {
+                            lstSanphamfn.Add(x);
+                        }
+                    }else if (item == "2")
+                    {
+                        foreach (var x in lstSanpham.Where(p => p.GiaBan >= 100000 && p.GiaBan < 200000).ToList())
+                        {
+                            lstSanphamfn.Add(x);
+                        }
+                    }
+                    else if (item == "3")
+                    {
+                        foreach (var x in lstSanpham.Where(p => p.GiaBan >= 200000 && p.GiaBan < 300000).ToList())
+                        {
+                            lstSanphamfn.Add(x);
+                        }
+                    }
+                    else if (item == "4")
+                    {
+                        foreach (var x in lstSanpham.Where(p => p.GiaBan >= 300000 && p.GiaBan < 400000).ToList())
+                        {
+                            lstSanphamfn.Add(x);
+                        }
+                    }
+                    else if (item == "5")
+                    {
+                        foreach (var x in lstSanpham.Where(p => p.GiaBan >= 400000 && p.GiaBan < 500000).ToList())
+                        {
+                            lstSanphamfn.Add(x);
+                        }
+                    }
+                    else if (item == "6")
+                    {
+                        foreach (var x in lstSanpham.Where(p => p.GiaBan > 500000).ToList())
+                        {
+                            lstSanphamfn.Add(x);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                lstSanphamfn = lstSanpham;
+            }
+            if (filter.loaiSP != null && filter.loaiSP.Count > 0)
+            {
+                List<SanPhamViewModel> lsttam = new List<SanPhamViewModel>();
+                List<SanPhamViewModel> lsttam1 = new List<SanPhamViewModel>();
+                foreach (var x in filter.loaiSP)
+                {
+                    lsttam = lstSanphamfn.Where(p => p.LoaiSP == x).ToList();
+                    foreach (var item in lsttam)
+                    {
+                        if (lsttam1.FirstOrDefault(p=>p.ID == item.ID) == null)
+                        {
+                            lsttam1.Add(item);
+                        }
+                    }
+                }
+                lstSanphamfn = lsttam1;
+            }
+            
+            if (filter.search != null)
+            {
+                lstSanphamfn = lstSanphamfn.Where(p=>p.Ten.ToLower().Contains(filter.search.ToLower())).ToList();
+            }
+            
+
+            return PartialView("_ReturnProducts", lstSanphamfn);
+        }
+        #endregion
+
         #region Cart
         [HttpGet]
         public IActionResult ShoppingCart()
