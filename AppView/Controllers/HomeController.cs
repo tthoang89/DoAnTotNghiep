@@ -1,5 +1,6 @@
 ﻿using AppData.Models;
 using AppData.ViewModels;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using Newtonsoft.Json;
@@ -36,7 +37,7 @@ namespace AppView.Controllers
         {
             return View();
         }
-        
+
         public IActionResult Shop(int? pages)
         {
             HttpResponseMessage responseLoaiSP = _httpClient.GetAsync(_httpClient.BaseAddress + "LoaiSP/getAll").Result;
@@ -46,7 +47,7 @@ namespace AppView.Controllers
             }
             HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/getAll").Result;
             List<SanPhamViewModel> lstSanpham = new List<SanPhamViewModel>();
-            if(response.IsSuccessStatusCode)
+            if (response.IsSuccessStatusCode)
             {
                 lstSanpham = JsonConvert.DeserializeObject<List<SanPhamViewModel>>(response.Content.ReadAsStringAsync().Result);
             }
@@ -62,12 +63,12 @@ namespace AppView.Controllers
             List<BienTheViewModel> bienThes = new List<BienTheViewModel>();
             if (HttpContext.Session.GetString(KeyCart) != null)
             {
-				bienThes = JsonConvert.DeserializeObject<List<BienTheViewModel>>(HttpContext.Session.GetString(KeyCart));
-			}      
+                bienThes = JsonConvert.DeserializeObject<List<BienTheViewModel>>(HttpContext.Session.GetString(KeyCart));
+            }
             long tongtien = 0;
-            foreach(var x in bienThes)
+            foreach (var x in bienThes)
             {
-                tongtien += x.GiaBan;
+                tongtien += x.GiaBan * x.SoLuong;
             }
             TempData["TongTien"] = tongtien.ToString("n0");
             TempData["ListBienThe"] = JsonConvert.SerializeObject(bienThes);
@@ -75,7 +76,7 @@ namespace AppView.Controllers
         }
         [HttpPost]
         public ActionResult AddToCart(string id)
-        { 
+        {
             HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + $"BienThe/getBienTheById/{id}").Result;
             if (response.IsSuccessStatusCode)
             {
@@ -90,10 +91,11 @@ namespace AppView.Controllers
                 else
                 {
                     bienThes = JsonConvert.DeserializeObject<List<BienTheViewModel>>(result);
-                    if (bienThes.Contains(bienThe))
+                    var tempBienThe = bienThes.FirstOrDefault(x => x.ID == bienThe.ID);
+                    if (tempBienThe != null)
                     {
                         //Sua 
-                        bienThe.SoLuong++;
+                        tempBienThe.SoLuong++;
                     }
                     else
                     {
@@ -115,24 +117,43 @@ namespace AppView.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Login(NhanVienViewModel nhanVien)
+        public IActionResult Login(string login, string password)
         {
-            //https://localhost:7095/api/QuanLyNguoiDung/DangNhap?email=tam%40gmail.com&password=chungtam2003
-            string email = nhanVien.Email.Replace("@","%40");
-            HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + $"QuanLyNguoiDung/DangNhap?email={email}&password={nhanVien.Password}").Result;
+            //https://localhost:7095/api/QuanLyNguoiDung/DangNhap?email=tam%40gmail.com&password=chungtam200396
+            if (login.Contains('@'))
+            {
+                login = login.Replace("@", "%40");
+            }
+            HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + $"QuanLyNguoiDung/DangNhap?lg={login}&password={password}").Result;
             if (response.IsSuccessStatusCode)
             {
-                HttpContext.Session.SetString("UserName",JsonConvert.DeserializeObject<NhanVien>(response.Content.ReadAsStringAsync().Result).Ten);                
+                HttpContext.Session.SetString("UserName", JsonConvert.DeserializeObject<LoginViewModel>(response.Content.ReadAsStringAsync().Result).Ten);
+                HttpContext.Session.SetString("Role", JsonConvert.DeserializeObject<LoginViewModel>(response.Content.ReadAsStringAsync().Result).vaiTro.ToString());
+                //HttpContext.Session.SetString("UserID", JsonConvert.DeserializeObject<LoginViewModel>(response.Content.ReadAsStringAsync().Result).ID);
+                return RedirectToAction("Index");
             }
-            return RedirectToAction("Index");
+            else return BadRequest();
         }
         public IActionResult Register()
         {
             return View();
         }
+        [HttpPost]
+        public IActionResult Register(KhachHangViewModel khachHang)
+        {
+            khachHang.Id = Guid.NewGuid();
+            HttpResponseMessage response = _httpClient.PostAsJsonAsync(_httpClient.BaseAddress + "KhachHang", khachHang).Result;
+            if (response.IsSuccessStatusCode) return RedirectToAction("Login");
+            return BadRequest();
+        }
         public IActionResult Profile()
         {
             return View();
+        }
+        public IActionResult LogOut()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Index");
         }
         #endregion
 
@@ -140,14 +161,14 @@ namespace AppView.Controllers
         [HttpGet]
         public IActionResult CheckOut()
         {
-			return View();
+            return View();
         }
         [HttpPost]
-        public IActionResult Pay(HoaDonViewModel hoaDon)
+        public ActionResult Pay(HoaDonViewModel hoaDon)
         {
             List<ChiTietHoaDonViewModel> lstChiTietHoaDon = new List<ChiTietHoaDonViewModel>();
             string temp = TempData["ListBienThe"] as string;
-            foreach(var item in JsonConvert.DeserializeObject<List<BienTheViewModel>>(temp))
+            foreach (var item in JsonConvert.DeserializeObject<List<BienTheViewModel>>(temp))
             {
                 ChiTietHoaDonViewModel chiTietHoaDon = new ChiTietHoaDonViewModel();
                 chiTietHoaDon.IDBienThe = item.ID;
@@ -157,14 +178,12 @@ namespace AppView.Controllers
             }
             hoaDon.ChiTietHoaDons = lstChiTietHoaDon;
             hoaDon.PhuongThucThanhToan = "Mac dinh";
-            hoaDon.DiaChi = "Mac dinh";
-            hoaDon.TienShip = 0;
             hoaDon.Diem = 0;
             string tongTien = TempData["TongTien"] as string;
-            hoaDon.TongTien = Convert.ToInt32(tongTien.Replace(",",""));
+            hoaDon.TongTien = Convert.ToInt32(tongTien.Replace(",", ""));
             HttpResponseMessage response = _httpClient.PostAsJsonAsync("HoaDon", hoaDon).Result;
-            if (response.IsSuccessStatusCode) return RedirectToAction("Index");
-            else return BadRequest();
+            if (response.IsSuccessStatusCode) return Json(new { success = true, message = "Pay successfully" });
+            else return Json(new { success = false, message = "Pay fail" }); ;
         }
         //public IActionResult CheckOut(long tongtien)
         //{
