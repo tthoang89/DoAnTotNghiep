@@ -46,5 +46,11 @@ namespace AppAPI.Controllers
             var tt = await _sanPhamService.DeleteThuocTinh(id);
             return Ok();
         }
+        [HttpGet("GetGiaTri")]
+        public async Task<IActionResult> GetGiaTri(string thuocTinh)
+        {
+            var giaTris = await _sanPhamService.GetGiaTri(thuocTinh);
+            return Ok(giaTris);
+        }
     }
 }

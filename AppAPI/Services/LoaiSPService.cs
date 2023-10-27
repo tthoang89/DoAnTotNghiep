@@ -1,6 +1,7 @@
 ﻿using AppAPI.IServices;
 using AppData.Models;
 using AppData.ViewModels.SanPham;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace AppAPI.Services
@@ -71,6 +72,15 @@ namespace AppAPI.Services
             return true;
         }
         #endregion
-
+        //Tam
+        public async Task<List<LoaiSP>> GetLoaiSPCha()
+        {
+            return await _context.LoaiSPs.Where(x=>x.IDLoaiSPCha==null).ToListAsync();
+        }
+        public async Task<List<LoaiSP>> GetLoaiSPCon(Guid idLoaiSPCha)
+        {
+            return await _context.LoaiSPs.Where(x=>x.IDLoaiSPCha== idLoaiSPCha).ToListAsync();
+        }
+        //End
     }
 }

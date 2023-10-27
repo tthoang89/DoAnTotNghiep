@@ -133,6 +133,41 @@ namespace AppAPI.Services
                                 }).FirstOrDefaultAsync();
             return result;
         }
+        //Tam
+        public async Task<List<GiaTri>> GetGiaTri(string thuocTinh)
+        {
+            var tempThuocTinh = await _context.ThuocTinhs.FirstOrDefaultAsync(x => x.Ten == thuocTinh);
+            if(tempThuocTinh==null)
+            {
+                var tt = new ThuocTinh() { ID = Guid.NewGuid(),Ten=thuocTinh,NgayTao=DateTime.Now,TrangThai=1};
+                await _context.ThuocTinhs.AddAsync(tt);
+                await _context.SaveChangesAsync();
+                return new List<GiaTri>();
+            }
+            else
+            {
+                var giaTris = await _context.GiaTris.Where(x => x.IdThuocTinh == tempThuocTinh.ID).ToListAsync();
+                return giaTris;
+            }            
+        }
+        //public async Task<bool> AddSanPham(SanPhamRequestMVC sanPhamRequest)
+        //{
+        //    List<ThuocTinh> listThuocTinh = new List<ThuocTinh>();
+        //    var sanPham = new SanPham() { ID = Guid.NewGuid(), Ten = sanPhamRequest.Ten, MoTa = sanPhamRequest.Mota, TrangThai = 1, IDLoaiSP = new Guid(sanPhamRequest.LoaiSP) };
+        //    await _context.SanPhams.AddAsync(sanPham);
+        //    foreach(var tt in sanPhamRequest.ThuocTinhs)
+        //    {
+        //        var thuocTinh = await _context.ThuocTinhs.FirstAsync(y => y.Ten == tt);
+        //        var thuocTinhSanPham = new ThuocTinhSanPham() { ID = Guid.NewGuid(), IDSanPham = sanPham.ID, IDThuocTinh =  thuocTinh.ID};
+        //        await _context.ThuocTinhSanPhams.AddAsync(thuocTinhSanPham);
+        //    }
+        //    for(int i = 0;i<sanPhamRequest.ThuocTinhs.Count;i++)
+        //    {
+
+        //    }
+        //    await _context.SaveChangesAsync();
+        //}
+        //End
         #endregion
 
 

@@ -1,6 +1,12 @@
-﻿@{
-    var username = Context.Session.GetString("UserName");
-    var role = Context.Session.GetString("Role");
+﻿@using Newtonsoft.Json;
+@using AppData.ViewModels;
+@{
+    var loginInfor = new LoginViewModel();
+    string? session = Context.Session.GetString("LoginInfor");
+    if (session != null)
+    {
+        loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(Context.Session.GetString("LoginInfor"));
+    }
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -14,7 +20,7 @@
 
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800;900&display=swap"
-          rel="stylesheet"> 
+          rel="stylesheet">
 
     <!-- Css Styles -->
     <link rel="stylesheet" href="/css/bootstrap.min.css" type="text/css">
@@ -49,21 +55,22 @@
                             </div>
                             <div class="header__top__hover">
                                 @{
-                                    if (username != null)
+                                    if (loginInfor.Ten != null)
                                     {
-                                       <span>
-                                           <a asp-controller="Login" asp-action="Login" style="color:white">
-                                               Hello: @username
-                                           </a>
-                                           @*<i class="arrow_carrot-down"></i>*@        
-                                           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                               <li><a class="dropdown-item" asp-controller="Home" asp-action="Profile">Thông tin cá nhân</a></li>
-                                               @if(role == "0"){
-                                                    <li><a class="dropdown-item" asp-controller="Login" asp-action="Profile">Quản lý cửa hàng</a></li>
-                                                }            
-                                               <li><a class="dropdown-item" asp-controller="Home" asp-action="LogOut">LOGOUT</a></li>
-                                           </ul>
-                                       </span>
+                                        <span>
+                                            <a style="color:white">
+                                                Hello: @loginInfor.Ten
+                                            </a>
+                                            @*<i class="arrow_carrot-down"></i>*@
+                                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                                <li><a class="dropdown-item" asp-controller="Home" asp-action="Profile" asp-route-loginInfor="@session">Thông tin cá nhân</a></li>
+                                                @if (loginInfor.vaiTro == 0)
+                                                {
+                                                    <li><a class="dropdown-item" asp-controller="VaiTro" asp-action="HomePageAdmin" asp-route-id="@loginInfor.Id">Quản lý cửa hàng</a></li>
+                                                }
+                                                <li><a class="dropdown-item" asp-controller="Home" asp-action="LogOut">LOGOUT</a></li>
+                                            </ul>
+                                        </span>
                                     }
                                     else
                                     {
