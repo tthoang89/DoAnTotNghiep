@@ -91,7 +91,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a asp-controller="SanPham" asp-action="Show" class="nav-link">
+                            <a asp-controller="Admin" asp-action="ProductManager" class="nav-link">
                                 <i class="far fa-list nav-icon"></i>
                                 <p>Sản phẩm</p>
                             </a>
@@ -182,10 +182,21 @@
         </aside>
         <!-- /.control-sidebar -->
     </div>
+    <script src="/js/jquery-3.3.1.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/jquery.nicescroll.min.js"></script>
+    <script src="/js/jquery.magnific-popup.min.js"></script>
+    <script src="/js/jquery.countdown.min.js"></script>
+    <script src="/js/jquery.slicknav.js"></script>
+    <script src="/js/mixitup.min.js"></script>
+    <script src="/js/owl.carousel.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.2/js/toastr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @await RenderSectionAsync("Scripts", required: false)
     <!-- ./wrapper -->
     <!-- jQuery -->
-    <script src="~/Client/plugins/jquery/jquery.min.js"></script>
+    @* <script src="~/Client/plugins/jquery/jquery.min.js"></script>
     <!-- Bootstrap 4 -->
     <script src="~/Client/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- InputMask -->
@@ -193,7 +204,7 @@
     <!-- AdminLTE App -->
     <script src="~/Client/dist/js/adminlte.min.js"></script>
     <!-- AdminLTE for demo purposes -->
-    <script src="~/Client/dist/js/demo.js"></script>
+    <script src="~/Client/dist/js/demo.js"></script> *@
     <!-- Page specific script -->
 @*aaaaaaaaaaaaaaa*@
 </body>

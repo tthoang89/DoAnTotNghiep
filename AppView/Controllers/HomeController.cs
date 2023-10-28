@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using Newtonsoft.Json;
+using System.Web.Helpers;
 using X.PagedList;
 
 namespace AppView.Controllers
@@ -213,9 +214,7 @@ namespace AppView.Controllers
             HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + $"QuanLyNguoiDung/DangNhap?lg={login}&password={password}").Result;
             if (response.IsSuccessStatusCode)
             {
-                HttpContext.Session.SetString("UserName", JsonConvert.DeserializeObject<LoginViewModel>(response.Content.ReadAsStringAsync().Result).Ten);
-                HttpContext.Session.SetString("Role", JsonConvert.DeserializeObject<LoginViewModel>(response.Content.ReadAsStringAsync().Result).vaiTro.ToString());
-                //HttpContext.Session.SetString("UserID", JsonConvert.DeserializeObject<LoginViewModel>(response.Content.ReadAsStringAsync().Result).ID);
+                HttpContext.Session.SetString("LoginInfor", response.Content.ReadAsStringAsync().Result);
                 return RedirectToAction("Index");
             }
             else return BadRequest();
@@ -232,9 +231,27 @@ namespace AppView.Controllers
             if (response.IsSuccessStatusCode) return RedirectToAction("Login");
             return BadRequest();
         }
-        public IActionResult Profile()
+        [HttpGet]
+        public IActionResult Profile(string loginInfor)
         {
-            return View();
+            LoginViewModel loginViewModel = JsonConvert.DeserializeObject<LoginViewModel>(loginInfor);
+            return View(loginViewModel);
+        }
+        public IActionResult ChangePassword()
+        {
+            return PartialView("ChangePassword");
+        }
+        [HttpPost]
+        public IActionResult ChangePassword(string newPassword)
+        {
+            var session = HttpContext.Session.GetString("LoginInfor");
+            ChangePasswordRequest request = new ChangePasswordRequest();
+            request.ID = JsonConvert.DeserializeObject<LoginViewModel>(session).Id;
+            request.NewPassword = newPassword;
+            var response = _httpClient.PutAsJsonAsync(_httpClient.BaseAddress + "QuanLyNguoiDung/ChangePassword",request).Result;
+            HttpContext.Session.Remove("LoginInfor");
+            if(response.IsSuccessStatusCode) return RedirectToAction("Login");
+            else return BadRequest();
         }
         public IActionResult LogOut()
         {

@@ -44,6 +44,20 @@ namespace AppAPI.Controllers
             return Ok();
         }
         #endregion
+        //Tam
+        [HttpGet("GetLoaiSPCha")]
+        public async Task<IActionResult> GetLoaiSPCha()
+        {
+            var listLsp = await _loaiSPService.GetLoaiSPCha();
+            return Ok(listLsp);
+        }
+        [HttpGet("GetLoaiSPCon")]
+        public async Task<IActionResult> GetLoaiSPCon(Guid idLoaiSPCha)
+        {
+            var listLsp = await _loaiSPService.GetLoaiSPCon(idLoaiSPCha);
+            return Ok(listLsp);
+        }
+        //End
 
     }
 }

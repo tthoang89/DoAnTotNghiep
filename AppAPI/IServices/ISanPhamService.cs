@@ -22,6 +22,10 @@ namespace AppAPI.IServices
         Task<ThuocTinh> SaveThuocTinh(ThuocTinhRequest tt);
         Task<bool> DeleteThuocTinh(Guid id);
         Task<bool> CheckTrungTT(ThuocTinhRequest tt);
+        //Tam
+        Task<List<GiaTri>> GetGiaTri(string thuocTinh);
+        //Task<bool> AddSanPham(SanPhamRequestMVC sanPham);
+        //End
         #endregion       
     }
 }

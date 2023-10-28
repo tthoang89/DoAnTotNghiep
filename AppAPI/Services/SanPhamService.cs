@@ -133,6 +133,41 @@ namespace AppAPI.Services
                                 }).FirstOrDefaultAsync();
             return result;
         }
+        //Tam
+        public async Task<List<GiaTri>> GetGiaTri(string thuocTinh)
+        {
+            var tempThuocTinh = await _context.ThuocTinhs.FirstOrDefaultAsync(x => x.Ten == thuocTinh);
+            if (tempThuocTinh == null)
+            {
+                var tt = new ThuocTinh() { ID = Guid.NewGuid(), Ten = thuocTinh, NgayTao = DateTime.Now, TrangThai = 1 };
+                await _context.ThuocTinhs.AddAsync(tt);
+                await _context.SaveChangesAsync();
+                return new List<GiaTri>();
+            }
+            else
+            {
+                var giaTris = await _context.GiaTris.Where(x => x.IdThuocTinh == tempThuocTinh.ID).ToListAsync();
+                return giaTris;
+            }
+        }
+        //public async Task<bool> AddSanPham(SanPhamRequestMVC sanPhamRequest)
+        //{
+        //    List<ThuocTinh> listThuocTinh = new List<ThuocTinh>();
+        //    var sanPham = new SanPham() { ID = Guid.NewGuid(), Ten = sanPhamRequest.Ten, MoTa = sanPhamRequest.Mota, TrangThai = 1, IDLoaiSP = new Guid(sanPhamRequest.LoaiSP) };
+        //    await _context.SanPhams.AddAsync(sanPham);
+        //    foreach(var tt in sanPhamRequest.ThuocTinhs)
+        //    {
+        //        var thuocTinh = await _context.ThuocTinhs.FirstAsync(y => y.Ten == tt);
+        //        var thuocTinhSanPham = new ThuocTinhSanPham() { ID = Guid.NewGuid(), IDSanPham = sanPham.ID, IDThuocTinh =  thuocTinh.ID};
+        //        await _context.ThuocTinhSanPhams.AddAsync(thuocTinhSanPham);
+        //    }
+        //    for(int i = 0;i<sanPhamRequest.ThuocTinhs.Count;i++)
+        //    {
+
+        //    }
+        //    await _context.SaveChangesAsync();
+        //}
+        //End
         #endregion
 
 
@@ -169,14 +204,14 @@ namespace AppAPI.Services
                 LoaiSP = c.lsp.Ten,
                 IdBT = c.bt.ID,
                 Image = (from img in _context.Anhs.AsNoTracking()
-                             join abt in _context.AnhBienThes.AsNoTracking()
-                             on img.ID equals abt.IdAnh
-                             where abt.IdBienThe == c.bt.ID
-                             select img.Ten).FirstOrDefault(),
+                         join abt in _context.AnhBienThes.AsNoTracking()
+                         on img.ID equals abt.IdAnh
+                         where abt.IdBienThe == c.bt.ID
+                         select img.Ten).FirstOrDefault(),
                 GiaGoc = c.bt.GiaBan,
                 GiaBan = c.bt.IDKhuyenMai == null ? c.bt.GiaBan : (from km in _context.KhuyenMais.AsNoTracking()
-                                                               where km.ID == c.bt.IDKhuyenMai
-                                                               select c.bt.GiaBan * (100 - km.GiaTri) / 100).FirstOrDefault()
+                                                                   where km.ID == c.bt.IDKhuyenMai
+                                                                   select c.bt.GiaBan * (100 - km.GiaTri) / 100).FirstOrDefault()
             }).ToListAsync();
             return result;
         }
@@ -204,10 +239,10 @@ namespace AppAPI.Services
                                       LoaiSP = lsp.Ten,
                                       IdBT = bt.ID,
                                       Image = (from img in _context.Anhs.AsNoTracking()
-                                                   join abt in _context.AnhBienThes.AsNoTracking()
-                                                   on img.ID equals abt.IdAnh
-                                                   where abt.IdBienThe == bt.ID
-                                                   select img.Ten).FirstOrDefault(),
+                                               join abt in _context.AnhBienThes.AsNoTracking()
+                                               on img.ID equals abt.IdAnh
+                                               where abt.IdBienThe == bt.ID
+                                               select img.Ten).FirstOrDefault(),
                                       GiaGoc = bt.GiaBan,
                                       GiaBan = bt.IDKhuyenMai == null ? bt.GiaBan : (from km in _context.KhuyenMais.AsNoTracking()
                                                                                      where km.ID == bt.IDKhuyenMai
@@ -237,9 +272,9 @@ namespace AppAPI.Services
                                         LoaiSP = cate.Ten,
                                         IdBT = bt.ID,
                                         Image = (from img in _context.Anhs.AsNoTracking()
-                                                     join abt in _context.AnhBienThes.AsNoTracking() on img.ID equals abt.IdAnh
-                                                     where abt.IdBienThe == bt.ID
-                                                     select img.Ten).FirstOrDefault(),
+                                                 join abt in _context.AnhBienThes.AsNoTracking() on img.ID equals abt.IdAnh
+                                                 where abt.IdBienThe == bt.ID
+                                                 select img.Ten).FirstOrDefault(),
                                         GiaGoc = bt.GiaBan,
                                         GiaBan = bt.IDKhuyenMai == null ? bt.GiaBan : (from km in _context.KhuyenMais.AsNoTracking()
                                                                                        where km.ID == bt.IDKhuyenMai
@@ -262,10 +297,10 @@ namespace AppAPI.Services
                                         LoaiSP = lsp.Ten,
                                         IdBT = bt.ID,
                                         Image = (from img in _context.Anhs.AsNoTracking()
-                                                     join abt in _context.AnhBienThes.AsNoTracking()
-                                                     on img.ID equals abt.IdAnh
-                                                     where abt.IdBienThe == bt.ID
-                                                     select img.Ten).FirstOrDefault(),
+                                                 join abt in _context.AnhBienThes.AsNoTracking()
+                                                 on img.ID equals abt.IdAnh
+                                                 where abt.IdBienThe == bt.ID
+                                                 select img.Ten).FirstOrDefault(),
                                         GiaGoc = bt.GiaBan,
                                         GiaBan = bt.IDKhuyenMai == null ? bt.GiaBan : (from km in _context.KhuyenMais.AsNoTracking()
                                                                                        where km.ID == bt.IDKhuyenMai

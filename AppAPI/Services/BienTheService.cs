@@ -56,26 +56,26 @@ namespace AppAPI.Services
         //GetAll
         public async Task<List<BienTheViewModel>> GetAllBienThe()
         {
-            var lstbthe = await(from sp in _context.SanPhams
-                             join bt in _context.BienThes on sp.ID equals bt.IDSanPham
-                             select new BienTheViewModel()
-                             {
-                                 ID = bt.ID,
-                                 Ten = sp.Ten,
-                                 SoLuong = bt.SoLuong,
-                                 GiaGoc = bt.GiaBan,
-                                 GiaBan = bt.IDKhuyenMai == null ? bt.GiaBan : (from kh in _context.KhuyenMais where bt.IDKhuyenMai == kh.ID select kh.GiaTri * bt.GiaBan).FirstOrDefault(),
-                                 TrangThai = bt.TrangThai,
-                                 Anh = (from img in _context.Anhs.AsNoTracking() join btimg in _context.AnhBienThes on img.ID equals btimg.IdAnh where btimg.IdBienThe == bt.ID select img.Ten).ToList(),
-                                 GiaTris = (from gt in _context.GiaTris
-                                            join ctbt in _context.ChiTietBienThes on gt.ID equals ctbt.IDGiaTri
-                                            where ctbt.IDBienThe == bt.ID
-                                            select new GiaTriRequest()
-                                            {
-                                                ID = gt.ID,
-                                                Ten = gt.Ten
-                                            }).ToList()
-                             }).ToListAsync();
+            var lstbthe = await (from sp in _context.SanPhams
+                                 join bt in _context.BienThes on sp.ID equals bt.IDSanPham
+                                 select new BienTheViewModel()
+                                 {
+                                     ID = bt.ID,
+                                     Ten = sp.Ten,
+                                     SoLuong = bt.SoLuong,
+                                     GiaGoc = bt.GiaBan,
+                                     GiaBan = bt.IDKhuyenMai == null ? bt.GiaBan : (from kh in _context.KhuyenMais where bt.IDKhuyenMai == kh.ID select kh.GiaTri * bt.GiaBan).FirstOrDefault(),
+                                     TrangThai = bt.TrangThai,
+                                     Anh = (from img in _context.Anhs.AsNoTracking() join btimg in _context.AnhBienThes on img.ID equals btimg.IdAnh where btimg.IdBienThe == bt.ID select img.Ten).ToList(),
+                                     GiaTris = (from gt in _context.GiaTris
+                                                join ctbt in _context.ChiTietBienThes on gt.ID equals ctbt.IDGiaTri
+                                                where ctbt.IDBienThe == bt.ID
+                                                select new GiaTriRequest()
+                                                {
+                                                    ID = gt.ID,
+                                                    Ten = gt.Ten
+                                                }).ToList()
+                                 }).ToListAsync();
             return lstbthe;
         }
         //Lấy BT theo ID
@@ -91,7 +91,9 @@ namespace AppAPI.Services
                                   Ten = sp.Ten,
                                   SoLuong = bt.SoLuong,
                                   GiaGoc = bt.GiaBan,
-                                  GiaBan = bt.IDKhuyenMai == null ? bt.GiaBan : (from kh in _context.KhuyenMais where bt.IDKhuyenMai == kh.ID select kh.GiaTri * bt.GiaBan).FirstOrDefault(),
+                                  GiaBan = bt.IDKhuyenMai == null ? bt.GiaBan : (from km in _context.KhuyenMais.AsNoTracking()
+                                                                                 where km.ID == bt.IDKhuyenMai
+                                                                                 select bt.GiaBan * (100 - km.GiaTri) / 100).FirstOrDefault(),
                                   TrangThai = bt.TrangThai,
                                   Anh = (from img in _context.Anhs.AsNoTracking() join btimg in _context.AnhBienThes on img.ID equals btimg.IdAnh where btimg.IdBienThe == bt.ID select img.Ten).ToList(),
                                   GiaTris = (from gt in _context.GiaTris
@@ -273,7 +275,7 @@ namespace AppAPI.Services
                 bienThe.NgayTao = DateTime.Now;
                 bienThe.TrangThai = request.TrangThai;
                 bienThe.GiaBan = request.GiaBan;
-                bienThe.IsDefault = btdefault == true ? false : true ;
+                bienThe.IsDefault = btdefault == true ? false : true;
                 bienThe.IDKhuyenMai = request.IDKhuyenMai;
                 bienThe.IDSanPham = request.IDSanPham;
                 await _context.BienThes.AddAsync(bienThe);
@@ -348,7 +350,7 @@ namespace AppAPI.Services
         public bool CheckImageExist(string imgName)
         {
             string basePath = Directory.GetCurrentDirectory();
-            string destinationPath = Path.Combine(Path.GetDirectoryName(basePath),"AppView", "wwwroot", "img", "variants");
+            string destinationPath = Path.Combine(Path.GetDirectoryName(basePath), "AppView", "wwwroot", "img", "variants");
 
             // Lấy danh sách tệp tin trong thư mục
             string[] files = Directory.GetFiles(destinationPath);
@@ -448,7 +450,7 @@ namespace AppAPI.Services
             return null;
         }
 
-        
+
         #endregion
     }
 
