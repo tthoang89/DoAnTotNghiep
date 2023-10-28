@@ -64,7 +64,7 @@ namespace AppAPI.Services
                                  Ten = sp.Ten,
                                  SoLuong = bt.SoLuong,
                                  GiaGoc = bt.GiaBan,
-                                 GiaBan = bt.IDKhuyenMai == null ? bt.GiaBan : (from kh in _context.KhuyenMais where bt.IDKhuyenMai == kh.ID select kh.GiaTri * bt.GiaBan).FirstOrDefault(),
+                                 GiaBan = bt.IDKhuyenMai == null ? bt.GiaBan : (from kh in _context.KhuyenMais where bt.IDKhuyenMai == kh.ID select ((100 - kh.GiaTri) / 100) * bt.GiaBan).FirstOrDefault(),
                                  TrangThai = bt.TrangThai,
                                  Anh = (from img in _context.Anhs.AsNoTracking() join btimg in _context.AnhBienThes on img.ID equals btimg.IdAnh where btimg.IdBienThe == bt.ID select img.Ten).ToList(),
                                  GiaTris = (from gt in _context.GiaTris
@@ -91,7 +91,7 @@ namespace AppAPI.Services
                                   Ten = sp.Ten,
                                   SoLuong = bt.SoLuong,
                                   GiaGoc = bt.GiaBan,
-                                  GiaBan = bt.IDKhuyenMai == null ? bt.GiaBan : (from kh in _context.KhuyenMais where bt.IDKhuyenMai == kh.ID select kh.GiaTri * bt.GiaBan).FirstOrDefault(),
+                                  GiaBan = bt.IDKhuyenMai == null ? bt.GiaBan : (from kh in _context.KhuyenMais where bt.IDKhuyenMai == kh.ID select ((100 - kh.GiaTri) / 100) * bt.GiaBan).FirstOrDefault(),
                                   TrangThai = bt.TrangThai,
                                   Anh = (from img in _context.Anhs.AsNoTracking() join btimg in _context.AnhBienThes on img.ID equals btimg.IdAnh where btimg.IdBienThe == bt.ID select img.Ten).ToList(),
                                   GiaTris = (from gt in _context.GiaTris
@@ -119,7 +119,7 @@ namespace AppAPI.Services
                                    Ten = sp.Ten,
                                    SoLuong = bt.SoLuong,
                                    GiaGoc = bt.GiaBan,
-                                   GiaBan = bt.IDKhuyenMai == null ? bt.GiaBan : (from kh in _context.KhuyenMais where bt.IDKhuyenMai == kh.ID select kh.GiaTri * bt.GiaBan).FirstOrDefault(),
+                                   GiaBan = bt.IDKhuyenMai == null ? bt.GiaBan : (from kh in _context.KhuyenMais where bt.IDKhuyenMai == kh.ID select ((100- kh.GiaTri) / 100) * bt.GiaBan).FirstOrDefault(),
                                    TrangThai = bt.TrangThai,
                                    Anh = (from img in _context.Anhs.AsNoTracking() join btimg in _context.AnhBienThes on img.ID equals btimg.IdAnh where btimg.IdBienThe == bt.ID select img.Ten).ToList(),
                                    GiaTris = (from gt in _context.GiaTris
