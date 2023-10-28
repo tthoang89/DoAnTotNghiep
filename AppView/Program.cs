@@ -29,6 +29,6 @@ app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=VaiTro}/{action=HomePageAdmin}");
+    pattern: "{controller=Home}/{action=Index}");
 
 app.Run();

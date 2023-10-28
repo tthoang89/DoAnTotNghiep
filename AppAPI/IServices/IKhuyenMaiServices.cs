@@ -9,6 +9,8 @@ namespace AppAPI.IServices
         public bool Add(KhuyenMaiView kmv);
         public bool AdKMVoBT(List<Guid> btrequest, Guid IdKhuyenMai);
         public bool Ad1KMVo1BT(Guid btrequest, Guid IdKhuyenMai);
+        public bool XoaAllKMRaBT(List<Guid> bienthes);
+
 
         public bool Update(KhuyenMaiView kmv);
         public bool Delete(Guid Id);

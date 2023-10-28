@@ -83,11 +83,18 @@ namespace AppView.Controllers
             var apiDatasp = await responsesp.Content.ReadAsStringAsync();
             var sanphams = JsonConvert.DeserializeObject<List<SanPhamViewModel>>(apiDatasp);
             ViewBag.SanPhamViewModel = sanphams;
-            // // list bienthe 
-            string apiURL1 = $"https://localhost:7095/api/KhuyenMai/GetAllBienThe";
+            // list bienthe
+
+            string apiURLbt = $"https://localhost:7095/api/KhuyenMai/GetAllBienThe";
+            var responsebt = await _httpClient.GetAsync(apiURLbt);
+            var apiDatabt = await responsebt.Content.ReadAsStringAsync();
+            var bts = JsonConvert.DeserializeObject<List<BienThe>>(apiDatabt);
+            ViewBag.BienThe = bts;
+            // // list bienthe view model
+            string apiURL1 = $"https://localhost:7095/api/BienThe/getAll";
             var response1 = await _httpClient.GetAsync(apiURL1);
             var apiData1 = await response1.Content.ReadAsStringAsync();
-            var bienthes = JsonConvert.DeserializeObject<List<BienThe>>(apiData1);
+            var bienthes = JsonConvert.DeserializeObject<List<BienTheViewModel>>(apiData1);
             return View(new PhanTrangBienThe
             {
                 listbienthes = bienthes
@@ -112,21 +119,72 @@ namespace AppView.Controllers
             ViewBag.KhuyenMaiView = roles;
 
 
-        // list san pham
+        // list san pham view model
         https://localhost:7095/api/SanPham/getAll
             string apiURLsp = $"https://localhost:7095/api/KhuyenMai";
             var responsesp = await _httpClient.GetAsync(apiURLsp);
             var apiDatasp = await responsesp.Content.ReadAsStringAsync();
             var sanphams = JsonConvert.DeserializeObject<List<SanPhamViewModel>>(apiDatasp);
             ViewBag.SanPhamViewModel = sanphams;
-            // // list bienthe 
-            string apiURL1 = $"https://localhost:7095/api/KhuyenMai/GetAllBienThe";
+        // list bienthe
+       
+            string apiURLbt = $"https://localhost:7095/api/KhuyenMai/GetAllBienThe";
+            var responsebt = await _httpClient.GetAsync(apiURLbt);
+            var apiDatabt = await responsebt.Content.ReadAsStringAsync();
+            var bts = JsonConvert.DeserializeObject<List<BienThe>>(apiDatabt);
+            ViewBag.BienThe = bts;
+            // // list bienthe View Model
+            string apiURL1 = $"https://localhost:7095/api/BienThe/getAll";
             var response1 = await _httpClient.GetAsync(apiURL1);
             var apiData1 = await response1.Content.ReadAsStringAsync();
-            var bienthes = JsonConvert.DeserializeObject<List<BienThe>>(apiData1);
+            var bienthes = JsonConvert.DeserializeObject<List<BienTheViewModel>>(apiData1);
             return View(new PhanTrangBienThe
             {
                 listbienthes = bienthes
+                        .Skip((ProductPage - 1) * PageSize).Take(PageSize),
+                PagingInfo = new PagingInfo
+                {
+                    ItemsPerPage = PageSize,
+                    CurrentPage = ProductPage,
+                    TotalItems = bienthes.Count()
+                }
+
+            });
+
+        }
+        [HttpGet]
+        public async Task<IActionResult> TimKiemAllBienTheViewModel(string Ten,int ProductPage = 1)
+        {
+            // list khuyen mai view
+            string apiURL = $"https://localhost:7095/api/KhuyenMai";
+            var response = await _httpClient.GetAsync(apiURL);
+            var apiData = await response.Content.ReadAsStringAsync();
+            var roles = JsonConvert.DeserializeObject<List<KhuyenMaiView>>(apiData);
+            ViewBag.KhuyenMaiView = roles;
+
+
+        // list san pham view model
+        https://localhost:7095/api/SanPham/getAll
+            string apiURLsp = $"https://localhost:7095/api/KhuyenMai";
+            var responsesp = await _httpClient.GetAsync(apiURLsp);
+            var apiDatasp = await responsesp.Content.ReadAsStringAsync();
+            var sanphams = JsonConvert.DeserializeObject<List<SanPhamViewModel>>(apiDatasp);
+            ViewBag.SanPhamViewModel = sanphams;
+            // list bienthe
+
+            string apiURLbt = $"https://localhost:7095/api/KhuyenMai/GetAllBienThe";
+            var responsebt = await _httpClient.GetAsync(apiURLbt);
+            var apiDatabt = await responsebt.Content.ReadAsStringAsync();
+            var bts = JsonConvert.DeserializeObject<List<BienThe>>(apiDatabt);
+            ViewBag.BienThe = bts;
+            // // list bienthe View Model
+            string apiURL1 = $"https://localhost:7095/api/BienThe/getAll";
+            var response1 = await _httpClient.GetAsync(apiURL1);
+            var apiData1 = await response1.Content.ReadAsStringAsync();
+            var bienthes = JsonConvert.DeserializeObject<List<BienTheViewModel>>(apiData1);
+            return View("AddKHuyenMaiVoSP", new PhanTrangBienThe
+            {
+                listbienthes = bienthes.Where(x=>x.Ten.Contains(Ten))
                         .Skip((ProductPage - 1) * PageSize).Take(PageSize),
                 PagingInfo = new PagingInfo
                 {
@@ -145,8 +203,15 @@ namespace AppView.Controllers
             if (response.IsSuccessStatusCode) return Json(new { success = true, message = "Cập nhật thành công!" });
             return Json(new { success = false });
         }
+        [HttpPost]
+        public async Task<IActionResult>XoaKHuyenMaiRaSP( List<Guid> bienthes)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"https://localhost:7095/api/KhuyenMai/XoaKmRaBT", bienthes);
+            if (response.IsSuccessStatusCode) return Json(new { success = true, message = "Xóa Khuyến Mãi ra  thành công!" });
+            return Json(new { success = false });
+        }
 
-      
+
 
         // create
         public IActionResult Create()

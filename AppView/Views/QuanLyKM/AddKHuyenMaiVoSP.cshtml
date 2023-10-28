@@ -1,11 +1,13 @@
-﻿@using AppData.ViewModels
+﻿@using AppData.Models
+@using AppData.ViewModels
 @model AppView.PhanTrang.PhanTrangBienThe
 
 @{
     ViewData["Title"] = "AddKHuyenMaiVoSP";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
     List<KhuyenMaiView> listkms = ViewBag.KhuyenMaiView;
-    List<SanPhamViewModel> listsp = ViewBag.SanPhamViewModel;
+  
+    List<BienThe> listbt = ViewBag.BienThe;
     int stt = 1;
 }
 
@@ -28,6 +30,16 @@
                 </div>
 
             </div>
+        <form asp-action="TimKiemAllBienTheViewModel" asp-controller="QuanLyKM" method="get" enctype="multipart/form-data">
+            <div class="input-group">
+                <input type="text" name="Ten" class="form-control" placeholder="Tìm Kiếm Tên Sản Phẩm">
+                <div class="input-group-append">
+                    <span class="input-group-text bg-transparent text-primary">
+                        <button type="submit" class="fa fa-search"></button>
+                    </span>
+                </div>
+            </div>
+        </form>
             <table class="table" >
                 <thead>
                     <tr>
@@ -76,31 +88,31 @@
                                 @stt
                             </td>
 
+                            <td>   
+                            <strong style="color:red">@item.Ten</strong>
+                            </td>
                             <td>
                                 @{
-                                    var sp = listsp.FirstOrDefault(x => x.ID == item.IDSanPham);
-                                    if (sp != null)
-                                    {
-                                                                                                                                        <strong style="color:red">@sp.Ten</strong>
-                                    }
-                                    else
-                                    {
-                                                                                                                                        <strong style="color:red">chưa có Tên SP</strong>
-                                    }
+                                var timkiemidbt = listbt.FirstOrDefault(x => x.ID == item.ID);
+                                if(timkiemidbt!=null){
+                                    <strong style="color:green">@timkiemidbt.SoLuong</strong>
                                 }
-
+                                }
+                                
                             </td>
                             <td>
-                                <strong style="color:green">@item.SoLuong</strong>
-                            </td>
-                            <td>
-                                <strong style="color:green"> @item.NgayTao</strong>
+                            @{
+                              
+                                if(timkiemidbt!=null){
+                                    <strong style="color:green"> @timkiemidbt.NgayTao</strong>
+                                }
+                            } 
                             </td>
 
                             <td>
                                 @{
 
-                                    var tk = listkms.FirstOrDefault(x => x.ID == item.IDKhuyenMai);
+                                    var tk = listkms.FirstOrDefault(x => x.ID == timkiemidbt.IDKhuyenMai);
                                     if (tk != null)
                                     {
                                         if (tk.NgayKetThuc >= DateTime.Now)
@@ -127,16 +139,16 @@
                                     {
                                         if (tk.NgayKetThuc >= DateTime.Now)
                                         {
-                                                                                                                                            <strong style="color:green">$@(item.GiaBan - item.GiaBan * tk.GiaTri / 100) VND</strong>
+                                                                                                                                            <strong style="color:green">$@(item.GiaGoc - item.GiaGoc * tk.GiaTri / 100) VND</strong>
                                         }
                                         else if (tk.NgayKetThuc < DateTime.Now)
                                         {
-                                                                                                                                            <strong style="color:red">$@item.GiaBan.ToString("n0") VND</strong>
+                                                                                                                                            <strong style="color:red">$@item.GiaGoc.ToString("n0") VND</strong>
                                         }
                                     }
                                     else
                                     {
-                                                                                                                                        <strong style="color:red">$@item.GiaBan.ToString("n0") VND</strong>
+                                                                                                                                        <strong style="color:red">$@item.GiaGoc.ToString("n0") VND</strong>
                                     }
                                 }
 
@@ -155,7 +167,7 @@
 
                             </td>
                             <td>
-                                <strong style="color:red"><del>$@item.GiaBan.ToString("n0") VND</del></strong>
+                                <strong style="color:red"><del>$@item.GiaGoc.ToString("n0") VND</del></strong>
                             </td>
                             <td>
                                 @{
@@ -198,7 +210,7 @@
        
         <br />
         <div class="form-group">
-            <button id="updateButton" class="btn btn-primary">Add Vo SP</button>
+            <button id="updateButton" class="btn btn-primary">Add Vo SP</button> <button id="XoaButton" class="btn btn-danger">Không Áp Dụng Khuyến Mãi</button>
         </div>
         <div id="updateMessage"></div>
     </div>
@@ -238,6 +250,35 @@
                     type: "POST",
                     data: {
                         idKhuyenMai: selectedKhuyenMai,
+                        bienthes: selectedSanPham
+                    },
+                    success: function (response) {
+                        if (response.success == true) {
+                            location.reload();
+                        } else {
+                            toastr.error(response.message, 'Error Alert', { timeOut: 300 });
+                        }
+                    },
+                    error: function (response) {
+                        console.log(response);
+                        toastr.error(response.message, 'Error Alert', { timeOut: 300 });
+                    }
+                });
+            });
+            $("#XoaButton").click(function () {
+               
+                var selectedSanPham = [];
+
+                $(".sanpham-checkbox:checked").each(function () {
+                    selectedSanPham.push($(this).data("id"));
+                });
+
+                // Gửi dữ liệu lên server để cập nhật
+                $.ajax({
+                    url: "/QuanLyKM/XoaKHuyenMaiRaSP",
+                    type: "POST",
+                    data: {
+                       
                         bienthes: selectedSanPham
                     },
                     success: function (response) {
