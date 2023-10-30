@@ -90,6 +90,22 @@ namespace AppAPI.Services
             }
             return true;
         }
+        public bool XoaAllKMRaBT(List<Guid> bienthes)
+        {
+            foreach (var km in bienthes)
+            {
+               
+                    var tim = _reposbienthe.GetAll().FirstOrDefault(x => x.ID == km);
+                    if (tim != null)
+                    {
+                        tim.IDKhuyenMai = null;
+                        _reposbienthe.Update(tim);
+                    }
+               
+
+            }
+            return true;
+        }
 
         public bool Delete(Guid Id)
         {
@@ -147,5 +163,7 @@ namespace AppAPI.Services
                 return false;
             }
         }
+
+       
     }
 }

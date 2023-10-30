@@ -66,7 +66,15 @@ namespace AppAPI.Controllers
         {
             return _khuyenmai.Ad1KMVo1BT(id, IdKhuyenMai);
         }
-
+        // Lam start
+        [Route("XoaKmRaBT")]
+        [HttpPut]
+        // PUT api/<KhuyenMaiController>/5 
+        public bool XoaKMRaBienThe(List<Guid> bienThes)
+        {
+            return _khuyenmai.XoaAllKMRaBT(bienThes);
+        }
+        //Lam end
         // PUT api/<KhuyenMaiController>/5
         [Route("UpdateKM")]
         [HttpPut]
