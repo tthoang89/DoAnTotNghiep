@@ -15,9 +15,6 @@ namespace AppData.Models
         [Range(1, 5, ErrorMessage = "Số sao từ 1 đến 5")]
         public int Sao { get; set; }
         public int TrangThai { get; set; }
-        public Guid IDBienThe { get; set; }
-        public Guid IDKhachHang { get; set; }
-        public virtual BienThe? BienThe { get; set; }
-        public virtual KhachHang KhachHang { get; set; }
+        public virtual ChiTietHoaDon ChiTietHoaDon { get; set; }
     }
 }

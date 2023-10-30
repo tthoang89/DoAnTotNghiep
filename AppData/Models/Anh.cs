@@ -9,8 +9,11 @@ namespace AppData.Models
     public class Anh
     {
         public Guid ID { get; set; }
-        public string Ten { get; set; }
+        public string DuongDan { get; set; }
         public int TrangThai { get; set; }
-        public virtual IEnumerable<AnhBienThe> AnhBienThes { get; set; }
+        public Guid? IDMauSac { get; set; }
+        public Guid IDSanPham { get; set; }
+        public virtual MauSac? MauSac { get; set; }
+        public virtual SanPham SanPham { get; set; }
     }
 }

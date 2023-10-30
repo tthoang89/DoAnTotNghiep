@@ -11,11 +11,12 @@ namespace AppData.Models
         public AssignmentDBContext(DbContextOptions options) : base(options)
         {
         }
-        public DbSet<BienThe> BienThes { get; set; }
-        public DbSet<ChiTietBienThe> ChiTietBienThes { get; set; }
         public DbSet<ChiTietGioHang> ChiTietGioHangs { get; set; }
+        public DbSet<ChiTietSanPham> ChiTietSanPhams { get; set; }
+        public DbSet<MauSac> MauSacs { get; set; }
+        public DbSet<KichCo> KichCos { get; set; }
+        public DbSet<ChatLieu> ChatLieus { get; set; }
         public DbSet<ChiTietHoaDon> ChiTietHoaDons { get; set; }
-        public DbSet<GiaTri> GiaTris { get; set; }
         public DbSet<GioHang> GioHangs { get; set; }
         public DbSet<HoaDon> HoaDons { get; set; }
         public DbSet<KhuyenMai> KhuyenMais { get; set; }
@@ -26,12 +27,9 @@ namespace AppData.Models
         public DbSet<DanhGia> DanhGias { get; set; }
         public DbSet<QuyDoiDiem> QuyDoiDiems { get; set; }
         public DbSet<SanPham> SanPhams { get; set; }
-        public DbSet<ThuocTinh> ThuocTinhs { get; set; }
-        public DbSet<ThuocTinhSanPham> ThuocTinhSanPhams { get; set; }
         public DbSet<VaiTro> VaiTros { get; set; }
         public DbSet<Voucher> Vouchers { get; set; }
         public DbSet<Anh> Anhs { get; set; }
-        public DbSet<AnhBienThe> AnhBienThes { get; set; }
         public DbSet<ChiTietPTTT> ChiTietPTTTs { get; set; }
         public DbSet<PhuongThucThanhToan> PhuongThucThanhToans { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
