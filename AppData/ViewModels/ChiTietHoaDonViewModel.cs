@@ -8,7 +8,7 @@ namespace AppData.ViewModels
 {
     public class ChiTietHoaDonViewModel
     {
-        public Guid IDBienThe { get; set; }
+        public Guid IDChiTietSanPham { get; set; }
         public int SoLuong { get; set; }
         public int DonGia { get; set; }
     }
