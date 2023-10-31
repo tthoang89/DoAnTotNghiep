@@ -51,12 +51,12 @@ namespace AppAPI.Controllers
             var listSP = await _sanPhamServices.TimKiemSanPham(sp);
             return Ok(listSP);
         }
-        [HttpPost("save")]
-        public async Task<IActionResult> CreateOrUpdateSanPham(SanPhamRequest request)
+        [HttpPost("AddSanPham")]
+        public async Task<IActionResult> CreateSanPham(SanPhamRequest request)
         {
             if (request == null) return BadRequest();
-            var sanPham = await _sanPhamServices.SaveSanPham(request);
-            return Ok(sanPham);
+            var response = await _sanPhamServices.AddSanPham(request);
+            return Ok(response);
         }
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteSanPham(Guid id)
@@ -65,6 +65,42 @@ namespace AppAPI.Controllers
             return Ok();
         }
         #endregion
-        
+
+        #region ChiTietSanPham
+        #endregion
+
+        #region LoaiSP
+        [HttpGet("GetAllLoaiSPCha")]
+        public async Task<IActionResult> GetAllLoaiSPCha() 
+        {
+            var listLsp = await _sanPhamServices.GetAllLoaiSPCha();
+            return Ok(listLsp);
+        }
+        [HttpGet("GetAllLoaiSPCon")]
+        public async Task<IActionResult> GetAllLoaiSPCon(string tenLoaiSPCha)
+        {
+            var listLsp = await _sanPhamServices.GetAllLoaiSPCon(tenLoaiSPCha);
+            return Ok(listLsp);
+        }
+        #endregion
+
+        [HttpGet("GetAllMauSac")]
+        public async Task<IActionResult> GetAllMauSac()
+        {
+            var lstMauSac =  await _sanPhamServices.GetAllMauSac();
+            return Ok(lstMauSac);
+        }
+        [HttpGet("GetAllKichCo")]
+        public async Task<IActionResult> GetAllKichCo()
+        {
+            var lstKichCo = await _sanPhamServices.GetAllKichCo();
+            return Ok(lstKichCo);
+        }
+        [HttpGet("GetAllChatLieu")]
+        public async Task<IActionResult> GetAllChatLieu()
+        {
+            var lstChatLieu = await _sanPhamServices.GetAllChatLieu();
+            return Ok(lstChatLieu);
+        }
     }
 }

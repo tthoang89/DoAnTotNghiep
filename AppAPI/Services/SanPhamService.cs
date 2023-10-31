@@ -4,6 +4,7 @@ using AppData.ViewModels;
 using AppData.ViewModels.SanPham;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace AppAPI.Services
 {
@@ -15,6 +16,96 @@ namespace AppAPI.Services
             this._context = new AssignmentDBContext();
         }
 
+        #region SanPham
+        public async Task<List<SanPhamViewModel>> GetAllSanPham()
+        {
+            try
+            {
+                var lstSanPham = await (from a in _context.SanPhams.Where(x => x.TrangThai == 1)
+                                        join b in _context.ChiTietSanPhams.Where(x => x.TrangThai == 1) on a.ID equals b.IDSanPham
+                                        //join c in _context.Anhs.Where(x => x.TrangThai == 1) on a.ID equals c.IDSanPham
+                                        join e in _context.LoaiSPs.Where(x=>x.LoaiSPCha!=null) on a.IDLoaiSP equals e.ID
+                                  select new SanPhamViewModel()
+                                  {
+                                      ID = a.ID,
+                                      Ten = a.Ten,
+                                      TrangThai = a.TrangThai,
+                                      LoaiSP = e.Ten,
+                                      IdChiTietSanPham = b.ID,
+                                      Image = _context.Anhs.First(x=>x.IDMauSac==b.IDMauSac&&x.IDSanPham==a.ID).DuongDan,
+                                      GiaGoc = b.GiaBan,
+                                      GiaBan = b.IDKhuyenMai==null?b.GiaBan:b.GiaBan*(100-(_context.KhuyenMais.First(x=>x.ID==b.IDKhuyenMai).GiaTri))/100
+                                  }).ToListAsync();
+                return lstSanPham;
+            }
+            catch
+            {
+                return new List<SanPhamViewModel>();
+            }
+        }
+        public bool CheckTrungTenSP(SanPhamRequest lsp)
+        {
+            throw new NotImplementedException();
+        }
+        public async Task<bool> DeleteSanPham(Guid id)
+        {
+            try
+            {
+                var sanPham = await _context.SanPhams.FindAsync(id);
+                sanPham.TrangThai = 0;
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public async Task<bool> AddSanPham(SanPhamRequest request)
+        {
+            try
+            {
+                LoaiSP? loaiSPCon = _context.LoaiSPs.Where(x=>x.IDLoaiSPCha!=null).FirstOrDefault(x => x.Ten == request.TenLoaiSPCon);
+                KichCo? kichCo = _context.KichCos.FirstOrDefault(x => x.Ten == request.TenKichCo);
+                ChatLieu? chatLieu = _context.ChatLieus.FirstOrDefault(x => x.Ten == request.TenChatLieu);
+                MauSac? mauSac = _context.MauSacs.FirstOrDefault(x => x.Ma == request.MaMauSac);
+                if (loaiSPCon == null) {
+                    LoaiSP? loaiSPCha = _context.LoaiSPs.Where(x => x.IDLoaiSPCha == null).FirstOrDefault(x => x.Ten == request.TenLoaiSPCha);
+                    if(loaiSPCha == null)
+                    {
+                        loaiSPCha = new LoaiSP() { ID = Guid.NewGuid(), Ten = request.TenLoaiSPCha, TrangThai =1};
+                        _context.LoaiSPs.AddAsync(loaiSPCha);
+                    }
+                    loaiSPCon = new LoaiSP() { ID = Guid.NewGuid(), Ten = request.TenLoaiSPCon, IDLoaiSPCha = loaiSPCha.ID, TrangThai = 1 };
+                    await _context.LoaiSPs.AddAsync(loaiSPCon);
+                }
+                if (kichCo == null)
+                {
+                    kichCo = new KichCo() { ID = Guid.NewGuid(), Ten = request.TenKichCo, TrangThai = 1 };
+                    await _context.KichCos.AddAsync(kichCo);
+                }
+                if (mauSac == null)
+                {
+                    mauSac = new MauSac() { ID = Guid.NewGuid(), Ten = request.TenMauSac, Ma = request.MaMauSac, TrangThai = 1 };
+                    await _context.AddAsync(mauSac);
+                }
+                if (chatLieu == null)
+                {
+                    chatLieu = new ChatLieu() { ID = Guid.NewGuid(), Ten = request.TenChatLieu, TrangThai = 1 };
+                    await _context.AddAsync(chatLieu);
+                }
+                SanPham sanPham = new SanPham() { ID = Guid.NewGuid(), Ten = request.Ten, MoTa = request.MoTa, TrangThai = 1, TongDanhGia = 0, TongSoSao = 0, IDLoaiSP = loaiSPCon.ID, IDChatLieu = chatLieu.ID };
+                Anh anh = new Anh() { ID = Guid.NewGuid(), DuongDan = request.DuongDanAnh, IDSanPham = sanPham.ID, IDMauSac = mauSac.ID, TrangThai = 1 };
+                ChiTietSanPham chiTietSanPham = new ChiTietSanPham() { ID = Guid.NewGuid(), SoLuong = request.SoLuong, GiaBan = request.Giaban, NgayTao = DateTime.Now, TrangThai = 1, IDSanPham = sanPham.ID, IDKichCo = kichCo.ID, IDMauSac = mauSac.ID };
+                await _context.SanPhams.AddAsync(sanPham);
+                await _context.ChiTietSanPhams.AddAsync(chiTietSanPham);
+                await _context.Anhs.AddAsync(anh);
+                await _context.SaveChangesAsync();
+                return true;
+            }catch { return false; }
+        }
+        #endregion
+
+        #region ChiTietSanPham
         public async Task<bool> AddChiTietSanPham(ChiTietSanPham chiTietSanPham)
         {
             try
@@ -23,21 +114,23 @@ namespace AppAPI.Services
                 await _context.SaveChangesAsync();
                 return true;
             }
-            catch {
+            catch
+            {
                 return false;
-            } 
+            }
         }
-
-        public bool CheckTrungLoaiSP(LoaiSPRequest lsp)
+        public async Task<List<ChiTietSanPham>> GetAllChiTietSanPham(Guid idSanPham)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var lstChiTietSanPham = _context.ChiTietSanPhams.Where(x => x.IDSanPham == idSanPham).ToList();
+                return lstChiTietSanPham;
+            }
+            catch
+            {
+                return new List<ChiTietSanPham>();
+            }
         }
-
-        public bool CheckTrungTenSP(SanPhamRequest lsp)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<bool> DeleteChiTietSanPham(Guid id)
         {
             try
@@ -52,6 +145,13 @@ namespace AppAPI.Services
             }
         }
 
+        #endregion
+
+        #region LoaiSP
+        public bool CheckTrungLoaiSP(LoaiSPRequest lsp)
+        {
+            throw new NotImplementedException();
+        }
         public async Task<bool> DeleteLoaiSP(Guid id)
         {
             try
@@ -65,65 +165,20 @@ namespace AppAPI.Services
                 return false;
             }
         }
-
-        public async Task<bool> DeleteSanPham(Guid id)
+        public async Task<List<LoaiSP>> GetAllLoaiSPCha()
         {
-            try
-            {
-                var sanPham = await _context.SanPhams.FindAsync(id);
-                sanPham.TrangThai = 0;
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            return await _context.LoaiSPs.Where(x=>x.IDLoaiSPCha==null).ToListAsync();
         }
-
-        public async Task<List<ChiTietSanPham>> GetAllChiTietSanPham(Guid idSanPham)
+        public async Task<List<LoaiSP>> GetAllLoaiSPCon(string tenLoaiSPCha)
         {
-            try
-            {
-                var lstChiTietSanPham = _context.ChiTietSanPhams.Where(x=>x.IDSanPham == idSanPham).ToList();
-                return lstChiTietSanPham;
-            }
-            catch
-            {
-                return new List<ChiTietSanPham>();
-            }
+            var loaiSPCha = await _context.LoaiSPs.Where(x => x.IDLoaiSPCha == null).FirstAsync(x=>x.Ten==tenLoaiSPCha);
+            return await _context.LoaiSPs.Where(x => x.IDLoaiSPCha == loaiSPCha.ID).ToListAsync();
         }
-
-        public Task<List<LoaiSP>> GetAllLoaiSP()
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<List<SanPhamViewModel>> GetAllSanPham()
-        {
-            try
-            {
-                throw new NotImplementedException();
-            }
-            catch
-            {
-                return new List<SanPhamViewModel>();
-            }
-        }
+        #endregion
 
         public Task<LoaiSP> GetLoaiSPById(Guid id)
         {
             throw new NotImplementedException();
-        }
-
-        public async Task<List<LoaiSP>> GetLoaiSPCha()
-        {
-            return await _context.LoaiSPs.Where(x => x.IDLoaiSPCha == null).ToListAsync();
-
-        }
-
-        public async Task<List<LoaiSP>> GetLoaiSPCon(Guid idLoaiSPCha)
-        {
-            return await _context.LoaiSPs.Where(x => x.IDLoaiSPCha == idLoaiSPCha).ToListAsync();
         }
 
         public Task<SanPhamDetail> GetSanPhamById(Guid id)
@@ -141,11 +196,6 @@ namespace AppAPI.Services
             throw new NotImplementedException();
         }
 
-        public Task<SanPham> SaveSanPham(SanPhamRequest request)
-        {
-            throw new NotImplementedException();
-        }
-
         public Task<List<SanPhamViewModel>> TimKiemSanPham(SanPhamTimKiemNangCao sp)
         {
             throw new NotImplementedException();
@@ -154,6 +204,23 @@ namespace AppAPI.Services
         public Task<bool> UpdateChiTietSanPham(ChiTietSanPham chiTietSanPham)
         {
             throw new NotImplementedException();
+        }
+        public Task<bool> UpdateSanPham(SanPhamRequest request)
+        {
+            throw new NotImplementedException();
+        }
+        public async Task<List<MauSac>> GetAllMauSac()
+        {
+            return await _context.MauSacs.ToListAsync();
+        }
+
+        public async Task<List<KichCo>> GetAllKichCo()
+        {
+            return await _context.KichCos.ToListAsync();
+        }
+        public async Task<List<ChatLieu>> GetAllChatLieu()
+        {
+            return await _context.ChatLieus.ToListAsync();
         }
         #region SanPham
         //TÌM KIẾM NÂNG CAO : Tên, List Loại Sp, khoảng Giá

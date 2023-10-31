@@ -28,28 +28,48 @@ namespace AppView.Controllers
         //}
         public JsonResult GetLoaiSPCha()
         {
-            HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + "LoaiSP/GetLoaiSPCha").Result;
+            HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllLoaiSPCha").Result;
             var loaiSP = JsonConvert.DeserializeObject<List<LoaiSP>>(response.Content.ReadAsStringAsync().Result);
             return Json(loaiSP);
         }
-        public JsonResult GetLoaiSPCon(Guid idLoaiSPCha)
+        public JsonResult GetAllMauSac()
         {
-            HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + "LoaiSP/GetLoaiSPCon?idLoaiSPCha=" + idLoaiSPCha).Result;
+            HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllMauSac").Result;
+            var mauSac = JsonConvert.DeserializeObject<List<MauSac>>(response.Content.ReadAsStringAsync().Result);
+            return Json(mauSac);
+        }
+        public JsonResult GetAllKichCo()
+        {
+            HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllKichCo").Result;
+            var kichCo = JsonConvert.DeserializeObject<List<KichCo>>(response.Content.ReadAsStringAsync().Result);
+            return Json(kichCo);
+        }
+        public JsonResult GetAllChatLieu()
+        {
+            HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllChatLieu").Result;
+            var chatLieu = JsonConvert.DeserializeObject<List<ChatLieu>>(response.Content.ReadAsStringAsync().Result);
+            return Json(chatLieu);
+        }
+        public JsonResult GetLoaiSPCon(string tenLoaiSPCha)
+        {
+            HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllLoaiSPCon?tenLoaiSPCha=" + tenLoaiSPCha).Result;
             var loaiSP = JsonConvert.DeserializeObject<List<LoaiSP>>(response.Content.ReadAsStringAsync().Result);
             return Json(loaiSP);
         }
-        public JsonResult GetThuocTinh()
+        [HttpGet]
+        public IActionResult AddSanPham()
         {
-            HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + "ThuocTinh/getall").Result;
-            var thuocTinhs = JsonConvert.DeserializeObject<List<ThuocTinhRequest>>(response.Content.ReadAsStringAsync().Result);
-            return Json(thuocTinhs);
+            return View();
         }
-        //public JsonResult GetGiaTri(string thuocTinh)
-        //{
-        //    HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + "ThuocTinh/GetGiaTri?thuocTinh=" + thuocTinh).Result;
-        //    var giaTris = JsonConvert.DeserializeObject<List<GiaTri>>(response.Content.ReadAsStringAsync().Result);
-        //    return Json(giaTris);
-        //}
-        
+        [HttpPost]
+        public IActionResult AddSanPham(SanPhamRequest sanPhamRequest)
+        {
+            HttpResponseMessage response = _httpClient.PostAsJsonAsync(_httpClient.BaseAddress + "SanPham/AddSanPham", sanPhamRequest).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("ProductManager");
+            }
+            else return BadRequest();
+        }
     }
 }

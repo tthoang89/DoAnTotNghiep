@@ -1,5 +1,6 @@
 ﻿using AppData.Models;
 using AppData.ViewModels;
+using AppData.ViewModels.SanPham;
 using AppView.PhanTrang;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;

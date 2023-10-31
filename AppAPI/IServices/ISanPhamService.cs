@@ -11,19 +11,19 @@ namespace AppAPI.IServices
         Task<List<SanPhamViewModel>> TimKiemSanPham(SanPhamTimKiemNangCao sp);
         Task<SanPhamDetail> GetSanPhamById(Guid id);
         Task<List<SanPhamViewModel>> GetSanPhamByIdDanhMuc(Guid idloaisp);
-        Task<SanPham> SaveSanPham(SanPhamRequest request);
+        Task<bool> AddSanPham(SanPhamRequest request);
+        Task<bool> UpdateSanPham(SanPhamRequest request);
         Task<bool> DeleteSanPham(Guid id);
         bool CheckTrungTenSP(SanPhamRequest lsp);
         #endregion
 
         #region LoaiSanPham
-        Task<List<LoaiSP>> GetAllLoaiSP();
+        Task<List<LoaiSP>> GetAllLoaiSPCha();
+        Task<List<LoaiSP>> GetAllLoaiSPCon(string tenLoaiSPCha);
         Task<LoaiSP> GetLoaiSPById(Guid id);
         Task<LoaiSP> SaveLoaiSP(LoaiSPRequest lsp);
         Task<bool> DeleteLoaiSP(Guid id);
         bool CheckTrungLoaiSP(LoaiSPRequest lsp);
-        Task<List<LoaiSP>> GetLoaiSPCha();
-        Task<List<LoaiSP>> GetLoaiSPCon(Guid idLoaiSPCha);
         #endregion
 
         #region ChiTietSanPham
@@ -32,5 +32,8 @@ namespace AppAPI.IServices
         Task<bool> UpdateChiTietSanPham(ChiTietSanPham chiTietSanPham);
         Task<bool> AddChiTietSanPham(ChiTietSanPham chiTietSanPham);
         #endregion
+        Task<List<MauSac>> GetAllMauSac();
+        Task<List<KichCo>> GetAllKichCo();
+        Task<List<ChatLieu>> GetAllChatLieu();
     }
 }
