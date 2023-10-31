@@ -274,7 +274,7 @@ namespace AppView.Controllers
             foreach (var item in JsonConvert.DeserializeObject<List<BienTheViewModel>>(temp))
             {
                 ChiTietHoaDonViewModel chiTietHoaDon = new ChiTietHoaDonViewModel();
-                chiTietHoaDon.IDBienThe = item.ID;
+                chiTietHoaDon.IDChiTietSanPham = item.ID;
                 chiTietHoaDon.SoLuong = item.SoLuong;
                 chiTietHoaDon.DonGia = item.GiaBan;
                 lstChiTietHoaDon.Add(chiTietHoaDon);

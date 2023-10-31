@@ -11,17 +11,17 @@ namespace AppAPI.Services
     public class KhuyenMaiServices : IKhuyenMaiServices
     {
         private readonly IAllRepository<KhuyenMai> _repos;
-        private readonly IAllRepository<BienThe> _reposbienthe;
+        private readonly IAllRepository<ChiTietSanPham> _reposchitietsanpham;
         AssignmentDBContext context= new AssignmentDBContext();
         public KhuyenMaiServices()
         {
             _repos= new AllRepository<KhuyenMai>(context,context.KhuyenMais);
-            _reposbienthe= new AllRepository<BienThe>(context,context.BienThes);
+            _reposchitietsanpham = new AllRepository<ChiTietSanPham>(context,context.ChiTietSanPhams);
         }
 
-        public bool Ad1KMVo1BT(Guid btrequest, Guid IdKhuyenMai)
+        public bool Ad1KMVo1BT(Guid ctsprequest, Guid IdKhuyenMai)
         {
-            var idbt=_reposbienthe.GetAll().FirstOrDefault(x=>x.ID==btrequest);
+            var idbt= _reposchitietsanpham.GetAll().FirstOrDefault(x=>x.ID== ctsprequest);
             if (idbt != null)
             {
                 var timkiem=_repos.GetAll().FirstOrDefault(x=>x.ID == IdKhuyenMai);
@@ -34,7 +34,7 @@ namespace AppAPI.Services
                     else
                     {
                         idbt.IDKhuyenMai = IdKhuyenMai;
-                       return _reposbienthe.Update(idbt);
+                       return _reposchitietsanpham.Update(idbt);
                     }
                 }
                 else
@@ -79,11 +79,11 @@ namespace AppAPI.Services
                 }
                 else
                 {
-                    var tim = _reposbienthe.GetAll().FirstOrDefault(x => x.ID == km);
+                    var tim = _reposchitietsanpham.GetAll().FirstOrDefault(x => x.ID == km);
                     if (tim != null)
                     {
                         tim.IDKhuyenMai = IdKhuyenMai;
-                        _reposbienthe.Update(tim);
+                        _reposchitietsanpham.Update(tim);
                     }
                 }
 
@@ -95,11 +95,11 @@ namespace AppAPI.Services
             foreach (var km in bienthes)
             {
                
-                    var tim = _reposbienthe.GetAll().FirstOrDefault(x => x.ID == km);
+                    var tim = _reposchitietsanpham.GetAll().FirstOrDefault(x => x.ID == km);
                     if (tim != null)
                     {
                         tim.IDKhuyenMai = null;
-                        _reposbienthe.Update(tim);
+                    _reposchitietsanpham.Update(tim);
                     }
                
 
@@ -126,9 +126,9 @@ namespace AppAPI.Services
            return _repos.GetAll();
         }
 
-        public List<BienThe> GetAllBienThe()
+        public List<ChiTietSanPham> GetAllBienThe()
         {
-            return _reposbienthe.GetAll();
+            return _reposchitietsanpham.GetAll();
         }
 
         public KhuyenMai GetById(Guid Id)

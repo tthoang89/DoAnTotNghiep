@@ -30,37 +30,39 @@ namespace AppAPI.Services
 
         public async Task<List<DanhGiaViewModel>> GetDanhGiaByIdBthe(Guid idbt)
         {
-            var result = await (from dg in _context.DanhGias
-                                join kh in _context.KhachHangs
-                                on dg.IDKhachHang equals kh.IDKhachHang
-                                join bt in _context.BienThes on dg.IDBienThe equals bt.ID
-                                where bt.ID == idbt && dg.TrangThai != 3
-                                select new DanhGiaViewModel()
-                                {
-                                    ID = dg.ID,
-                                    Sao = dg.Sao,
-                                    BinhLuan = dg.BinhLuan,
-                                    TenKH = kh.Ten,
-                                    IDBienThe = dg.IDBienThe,
-                                }).ToListAsync();
-            return result;
+            //var result = await (from dg in _context.DanhGias
+            //                    join kh in _context.KhachHangs
+            //                    on dg.IDKhachHang equals kh.IDKhachHang
+            //                    join bt in _context.BienThes on dg.IDBienThe equals bt.ID
+            //                    where bt.ID == idbt && dg.TrangThai != 3
+            //                    select new DanhGiaViewModel()
+            //                    {
+            //                        ID = dg.ID,
+            //                        Sao = dg.Sao,
+            //                        BinhLuan = dg.BinhLuan,
+            //                        TenKH = kh.Ten,
+            //                        IDBienThe = dg.IDBienThe,
+            //                    }).ToListAsync();
+            //return result;
+            throw new NotImplementedException();
         }
         public async Task<List<DanhGiaViewModel>> GetDanhGiaByIdSanPham(Guid idsp)
         {
-            var query = await (from sp in _context.SanPhams
-                               join bt in _context.BienThes on sp.ID equals bt.IDSanPham
-                               join dg in _context.DanhGias on bt.ID equals dg.IDBienThe
-                               join kh in _context.KhachHangs on dg.IDKhachHang equals kh.IDKhachHang
-                               where sp.ID == idsp && dg.TrangThai != 3
-                               select new DanhGiaViewModel()
-                               {
-                                   ID = dg.ID,
-                                   Sao = dg.Sao,
-                                   BinhLuan = dg.BinhLuan,
-                                   IDBienThe = dg.IDBienThe,
-                                   TenKH = kh.Ten,
-                               }).ToListAsync();
-            return query;
+            //var query = await (from sp in _context.SanPhams
+            //                   join bt in _context.BienThes on sp.ID equals bt.IDSanPham
+            //                   join dg in _context.DanhGias on bt.ID equals dg.IDBienThe
+            //                   join kh in _context.KhachHangs on dg.IDKhachHang equals kh.IDKhachHang
+            //                   where sp.ID == idsp && dg.TrangThai != 3
+            //                   select new DanhGiaViewModel()
+            //                   {
+            //                       ID = dg.ID,
+            //                       Sao = dg.Sao,
+            //                       BinhLuan = dg.BinhLuan,
+            //                       IDBienThe = dg.IDBienThe,
+            //                       TenKH = kh.Ten,
+            //                   }).ToListAsync();
+            //return query;
+            throw new NotImplementedException();
         }
 
         public async Task<List<ChiTietHoaDon>> GetHDCTChuaDanhGia(Guid idkh)
@@ -74,7 +76,7 @@ namespace AppAPI.Services
                                {
                                    ID = hdct.ID,
                                    IDHoaDon = hdct.ID,
-                                   IDBienThe = hdct.IDBienThe,
+                                   IDCTSP = hdct.IDCTSP,
                                    SoLuong = hdct.SoLuong
                                }).ToListAsync();
             return query;
@@ -91,7 +93,7 @@ namespace AppAPI.Services
                                {
                                    ID = hdct.ID,
                                    IDHoaDon = hdct.ID,
-                                   IDBienThe = hdct.IDBienThe,
+                                   IDCTSP = hdct.IDCTSP,
                                    SoLuong = hdct.SoLuong
                                }).ToListAsync();
             return query;
@@ -99,38 +101,39 @@ namespace AppAPI.Services
 
         public async Task<DanhGia> SaveDanhGia(DanhGia danhGia)
         {
-            try
-            {
-                var dg = await _context.DanhGias.FindAsync(danhGia.ID);
-                if (dg != null && dg.TrangThai == 0) // Đánh giá tồn tại và chưa từng chỉnh sửa
-                {
-                    dg.Sao = danhGia.Sao;
-                    dg.BinhLuan = danhGia.BinhLuan;
-                    dg.TrangThai = 1;
-                    _context.DanhGias.Update(dg);
-                    await _context.SaveChangesAsync();
-                    return dg;
-                }
-                else
-                {
-                    DanhGia rv = new DanhGia()
-                    {
-                        ID = new Guid(),
-                        Sao = danhGia.Sao,
-                        BinhLuan = danhGia.BinhLuan,
-                        TrangThai = 0,
-                        IDKhachHang = danhGia.IDKhachHang,
-                        IDBienThe = danhGia.IDBienThe,
-                    };
-                    await _context.DanhGias.AddAsync(rv);
-                    await _context.SaveChangesAsync();
-                    return rv;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            //try
+            //{
+            //    var dg = await _context.DanhGias.FindAsync(danhGia.ID);
+            //    if (dg != null && dg.TrangThai == 0) // Đánh giá tồn tại và chưa từng chỉnh sửa
+            //    {
+            //        dg.Sao = danhGia.Sao;
+            //        dg.BinhLuan = danhGia.BinhLuan;
+            //        dg.TrangThai = 1;
+            //        _context.DanhGias.Update(dg);
+            //        await _context.SaveChangesAsync();
+            //        return dg;
+            //    }
+            //    else
+            //    {
+            //        DanhGia rv = new DanhGia()
+            //        {
+            //            ID = new Guid(),
+            //            Sao = danhGia.Sao,
+            //            BinhLuan = danhGia.BinhLuan,
+            //            TrangThai = 0,
+            //            IDKhachHang = danhGia.IDKhachHang,
+            //            IDBienThe = danhGia.IDBienThe,
+            //        };
+            //        await _context.DanhGias.AddAsync(rv);
+            //        await _context.SaveChangesAsync();
+            //        return rv;
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    throw new Exception(ex.Message);
+            //}
+            throw new NotImplementedException();
         }
     }
 }

@@ -18,37 +18,37 @@ namespace AppAPI.Services
         public async Task<ChiTietHoaDon> SaveCTHoaDon(HoaDonChiTietRequest request)
         {
             // Kiểm tra sp tồn tại trong hóa đơn này chưa
-            var btexist = _context.ChiTietHoaDons.Where(c => c.IDHoaDon == request.IdHoaDon).Any(c => c.IDBienThe == request.IdBienThe);
+            var btexist = _context.ChiTietHoaDons.Where(c => c.IDHoaDon == request.IdHoaDon).Any(c => c.IDCTSP == request.IdBienThe);
             if (btexist != true) //k tồn tại -> chưa có hdct-> tạo
             {
                 var hdct = new ChiTietHoaDon()
                 {
                     ID = new Guid(),
                     IDHoaDon = request.IdHoaDon,
-                    IDBienThe = request.IdBienThe,
+                    IDCTSP = request.IdBienThe,
                     SoLuong = request.SoLuong,
                     DonGia = request.DonGia,
                 };
                 await _context.ChiTietHoaDons.AddAsync(hdct);
                 await _context.SaveChangesAsync();
                 //Trừ số lượng bt
-                var bt = _context.BienThes.Find(request.IdBienThe);
+                var bt = _context.ChiTietSanPhams.Find(request.IdBienThe);
                 bt.SoLuong -= request.SoLuong;
-                _context.BienThes.Update(bt);
+                _context.ChiTietSanPhams.Update(bt);
                 await _context.SaveChangesAsync();
                 return hdct;
             }
             else
             {
-                var exist = _context.ChiTietHoaDons.Where(c => c.IDBienThe == request.IdBienThe && c.IDHoaDon == request.IdHoaDon).FirstOrDefault();
-                var bt = _context.BienThes.Find(request.IdBienThe);
+                var exist = _context.ChiTietHoaDons.Where(c => c.IDCTSP == request.IdBienThe && c.IDHoaDon == request.IdHoaDon).FirstOrDefault();
+                var bt = _context.ChiTietSanPhams.Find(request.IdBienThe);
                 exist.SoLuong += request.SoLuong;
                 exist.DonGia = request.DonGia;
                 _context.Update(exist);
                 await _context.SaveChangesAsync();
                 //Thay đổi số lượng bt
                 bt.SoLuong -=request.SoLuong;
-                _context.BienThes.Update(bt);
+                _context.ChiTietSanPhams.Update(bt);
                 await _context.SaveChangesAsync();
                 return exist;
             }
@@ -72,12 +72,12 @@ namespace AppAPI.Services
         public async Task<List<HoaDonChiTietViewModel>> GetHDCTByIdHD(Guid idhd)
         {
             var x = (from cthd in _context.ChiTietHoaDons
-                          join bt in _context.BienThes on cthd.IDBienThe equals bt.ID
+                          join bt in _context.ChiTietSanPhams on cthd.IDCTSP equals bt.ID
                           join sp in _context.SanPhams on bt.IDSanPham equals sp.ID
                           where cthd.IDHoaDon == idhd
                           select new {cthd,bt,sp });
             var result = await(from cthd in _context.ChiTietHoaDons
-                               join bt in _context.BienThes on cthd.IDBienThe equals bt.ID
+                               join bt in _context.ChiTietSanPhams on cthd.IDCTSP equals bt.ID
                                join sp in _context.SanPhams on bt.IDSanPham equals sp.ID
                                where cthd.IDHoaDon == idhd
                                select new HoaDonChiTietViewModel()

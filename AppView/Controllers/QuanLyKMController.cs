@@ -88,7 +88,7 @@ namespace AppView.Controllers
             string apiURLbt = $"https://localhost:7095/api/KhuyenMai/GetAllBienThe";
             var responsebt = await _httpClient.GetAsync(apiURLbt);
             var apiDatabt = await responsebt.Content.ReadAsStringAsync();
-            var bts = JsonConvert.DeserializeObject<List<BienThe>>(apiDatabt);
+            var bts = JsonConvert.DeserializeObject<List<ChiTietSanPham>>(apiDatabt);
             ViewBag.BienThe = bts;
             // // list bienthe view model
             string apiURL1 = $"https://localhost:7095/api/BienThe/getAll";
@@ -131,7 +131,7 @@ namespace AppView.Controllers
             string apiURLbt = $"https://localhost:7095/api/KhuyenMai/GetAllBienThe";
             var responsebt = await _httpClient.GetAsync(apiURLbt);
             var apiDatabt = await responsebt.Content.ReadAsStringAsync();
-            var bts = JsonConvert.DeserializeObject<List<BienThe>>(apiDatabt);
+            var bts = JsonConvert.DeserializeObject<List<ChiTietSanPham>>(apiDatabt);
             ViewBag.BienThe = bts;
             // // list bienthe View Model
             string apiURL1 = $"https://localhost:7095/api/BienThe/getAll";
@@ -175,7 +175,7 @@ namespace AppView.Controllers
             string apiURLbt = $"https://localhost:7095/api/KhuyenMai/GetAllBienThe";
             var responsebt = await _httpClient.GetAsync(apiURLbt);
             var apiDatabt = await responsebt.Content.ReadAsStringAsync();
-            var bts = JsonConvert.DeserializeObject<List<BienThe>>(apiDatabt);
+            var bts = JsonConvert.DeserializeObject<List<ChiTietSanPham>>(apiDatabt);
             ViewBag.BienThe = bts;
             // // list bienthe View Model
             string apiURL1 = $"https://localhost:7095/api/BienThe/getAll";

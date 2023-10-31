@@ -29,7 +29,7 @@ namespace AppAPI.Controllers
         }
         [Route("GetAllBienThe")]
         [HttpGet]
-        public List<BienThe> GetAllBienThe()
+        public List<ChiTietSanPham> GetAllBienThe()
         {
             return _khuyenmai.GetAllBienThe();
         }

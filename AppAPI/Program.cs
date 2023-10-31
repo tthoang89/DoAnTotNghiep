@@ -15,7 +15,6 @@ builder.Services.AddScoped<IChiTietGioHangServices, ChiTietGioHangServices>();
 builder.Services.AddScoped<IGioHangServices, GioHangServices>();
 builder.Services.AddScoped<IQuyDoiDiemServices, QuyDoiDiemServices>();
 builder.Services.AddScoped<IKhuyenMaiServices, KhuyenMaiServices>();
-builder.Services.AddScoped<IBienTheService, BienTheService>();
 builder.Services.AddScoped<IHoaDonService, HoaDonService>();
 builder.Services.AddScoped<IKhachHangService, KhachHangService>();
 builder.Services.AddScoped<ILishSuTichDiemServices, LishSuTichDiemServices>();
