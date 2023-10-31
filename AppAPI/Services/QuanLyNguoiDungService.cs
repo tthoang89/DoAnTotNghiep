@@ -3,6 +3,7 @@ using AppData.IRepositories;
 using AppData.Models;
 using AppData.Repositories;
 using AppData.ViewModels;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace AppAPI.Services
@@ -30,7 +31,7 @@ namespace AppAPI.Services
                 return true;
             }
             var nv = await context.NhanViens.FirstOrDefaultAsync(h => h.Email == email && h.PassWord == password);
-            if (kh != null)
+            if (nv != null)
             {
                 nv.PassWord = newPassword;
                 await context.SaveChangesAsync();
@@ -119,6 +120,25 @@ namespace AppAPI.Services
             await context.SaveChangesAsync();
             return kh;
         }
-
+        //Tam
+        public async Task<bool> ChangePassword(ChangePasswordRequest request)
+        {
+            var kh = await context.KhachHangs.FirstOrDefaultAsync(h => h.IDKhachHang == request.ID);
+            if (kh != null)
+            {
+                kh.Password = request.NewPassword;
+                await context.SaveChangesAsync();
+                return true;
+            }
+            var nv = await context.NhanViens.FirstOrDefaultAsync(h => h.ID == request.ID);
+            if (nv != null)
+            {
+                nv.PassWord = request.NewPassword;
+                await context.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
+        //End
     }
 }

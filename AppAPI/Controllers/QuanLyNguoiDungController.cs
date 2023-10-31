@@ -99,5 +99,20 @@ namespace AppAPI.Controllers
                 return BadRequest("Đổi mật khẩu  thành công");
             }
         }
+        //Tam
+        [HttpPut("ChangePassword")]
+        public async Task<IActionResult> DoiMatKhau(ChangePasswordRequest request)
+        {
+            var dmk = await service.ChangePassword(request);
+            if (!dmk)
+            {
+                return BadRequest("Đổi mật khẩu khong  thành công");
+            }
+            else
+            {
+                return Ok("Đổi mật khẩu  thành công");
+            }
+        }
+        //End
     }
 }

@@ -32,12 +32,9 @@
             <div class="col-lg-3">
                 <div class="shop__sidebar">
                     <div class="shop__sidebar__search">
-                        <form action="TimKiemSanPham">
-                            @using (Html.BeginForm("TimKiemSanPham", "Home", FormMethod.Get))
-                            {
-                                <input type="text" placeholder="Tìm kiếm theo tên..." name="ten">
-                                <button type="submit"><span class="icon_search"></span></button>
-                            }
+                        <form id="search-filter">
+                            <input type="text" oninput="Filtered()" placeholder="Tìm kiếm theo tên..." name="ten" id="search">
+                            <span class="icon_search"></span>
                         </form>
 
                     </div>
@@ -52,12 +49,15 @@
                                     <div id="collapseOne" class="collapse show" data-parent="#accordionExample">
                                         <div class="card-body">
                                             <div class="shop__sidebar__categories">
-                                                <div class="shop__sidebar__tags">
+                                                <div class="shop__sidebar__tags" id="LoaiSpFilter">
                                                     @foreach (var item in listLoaiSP)
                                                     {
+                                                        //<a onclick="Filtered()" value="@item.ID" >@item.Ten</a>
+                                                        //<button type="button" onclick="Filtered()" value="@item.ID" class="btn btn-primary loaisp">@item.Ten</button>
+                                                        <input type="checkbox" onchange="Filtered()" class="btn-check loaisp btn-check-outlined" id="btn-check-outlined+'@item.ID'" val="@item.Ten" autocomplete="off">
+                                                        <label class="btn btn-outline-primary" for="btn-check-outlined+'@item.ID'">@item.Ten</label>
 
-                                                        <a href="/Home/LocLoaiSP/@item.ID">@item.Ten</a>
-
+                                                        <br>
                                                     }
                                                 </div>
 
@@ -72,14 +72,15 @@
                                 </div>
                                 <div id="collapseThree" class="collapse show" data-parent="#accordionExample">
                                     <div class="card-body">
-                                        <div class="shop__sidebar__price">
-                                            <ul>
-                                                <li><a href="#">Dưới 100.000 VNĐ</a></li>
-                                                <li><a href="#">100.000 - 200.000 VNĐ</a></li>
-                                                <li><a href="#">200.000 - 300.000 VNĐ</a></li>
-                                                <li><a href="#">300.000 - 400.000 VNĐ</a></li>
-                                                <li><a href="#">400.000 - 500.000 VNĐ</a></li>
-                                                <li><a href="#">Trên 500.000 VNĐ</a></li>
+                                        <div>
+                                            <ul id="filter-price" onchange="Filtered()">
+                                                <li><input type="checkbox" onchange="checkedValidate()" id="price-all" val="all" checked /> Tất cả</li>
+                                                <li><input type="checkbox" id="price-1" val="1" /> Dưới 100.000 VNĐ</li>
+                                                <li><input type="checkbox" id="price-2" val="2" /> 100.000 - 200.000 VNĐ</li>
+                                                <li><input type="checkbox" id="price-3" val="3" /> 200.000 - 300.000 VNĐ</li>
+                                                <li><input type="checkbox" id="price-4" val="4" /> 300.000 - 400.000 VNĐ</li>
+                                                <li><input type="checkbox" id="price-5" val="5" /> 400.000 - 500.000 VNĐ</li>
+                                                <li><input type="checkbox" id="price-6" val="6" /> Trên 500.000 VNĐ</li>
                                             </ul>
                                         </div>
                                     </div>
@@ -199,7 +200,7 @@
                         </div>
                     </div>
                 </div>
-                    <div class="row">
+                    <div class="row" id="filtered-products">
                         @foreach (var item in Model)
                         {
                             <div class="col-lg-4 col-md-6 col-sm-6">
@@ -255,5 +256,69 @@
                 toastr.error(response.message, 'Error Alert', { timeOut: 300 });
             }
         });
+    }
+    function filterLoaiSP(){
+        var checkboxes = $('#LoaiSpFilter input[type="checkbox"]:checked')
+        var value = []
+        checkboxes.each(function () {
+            value.push($(this).attr('val'))
+        })
+        return value
+    }
+    //function checkedValidate(){
+    //    var all = document.getElementById("price-all");
+    //    var all1 = document.getElementById("price-1");
+    //    var all2 = document.getElementById("price-2");
+    //    var all3 = document.getElementById("price-3");
+    //    var all4 = document.getElementById("price-4");
+    //    var all5 = document.getElementById("price-5");
+    //    var all6 = document.getElementById("price-6");
+    //    if (all.checked == true) {
+    //        all1.cheked = false
+    //        all2.cheked = false
+    //        all3.cheked = false
+    //        all4.cheked = false
+    //        all5.cheked = false
+    //        all6.cheked = false
+    //    }
+    //}
+    function Filter(formId){
+        var checkboxes = $('#filter-price input[type="checkbox"]:checked')
+        var value = []
+        checkboxes.each(function(){
+            value.push($(this).attr('val'))
+        })
+        return value
+    }
+    function Search(){
+        var name = document.getElementById("search").value
+        return name
+    }
+    function Filtered() {
+        var PriceRange = Filter("filter-price");
+        var searchfilter = Search();
+        var idloaiSp = filterLoaiSP();
+        var data = {
+            priceRange: PriceRange,
+            search: searchfilter,
+            loaiSP: idloaiSp
+        }
+        fetch("/Home/GetFilteredProducts", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        }).then(function (reponse) {
+            if (reponse.ok) {
+                return reponse.text();
+            } else {
+                throw new Error("Error sending data to controller");
+            }
+        }).then(function (result) {
+            $("#filtered-products").html(result);
+        }).catch(function (error) {
+            console.log("An error occured", error)
+        })
     }
 </script>

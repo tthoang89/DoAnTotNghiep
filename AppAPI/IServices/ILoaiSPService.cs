@@ -12,5 +12,9 @@ namespace AppAPI.IServices
         Task<bool> DeleteLoaiSP(Guid id);
         bool CheckTrungLoaiSP(LoaiSPRequest lsp);
         #endregion
+        //Tam
+        Task<List<LoaiSP>> GetLoaiSPCha();
+        Task<List<LoaiSP>> GetLoaiSPCon(Guid idLoaiSPCha);
+        //End
     }
 }

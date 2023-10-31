@@ -29,6 +29,6 @@ app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=BanHangTaiQuay}/{action=BanHang}");
+    pattern: "{controller=Home}/{action=Index}");
 
 app.Run();

@@ -1,0 +1,142 @@
+﻿<form>
+    <input type="text" id="ten"/><br />
+    <textarea id="moTa"></textarea><br />
+    <select id="loaiSPCha">
+        <option>Chọn loại sản phẩm cha</option>
+    </select><br />
+    <select id="loaiSPCon">
+        <option>Chọn loại sản phẩm con</option>
+    </select><br />
+    <div id="thuocTinh"> 
+    </div>
+    <a id="themThuocTinh">Thêm thuộc tính</a>
+    <div id="giaTri">
+    </div>
+    <button type="submit" id="addSanPham">Thêm sản phẩm</button>
+</form>
+<script src="~/js/jquery-3.3.1.min.js"></script>
+<script>
+    var countThuocTinh = 0;
+    var countGiaTri = 0;
+    var lstThuocTinh = [];
+    var lstGiaTri = [];
+    $(document).ready(function () {
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: "/Admin/GetLoaiSPCha",
+            success: function (response) { 
+                for (var i = 0; i < response.length; i++) {
+                    var rows = "<option value='" + response[i].id + "'>" + response[i].ten + "</option>";
+                    $('#loaiSPCha').append(rows);
+                }
+            }
+        });
+        // $.ajax({
+        //     type: "GET",
+        //     dataType: "json",
+        //     url: "/Admin/GetThuocTinh",
+        //     success: function (response) {
+        //         console.log(response)
+        //         for (var i = 0; i < response.length; i++) {
+        //             var rows = "<option value='" + response[i].id + "'>" + response[i].ten + "</option>";
+        //             $('#thuocTinh').append(rows);
+        //         }
+        //     }
+        // });
+    });
+    $("#loaiSPCha").change(function () {
+        var value = $("#loaiSPCha").val();
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            data: { idLoaiSPCha: value },
+            url: "/Admin/GetLoaiSPCon",
+            success: function (response) {
+                for (var i = 0; i < response.length; i++) {
+                    var rows = "<option value='" + response[i].id + "'>" + response[i].ten + "</option>";
+                    $('#loaiSPCon').append(rows);
+                }
+            }
+        });
+    });
+    $("#themThuocTinh").click(function () {
+        countThuocTinh++;
+        if (countThuocTinh < 4) {
+            $.ajax({
+                type: "GET",
+                dataType: "json",
+                url: "/Admin/GetThuocTinh",
+                success: function (response) {
+                    var rows = "";
+                    var ip = "<input id='thuoctinh" + countThuocTinh + "' type='text' list='value" + countThuocTinh + "' onchange='ChangeThuocTinh(" + countThuocTinh + ")' /><datalist id='value" + countThuocTinh + "'>"
+                    for (var i = 0; i < response.length; i++) {
+                        rows += "<option value='" + response[i].ten + "'></option>";
+                    }
+                    ip = ip + rows + "</datalist><br />";
+                    debugger;
+                    $('#thuocTinh').append(ip);
+                }
+            });
+        }
+    });
+    function ChangeThuocTinh(dem) {
+        var temp = $("#thuoctinh" + dem).val();
+        lstThuocTinh.push(temp);
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            data: { thuocTinh: temp },
+            url: "/Admin/GetGiaTri",
+            success: function (response) {
+                var ip = "<input id='" + temp + "_" + countGiaTri + "' type='text' list='value_" + temp + "' onchange="+"\""+"ChangeGiaTri(" + countGiaTri + ",'" + temp + "')"+"\""+" /><datalist id='value_" + temp + "'>";
+                for (var i = 0; i < response.length; i++) {
+                    var rows = "<option value='" + response[i].ten + "'></option>";
+                }
+                ip = ip + rows + "</datalist><br />";
+                console.log(ip);
+                $('#giaTri').append(ip);
+            }
+        });
+    }
+    function ChangeGiaTri(dem, tt) {
+        countGiaTri++;
+        var temp = $("#"+tt+"_"+dem).val();
+        lstGiaTri.push({ GiaTri:temp, ThuocTinh:tt });
+        console.log(lstGiaTri);
+        $.ajax({
+            type: "GET",
+            dataType: "json", 
+            data: { thuocTinh: tt },
+            url: "/Admin/GetGiaTri",
+            success: function (response) {
+                var ip = "<input id='" + tt + "_" + countGiaTri + "' type='text' list='value_" + tt + "' onchange=" + "\"" + "ChangeGiaTri(" + countGiaTri + ",'" + tt + "')" + "\"" + " /><datalist id='value_" + tt + "'>";
+                for (var i = 0; i < response.length; i++) {
+                    var rows = "<option value='" + response[i].ten + "'></option>";
+                }
+                ip = ip + rows + "</datalist><br />";
+                $('#giaTri').append(ip);
+            }
+        });
+    }
+    $("#addSanPham").click(function (e) {
+        e.preventDefault();
+        var ten = $("#ten").val();
+        var loaiSP = $("#loaiSPCon").val();
+        var moTa = $("#moTa").val();
+        var obj = 
+        $.ajax({
+            type: "POST",
+            data: { thuocTinh: tt },
+            url: "/Admin/GetGiaTri",
+            success: function (response) {
+                var ip = "<input id='" + tt + "_" + countGiaTri + "' type='text' list='value_" + tt + "' onchange=" + "\"" + "ChangeGiaTri(" + countGiaTri + ",'" + tt + "')" + "\"" + " /><datalist id='value_" + tt + "'>";
+                for (var i = 0; i < response.length; i++) {
+                    var rows = "<option value='" + response[i].ten + "'></option>";
+                }
+                ip = ip + rows + "</datalist><br />";
+                $('#giaTri').append(ip);
+            }
+        });
+    });
+</script>
