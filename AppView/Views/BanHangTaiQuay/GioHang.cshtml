@@ -4,8 +4,7 @@
 @{
     ViewData["Title"] = "GioHang";
 }
-
-<div class = "cthd">
+<div class="cthd">
     @{
         var index = 1;
         var tsl = 0;
@@ -18,7 +17,7 @@
             <div class="cart-item">
                 <div class="cell-order">@index</div>
                 <div class="cell-active">
-                    <button class="btn" onclick="deleteHDCT('@item.Id','@item.IdHoaDon')">
+                    <button class="btn" onclick="deleteHDCT('@item.Id','@item.IdHoaDon','@item.IDBienThe','@item.SoLuong')">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
@@ -63,23 +62,24 @@
     </div>
 
     <div class="row" style="margin-top:5px">
-        <button class="btn btn-primary btn-block" data-target="#mycheckOut" data-toggle ="modal">Thanh toán</button>
+        <button class="btn btn-primary btn-block" data-target="#mycheckOut" data-toggle="modal">Thanh toán</button>
     </div>
-
 </div>
 <script type="text/javascript">
     function loadData(idhd){
         $('.cthd').load("/BanHangTaiQuay/getCTHD/" + idhd);
     }
-    function deleteHDCT(idcthd,idhd){
+    function deleteHDCT(idcthd,idhd,idbt,soluong){
+      var request = {Id:idcthd,IdBienThe: idbt, SoLuong :soluong}
+      console.log(request);
       $.ajax({
-          url: "/BanHangTaiQuay/deleteHdct/"+idcthd,
-          type: "DELETE",
-          contentType: "application/json;charset=UTF-8",
-          dataType: "json",
+          url: "/BanHangTaiQuay/deleteHdct",
+          async: false,
+          type: 'DELETE',
+          dataType: 'json',
+          data:request,
           success: function(response) {
-              loadData(idhd);
-              console.log("Thành công");
+              alert("Xóa thành công r bạn");
           },
           error: function(response) {
               alert("Xóa thất bại");

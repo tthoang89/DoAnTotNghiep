@@ -1,6 +1,7 @@
 ﻿using AppData.Models;
 using AppData.ViewModels;
 using AppData.ViewModels.BanOffline;
+using AppData.ViewModels.SanPham;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Json;
 
@@ -14,40 +15,30 @@ namespace AppView.Controllers
             _httpClient = new HttpClient();
             _httpClient.BaseAddress = new Uri("https://localhost:7095/api/");
         }
-        public async Task<IActionResult> BanHang()
+        public IActionResult BanHang()
         {
-            var lsthd = await _httpClient.GetFromJsonAsync<List<HoaDon>>("HoaDon/GetAll");
-            var lstbt = await _httpClient.GetFromJsonAsync<List<BienTheViewModel>>("BienThe/getAll");
-            var lsthdcho = lsthd.Where(c => c.TrangThaiGiaoHang == 1).ToList();
-            ViewData["lsthdcho"]=lsthdcho;
-            ViewData["lstbthe"] = lstbt;
+            ViewBag.IdNhanVien = "C61B3646-6FF6-4E56-BA26-53E437B7C1A9";
+            ViewBag.HideFooter = true;
             return View();
         }
-        public IActionResult TaoHoaDon()
+        public IActionResult ThanhToanRightSide()
         {
-            HoaDon hd = new HoaDon()
-            {
-                NgayTao = DateTime.Now,
-                IDNhanVien = Guid.Parse("C61B3646-6FF6-4E56-BA26-53E437B7C1A9"),
-                TrangThaiGiaoHang = 1,
-            };
-            var response =  _httpClient.PostAsJsonAsync<HoaDon>("HoaDon/Offline",hd).Result;
-            if (response.IsSuccessStatusCode) return RedirectToAction("BanHang");
-            else return BadRequest();
+            ViewBag.HideFooter = true;
+            return View();
         }
+
+        
         [HttpGet("/BanHangTaiQuay/getCTHD/{id}")]
         public async Task<IActionResult> getCTHD(string id)
         {
             var lstcthd = await _httpClient.GetFromJsonAsync<List<HoaDonChiTietViewModel>>($"ChiTietHoaDon/getByIdHD/{id}");
             return PartialView("GioHang",lstcthd);
         }
-        [HttpDelete("/BanHangTaiQuay/deleteHDCho/{id}")]
-        public async Task<ActionResult> deleteHDCho(string id)
+        public async Task<IActionResult> deleteHD(string id)
         {
-            var response = await _httpClient.DeleteAsync($"HoaDon/deleteHoaDon/{id}");
-            if (response.IsSuccessStatusCode) return Json(new { success = true, message = "Xóa hóa đơn thành công" });
-            return Json(new { success = false, message = "Xóa thất bại" });
+            // Xóa chi tiết hóa đơn
         }
+
         public async Task<ActionResult> addHdct(HoaDonChiTietRequest request)
         {
             HoaDonChiTietRequest hdct = new HoaDonChiTietRequest()
@@ -62,10 +53,21 @@ namespace AppView.Controllers
             if (response.IsSuccessStatusCode) return Json(new { success = true, message = "Xóa hóa đơn thành công" });
             return Json(new { success = false, message = "Xóa thất bại" });
         }
-        [HttpDelete("/BanHangTaiQuay/deleteHdct/{id}")]
-        public async Task<ActionResult> deleteHdct(string id)
+        public async Task<ActionResult> deleteHdct(HoaDonChiTietRequest request)
         {
-            var response = await _httpClient.DeleteAsync($"ChiTietHoaDon/delete/{id}");
+            //Xóa chi tiết hóa đơn
+            var response = await _httpClient.DeleteAsync($"ChiTietHoaDon/delete/{request.Id}");
+            //Thêm lại số lượng cho biến thể
+            var bt = await _httpClient.GetFromJsonAsync<BienTheViewModel>($"BienThe/getBienTheById/{request.IdBienThe}");
+            //BienTheRequest btr = new BienTheRequest()
+            //{
+            //    ID = bt.ID,
+            //    SoLuong = bt.SoLuong + request.SoLuong,
+            //    GiaBan = bt.GiaBan,
+            //    TrangThai =bt.TrangThai,
+            //    IDKhuyenMai = bt.
+            //};
+            //var result = await _httpClient.PostAsJsonAsync("BienThe/saveBienThe/",btr);
             if (response.IsSuccessStatusCode) return Json(new { success = true, message = "Xóa thành công" });
             return Json(new { success = false, message = "Xóa thất bại" });
         }
