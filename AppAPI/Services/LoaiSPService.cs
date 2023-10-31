@@ -72,15 +72,5 @@ namespace AppAPI.Services
             return true;
         }
         #endregion
-        //Tam
-        public async Task<List<LoaiSP>> GetLoaiSPCha()
-        {
-            return await _context.LoaiSPs.Where(x=>x.IDLoaiSPCha==null).ToListAsync();
-        }
-        public async Task<List<LoaiSP>> GetLoaiSPCon(Guid idLoaiSPCha)
-        {
-            return await _context.LoaiSPs.Where(x=>x.IDLoaiSPCha== idLoaiSPCha).ToListAsync();
-        }
-        //End
     }
 }
