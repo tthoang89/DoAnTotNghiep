@@ -12,7 +12,7 @@ namespace AppAPI.Services
     {
         private readonly IAllRepository<HoaDon> reposHoaDon;
         private readonly IAllRepository<ChiTietHoaDon> reposChiTietHoaDon;
-        private readonly IAllRepository<BienThe> reposBienThe;
+        private readonly IAllRepository<ChiTietSanPham> repsCTSanPham;
         private readonly IAllRepository<Voucher> reposVoucher;
         private readonly IAllRepository<QuyDoiDiem> reposQuyDoiDiem;
         private readonly IAllRepository<LichSuTichDiem> reposLichSuTichDiem;
@@ -26,7 +26,7 @@ namespace AppAPI.Services
         {
             reposHoaDon = new AllRepository<HoaDon>(context, context.HoaDons);
             reposChiTietHoaDon = new AllRepository<ChiTietHoaDon>(context, context.ChiTietHoaDons);
-            reposBienThe = new AllRepository<BienThe>(context, context.BienThes);
+            repsCTSanPham = new AllRepository<ChiTietSanPham>(context, context.ChiTietSanPhams);
             reposVoucher = new AllRepository<Voucher>(context, context.Vouchers);
             reposQuyDoiDiem = new AllRepository<QuyDoiDiem>(context, context.QuyDoiDiems);
             reposLichSuTichDiem = new AllRepository<LichSuTichDiem>(context, context.LichSuTichDiems);
@@ -101,14 +101,14 @@ namespace AppAPI.Services
                             ChiTietHoaDon chiTietHoaDon = new ChiTietHoaDon();
                             chiTietHoaDon.ID = Guid.NewGuid();
                             chiTietHoaDon.IDHoaDon = hoaDon1.ID;
-                            chiTietHoaDon.IDBienThe = x.IDBienThe;
+                            chiTietHoaDon.IDCTSP = x.IDChiTietSanPham;
                             chiTietHoaDon.SoLuong = x.SoLuong;
                             chiTietHoaDon.DonGia = x.DonGia;
                             chiTietHoaDon.TrangThai = 1;
                             reposChiTietHoaDon.Add(chiTietHoaDon);
-                            var bienThe = reposBienThe.GetAll().FirstOrDefault(p => p.ID == x.IDBienThe);
-                            bienThe.SoLuong -= chiTietHoaDon.SoLuong;
-                            reposBienThe.Update(bienThe);
+                            var CTsanPham = repsCTSanPham.GetAll().FirstOrDefault(p => p.ID == x.IDChiTietSanPham);
+                            CTsanPham.SoLuong -= chiTietHoaDon.SoLuong;
+                            repsCTSanPham.Update(CTsanPham);
                         }
                         //tích điểm, dùng điểm
                         if (hoaDon.IDNguoiDung != null)
@@ -268,9 +268,9 @@ namespace AppAPI.Services
                 {
                     foreach (var item in chitiethoadon)
                     {
-                        var bienThe = reposBienThe.GetAll().FirstOrDefault(p => p.ID == item.IDBienThe);
-                        bienThe.SoLuong += item.SoLuong;
-                        reposBienThe.Update(bienThe);
+                        var CTsanPham = repsCTSanPham.GetAll().FirstOrDefault(p => p.ID == item.IDCTSP);
+                        CTsanPham.SoLuong += item.SoLuong;
+                        repsCTSanPham.Update(CTsanPham);
                     }
                 }
                 if (trangThai == 6)

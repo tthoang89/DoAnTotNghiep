@@ -8,25 +8,25 @@ namespace AppAPI.Services
     public class ChiTietGioHangServices : IChiTietGioHangServices
     {
         private readonly IAllRepository<ChiTietGioHang> repos;
-        private readonly IAllRepository<BienThe> bienthes;
+        private readonly IAllRepository<ChiTietSanPham> chitietsanphams;
         AssignmentDBContext context = new AssignmentDBContext();
         public ChiTietGioHangServices()
         {
             repos = new AllRepository<ChiTietGioHang>(context, context.ChiTietGioHangs);
-            bienthes = new AllRepository<BienThe>(context, context.BienThes);
+            chitietsanphams = new AllRepository<ChiTietSanPham>(context, context.ChiTietSanPhams);
         }
-        public string Add(Guid IdBienThe, Guid IdKhachHang, int soluong)
+        public string Add(Guid idChiTietSanPham, Guid IdKhachHang, int soluong)
         {
             ChiTietGioHang chiTietGioHang = new ChiTietGioHang();
             chiTietGioHang.ID = Guid.NewGuid();
-            chiTietGioHang.IDBienThe = IdBienThe;
+            chiTietGioHang.IDCTSP = idChiTietSanPham;
             chiTietGioHang.IDNguoiDung = IdKhachHang;
             chiTietGioHang.SoLuong = soluong;
-            if (repos.GetAll().Exists(p => p.IDBienThe == IdBienThe && p.IDNguoiDung == IdKhachHang))
+            if (repos.GetAll().Exists(p => p.IDCTSP == idChiTietSanPham && p.IDNguoiDung == IdKhachHang))
             {
-                Guid id = repos.GetAll().Find(p => p.IDBienThe == IdBienThe && p.IDNguoiDung == IdKhachHang).ID;
-                ChiTietGioHang chiTietGioHang1 = repos.GetAll().Find(p => p.IDBienThe == IdBienThe && p.IDNguoiDung == IdKhachHang);
-                if (chiTietGioHang.SoLuong + soluong > bienthes.GetAll().Find(p => p.ID == IdBienThe).SoLuong)
+                Guid id = repos.GetAll().Find(p => p.IDCTSP == idChiTietSanPham && p.IDNguoiDung == IdKhachHang).ID;
+                ChiTietGioHang chiTietGioHang1 = repos.GetAll().Find(p => p.IDCTSP == idChiTietSanPham && p.IDNguoiDung == IdKhachHang);
+                if (chiTietGioHang.SoLuong + soluong > chitietsanphams.GetAll().Find(p => p.ID == idChiTietSanPham).SoLuong)
                 {
                     return "so luong trong kho khong du";
                 }
@@ -66,19 +66,19 @@ namespace AppAPI.Services
             return repos.GetAll().FirstOrDefault(x => x.ID == Id);
         }
 
-        public string Update(Guid id, Guid IdBienThe, Guid IdKhachHang, int soluong)
+        public string Update(Guid id, Guid idChiTietSanPham, Guid IdKhachHang, int soluong)
         {
             var chiTietGioHang = repos.GetAll().FirstOrDefault(x => x.ID == id);
             if (chiTietGioHang != null)
             {
-                chiTietGioHang.IDBienThe = IdBienThe;
+                chiTietGioHang.IDCTSP = idChiTietSanPham;
                 chiTietGioHang.IDNguoiDung = IdKhachHang;
                 chiTietGioHang.SoLuong = soluong;
-                if (repos.GetAll().Exists(x => x.IDBienThe == IdBienThe && x.IDNguoiDung == IdKhachHang))
+                if (repos.GetAll().Exists(x => x.IDCTSP == idChiTietSanPham && x.IDNguoiDung == IdKhachHang))
                 {
 
-                    ChiTietGioHang chiTietGioHang1 = repos.GetAll().Find(p => p.IDBienThe == IdBienThe && p.IDNguoiDung == IdKhachHang);
-                    if (chiTietGioHang1.SoLuong > bienthes.GetAll().Find(x => x.ID == IdBienThe).SoLuong)
+                    ChiTietGioHang chiTietGioHang1 = repos.GetAll().Find(p => p.IDCTSP == idChiTietSanPham && p.IDNguoiDung == IdKhachHang);
+                    if (chiTietGioHang1.SoLuong > chitietsanphams.GetAll().Find(x => x.ID == idChiTietSanPham).SoLuong)
                     {
                         return "so luong trong kho khong du";
                     }

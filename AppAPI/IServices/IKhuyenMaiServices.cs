@@ -17,7 +17,7 @@ namespace AppAPI.IServices
 
         public KhuyenMai GetById(Guid Id);
         public List<KhuyenMai> GetAll();
-        public List<BienThe> GetAllBienThe();
+        public List<ChiTietSanPham> GetAllBienThe();
         public List<KhuyenMai> GetKMByName(string Ten);
     }
 }

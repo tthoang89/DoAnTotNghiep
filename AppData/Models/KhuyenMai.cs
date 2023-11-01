@@ -9,6 +9,6 @@
         public DateTime NgayKetThuc { get; set; }
         public string MoTa { get; set; }
         public int TrangThai { get; set; }
-        public virtual IEnumerable<BienThe> BienThes { get; set; }
+        public virtual IEnumerable<ChiTietSanPham> ChiTietSanPhams { get; set; }
     }
 }

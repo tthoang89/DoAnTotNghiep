@@ -13,7 +13,7 @@ namespace AppData.Configurations
             builder.Property(x => x.SoLuong).HasColumnType("int");
             builder.Property(x => x.TrangThai).HasColumnType("int");
             builder.HasOne(x => x.HoaDon).WithMany(x => x.ChiTietHoaDons).HasForeignKey(x => x.IDHoaDon);
-            builder.HasOne(x => x.BienThe).WithMany(x => x.ChiTietHoaDons).HasForeignKey(x => x.IDBienThe);
+            builder.HasOne(x => x.ChiTietSanPham).WithMany(x => x.ChiTietHoaDons).HasForeignKey(x => x.IDCTSP);
         }
     }
 }

@@ -16,16 +16,21 @@ namespace AppAPI.IServices
         bool CheckTrungTenSP(SanPhamRequest lsp);
         #endregion
 
-        #region ThuocTinh
-        Task<List<ThuocTinhRequest>> GetAllThuocTinh();
-        Task<ThuocTinhRequest> GetByID(Guid idtt);
-        Task<ThuocTinh> SaveThuocTinh(ThuocTinhRequest tt);
-        Task<bool> DeleteThuocTinh(Guid id);
-        Task<bool> CheckTrungTT(ThuocTinhRequest tt);
-        //Tam
-        Task<List<GiaTri>> GetGiaTri(string thuocTinh);
-        //Task<bool> AddSanPham(SanPhamRequestMVC sanPham);
-        //End
-        #endregion       
+        #region LoaiSanPham
+        Task<List<LoaiSP>> GetAllLoaiSP();
+        Task<LoaiSP> GetLoaiSPById(Guid id);
+        Task<LoaiSP> SaveLoaiSP(LoaiSPRequest lsp);
+        Task<bool> DeleteLoaiSP(Guid id);
+        bool CheckTrungLoaiSP(LoaiSPRequest lsp);
+        Task<List<LoaiSP>> GetLoaiSPCha();
+        Task<List<LoaiSP>> GetLoaiSPCon(Guid idLoaiSPCha);
+        #endregion
+
+        #region ChiTietSanPham
+        Task<List<ChiTietSanPham>> GetAllChiTietSanPham(Guid idSanPham);
+        Task<bool> DeleteChiTietSanPham(Guid id);
+        Task<bool> UpdateChiTietSanPham(ChiTietSanPham chiTietSanPham);
+        Task<bool> AddChiTietSanPham(ChiTietSanPham chiTietSanPham);
+        #endregion
     }
 }

@@ -44,12 +44,12 @@ namespace AppView.Controllers
             var thuocTinhs = JsonConvert.DeserializeObject<List<ThuocTinhRequest>>(response.Content.ReadAsStringAsync().Result);
             return Json(thuocTinhs);
         }
-        public JsonResult GetGiaTri(string thuocTinh)
-        {
-            HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + "ThuocTinh/GetGiaTri?thuocTinh=" + thuocTinh).Result;
-            var giaTris = JsonConvert.DeserializeObject<List<GiaTri>>(response.Content.ReadAsStringAsync().Result);
-            return Json(giaTris);
-        }
+        //public JsonResult GetGiaTri(string thuocTinh)
+        //{
+        //    HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + "ThuocTinh/GetGiaTri?thuocTinh=" + thuocTinh).Result;
+        //    var giaTris = JsonConvert.DeserializeObject<List<GiaTri>>(response.Content.ReadAsStringAsync().Result);
+        //    return Json(giaTris);
+        //}
         
     }
 }
