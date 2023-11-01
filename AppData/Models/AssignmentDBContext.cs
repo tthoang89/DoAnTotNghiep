@@ -38,6 +38,7 @@ namespace AppData.Models
         }
         //THUYNHU\SQLEXPRESS
         //DESKTOP-UOIH77U\SQLEXPRESS
+        //LAPTOP-A15NGLBG\SQLEXPRESS
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
