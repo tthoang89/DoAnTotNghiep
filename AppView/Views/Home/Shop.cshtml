@@ -7,8 +7,39 @@
 @{
     ViewData["Title"] = "Privacy Policy";
     var listLoaiSP = ViewData["listLoaiSP"] as List<LoaiSP>;
+    var listMauSac = ViewData["listMauSac"] as List<MauSac>;
+    var listKichCo = ViewData["listKichCo"] as List<KichCo>;
+    var listChatLieu = ViewData["listChatLieu"] as List<ChatLieu>;
     Layout = "_Layout";
 }
+<style>
+    #filter-color input[type="checkbox"], #filter-size input[type="checkbox"], #LoaiSpFilter input[type="checkbox"], #filter-material input[type="checkbox"] {
+        display:none;
+    }
+
+    #filter-color label input[type="checkbox"]:checked ~ span, #filter-size label input[type="checkbox"]:checked ~ span, #LoaiSpFilter label input[type="checkbox"]:checked ~ span, #filter-material label input[type="checkbox"]:checked ~ span {
+        background:black;
+        color:white;
+    }
+
+    #filter-color label span, #filter-size label span, #LoaiSpFilter label span, #filter-material label span {
+        color: #111111;
+        font-size: 15px;
+        font-weight: 700;
+        text-transform: uppercase;
+        display: inline-block;
+        border: 1px solid #e5e5e5;
+        padding: 6px 25px;
+        margin-bottom: 10px;
+        margin-right: 5px;
+        cursor: pointer;
+    }
+
+        #filter-color label span:hover, #filter-size label span:hover, #LoaiSpFilter label span:hover, #filter-material label span:hover {
+    background: black;
+    color: white;
+    }
+</style>
 <!-- Breadcrumb Section Begin -->
 <section class="breadcrumb-option">
     <div class="container">
@@ -45,28 +76,41 @@
                                 <div class="card-heading">
                                     <a data-toggle="collapse" data-target="#collapseOne">Categories</a>
                                 </div>
-                                @if(listLoaiSP != null)
-                                {
-                                    <div id="collapseOne" class="collapse show" data-parent="#accordionExample">
-                                        <div class="card-body">
-                                            <div class="shop__sidebar__categories">
-                                                <div class="shop__sidebar__tags" id="LoaiSpFilter">
-                                                    @foreach (var item in listLoaiSP)
-                                                    {
-                                                        //<a onclick="Filtered()" value="@item.ID" >@item.Ten</a>
-                                                        //<button type="button" onclick="Filtered()" value="@item.ID" class="btn btn-primary loaisp">@item.Ten</button>
-                                                        <input type="checkbox" onchange="Filtered()" class="btn-check loaisp btn-check-outlined" id="btn-check-outlined+'@item.ID'" val="@item.Ten" autocomplete="off">
-                                                        <label class="btn btn-outline-primary" for="btn-check-outlined+'@item.ID'">@item.Ten</label>
+                                <div id="collapseOne" class="collapse show" data-parent="#accordionExample">
+                                    <div class="card-body" style="padding-left:20px">
+                                        <div>
+                                            @if (listLoaiSP != null)
+                                            {
+                                                @foreach (var item in listLoaiSP.Where(p => p.IDLoaiSPCha == null).ToList())
+                                                {
+                                                    <div class="card">
+                                                        <div class="card-heading">
+                                                            <a data-toggle="collapse" data-target="#collapse_@item.Ten">@item.Ten</a>
+                                                        </div>
 
-                                                        <br>
-                                                    }
-                                                </div>
-
-                                            </div>
+                                                        <div id="collapse_@item.Ten" class="collapse" >
+                                                            <div class="card-body">
+                                                                <div id="LoaiSpFilter" onchange="Filtered()">
+                                                                    @foreach (var x in listLoaiSP.Where(p => p.IDLoaiSPCha == item.ID).ToList())
+                                                                    {
+                                                                        <label>
+                                                                            <input type="checkbox" class="btn-check" id="btn-check-outlined_@item.Ten" autocomplete="off" val="@x.Ten">
+                                                                            <span class="btn btn-outline-primary" for="btn-check-outlined_@item.Ten">@x.Ten</span>
+                                                                        </label>
+                                                                    }
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            }
                                         </div>
                                     </div>
-                                }  
+                                </div>
                             </div>
+                            
+                            
+                            
                             <div class="card">
                                 <div class="card-heading">
                                     <a data-toggle="collapse" data-target="#collapseThree">Filter Price</a>
@@ -75,8 +119,7 @@
                                     <div class="card-body">
                                         <div>
                                             <ul id="filter-price" onchange="Filtered()">
-                                                <li><input type="checkbox" onchange="checkedValidate()" id="price-all" val="all" checked /> Tất cả</li>
-                                                <li><input type="checkbox" id="price-1" val="1" /> Dưới 100.000 VNĐ</li>
+                                                <li><input type="checkbox" style="cursor:pointer" id="price-1" val="1" /> Dưới 100.000 VNĐ</li>
                                                 <li><input type="checkbox" id="price-2" val="2" /> 100.000 - 200.000 VNĐ</li>
                                                 <li><input type="checkbox" id="price-3" val="3" /> 200.000 - 300.000 VNĐ</li>
                                                 <li><input type="checkbox" id="price-4" val="4" /> 300.000 - 400.000 VNĐ</li>
@@ -93,39 +136,20 @@
                                 </div>
                                 <div id="collapseFour" class="collapse show" data-parent="#accordionExample">
                                     <div class="card-body">
-                                        <div class="shop__sidebar__size">
-                                            <label for="xs">
+                                        <div @*class="shop__sidebar__size"*@ id="filter-size" onchange="Filtered()">
+                                            @foreach (var item in listKichCo)
+                                            {
+                                                <label>
+                                                    <input type="checkbox" class="btn-check" id="btn-check-outlined_@item.Ten" autocomplete="off" val="@item.ID">
+                                                    <span class="btn btn-outline-primary" for="btn-check-outlined_@item.Ten">@item.Ten</span>
+                                                </label>
+                                            }
+                                            
+                                            @*<label for="xs">
                                                 xs
-                                                <input type="radio" id="xs">
-                                            </label>
-                                            <label for="sm">
-                                                s
-                                                <input type="radio" id="sm">
-                                            </label>
-                                            <label for="md">
-                                                m
-                                                <input type="radio" id="md">
-                                            </label>
-                                            <label for="xl">
-                                                xl
-                                                <input type="radio" id="xl">
-                                            </label>
-                                            <label for="2xl">
-                                                2xl
-                                                <input type="radio" id="2xl">
-                                            </label>
-                                            <label for="xxl">
-                                                xxl
-                                                <input type="radio" id="xxl">
-                                            </label>
-                                            <label for="3xl">
-                                                3xl
-                                                <input type="radio" id="3xl">
-                                            </label>
-                                            <label for="4xl">
-                                                4xl
-                                                <input type="radio" id="4xl">
-                                            </label>
+                                                <input type="checkbox" id="xs">
+                                            </label>*@
+                                            
                                         </div>
                                     </div>
                                 </div>
@@ -136,25 +160,18 @@
                                 </div>
                                 <div id="collapseFive" class="collapse show" data-parent="#accordionExample">
                                     <div class="card-body">
-                                        <div class="shop__sidebar__color">
-                                            <label class="c-1" for="sp-1">
+                                        <div @*class="shop__sidebar__color"*@ id="filter-color" onchange="Filtered()">
+                                            @foreach (var item in listMauSac)
+                                            {
+                                                <label>
+                                                    <input type="checkbox" class="btn-check" id="btn-check-outlined_@item.Ten" autocomplete="off" val="@item.ID">
+                                                    <span class="btn btn-outline-primary" for="btn-check-outlined_@item.Ten">@item.Ten</span>
+                                                </label>
+                                                
+                                            }
+                                            @*<label class="c-1" for="sp-1">
                                                 <input type="radio" id="sp-1">
-                                            </label>
-                                            <label class="c-2" for="sp-2">
-                                                <input type="radio" id="sp-2">
-                                            </label>
-                                            <label class="c-3" for="sp-3">
-                                                <input type="radio" id="sp-3">
-                                            </label>
-                                            <label class="c-4" for="sp-4">
-                                                <input type="radio" id="sp-4">
-                                            </label>
-                                            <label class="c-5" for="sp-5">
-                                                <input type="radio" id="sp-5">
-                                            </label>
-                                            <label class="c-6" for="sp-6">
-                                                <input type="radio" id="sp-6">
-                                            </label>
+                                            </label>*@
                                         </div>
                                     </div>
                                 </div>
@@ -165,14 +182,22 @@
                                 </div>
                                 <div id="collapseSix" class="collapse show" data-parent="#accordionExample">
                                     <div class="card-body">
-                                        <div class="shop__sidebar__tags">
-                                            <a href="#">Product</a>
+                                        <div class="shop__sidebar__tags" id="filter-material" onchange="Filtered()">
+                                            @foreach (var item in listChatLieu)
+                                            {
+                                                <label>
+                                                    <input type="checkbox" class="btn-check" id="btn-check-outlined_@item.Ten" autocomplete="off" val="@item.ID">
+                                                    <span class="btn btn-outline-primary" for="btn-check-outlined_@item.Ten">@item.Ten</span>
+                                                </label>
+                                                
+                                            }
+                                            @*<a href="#">Product</a>
                                             <a href="#">Bags</a>
                                             <a href="#">Shoes</a>
                                             <a href="#">Fashio</a>
                                             <a href="#">Clothing</a>
                                             <a href="#">Hats</a>
-                                            <a href="#">Accessories</a>
+                                            <a href="#">Accessories</a>*@
                                         </div>
                                     </div>
                                 </div>
@@ -190,14 +215,20 @@
                             </div>
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-6">
-                            @*<div class="shop__product__option__right">
-                                <p>Sort by Price:</p>
-                                <select>
-                                    <option value="">Low To High</option>
-                                    <option value="">$0 - $55</option>
-                                    <option value="">$55 - $100</option>
+                            <div class="shop__product__option__right">
+                                <p>Sắp xếp theo:</p>
+                                <select id="Sort-product" class="form-select" aria-label="Default select example" onchange="Filtered()">
+                                    <option value="1">Sản phẩm nổi bật</option>
+                                    <option value="2">Giá: Tăng dần</option>
+                                    <option value="3">Giá: Giảm dần</option>
+                                    <option value="4">Tên: A-Z</option>
+                                    <option value="5">Tên: Z-A</option>
+                                    <option value="6">Cũ nhất</option>
+                                    <option value="7">Mới nhất</option>
+                                    <option value="8">Bán chạy nhất</option>
+                                    <option value="9">Tồn kho giảm dần</option>
                                 </select>
-                            </div>*@
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -258,6 +289,11 @@
             }
         });
     }
+    function Sort(){
+        var sort = document.getElementById("Sort-product");
+        var valuesort = sort.value;
+        return valuesort;
+    }
     function filterLoaiSP(){
         var checkboxes = $('#LoaiSpFilter input[type="checkbox"]:checked')
         var value = []
@@ -266,23 +302,30 @@
         })
         return value
     }
-    //function checkedValidate(){
-    //    var all = document.getElementById("price-all");
-    //    var all1 = document.getElementById("price-1");
-    //    var all2 = document.getElementById("price-2");
-    //    var all3 = document.getElementById("price-3");
-    //    var all4 = document.getElementById("price-4");
-    //    var all5 = document.getElementById("price-5");
-    //    var all6 = document.getElementById("price-6");
-    //    if (all.checked == true) {
-    //        all1.cheked = false
-    //        all2.cheked = false
-    //        all3.cheked = false
-    //        all4.cheked = false
-    //        all5.cheked = false
-    //        all6.cheked = false
-    //    }
-    //}
+    function filterMauSac() {
+        var checkboxes = $('#filter-color input[type="checkbox"]:checked')
+        var value = []
+        checkboxes.each(function () {
+            value.push($(this).attr('val'))
+        })
+        return value
+    }
+    function filterKichCo() {
+        var checkboxes = $('#filter-size input[type="checkbox"]:checked')
+        var value = []
+        checkboxes.each(function () {
+            value.push($(this).attr('val'))
+        })
+        return value
+    }
+    function filterChatLieu() {
+        var checkboxes = $('#filter-material input[type="checkbox"]:checked')
+        var value = []
+        checkboxes.each(function () {
+            value.push($(this).attr('val'))
+        })
+        return value
+    }
     function Filter(formId){
         var checkboxes = $('#filter-price input[type="checkbox"]:checked')
         var value = []
@@ -299,10 +342,18 @@
         var PriceRange = Filter("filter-price");
         var searchfilter = Search();
         var idloaiSp = filterLoaiSP();
+        var idMauSac = filterMauSac();
+        var idKichCo = filterKichCo();
+        var idChatLieu = filterChatLieu();
+        var idsortSP = Sort();
         var data = {
             priceRange: PriceRange,
             search: searchfilter,
-            loaiSP: idloaiSp
+            loaiSP: idloaiSp,
+            mauSac: idMauSac,
+            kichCo: idKichCo,
+            chatLieu: idChatLieu,
+            sortSP: idsortSP
         }
         fetch("/Home/GetFilteredProducts", {
             method: "POST",

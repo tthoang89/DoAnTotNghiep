@@ -67,6 +67,12 @@ namespace AppAPI.Controllers
         #endregion
 
         #region ChiTietSanPham
+        [HttpGet("GetAllChiTietSanPham")]
+        public async Task<IActionResult> GetAllChiTietSanPham(Guid id)
+        {
+            var sanPham = await _sanPhamServices.GetAllChiTietSanPham(id);
+            return Ok(sanPham);
+        }
         #endregion
 
         #region LoaiSP
