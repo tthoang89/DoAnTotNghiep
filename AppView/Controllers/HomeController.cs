@@ -47,6 +47,21 @@ namespace AppView.Controllers
             {
                 ViewData["listLoaiSP"] = JsonConvert.DeserializeObject<List<LoaiSP>>(responseLoaiSP.Content.ReadAsStringAsync().Result);
             }
+            HttpResponseMessage responseMauSac = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllMauSac").Result;
+            if (responseMauSac.IsSuccessStatusCode)
+            {
+                ViewData["listMauSac"] = JsonConvert.DeserializeObject<List<MauSac>>(responseMauSac.Content.ReadAsStringAsync().Result);
+            }
+            HttpResponseMessage responseKichCo = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllKichCo").Result;
+            if (responseKichCo.IsSuccessStatusCode)
+            {
+                ViewData["listKichCo"] = JsonConvert.DeserializeObject<List<KichCo>>(responseKichCo.Content.ReadAsStringAsync().Result);
+            }
+            HttpResponseMessage responseChatLieu = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllChatLieu").Result;
+            if (responseChatLieu.IsSuccessStatusCode)
+            {
+                ViewData["listChatLieu"] = JsonConvert.DeserializeObject<List<ChatLieu>>(responseChatLieu.Content.ReadAsStringAsync().Result);
+            }
             HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/getAll").Result;
             List<SanPhamViewModel> lstSanpham = new List<SanPhamViewModel>();
             if (response.IsSuccessStatusCode)
@@ -63,15 +78,19 @@ namespace AppView.Controllers
         {
             HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/getAll").Result;
             List<SanPhamViewModel> lstSanpham = new List<SanPhamViewModel>();
-            lstSanpham = JsonConvert.DeserializeObject<List<SanPhamViewModel>>(response.Content.ReadAsStringAsync().Result);
+            if (response.IsSuccessStatusCode)
+            {
+                lstSanpham = JsonConvert.DeserializeObject<List<SanPhamViewModel>>(response.Content.ReadAsStringAsync().Result);
+            }
             List<SanPhamViewModel> lstSanphamfn = new List<SanPhamViewModel>();
+            //price-filter
             if (filter.priceRange != null && filter.priceRange.Count > 0 && !filter.priceRange.Contains("all"))
             {
                 foreach (var item in filter.priceRange)
                 {
                     if (item == "1")
                     {
-                        foreach (var x in lstSanpham.Where(p => p.GiaBan < 100).ToList())
+                        foreach (var x in lstSanpham.Where(p => p.GiaBan < 100000).ToList())
                         {
                             lstSanphamfn.Add(x);
                         }
@@ -116,10 +135,11 @@ namespace AppView.Controllers
             {
                 lstSanphamfn = lstSanpham;
             }
+            //loaiSP-filter
+            List<SanPhamViewModel> lsttam = new List<SanPhamViewModel>();
+            List<SanPhamViewModel> lsttam1 = new List<SanPhamViewModel>();
             if (filter.loaiSP != null && filter.loaiSP.Count > 0)
             {
-                List<SanPhamViewModel> lsttam = new List<SanPhamViewModel>();
-                List<SanPhamViewModel> lsttam1 = new List<SanPhamViewModel>();
                 foreach (var x in filter.loaiSP)
                 {
                     lsttam = lstSanphamfn.Where(p => p.LoaiSP == x).ToList();
@@ -133,13 +153,96 @@ namespace AppView.Controllers
                 }
                 lstSanphamfn = lsttam1;
             }
-            
+            //Search
             if (filter.search != null)
             {
                 lstSanphamfn = lstSanphamfn.Where(p=>p.Ten.ToLower().Contains(filter.search.ToLower())).ToList();
             }
-            
 
+            //color-filter
+            List<SanPhamViewModel> lstmautam = new List<SanPhamViewModel>();
+            List<SanPhamViewModel> lstmautam1 = new List<SanPhamViewModel>();
+            if (filter.mauSac != null && filter.mauSac.Count > 0)
+            {
+                foreach (var x in filter.mauSac)
+                {
+                    lstmautam = lstSanphamfn.Where(p => p.IDMauSac == x).ToList();
+                    foreach (var item in lstmautam)
+                    {
+                        if (lstmautam1.FirstOrDefault(p => p.ID == item.ID) == null)
+                        {
+                            lstmautam1.Add(item);
+                        }
+                    }
+                }
+                lstSanphamfn = lstmautam1;
+            }
+            //size-filter
+            List<SanPhamViewModel> lstcotam = new List<SanPhamViewModel>();
+            List<SanPhamViewModel> lstcotam1 = new List<SanPhamViewModel>();
+            if (filter.kichCo != null && filter.kichCo.Count > 0)
+            {
+                foreach (var x in filter.kichCo)
+                {
+                    lstcotam = lstSanphamfn.Where(p => p.IDKichCo == x).ToList();
+                    foreach (var item in lstcotam)
+                    {
+                        if (lstcotam1.FirstOrDefault(p => p.ID == item.ID) == null)
+                        {
+                            lstcotam1.Add(item);
+                        }
+                    }
+                }
+                lstSanphamfn = lstcotam1;
+            }
+            //material-filter
+            List<SanPhamViewModel> lstchatlieutam = new List<SanPhamViewModel>();
+            List<SanPhamViewModel> lstchatlieutam1 = new List<SanPhamViewModel>();
+            if (filter.chatLieu != null && filter.chatLieu.Count > 0)
+            {
+                foreach (var x in filter.chatLieu)
+                {
+                    lstchatlieutam = lstSanphamfn.Where(p => p.IDChatLieu == x).ToList();
+                    foreach (var item in lstchatlieutam)
+                    {
+                        if (lstchatlieutam1.FirstOrDefault(p => p.ID == item.ID) == null)
+                        {
+                            lstchatlieutam1.Add(item);
+                        }
+                    }
+                }
+                lstSanphamfn = lstchatlieutam1;
+            }
+            //sort
+            if (filter.sortSP != null)
+            {
+                if (filter.sortSP == "2")
+                {
+                    lstSanphamfn = lstSanphamfn.OrderBy(p => p.GiaBan).ToList();
+                }
+                else if (filter.sortSP == "3")
+                {
+                    lstSanphamfn = lstSanphamfn.OrderByDescending(p => p.GiaBan).ToList();
+                }
+                else if (filter.sortSP == "4")
+                {
+                    lstSanphamfn = lstSanphamfn.OrderBy(p => p.GiaBan).ToList();
+                }
+                else if (filter.sortSP == "5")
+                {
+                    lstSanphamfn = lstSanphamfn.OrderByDescending(p => p.GiaBan).ToList();
+                }
+                else if (filter.sortSP == "6")
+                {
+                    lstSanphamfn = lstSanphamfn.OrderBy(p => p.NgayTao).ToList();
+                }
+                else if (filter.sortSP == "7")
+                {
+                    lstSanphamfn = lstSanphamfn.OrderByDescending(p => p.NgayTao).ToList();
+                }
+
+
+            }
             return PartialView("_ReturnProducts", lstSanphamfn);
         }
         #endregion

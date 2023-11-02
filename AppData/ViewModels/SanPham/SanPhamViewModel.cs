@@ -13,7 +13,12 @@ namespace AppData.ViewModels.SanPham
         public string Ten { get; set; }
         public int TrangThai { get; set; }
         public string LoaiSP { get; set; }
+        public Guid? IDMauSac { get; set; }
+        public Guid? IDKichCo { get; set; }
+        public Guid? IDChatLieu { get; set; }
+        public DateTime? NgayTao { get; set; }
         public Guid? IdChiTietSanPham { get; set; } // Id của biến thể mặc định
+        public int SoLuong { get; set; }
         public string Image { get; set; } // Của biến thể mặc định
         public int GiaBan { get; set; }//Của biến thể mặc định sau khi nhân vs khuyến mãi
         public int? GiaGoc { get; set; }//Của biến thể mặc định

@@ -49,7 +49,11 @@ namespace AppAPI.Services
                                       LoaiSP = e.Ten,
                                       IdChiTietSanPham = b.ID,
                                       Image = _context.Anhs.First(x=>x.IDMauSac==b.IDMauSac&&x.IDSanPham==a.ID).DuongDan,
+                                      IDMauSac = b.IDMauSac,
+                                      IDKichCo = b.IDKichCo,
+                                      IDChatLieu = a.IDChatLieu,
                                       GiaGoc = b.GiaBan,
+                                      NgayTao = b.NgayTao,
                                       GiaBan = b.IDKhuyenMai==null?b.GiaBan:b.GiaBan*(100-(_context.KhuyenMais.First(x=>x.ID==b.IDKhuyenMai).GiaTri))/100
                                   }).ToListAsync();
                 return lstSanPham;
