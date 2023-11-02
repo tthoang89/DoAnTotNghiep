@@ -17,6 +17,22 @@ namespace AppAPI.Services
         }
 
         #region SanPham
+        public Task<bool> UpdateSanPham(SanPhamRequest request)
+        {
+            throw new NotImplementedException();
+        }
+        public Task<List<SanPhamViewModel>> TimKiemSanPham(SanPhamTimKiemNangCao sp)
+        {
+            throw new NotImplementedException();
+        }
+        public Task<List<SanPhamViewModel>> GetSanPhamByIdDanhMuc(Guid idloaisp)
+        {
+            throw new NotImplementedException();
+        }
+        public Task<SanPhamDetail> GetSanPhamById(Guid id)
+        {
+            throw new NotImplementedException();
+        }
         public async Task<List<SanPhamViewModel>> GetAllSanPham()
         {
             try
@@ -106,6 +122,10 @@ namespace AppAPI.Services
         #endregion
 
         #region ChiTietSanPham
+        public Task<bool> UpdateChiTietSanPham(ChiTietSanPham chiTietSanPham)
+        {
+            throw new NotImplementedException();
+        }
         public async Task<bool> AddChiTietSanPham(ChiTietSanPham chiTietSanPham)
         {
             try
@@ -119,16 +139,27 @@ namespace AppAPI.Services
                 return false;
             }
         }
-        public async Task<List<ChiTietSanPham>> GetAllChiTietSanPham(Guid idSanPham)
+        public async Task<List<ChiTietSanPhamViewModel>> GetAllChiTietSanPham(Guid idSanPham)
         {
             try
             {
-                var lstChiTietSanPham = _context.ChiTietSanPhams.Where(x => x.IDSanPham == idSanPham).ToList();
+                var lstChiTietSanPham = await (from a in _context.ChiTietSanPhams.Where(x=>x.IDSanPham==idSanPham)
+                                         join b in _context.MauSacs on a.IDMauSac equals b.ID
+                                         join c in _context.KichCos on a.IDKichCo equals c.ID
+                                         select new ChiTietSanPhamViewModel()
+                                         {
+                                             MaMauSac = b.Ma,
+                                             TenKichCo = c.Ten,
+                                             SoLuong = a.SoLuong,
+                                             GiaBan = a.GiaBan,
+                                             NgayTao =a.NgayTao,
+                                             TenKhuyenMai = a.IDKhuyenMai==null?"Ko":_context.KhuyenMais.First(x=>x.ID==a.IDKhuyenMai).Ten
+                                         }).ToListAsync();
                 return lstChiTietSanPham;
             }
             catch
             {
-                return new List<ChiTietSanPham>();
+                return new List<ChiTietSanPhamViewModel>();
             }
         }
         public async Task<bool> DeleteChiTietSanPham(Guid id)
@@ -148,6 +179,14 @@ namespace AppAPI.Services
         #endregion
 
         #region LoaiSP
+        public Task<LoaiSP> SaveLoaiSP(LoaiSPRequest lsp)
+        {
+            throw new NotImplementedException();
+        }
+        public Task<LoaiSP> GetLoaiSPById(Guid id)
+        {
+            throw new NotImplementedException();
+        }
         public bool CheckTrungLoaiSP(LoaiSPRequest lsp)
         {
             throw new NotImplementedException();
@@ -176,39 +215,7 @@ namespace AppAPI.Services
         }
         #endregion
 
-        public Task<LoaiSP> GetLoaiSPById(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<SanPhamDetail> GetSanPhamById(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<SanPhamViewModel>> GetSanPhamByIdDanhMuc(Guid idloaisp)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<LoaiSP> SaveLoaiSP(LoaiSPRequest lsp)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<SanPhamViewModel>> TimKiemSanPham(SanPhamTimKiemNangCao sp)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> UpdateChiTietSanPham(ChiTietSanPham chiTietSanPham)
-        {
-            throw new NotImplementedException();
-        }
-        public Task<bool> UpdateSanPham(SanPhamRequest request)
-        {
-            throw new NotImplementedException();
-        }
+        #region Other
         public async Task<List<MauSac>> GetAllMauSac()
         {
             return await _context.MauSacs.ToListAsync();
@@ -222,6 +229,8 @@ namespace AppAPI.Services
         {
             return await _context.ChatLieus.ToListAsync();
         }
+        #endregion
+
         #region SanPham
         //TÌM KIẾM NÂNG CAO : Tên, List Loại Sp, khoảng Giá
         //public async Task<List<SanPhamViewModel>> TimKiemSanPham(SanPhamTimKiemNangCao sptk)

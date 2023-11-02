@@ -19,13 +19,10 @@ namespace AppView.Controllers
         }
         public IActionResult ProductManager()
         {
-            return View();
+            var response = _httpClient.GetAsync(_httpClient.BaseAddress+ "SanPham/getAll").Result;
+            var lstSanPham = JsonConvert.DeserializeObject<List<SanPhamViewModel>>(response.Content.ReadAsStringAsync().Result);
+            return View(lstSanPham);
         }
-        //[HttpPost]
-        //public IActionResult ProductManager()
-        //{
-        //    return View();
-        //}
         public JsonResult GetLoaiSPCha()
         {
             HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllLoaiSPCha").Result;
@@ -70,6 +67,13 @@ namespace AppView.Controllers
                 return RedirectToAction("ProductManager");
             }
             else return BadRequest();
+        }
+        [HttpGet]
+        public IActionResult ProductDetail(string idSanPham)
+        {
+            var response = _httpClient.GetAsync(_httpClient.BaseAddress+ "SanPham/GetAllChiTietSanPham?idSanPham="+idSanPham).Result;
+            var lstSanPham = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModel>>(response.Content.ReadAsStringAsync().Result);
+            return View(lstSanPham);
         }
     }
 }

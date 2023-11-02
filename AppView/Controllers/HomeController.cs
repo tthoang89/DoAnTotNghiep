@@ -259,6 +259,10 @@ namespace AppView.Controllers
             HttpContext.Session.Clear();
             return RedirectToAction("Index");
         }
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
         #endregion
 
         #region CheckOut
