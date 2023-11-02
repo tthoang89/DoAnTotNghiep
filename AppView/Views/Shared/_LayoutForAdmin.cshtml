@@ -26,17 +26,23 @@
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+
+
     <!-- Vendor CSS Files -->
-    <link href="~/Client/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="~/Client/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-    <link href="~/Client/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
-    <link href="~/Client/vendor/quill/quill.snow.css" rel="stylesheet">
-    <link href="~/Client/vendor/quill/quill.bubble.css" rel="stylesheet">
-    <link href="~/Client/vendor/remixicon/remixicon.css" rel="stylesheet">
-    <link href="~/Client/vendor/simple-datatables/style.css" rel="stylesheet">
+    <link href="~/Admin/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/Admin/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="~/Admin/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+    <link href="~/Admin/vendor/quill/quill.snow.css" rel="stylesheet">
+    <link href="~/Admin/vendor/quill/quill.bubble.css" rel="stylesheet">
+    <link href="~/Admin/vendor/remixicon/remixicon.css" rel="stylesheet">
+    <link href="~/Admin/vendor/simple-datatables/style.css" rel="stylesheet">
 
     <!-- Template Main CSS File -->
-    <link href="~/Client/css/style.css" rel="stylesheet">
+    <link href="~/Admin/css/style.css" rel="stylesheet">
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.2/css/toastr.min.css" />
+
 
 
 </head>
@@ -55,7 +61,7 @@
             <ul class="d-flex align-items-center">
                 <li class="nav-item dropdown pe-3">
                     <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-                        <img src="assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
+                        <img src="~/img/profile-img.jpg" alt="Profile" class="rounded-circle">
                         <span class="d-none d-md-block dropdown-toggle ps-2">@loginInfor.Ten</span>
                     </a><!-- End Profile Iamge Icon -->
 
@@ -69,37 +75,17 @@
                         </li>
 
                         <li>
-                            <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+                            <a class="dropdown-item d-flex align-items-center" asp-controller="Admin" asp-action="MyAccount">
                                 <i class="bi bi-person"></i>
                                 <span>Thông tin cá nhân</span>
                             </a>
                         </li>
+
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-
                         <li>
-                            <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
-                                <i class="bi bi-gear"></i>
-                                <span>Cài đặt tài khoản</span>
-                            </a>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center" href="pages-faq.html">
-                                <i class="bi bi-question-circle"></i>
-                                <span>Need Help?</span>
-                            </a>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center" href="#">
+                            <a class="dropdown-item d-flex align-items-center" asp-controller="Admin" asp-action="SingOut">
                                 <i class="bi bi-box-arrow-right"></i>
                                 <span>Đăng xuất</span>
                             </a>
@@ -143,7 +129,7 @@
             </li><!-- End Components Nav -->
 
             <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
+                <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" asp-controller="Admin" asp-action="AddSanPham">
                     <i class="bi bi-journal-text"></i><span>Quản lý sản phẩm</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
                 <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
@@ -179,7 +165,7 @@
             </li><!-- End Tables Nav -->
 
             <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#charts-nav" data-bs-toggle="collapse" href="#">
+                <a class="nav-link collapsed" data-bs-target="#charts-nav" data-bs-toggle="collapse" asp-controller="NhanVien" asp-action="Show">
                     <i class="bi bi-bar-chart"></i><span>Quản lý nhân viên</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
                 <ul id="charts-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
@@ -261,29 +247,35 @@
         </div>
     </main><!-- End #main -->
     <!-- ======= Footer ======= -->
-   @* <footer id="footer" class="footer">
+    @* <footer id="footer" class="footer">
         <div class="copyright">
-            &copy; Copyright <strong><span>ReputationAdmin</span></strong>. All Rights Reserved
+        &copy; Copyright <strong><span>ReputationAdmin</span></strong>. All Rights Reserved
         </div>
         <div class="credits">
-            Designed by <a href="https://bootstrapmade.com/">SD70</a>
+        Designed by <a href="https://bootstrapmade.com/">SD70</a>
         </div>
-    </footer><!-- End Footer -->
+        </footer><!-- End Footer -->
 
 
-*@
+    *@
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
     <!-- Vendor JS Files -->
-    <script src="~/Client/vendor/apexcharts/apexcharts.min.js"></script>
-    <script src="~/Client/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="~/Client/vendor/chart.js/chart.umd.js"></script>
-    <script src="~/Client/vendor/echarts/echarts.min.js"></script>
-    <script src="~/Client/vendor/quill/quill.min.js"></script>
-    <script src="~/Client/vendor/simple-datatables/simple-datatables.js"></script>
-    <script src="~/Client/vendor/tinymce/tinymce.min.js"></script>
+    <script src="~/Admin/vendor/apexcharts/apexcharts.min.js"></script>
+    <script src="~/Admin/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/Admin/vendor/chart.js/chart.umd.js"></script>
+    <script src="~/Admin/vendor/echarts/echarts.min.js"></script>
+    <script src="~/Admin/vendor/quill/quill.min.js"></script>
+    <script src="~/Admin/vendor/simple-datatables/simple-datatables.js"></script>
+    <script src="~/Admin/vendor/tinymce/tinymce.min.js"></script>
+    <script src="~/Admin/vendor/tinymce/tinymce.min.js"></script>
+    <script src="~/Admin/js/jquery.twbsPagination.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.2/js/toastr.min.js"></script>
     <!-- Template Main JS File -->
-    <script src="~/Client/js/main.js"></script>
+    <script src="~/Admin/js/main.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 

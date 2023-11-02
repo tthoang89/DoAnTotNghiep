@@ -1,93 +1,19 @@
-﻿
-@{
-    ViewData["Title"] = "ThanhToanRightSide";
-    @if (ViewBag.HideFooter) // Kiểm tra biến ViewBag để xác định có ẩn footer hay không
-    {
-        <style>
-            .footer {
-                display: none;
-            }
-        </style>
-    }
-}
-    <div class="d-flex flex-row align-items-stretch" style="height:(calc(100vh -60 px);">
-        <div class="d-flex flex-column bg-light flex-grow-1 p-1">
-            <div class=" bg-white rounded-3">
-                <div class="d-flex flex-row">
-                    <div>7</div>
-                    <div>
-                        <span class="material-symbols-outlined">
-                            delete
-                        </span>
-                    </div>
-                    <div>NAM018</div>
-                    <div>Quần kaki nam màu nâu</div>
-                    <div>
-                        <span class="material-symbols-outlined">
-                            add
-                        </span>
-                    </div>
-                    <div>
-                        <span class="material-symbols-outlined">
-                            more_vert
-                        </span>
-                    </div>
-                </div>
-                <div class="d-flex flex-row"></div>
-            </div>
+﻿<div class"modal fade come-from-modal right" id="modalThanhToan" tableindex="-1" role="dialog" aria-labelledby="Thanh toán">
+    <div class="model-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+
+            </button>
+            <h4 class="modal-title" id="myModalLabel">Thanh toans</h4>
+
         </div>
+        <div class="modal-body">
+            <p>sdfjshodfwoioiwdjlad</p>
 
-        <div class="d-flex flex-column bg-warning flex-grow-1 ">
-            <div class="d-flex flex-row bg-primary align-items-center p-1 mb-3">
-                <div class="bg-light d-flex align-items-center rounded-2 flex-fill">
-                    <span class="material-symbols-outlined ms-1" style="font-size: 1rem;">
-                        person
-                    </span>
-                    <input class="border-0 text-primary fw-bold bg-light ms-1 p-1" value="skjfk" />
-                    <span class="material-symbols-outlined me-1 ms-auto" style="font-size: 1rem;">
-                        close
-                    </span>
-                </div>
-                <div class="flex-fill text-center">
-                    <span class="material-symbols-outlined">
-                        format_list_bulleted
-                    </span>
-                </div>
-                <div class="flex-fill text-center">
-                    <span class="material-symbols-outlined">
-                        filter_alt
-                    </span>
-                </div>
-                <div class="flex-fill text-center">
-                    <span class="material-symbols-outlined">
-                        imagesmode
-                    </span>
-                </div>
-
-            </div>
-
-            <div class="d-flex flex-row flex-wrap justify-content-around overflow-auto">
-                <div class="bg-primary mb-2" style="height: 8rem; width: 12rem;"></div>
-                <div class="bg-primary mb-2" style="height: 8rem; width: 12rem;"></div>
-                <div class="bg-primary mb-2" style="height: 8rem; width: 12rem;"></div>
-                <div class="bg-primary mb-2" style="height: 8rem; width: 12rem;"></div>
-                <div class="bg-primary mb-2" style="height: 8rem; width: 12rem;"></div>
-                <div class="bg-primary mb-2" style="height: 8rem; width: 12rem;"></div>
-                <div class="bg-primary mb-2" style="height: 8rem; width: 12rem;"></div>
-                <div class="bg-primary mb-2" style="height: 8rem; width: 12rem;"></div>
-                <div class="bg-primary mb-2" style="height: 8rem; width: 12rem;"></div>
-                <div class="bg-primary mb-2" style="height: 8rem; width: 12rem;"></div>
-                <div class="bg-primary mb-2" style="height: 8rem; width: 12rem;"></div>
-                <div class="bg-primary mb-2" style="height: 8rem; width: 12rem;"></div>
-            </div>
-
-            <div class="d-flex flex-row bg-light mt-auto p-1">
-                <div class="mx-2">pagnation</div>
-                <div class="mx-5 flex-grow-1"><button
-                        class="bg-primary text-white fw-bold py-2 px-5 border-0 rounded-3 w-100">THANH
-                        TOAN</button></div>
-            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss ="modal" >Close</button>
         </div>
     </div>
-
-
+</div>

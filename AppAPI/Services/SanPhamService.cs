@@ -123,6 +123,7 @@ namespace AppAPI.Services
                 return false;
             }
         }
+
         public async Task<List<ChiTietSanPham>> GetAllChiTietSanPham(Guid idSanPham)
         {
             try
@@ -133,6 +134,28 @@ namespace AppAPI.Services
             catch
             {
                 return new List<ChiTietSanPham>();
+            }
+        }
+        public async Task<List<ChiTietSanPhamViewModel>> GetAllChiTietSanPham()
+        {
+            try
+            {
+                return await (from sp in _context.SanPhams.AsNoTracking()
+                              join ctsp in _context.ChiTietSanPhams.AsNoTracking()
+                              on sp.ID equals ctsp.IDSanPham
+                              select new ChiTietSanPhamViewModel()
+                              {
+                                  ID = ctsp.ID,
+                                  Ten = sp.Ten,
+                                  GiaBan = ctsp.GiaBan,
+                                  GiaGoc = ctsp.GiaBan,
+                                  TrangThai = ctsp.TrangThai,
+                                  SoLuong = ctsp.SoLuong,
+                              }).ToListAsync();
+            }
+            catch
+            {
+                return new List<ChiTietSanPhamViewModel>();
             }
         }
         public async Task<bool> DeleteChiTietSanPham(Guid id)

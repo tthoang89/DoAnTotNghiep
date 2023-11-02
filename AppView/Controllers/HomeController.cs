@@ -251,10 +251,10 @@ namespace AppView.Controllers
         [HttpGet]
         public IActionResult ShoppingCart()
         {
-            List<BienTheViewModel> bienThes = new List<BienTheViewModel>();
+            List<ChiTietSanPhamViewModel> bienThes = new List<ChiTietSanPhamViewModel>();
             if (HttpContext.Session.GetString(KeyCart) != null)
             {
-                bienThes = JsonConvert.DeserializeObject<List<BienTheViewModel>>(HttpContext.Session.GetString(KeyCart));
+                bienThes = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModel>>(HttpContext.Session.GetString(KeyCart));
             }
             long tongtien = 0;
             foreach (var x in bienThes)
@@ -271,17 +271,17 @@ namespace AppView.Controllers
             HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + $"BienThe/getBienTheById/{id}").Result;
             if (response.IsSuccessStatusCode)
             {
-                List<BienTheViewModel> bienThes;
-                BienTheViewModel bienThe = JsonConvert.DeserializeObject<BienTheViewModel>(response.Content.ReadAsStringAsync().Result);
+                List<ChiTietSanPhamViewModel> bienThes;
+                ChiTietSanPhamViewModel bienThe = JsonConvert.DeserializeObject<ChiTietSanPhamViewModel>(response.Content.ReadAsStringAsync().Result);
                 string? result = HttpContext.Session.GetString(KeyCart);
                 if (string.IsNullOrEmpty(result))
                 {
                     bienThe.SoLuong = 1;
-                    bienThes = new List<BienTheViewModel>() { bienThe };
+                    bienThes = new List<ChiTietSanPhamViewModel>() { bienThe };
                 }
                 else
                 {
-                    bienThes = JsonConvert.DeserializeObject<List<BienTheViewModel>>(result);
+                    bienThes = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModel>>(result);
                     var tempBienThe = bienThes.FirstOrDefault(x => x.ID == bienThe.ID);
                     if (tempBienThe != null)
                     {
@@ -375,7 +375,7 @@ namespace AppView.Controllers
         {
             List<ChiTietHoaDonViewModel> lstChiTietHoaDon = new List<ChiTietHoaDonViewModel>();
             string temp = TempData["ListBienThe"] as string;
-            foreach (var item in JsonConvert.DeserializeObject<List<BienTheViewModel>>(temp))
+            foreach (var item in JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModel>>(temp))
             {
                 ChiTietHoaDonViewModel chiTietHoaDon = new ChiTietHoaDonViewModel();
                 chiTietHoaDon.IDChiTietSanPham = item.ID;

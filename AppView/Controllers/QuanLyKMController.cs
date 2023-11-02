@@ -95,7 +95,7 @@ namespace AppView.Controllers
             string apiURL1 = $"https://localhost:7095/api/BienThe/getAll";
             var response1 = await _httpClient.GetAsync(apiURL1);
             var apiData1 = await response1.Content.ReadAsStringAsync();
-            var bienthes = JsonConvert.DeserializeObject<List<BienTheViewModel>>(apiData1);
+            var bienthes = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModel>>(apiData1);
             return View(new PhanTrangBienThe
             {
                 listbienthes = bienthes
@@ -138,7 +138,7 @@ namespace AppView.Controllers
             string apiURL1 = $"https://localhost:7095/api/BienThe/getAll";
             var response1 = await _httpClient.GetAsync(apiURL1);
             var apiData1 = await response1.Content.ReadAsStringAsync();
-            var bienthes = JsonConvert.DeserializeObject<List<BienTheViewModel>>(apiData1);
+            var bienthes = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModel>>(apiData1);
             return View(new PhanTrangBienThe
             {
                 listbienthes = bienthes
@@ -182,7 +182,7 @@ namespace AppView.Controllers
             string apiURL1 = $"https://localhost:7095/api/BienThe/getAll";
             var response1 = await _httpClient.GetAsync(apiURL1);
             var apiData1 = await response1.Content.ReadAsStringAsync();
-            var bienthes = JsonConvert.DeserializeObject<List<BienTheViewModel>>(apiData1);
+            var bienthes = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModel>>(apiData1);
             return View("AddKHuyenMaiVoSP", new PhanTrangBienThe
             {
                 listbienthes = bienthes.Where(x=>x.Ten.Contains(Ten))

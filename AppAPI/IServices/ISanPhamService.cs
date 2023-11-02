@@ -28,6 +28,7 @@ namespace AppAPI.IServices
 
         #region ChiTietSanPham
         Task<List<ChiTietSanPham>> GetAllChiTietSanPham(Guid idSanPham);
+        Task<List<ChiTietSanPhamViewModel>> GetAllChiTietSanPham();
         Task<bool> DeleteChiTietSanPham(Guid id);
         Task<bool> UpdateChiTietSanPham(ChiTietSanPham chiTietSanPham);
         Task<bool> AddChiTietSanPham(ChiTietSanPham chiTietSanPham);

@@ -2,111 +2,185 @@
 @using AppData.ViewModels
 @{
     ViewData["Title"] = "BanHang";
-    //@if (ViewBag.HideFooter) // Kiểm tra biến ViewBag để xác định có ẩn footer hay không
-    //{
-    //    <style>
-    //        .footer {
-    //            display: none;
-    //        }
-    //    </style>
-    //}
-    <script src="~/Client/js/bantaiquay.js" defer></script>
+    <script src="~/Admin/js/bantaiquay.js" defer></script>
     var lsthdcho = ViewData["lsthdcho"] as List<HoaDon>;
-    var lstbt = ViewData["lstbthe"] as List<BienTheViewModel>;
+    var lstbt = ViewData["lstbthe"] as List<ChiTietSanPhamViewModel>;
 }
 
-<section class="section d-flex flex-column min-vh-100" style="height:calc(100vh - 60 px)">
-    <div class="row g-0">
-        <div class="col-lg-12">
-            <div class="card m-0 p-0">
-                <div class="card-body m-0 p-0">
-                    <ul class="nav nav-tabs nav-tabs-bordered" id="borderedTab" role="tablist" style="height:45px">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#banhang" type="button" role="tab" aria-controls="home" aria-selected="true">Bán hàng</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#hoadoncho" type="button" role="tab" aria-controls="profile" aria-selected="false">Hóa đơn chờ</button>
-                        </li>
-                    </ul>
-                    <div class="tab-content pt-2" id="borderedTabContent" style="background:#f6f9ff">
-                        <div class="tab-pane fade show active" id="banhang" role="tabpanel" aria-labelledby="banhang-tab">
-                            <!--Chỗ bán hàng-->
-                            <div class="row g-0 bg-primary text-white" style="background:#5372F0;height:45px">
-                                <div class="col-md-5 col-sm-12" style="padding-left: 20px; justify-content:center">
-                                    <div class="search-product d-flex align-items-center">
-                                        <div class="search-bar">
-                                            <form class="search-form d-flex align-items-center" method="POST" action="#">
-                                                <input type="text" name="query" placeholder="Search" title="Enter search keyword">
-                                                <button type="submit" title="Search"><i class="bi bi-search"></i></button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                    <div class="row g-0">
-                                        <div class="btn-create d-flex align-items-center">
-                                            <button type="button" onclick="addHDCho()" class="btn btn-primary d-flex align-items-center" data-bs-toggle="tooltip" data-bs-placement="right" title="Thêm mới">
-                                                <i class="bi bi-plus-circle"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!--Hiển thị danh sách hóa đơn chờ-->
-                                <div class="col-7">
-                                    <div class="tabbill">
-                                        <div class="icon"><i id="left" class="fa-solid fa-angle-left"></i></div>
-                                        <ul class="tabs-box">
-                                        </ul>
-                                        <div class="icon"><i id="right" class="fa-solid fa-angle-right"></i></div>
-                                    </div>
-                                </div>
+<div class="d-flex flex-row align-items-stretch" style="height: 100vh ;">
+    <div class="card-body m-0 p-0">
+        <ul class="nav nav-tabs nav-tabs-bordered" id="borderedTab" role="tablist" style="height:45px">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#banhang" type="button" role="tab" aria-controls="home" aria-selected="true">Bán hàng</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#hoadoncho" type="button" role="tab" aria-controls="profile" aria-selected="false">Hóa đơn chờ</button>
+            </li>
+        </ul>
+        <div class="tab-content pt-2" id="borderedTabContent" style="background:#f6f9ff">
+            <div class="tab-pane fade show active" id="banhang" role="tabpanel" aria-labelledby="banhang-tab">
+                <!--Chỗ bán hàng-->
+                <div class="row g-0 d-flex bg-primary text-white" style="background:#5372F0;height:45px">
+                    <div class="col-md-5 col-sm-12" style="padding-left: 20px; justify-content:center">
+                        <div class="search-product d-flex align-items-center">
+                            <div class="search-bar">
+                                <form class="search-form d-flex align-items-center" method="POST" action="#">
+                                    <input type="text" name="query" placeholder="Tìm kiếm sản phẩm" title="Enter search keyword">
+                                    <button type="submit" title="Tìm kiếm"><i class="bi bi-search"></i></button>
+                                </form>
                             </div>
-                            <!--Hiển thị sản phẩm và giỏ hàng-->
-                            <div class="row g-0" style="margin-top:10px;background:#f6f9ff; ">
-                                <!--Hiển thị sản phẩm-->
-                                <div class="products">
-                                    <ul class="product-list">
-                                    </ul>
-                                </div>
-                                <!--Hiển thị hóa đơn chi tiết-->
-                                <div class="bills">
-                                    <div class="bill-details d-flex flex-column bg-warning flex-grow-1 ">
-                                    </div>
-                                </div>
+                        </div>
+                        <div class="row g-0">
+                            <div class="btn-create d-flex align-items-center">
+                                <button type="button" onclick="addHDCho()" class="btn btn-primary d-flex align-items-center ms-auto" title="Thêm mới">
+                                    <i class="bi bi-plus-circle"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
-                </div><!-- End Bordered Tabs -->
 
+                    <!--Hiển thị danh sách hóa đơn chờ-->
+                    <div class="col-md-7 col-sm-12">
+                        <div class="tabbill">
+                            <div class="icon"><i id="left" class="fa-solid fa-angle-left"></i></div>
+                            <ul class="tabs-box">
+                            </ul>
+                            <div class="icon"><i id="right" class="fa-solid fa-angle-right"></i></div>
+                        </div>
+                    </div>
+                </div>
+                <!--Hiển thị sản phẩm và giỏ hàng-->
+                <div class="d-flex flex-row align-items-stretch" style="height: 80vh">
+                    <!--Hiển thị sản phẩm-->
+                    <div class="d-flex flex-column bg-info p-2">
+                        <ul class="product-list">
+                        </ul>
+                        <div class="d-flex flex-row bg-light mt-auto p-1">
+                            <div class="mx-2" id="pagination">
+                                <ul id="pagination-demo" class="pagination-sm"></ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Hiển thị hóa đơn chi tiết-->
+                    <div class="d-flex flex-column bg-warning flex-grow-1 ">
+                        <div class="d-flex flex-row bg-light align-items-center p-1 mb-3">
+                            <div class="search-product d-flex align-items-center">
+                                <div class="search-bar">
+                                    <form class="search-form d-flex align-items-center" method="POST" action="#">
+                                        <input type="text" name="query" placeholder="Tìm kiếm khách hàng" title="Enter search keyword">
+                                        <button type="button" title="Thêm mới" data-bs-toggle="modal" data-bs-target="#disabledAnimation"><i class="bi bi-plus-circle"></i></button>
+                                    </form>
+                                </div>
+                            </div>
+                            <!--Model Thêm nhanh khách hàng-->
+                            <div class="modal" id="disabledAnimation" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title fw-600">Thêm khách hàng</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form class="row g-3">
+                                                <div class="col-md-12">
+                                                    <label for="inputName5" class="form-label">Tên khách hàng</label>
+                                                    <input type="text" class="form-control" id="inputTenKhachHang">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="inputPassword5" class="form-label">Điện thoại</label>
+                                                    <input type="sdt" class="form-control" id="inputSDT">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="inputEmail5" class="form-label">Email</label>
+                                                    <input type="email" class="form-control" id="inputEmail5">
+                                                </div>
+
+                                                <div class="col-12">
+                                                    <label for="inputAddress5" class="form-label">Địa chỉ</label>
+                                                    <input type="text" class="form-control" id="inputDiaChi" placeholder="">
+                                                </div>
+                                                <div class="col-6">
+                                                    <label for="inputCity" class="form-label">Ngày sinh</label>
+                                                    <input type="date" class="form-control" id="inputNgaySinh">
+                                                </div>
+                                                <div class="col-6">
+                                                    <label for="inputState" class="form-label">GioiTinh</label>
+                                                    <fieldset class="row mb-3">
+                                                        <div class="col-sm-10">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio" name="gridRadios" id="nam" value="option1" checked>
+                                                                <label class="form-check-label" for="gridRadios1">
+                                                                    Nam
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio" name="gridRadios" id="nu" value="option2">
+                                                                <label class="form-check-label" for="gridRadios2">
+                                                                    Nữ
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </fieldset>
+                                                </div>
+                                                @*<div class="text-center">
+                                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                                    <button type="reset" class="btn btn-secondary">Reset</button>
+                                                    </div>*@
+                                            </form><!-- End Multi Columns Form -->
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bỏ qua</button>
+                                            <button type="button" class="btn btn-primary">Lưu</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><!-- End Disabled Animation Modal-->
+
+                        </div>
+
+                        <div class="d-flex flex-column overflow-auto">
+                            <div class="bg-primary mb-2">fghf</div>
+                            <div class="bg-primary mb-2">dfgd</div>
+                            <div class="bg-primary mb-2">dfhg</div>
+                            <div class="bg-primary mb-2">hdfh</div>
+
+                        </div>
+
+                        <div class="d-flex flex-row bg-light mt-auto p-1">
+                            <div class="mx-2">pagnation</div>
+                            <button type="button" class="btn btn-primary">
+                                Basic Modal
+                            </button>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="tab-pane fade" id="hoadoncho" role="tabpanel" aria-labelledby="contact-tab">
+                <div class="dshoadon"></div>
             </div>
         </div>
-
-    </div>
-
-</section>
+    </div><!-- End Bordered Tabs -->
+</div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function() {
-        loadsp();
-        loadHDCHO()
-
-        $(function () {
-            $(".tab").click(function (e) {
-                e.preventDefault();
-                $(".tab").removeClass("active");
-                $(this).addClass("active");
-            });
-        });
-    })
-    
-      $(".tab span").click(function(e){
-        $(".tab").removeClass("active");
-        $(this.parentElement).addClass("active");
-     });
-
-    //LOAD DANH SÁCH SẢN PHẨM
-    function loadsp() {
+    var pageSize =3;
+                $(document).ready(function() {
+                    loadsp();
+                    loadHDCHO();
+                    $(function () {
+                        $(".tab").click(function (e) {
+                            e.preventDefault();
+                            $(".tab").removeClass("active");
+                            $(this).addClass("active");
+                        });
+                    });
+                })
+    //LoadDSSanPham
+       function loadsp() {
             $.ajax({
-                url: "https://localhost:7095/api/BienThe/getAll",
+                url: "/BanHangTaiQuay/LoadSp",
                 type: "GET",
                 dataType: "json",
                 success: function(data) {
@@ -135,11 +209,41 @@
                 }
             });
         }
+
+    //function loadsp() {
+    //    $.ajax({
+    //        url: "BanHangTaiQuay/LoadData",
+    //        type: "GET",
+    //        dataType: "json",
+    //        success: function(data) {
+    //            console.log(data);
+    //            console.log(typeof data);
+    //            try {
+    //                // Iterate over the properties of the data object
+    //                for (var key in data) {
+    //                    if (Object.hasOwnProperty.call(data, key)) {
+    //                        var item = data[key];
+    //                        console.log(item);
+    //                    }
+    //                }
+    //            } catch(err) {
+    //                console.log('Error in data processing:', err);
+    //            }
+    //        },
+    //        error: function(err) {
+    //            console.log('Error in AJAX request:', err);
+    //        }
+    //    });
+    //}
     //LOAD DANH SÁCH HOA DON CHO
     function loadHDCHO() {
         $.ajax({
             url: "https://localhost:7095/api/HoaDon/GetAll",
             type: "GET",
+            data:{
+                page:1,
+                pagesize:pageSize,
+            }
             dataType: "json",
             success: function(data) {
                 console.log(data);
@@ -148,7 +252,7 @@
                     const item = data[i];
                     const itemID = item.id;
                     const index = i + 1;
-                    
+
                         $(".tabs-box").append(`
                         <li class="tab" onclick="gethdct('${itemID}')">
                             <span value="${itemID}">
@@ -157,13 +261,27 @@
                             </span>
                         </li>`);
                     }
+                paging(data.totalrow, function(){
+                    loadsp();
+                })
+    });
             },
             error: function(err) {
                 console.log('Error:', err);
             }
         });
     }
-    //THÊM HÓA ĐƠN CHỜ
+    //Phân trang
+    function paging(totalrow, callback){
+        var totalPages = Math.ceil(totalrow/pageSize)
+         $("#pagination").twbsPagination({
+                    totalPages: totalPages,
+                    visiblePages: 5,
+                    onPageClick: function (event, page) {
+                        loadData();
+                    }
+    }
+     //THÊM HÓA ĐƠN CHỜ
     function addHDCho() {
         var idnv = "@ViewBag.IdNhanVien";
         console.log(idnv);
@@ -177,46 +295,17 @@
             contentType: 'application/json', // Đặt kiểu phương tiện là 'application/json'
             data: jsonData, // Gửi chuỗi JSON
             success: function(response) {
-                var element = document.querySelector(".tabbill"); // Lấy phần tử đầu tiên có lớp "tabbill"
-                if (element) {
-                var scrollContainer = element.parentNode; // Lấy phần tử cha chứa phần tử "tabbill"
-
-                var currentWidth = element.offsetWidth; // Lấy chiều rộng hiện tại của phần tử
-                var newWidth = currentWidth + 130; // Tăng chiều rộng hiện tại thêm 130px
-                scrollContainer.scrollLeft = scrollContainer.scrollWidth; // Cuộn nội dung đến cuối phần tử chứa
-                }
-
+                toastr.success('Thêm thành công', "Success Alert", {timeOut : 300});
                 loadHDCHO();
             },
             error: function(response) {
-                alert("Thêm Thất bại");
+                toastr.error('Thêm thất bại', "Error Alert", { timeOut: 300 });
             }
         });
     }
-    //XÓA HÓA ĐƠN CHỜ
-    function deleteHDCho(idhd) {
-        var ans = confirm("Bạn có chắc chắn xóa Đơn Nháp này?");
-        if(ans){
-            $.ajax({
-            url: "https://localhost:7095/api/HoaDon/deleteHoaDon/"+idhd,
-            type: "DELETE",
-            dataType: 'json',
-            contentType: 'application/json', // Đặt kiểu phương tiện là 'application/json'
-            success: function(response) {
-                alert("Xóa thành công")
-                loadHDCHO();
-                },
-            error: function(response) {
-                alert("Xóa Thất bại");
-                }
-            });
-        }
-    }
-    //LAY HOA DON CHI TIET THEO IDHOADON
-    function gethdct(idhd){
-        $('#bill-details').load("/BanHangTaiQuay/getCTHD/" + idhd);
-    }
-    //THEM SAN PHAM VÀO HOA DON
 
-    //XÓA SẢN PHẨM TRONG HÓA ĐƠN
+
+            //THEM SAN PHAM VÀO HOA DON
+
+                //XÓA SẢN PHẨM TRONG HÓA ĐƠN
 </script>

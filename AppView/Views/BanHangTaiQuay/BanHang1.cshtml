@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="~/css/test.css" type="text/css">
     <script src="~/js/bantaiquay.js" defer></script>
     var lsthdcho = ViewData["lsthdcho"] as List<HoaDon>;
-    var lstbt = ViewData["lstbthe"] as List<BienTheViewModel>;
+    var lstbt = ViewData["lstbthe"] as List<ChiTietSanPhamViewModel>;
 }
 <div class="contain-fluid" style="overflow-x: hidden;overflow-y:hidden">
     <!--Thanh hóa đơn-->
@@ -49,10 +49,8 @@
                     {
                         <li onclick="addHDCT('@item.ID',@item.GiaBan)">
                             <div class="product-item">
-                                @{
-                                    var anh = item.Anh.Any() ? item.Anh[0] : string.Empty;
-                                }
-                                <img src="~/img/variants/@anh">
+                                
+                                <img src="~/img/variants/ao-so-mi-tay-dai-tron-den.png">
                             </div>
                             <div class="product-detail">
                                 <h4>@item.Ten</h4>

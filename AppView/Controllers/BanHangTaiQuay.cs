@@ -14,12 +14,27 @@ namespace AppView.Controllers
         {
             _httpClient = new HttpClient();
             _httpClient.BaseAddress = new Uri("https://localhost:7095/api/");
+            
         }
+        [HttpGet]
         public IActionResult BanHang()
         {
-            ViewBag.IdNhanVien = "C61B3646-6FF6-4E56-BA26-53E437B7C1A9";
+            ViewBag.IdNhanVien = "4fdf0898-771a-48cf-b6cf-64090a764de7";
             ViewBag.HideFooter = true;
             return View();
+        }
+        [HttpGet]
+        public async Task<IActionResult> LoadSp(int page, int pagesize)
+        {
+            var listsanPham = await _httpClient.GetFromJsonAsync<List<ChiTietSanPham>>("SanPham/GetAllChiTietSanPham");
+            var model = listsanPham.Skip((page - 1) * pagesize).Take(pagesize);
+            int totalRow = listsanPham.Count;
+            return Json(new
+            {
+                data = listsanPham,
+                total = totalRow,
+                status = true,
+            });
         }
         public IActionResult ThanhToanRightSide()
         {
@@ -36,7 +51,7 @@ namespace AppView.Controllers
         }
         public async Task<IActionResult> deleteHD(string id)
         {
-            // Xóa chi tiết hóa đơn
+            return View();
         }
 
         public async Task<ActionResult> addHdct(HoaDonChiTietRequest request)
@@ -58,7 +73,7 @@ namespace AppView.Controllers
             //Xóa chi tiết hóa đơn
             var response = await _httpClient.DeleteAsync($"ChiTietHoaDon/delete/{request.Id}");
             //Thêm lại số lượng cho biến thể
-            var bt = await _httpClient.GetFromJsonAsync<BienTheViewModel>($"BienThe/getBienTheById/{request.IdBienThe}");
+            var bt = await _httpClient.GetFromJsonAsync<ChiTietSanPhamViewModel>($"BienThe/getBienTheById/{request.IdBienThe}");
             //BienTheRequest btr = new BienTheRequest()
             //{
             //    ID = bt.ID,

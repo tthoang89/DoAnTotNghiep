@@ -17,6 +17,6 @@ namespace AppData.ViewModels
         public string LoaiSP { get; set; }
         public List<string> ListImage { get; set; }// Toàn bộ Bt
         public List<ThuocTinhRequest> ThuocTinhs { get; set; }
-        public List<BienTheViewModel> BienThes { get; set; }
+        public List<ChiTietSanPhamViewModel> BienThes { get; set; }
     }
 }
