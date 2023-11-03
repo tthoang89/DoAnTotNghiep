@@ -10,14 +10,14 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="AddSanPham">
+        <form asp-action="AddSanPham" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
            @*  <div class="form-group">
                 <label asp-for="ID" class="control-label"></label>
                 <input asp-for="ID" class="form-control" />
                 <span asp-validation-for="ID" class="text-danger"></span>
             </div> *@
-            <div class="form-group">
+            <div class="form-group" >
                 <label asp-for="Ten" class="control-label"></label>
                 <input asp-for="Ten" class="form-control" />
                 <span asp-validation-for="Ten" class="text-danger"></span>
@@ -34,7 +34,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="DuongDanAnh" class="control-label"></label>
-                <input asp-for="DuongDanAnh" class="form-control" />
+                <input name="image" class="form-control" type="file" />
                 <span asp-validation-for="DuongDanAnh" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -54,15 +54,15 @@
                 <span asp-validation-for="TenChatLieu" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="MaMauSac" class="control-label"></label>
-                <input asp-for="MaMauSac" class="form-control" list="mauSac" />
-                <datalist id="mauSac"></datalist>
-                <span asp-validation-for="MaMauSac" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="TenMauSac" class="control-label"></label>
                 <input asp-for="TenMauSac" class="form-control" />
                 <span asp-validation-for="TenMauSac" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MaMauSac" class="control-label"></label>
+                <input asp-for="MaMauSac" type="color" class="form-control" list="mauSac" />
+                <datalist id="mauSac"></datalist>
+                <span asp-validation-for="MaMauSac" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="TenKichCo" class="control-label"></label>

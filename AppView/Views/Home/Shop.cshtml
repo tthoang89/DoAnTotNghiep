@@ -1,7 +1,6 @@
 ﻿@using AppData.ViewModels.SanPham;
 @using AppData.Models;
 @using X.PagedList.Mvc.Core;
-@using AppData.ViewModels.SanPham;
 @model X.PagedList.IPagedList<SanPhamViewModel>
 
 @{
@@ -238,7 +237,7 @@
                             <div class="col-lg-4 col-md-6 col-sm-6">
                                 <div class="product__item">
                                     <div class="product__item__pic set-bg">
-                                    <img src="/img/product/product-2.jpg">
+                                    <img src="/img/product/@item.Image">
                                     </div>
                                     <div class="product__item__text">
                                         <h6>@item.Ten</h6>

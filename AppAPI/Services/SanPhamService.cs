@@ -115,7 +115,7 @@ namespace AppAPI.Services
                 }
                 SanPham sanPham = new SanPham() { ID = Guid.NewGuid(), Ten = request.Ten, MoTa = request.MoTa, TrangThai = 1, TongDanhGia = 0, TongSoSao = 0, IDLoaiSP = loaiSPCon.ID, IDChatLieu = chatLieu.ID };
                 Anh anh = new Anh() { ID = Guid.NewGuid(), DuongDan = request.DuongDanAnh, IDSanPham = sanPham.ID, IDMauSac = mauSac.ID, TrangThai = 1 };
-                ChiTietSanPham chiTietSanPham = new ChiTietSanPham() { ID = Guid.NewGuid(), SoLuong = request.SoLuong, GiaBan = request.Giaban, NgayTao = DateTime.Now, TrangThai = 1, IDSanPham = sanPham.ID, IDKichCo = kichCo.ID, IDMauSac = mauSac.ID };
+                ChiTietSanPham chiTietSanPham = new ChiTietSanPham() { ID = Guid.NewGuid(), SoLuong = request.SoLuong, GiaBan = request.Giaban, NgayTao = DateTime.Now, TrangThai = 1, IDSanPham = sanPham.ID, IDKichCo = kichCo.ID, IDMauSac = mauSac.ID.Value };
                 await _context.SanPhams.AddAsync(sanPham);
                 await _context.ChiTietSanPhams.AddAsync(chiTietSanPham);
                 await _context.Anhs.AddAsync(anh);
@@ -130,17 +130,26 @@ namespace AppAPI.Services
         {
             throw new NotImplementedException();
         }
-        public async Task<bool> AddChiTietSanPham(ChiTietSanPham chiTietSanPham)
+        public async Task<List<MauSac>> AddChiTietSanPham(ChiTietSanPhamRequest chiTietSanPham)
         {
             try
             {
-                await _context.ChiTietSanPhams.AddAsync(chiTietSanPham);
-                await _context.SaveChangesAsync();
-                return true;
+                List<MauSac> lstMauSac = new List<MauSac>();
+                MauSac? mauSac;
+                foreach(var x in chiTietSanPham.MauSacs)
+                {
+                    foreach(var y in chiTietSanPham.KichCos)
+                    {
+                        mauSac = AddChiTietSanPham(x, y, chiTietSanPham.IDSanPham);
+                        if(mauSac != null) lstMauSac.Add(mauSac);
+                        _context.SaveChanges();
+                    }
+                }
+                return lstMauSac.Distinct().ToList();
             }
             catch
             {
-                return false;
+                return new List<MauSac>();
             }
         }
         public async Task<List<ChiTietSanPhamViewModel>> GetAllChiTietSanPham(Guid idSanPham)
@@ -179,7 +188,47 @@ namespace AppAPI.Services
                 return false;
             }
         }
+        public MauSac? AddChiTietSanPham(MauSac mauSacRequest, string tenKichCo,Guid idSanPham)
+        {
+            var temp = 0;
+            var mauSac = _context.MauSacs.FirstOrDefault(x => x.Ma == mauSacRequest.Ma);
+            if (mauSac == null)
+            {
+                mauSac = new MauSac() { ID = Guid.NewGuid(), Ten = mauSacRequest.Ten, Ma = mauSacRequest.Ma, TrangThai = 1 };
+                _context.Add(mauSac);
+                temp++;
+            }
+            var kichCo = _context.KichCos.FirstOrDefault(x => x.Ten == tenKichCo);
+            if (kichCo == null)
+            {
+                kichCo = new KichCo() { ID = Guid.NewGuid(), Ten = tenKichCo, TrangThai = 1 };
+                _context.Add(kichCo);
+                temp++;
+            }
+            if (temp > 0)
+            {
+                var chiTietSanPham = new ChiTietSanPham() { ID = Guid.NewGuid(), SoLuong = 0, GiaBan = 0, NgayTao = DateTime.Now, TrangThai = 2, IDSanPham = idSanPham, IDMauSac = mauSac.ID.Value, IDKichCo = kichCo.ID };
+                _context.Add(chiTietSanPham);
+                return mauSac;
+            }
+            else if (!_context.ChiTietSanPhams.Any(x => x.IDMauSac == mauSac.ID && x.IDKichCo == kichCo.ID && x.IDSanPham==idSanPham))
+            {
+                var chiTietSanPham = new ChiTietSanPham() { ID = Guid.NewGuid(), SoLuong = 0, GiaBan = 0, NgayTao = DateTime.Now, TrangThai = 2, IDSanPham = idSanPham, IDMauSac = mauSac.ID.Value, IDKichCo = kichCo.ID };
+                _context.Add(chiTietSanPham);
+                if (!_context.Anhs.Any(x => x.IDMauSac == mauSac.ID && x.IDSanPham == idSanPham)) return mauSac;
+                else return null;
+            }
+            return null;
+        }
 
+        //public async Task<bool> IsExistChiTietSanPham(string maMauSac, string tenKichCo)
+        //{
+        //    var mauSac = await _context.MauSacs.FirstOrDefaultAsync(x => x.Ma == maMauSac);
+        //    if (mauSac == null) return false;
+        //    var kichCo = await _context.KichCos.FirstOrDefaultAsync(x => x.Ten == tenKichCo);
+        //    if (kichCo == null) return false;
+        //    return await _context.ChiTietSanPhams.AnyAsync(x => x.IDMauSac == mauSac.ID && x.IDKichCo == kichCo.ID);
+        //}
         #endregion
 
         #region LoaiSP

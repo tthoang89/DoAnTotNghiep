@@ -30,7 +30,9 @@ namespace AppAPI.IServices
         Task<List<ChiTietSanPhamViewModel>> GetAllChiTietSanPham(Guid idSanPham);
         Task<bool> DeleteChiTietSanPham(Guid id);
         Task<bool> UpdateChiTietSanPham(ChiTietSanPham chiTietSanPham);
-        Task<bool> AddChiTietSanPham(ChiTietSanPham chiTietSanPham);
+        Task<List<MauSac>> AddChiTietSanPham(ChiTietSanPhamRequest chiTietSanPham);
+        MauSac? AddChiTietSanPham(MauSac mauSac, string tenKichCo,Guid idSanPham);
+        //Task<bool> IsExistChiTietSanPham(string maMauSac, string tenKichCo);
         #endregion
         Task<List<MauSac>> GetAllMauSac();
         Task<List<KichCo>> GetAllKichCo();

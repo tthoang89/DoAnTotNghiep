@@ -73,6 +73,13 @@ namespace AppAPI.Controllers
             var lstChiTietSanPham = await _sanPhamServices.GetAllChiTietSanPham(idSanPham);
             return Ok(lstChiTietSanPham);
         }
+        [HttpPost("AddChiTietSanPham")]
+        public async Task<IActionResult> AddChiTietSanPham(ChiTietSanPhamRequest request)
+        {
+            if (request == null) return BadRequest();
+            var response = await _sanPhamServices.AddChiTietSanPham(request);
+            return Ok(response);
+        }
         #endregion
 
         #region LoaiSP
