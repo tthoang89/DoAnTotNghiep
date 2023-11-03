@@ -8,7 +8,7 @@ namespace AppAPI.Services
 {
     public class NhanVienService : INhanVienService
     {
-        private readonly 
+        private readonly
         AssignmentDBContext _dbContext;
 
         public NhanVienService()
@@ -16,70 +16,77 @@ namespace AppAPI.Services
             _dbContext = new AssignmentDBContext();
         }
 
-        public bool Add(string ten, string email, string sdt, string diachi, Guid idVaiTro, int trangthai, string password)
-        {
-            var nv = new NhanVien();
-            nv.ID = Guid.NewGuid();
-            nv.Ten = ten;
-            nv.Email = email;
-            nv.PassWord = password;
-            nv.DiaChi = diachi;
-            nv.SDT = sdt;
-            nv.IDVaiTro = idVaiTro;
-            nv.TrangThai = trangthai;
-            _dbContext.NhanViens.Add(nv);
-            _dbContext.SaveChanges();
-            return true;
-            
-        }
-
         public bool Delete(Guid id)
         {
-            try
+            var nv = _dbContext.NhanViens.FirstOrDefault(nv => nv.ID == id);
+            if (nv != null)
             {
-                var kh = _dbContext.NhanViens.FirstOrDefault(x => x.ID == id);
-                if (kh != null)
-                {
-                    _dbContext.NhanViens.Remove(kh);
-                    _dbContext.SaveChanges();
-                    return true;
-                }
-                return false;
-            }
-            catch (Exception)
-            {
-
-                return false;
-            }
-        }
-
-        public List<NhanVien> GetAll()
-        {
-            return _dbContext.NhanViens
-                .ToList();
-        }
-
-        public NhanVien GetById(Guid id)
-        {
-            return _dbContext.NhanViens.FirstOrDefault(x => x.ID == id);
-        }
-
-        public bool Update(NhanVien nv)
-        {
-            var kh = _dbContext.NhanViens.FirstOrDefault(x => x.ID == nv.ID);
-            if (kh != null)
-            {
-                kh.Ten = nv.Ten;
-                kh.Email = nv.Email;
-                kh.PassWord = nv.PassWord;
-                kh.SDT = nv.SDT;
-                kh.DiaChi = nv.DiaChi;
-                kh.TrangThai = nv.TrangThai;
-                kh.IDVaiTro = nv.IDVaiTro; _dbContext.NhanViens.Update(kh);
+                _dbContext.NhanViens.Remove(nv);
                 _dbContext.SaveChanges();
                 return true;
             }
             return false;
+        }
+
+        public List<NhanVien> GetAll()
+        {
+            return _dbContext.NhanViens.ToList();
+        }
+
+        public IEnumerable<NhanVien> GetByName(string name)
+        {
+            var nv = _dbContext.NhanViens.Where(x => x.Ten.ToLower().StartsWith(name.ToLower()));
+            return nv;
+
+        }
+
+        public bool Update(Guid id, string ten, string email, string password, string sdt, string diachi, int trangthai, Guid idvaitro)
+        {
+            var nv = _dbContext.NhanViens.FirstOrDefault(x => x.ID == id);
+            if (nv != null)
+            {
+                nv.Ten = ten;
+                nv.Email = email;
+                nv.PassWord = password;
+                nv.SDT = sdt;
+                nv.DiaChi = diachi;
+                nv.TrangThai = trangthai;
+                nv.IDVaiTro = idvaitro;
+                _dbContext.NhanViens.Update(nv);
+                _dbContext.SaveChanges();
+                return true;
+            }
+            return false;
+        }
+
+        public bool Add(string ten, string email, string password, string sdt, string diachi, int trangthai, Guid idvaitro)
+        {
+
+            try
+            {
+                NhanVien nv = new NhanVien();
+                nv.ID = Guid.NewGuid();
+                nv.Ten = ten;
+                nv.Email = email;
+                nv.PassWord = password;
+                nv.SDT = sdt;
+                nv.DiaChi = diachi;
+                nv.TrangThai = trangthai;
+                nv.IDVaiTro =idvaitro;
+                _dbContext.NhanViens.Add(nv);
+                _dbContext.SaveChanges();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public NhanVien? GetById(Guid id)
+        {
+            var nv = _dbContext.NhanViens.FirstOrDefault(nv => nv.ID == id);
+            return nv;
         }
     }
 }

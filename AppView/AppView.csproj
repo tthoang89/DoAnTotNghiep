@@ -36,6 +36,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Views\NhanVien\Create.cshtml" />
+    <None Include="Views\NhanVien\Delete.cshtml" />
+    <None Include="Views\NhanVien\Details.cshtml" />
+    <None Include="Views\NhanVien\Edit.cshtml" />
+    <None Include="Views\NhanVien\Show.cshtml" />
     <None Include="wwwroot\Admin\js\main.js" />
     <None Include="wwwroot\Admin\vendor\apexcharts\apexcharts.amd.js" />
     <None Include="wwwroot\Admin\vendor\apexcharts\apexcharts.common.js" />
