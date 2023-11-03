@@ -198,6 +198,7 @@ namespace AppAPI.Services
             HoaDon hoaDon = reposHoaDon.GetAll().FirstOrDefault(p => p.ID == id);
             var lsthdct = reposChiTietHoaDon.GetAll().Where(c => c.IDHoaDon == hoaDon.ID).ToList();
             context.ChiTietHoaDons.RemoveRange(lsthdct);
+            //Cộng lại số lượng sản phẩm 
             context.SaveChanges();
             return reposHoaDon.Delete(hoaDon);
         }

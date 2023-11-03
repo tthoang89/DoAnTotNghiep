@@ -152,6 +152,8 @@ namespace AppAPI.Services
                 return new List<MauSac>();
             }
         }
+
+        public async Task<List<ChiTietSanPham>> GetAllChiTietSanPham(Guid idSanPham)
         public async Task<List<ChiTietSanPhamViewModel>> GetAllChiTietSanPham(Guid idSanPham)
         {
             try
@@ -169,6 +171,28 @@ namespace AppAPI.Services
                                              TenKhuyenMai = a.IDKhuyenMai==null?"Ko":_context.KhuyenMais.First(x=>x.ID==a.IDKhuyenMai).Ten
                                          }).ToListAsync();
                 return lstChiTietSanPham;
+            }
+            catch
+            {
+                return new List<ChiTietSanPhamViewModel>();
+            }
+        }
+        public async Task<List<ChiTietSanPhamViewModel>> GetAllChiTietSanPham()
+        {
+            try
+            {
+                return await (from sp in _context.SanPhams.AsNoTracking()
+                              join ctsp in _context.ChiTietSanPhams.AsNoTracking()
+                              on sp.ID equals ctsp.IDSanPham
+                              select new ChiTietSanPhamViewModel()
+                              {
+                                  ID = ctsp.ID,
+                                  Ten = sp.Ten,
+                                  GiaBan = ctsp.GiaBan,
+                                  GiaGoc = ctsp.GiaBan,
+                                  TrangThai = ctsp.TrangThai,
+                                  SoLuong = ctsp.SoLuong,
+                              }).ToListAsync();
             }
             catch
             {

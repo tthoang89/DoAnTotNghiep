@@ -1,0 +1,137 @@
+﻿@using AppData.Models
+@using AppData.ViewModels
+@{
+    ViewData["Title"] = "BanHang";
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="~/css/test.css" type="text/css">
+    <script src="~/js/bantaiquay.js" defer></script>
+    var lsthdcho = ViewData["lsthdcho"] as List<HoaDon>;
+    var lstbt = ViewData["lstbthe"] as List<ChiTietSanPhamViewModel>;
+}
+<div class="contain-fluid" style="overflow-x: hidden;overflow-y:hidden">
+    <!--Thanh hóa đơn-->
+    <div class="row" style="background:#5372F0">
+        <div class="col-md-2 col-sm-12">
+            <a href="@Url.Action("TaoHoaDon", "BanHangTaiQuay")" class="btn btn-success text-white" style="margin:3px"><i class="fas fa-random"></i> Tạo hóa đơn</a>
+        </div>
+        <div class="col-md-10 col-sm-12">
+            <div class="tabbill">
+                <div class="icon"><i id="left" class="fa-solid fa-angle-left"></i></div>
+                @if (lsthdcho != null)
+                {
+                    <ul class="tabs-box">
+                        @{
+                            var index = 1;
+                            foreach (var item in lsthdcho)
+                            {
+                                <li class="tab" onclick="gethdct('@item.ID')">
+                                    <span value="@item.ID">
+                                        <a>Hoá đơn @index</a>
+                                        <a style="padding-left: 10px;" onclick="deletehd('@item.ID')"><i class="fas fa-times"></i></a>
+                                    </span>
+                                </li>
+                                index++;
+                            }
+                        }
+                    </ul>
+                }
+                <div class="icon"><i id="right" class="fa-solid fa-angle-right"></i></div>
+            </div>
+        </div>
+    </div>
+    <!--Thanh bán hàng-->
+    <div class="row" style="min-height:100vh;">
+        <div class="col-md-5 col-sm-12" style="background: #fff;">
+            <ul class="product-list">
+                @if (lstbt != null)
+                {
+                    @foreach (var item in lstbt)
+                    {
+                        <li onclick="addHDCT('@item.ID',@item.GiaBan)">
+                            <div class="product-item">
+                                
+                                <img src="~/img/variants/ao-so-mi-tay-dai-tron-den.png">
+                            </div>
+                            <div class="product-detail">
+                                <h4>@item.Ten</h4>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <p style="flex-basis: 59.5%;"><b>@item.GiaBan.ToString("n0")</b></p>
+                                    <p style="flex-basis: 49.5%;">SL: @item.SoLuong</p>
+                                </div>
+                            </div>
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
+        <div class="col-md-7 col-sm-12"style="max-height:50vh">
+            <div id="partialGioHang">
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="~/js/jquery-3.3.1.min.js"></script>
+<script>
+    function deletehd(idhd) {
+    var ans = confirm("Bạn có chắc chắn xóa Đơn Nháp này?");
+    if (ans) {
+        $.ajax({
+            url: "/BanHangTaiQuay/deleteHDCho/" + idhd,
+            type: "DELETE",
+            contentType: "application/json;charset=UTF-8",
+            dataType: "json",
+            success: function(response) {
+                if (response.success == true) {
+                    toastr.success(response.message, 'Success Alert', { timeOut: 300 });
+                } else {
+                    toastr.error(response.message, 'Error Alert', { timeOut: 300 });
+                }
+            },
+            error: function(response) {
+                console.log(response);
+                toastr.error(response.message, 'Error Alert', { timeOut: 300 });
+            }
+        });
+    }
+    }
+</script>
+<script type="text/javascript">
+
+
+</script>
+<script type="text/javascript">
+    function addHDCT(idbt,dongia){
+      var activeTab = $(".tabs-box .tab").filter(".active");
+      var elementValue = activeTab.find("span").attr("value");
+      var request = {IdHoaDon:elementValue, IdBienThe: idbt, DonGia: dongia,SoLuong:1}
+      console.log(request);
+      $.ajax({
+          url: "/BanHangTaiQuay/addHdct",
+          async: false,
+          type: 'POST',
+          dataType: 'json',
+          data:request,
+          success: function(response) {
+              gethdct(request.IdHoaDon);
+          },
+          error: function(response) {
+              alert("Thêm Thất bại");
+          }
+      });
+    }
+    function gethdct(idhd){
+        $('#partialGioHang').load("/BanHangTaiQuay/getCTHD/" + idhd);
+    }
+</script>
+<script>
+    $(document).ready(function(){
+        $(function () {
+        $(".tab").click(function (e) {
+            e.preventDefault();
+            $(".tab").removeClass("active");
+            $(this).addClass("active");
+        });
+        });
+    });
+</script>

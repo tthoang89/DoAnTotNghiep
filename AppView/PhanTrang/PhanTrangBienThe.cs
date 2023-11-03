@@ -5,7 +5,7 @@ namespace AppView.PhanTrang
 {
     public class PhanTrangBienThe
     {
-        public IEnumerable<BienTheViewModel> listbienthes { get; set; }=new  List<BienTheViewModel>();
+        public IEnumerable<ChiTietSanPhamViewModel> listbienthes { get; set; }=new  List<ChiTietSanPhamViewModel>();
         public PagingInfo PagingInfo { get; set; } = new PagingInfo();
     }
 }
