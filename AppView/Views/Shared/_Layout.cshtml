@@ -68,7 +68,7 @@
                                                 <li><a class="dropdown-item" asp-controller="Home" asp-action="Profile" asp-route-loginInfor="@session">Thông tin cá nhân</a></li>
                                                 @if (loginInfor.vaiTro == 0)
                                                 {
-                                                    <li><a class="dropdown-item" asp-controller="VaiTro" asp-action="HomePageAdmin" asp-route-id="@loginInfor.Id">Quản lý cửa hàng</a></li>
+                                                    <li><a class="dropdown-item" asp-controller="Admin" asp-action="HomePageAdmin" asp-route-id="@loginInfor.Id">Quản lý cửa hàng</a></li>
                                                 }
                                                 <li><a class="dropdown-item" asp-controller="Home" asp-action="LogOut">LOGOUT</a></li>
                                             </ul>

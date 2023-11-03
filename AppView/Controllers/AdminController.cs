@@ -17,7 +17,7 @@ namespace AppView.Controllers
         }
         public IActionResult HomePageAdmin(Guid id)
         {
-            return View();
+            return RedirectToAction("BanHang", "BanHangTaiQuay");
         }
         public IActionResult ProductManager()
         {
@@ -82,8 +82,8 @@ namespace AppView.Controllers
         [HttpGet]
         public IActionResult ProductDetail(string idSanPham)
         {
-            var response = _httpClient.GetAsync(_httpClient.BaseAddress+ "SanPham/GetAllChiTietSanPham?idSanPham="+idSanPham).Result;
-            var lstSanPham = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModel>>(response.Content.ReadAsStringAsync().Result);
+            var response = _httpClient.GetAsync(_httpClient.BaseAddress+ "SanPham/GetAllChiTietSanPhamAdmin?idSanPham=" + idSanPham).Result;
+            var lstSanPham = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModelAdmin>>(response.Content.ReadAsStringAsync().Result);
             TempData["IDSanPham"] = idSanPham;
             return View(lstSanPham);
         }

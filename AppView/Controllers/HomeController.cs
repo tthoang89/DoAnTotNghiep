@@ -251,10 +251,10 @@ namespace AppView.Controllers
         [HttpGet]
         public IActionResult ShoppingCart()
         {
-            List<ChiTietSanPhamViewModel> bienThes = new List<ChiTietSanPhamViewModel>();
+            List<ChiTietSanPhamViewModelAdmin> bienThes = new List<ChiTietSanPhamViewModelAdmin>();
             if (HttpContext.Session.GetString(KeyCart) != null)
             {
-                bienThes = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModel>>(HttpContext.Session.GetString(KeyCart));
+                bienThes = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModelAdmin>>(HttpContext.Session.GetString(KeyCart));
             }
             long tongtien = 0;
             foreach (var x in bienThes)

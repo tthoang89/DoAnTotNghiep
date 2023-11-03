@@ -87,7 +87,8 @@
 
     $("#addMauSac").click(function () { 
         var count = $("#tbbody > tr").length;
-        $("#tbbody").append("<tr><td> <input name='MauSacs[" + count + "].Ten' class='form-control'/></td><td><input asp-for='MauSacs[" + count + "].Ma' type='color' class='form-control' list='lstMauSac'/></td></tr>");
+        $("#tbbody").append("<tr><td> <input name='MauSacs[" + count + "].Ten' class='form-control'/></td><td><input name='MauSacs[" + count + "].Ma' type='color' class='form-control' list='lstMauSac'/></td></tr>");
+        console.log("<tr><td> <input name='MauSacs[" + count + "].Ten' class='form-control'/></td><td><input name='MauSacs[" + count + "].Ma' type='color' class='form-control' list='lstMauSac'/></td></tr>");
     });
 
     $("#addKichCo").click(function () { 

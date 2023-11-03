@@ -67,12 +67,12 @@ namespace AppAPI.Controllers
         #endregion
 
         #region ChiTietSanPham
-        [HttpGet("GetAllChiTietSanPham/{id}")]
-        public async Task<IActionResult> GetAllChiTietSanPham(Guid id)
-        [HttpGet("GetAllChiTietSanPham")]
+        //[HttpGet("GetAllChiTietSanPham/{id}")]
+        //public async Task<IActionResult> GetAllChiTietSanPham(Guid id)
+        [HttpGet("GetAllChiTietSanPhamAdmin")]
         public async Task<IActionResult> GetAllChiTietSanPham(Guid idSanPham)
         {
-            var lstChiTietSanPham = await _sanPhamServices.GetAllChiTietSanPham(idSanPham);
+            var lstChiTietSanPham = await _sanPhamServices.GetAllChiTietSanPhamAdmin(idSanPham);
             return Ok(lstChiTietSanPham);
         }
         [HttpPost("AddChiTietSanPham")]

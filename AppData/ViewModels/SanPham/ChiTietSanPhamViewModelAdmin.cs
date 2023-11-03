@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AppData.ViewModels.SanPham
 {
-    public class ChiTietSanPhamViewModel
+    public class ChiTietSanPhamViewModelAdmin
     {
         public string MaMauSac { get; set; }
         public string TenKichCo { get; set; }

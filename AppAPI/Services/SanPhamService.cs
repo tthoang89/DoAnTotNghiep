@@ -152,16 +152,14 @@ namespace AppAPI.Services
                 return new List<MauSac>();
             }
         }
-
-        public async Task<List<ChiTietSanPham>> GetAllChiTietSanPham(Guid idSanPham)
-        public async Task<List<ChiTietSanPhamViewModel>> GetAllChiTietSanPham(Guid idSanPham)
+        public async Task<List<ChiTietSanPhamViewModelAdmin>> GetAllChiTietSanPhamAdmin(Guid idSanPham)
         {
             try
             {
                 var lstChiTietSanPham = await (from a in _context.ChiTietSanPhams.Where(x=>x.IDSanPham==idSanPham)
                                          join b in _context.MauSacs on a.IDMauSac equals b.ID
                                          join c in _context.KichCos on a.IDKichCo equals c.ID
-                                         select new ChiTietSanPhamViewModel()
+                                         select new ChiTietSanPhamViewModelAdmin()
                                          {
                                              MaMauSac = b.Ma,
                                              TenKichCo = c.Ten,
@@ -174,7 +172,7 @@ namespace AppAPI.Services
             }
             catch
             {
-                return new List<ChiTietSanPhamViewModel>();
+                return new List<ChiTietSanPhamViewModelAdmin>();
             }
         }
         public async Task<List<ChiTietSanPhamViewModel>> GetAllChiTietSanPham()
@@ -305,6 +303,11 @@ namespace AppAPI.Services
         public async Task<List<ChatLieu>> GetAllChatLieu()
         {
             return await _context.ChatLieus.ToListAsync();
+        }
+
+        public Task<List<ChiTietSanPham>> GetAllChiTietSanPham(Guid idSanPham)
+        {
+            throw new NotImplementedException();
         }
         #endregion
 
