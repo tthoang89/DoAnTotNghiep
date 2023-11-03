@@ -67,10 +67,25 @@ namespace AppAPI.Controllers
         #endregion
 
         #region ChiTietSanPham
-        [HttpGet("GetAllChiTietSanPham")]
-        public async Task<IActionResult> GetAllChiTietSanPham(Guid id)
+        //[HttpGet("GetAllChiTietSanPham/{id}")]
+        //public async Task<IActionResult> GetAllChiTietSanPham(Guid id)
+        [HttpGet("GetAllChiTietSanPhamAdmin")]
+        public async Task<IActionResult> GetAllChiTietSanPham(Guid idSanPham)
         {
-            var sanPham = await _sanPhamServices.GetAllChiTietSanPham(id);
+            var lstChiTietSanPham = await _sanPhamServices.GetAllChiTietSanPhamAdmin(idSanPham);
+            return Ok(lstChiTietSanPham);
+        }
+        [HttpPost("AddChiTietSanPham")]
+        public async Task<IActionResult> AddChiTietSanPham(ChiTietSanPhamRequest request)
+        {
+            if (request == null) return BadRequest();
+            var response = await _sanPhamServices.AddChiTietSanPham(request);
+            return Ok(response);
+        }
+        [HttpGet("GetAllChiTietSanPham")]
+        public async Task<IActionResult> GetAllChiTietSanPham()
+        {
+            var sanPham = await _sanPhamServices.GetAllChiTietSanPham();
             return Ok(sanPham);
         }
         #endregion
