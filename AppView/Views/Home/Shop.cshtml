@@ -13,16 +13,16 @@
     Layout = "_Layout";
 }
 <style>
-    #filter-color input[type="checkbox"], #filter-size input[type="checkbox"], #LoaiSpFilter input[type="checkbox"], #filter-material input[type="checkbox"] {
+    #filter-color input[type="checkbox"], #filter-size input[type="checkbox"], #LoaiSpFilter input[type="radio"], #filter-material input[type="checkbox"] {
         display:none;
     }
 
-    #filter-color label input[type="checkbox"]:checked ~ span, #filter-size label input[type="checkbox"]:checked ~ span, #LoaiSpFilter label input[type="checkbox"]:checked ~ span, #filter-material label input[type="checkbox"]:checked ~ span {
+    #filter-color label input[type="checkbox"]:checked ~ span, #filter-size label input[type="checkbox"]:checked ~ span, #LoaiSpFilter label input[type="radio"]:checked ~ span, #filter-material label input[type="checkbox"]:checked ~ span {
         background:black;
-        color:white;
+        color: #e5e5e5;
     }
 
-    #filter-color label span, #filter-size label span, #LoaiSpFilter label span, #filter-material label span {
+    #filter-color label span, #filter-size label span, #filter-material label span, #LoaiSpFilter label span {
         color: #111111;
         font-size: 15px;
         font-weight: 700;
@@ -35,7 +35,28 @@
         cursor: pointer;
     }
 
-        #filter-color label span:hover, #filter-size label span:hover, #LoaiSpFilter label span:hover, #filter-material label span:hover {
+    #tronMau label {
+        left: -3px;
+        top: -3px;
+        height: 36px;
+        width: 36px;
+        border: 1px solid #e5e5e5;
+        content: "";
+        border-radius: 50%;
+        border: 2px solid black;
+        align-items: center;
+        justify-content: center;
+        display: flex;
+    }
+
+    #tronMau svg {
+        visibility:hidden
+    }
+    #tronMau input[type="checkbox"]:checked ~ label svg{
+        visibility:visible
+    }
+
+    #filter-color label span:hover, #filter-size label span:hover, #filter-material label span:hover, #LoaiSpFilter label span:hover {
     background: black;
     color: white;
     }
@@ -94,7 +115,7 @@
                                                                     @foreach (var x in listLoaiSP.Where(p => p.IDLoaiSPCha == item.ID).ToList())
                                                                     {
                                                                         <label>
-                                                                            <input type="checkbox" class="btn-check" id="btn-check-outlined_@item.Ten" autocomplete="off" val="@x.Ten">
+                                                                            <input type="radio" class="btn-check" id="btn-check-outlined_@item.Ten" autocomplete="off" name="loaiSP" val="@x.Ten">
                                                                             <span class="btn btn-outline-primary" for="btn-check-outlined_@item.Ten">@x.Ten</span>
                                                                         </label>
                                                                     }
@@ -163,14 +184,30 @@
                                         <div @*class="shop__sidebar__color"*@ id="filter-color" onchange="Filtered()">
                                             @foreach (var item in listMauSac)
                                             {
-                                                <label>
+                                                <label id="tronMau">
                                                     <input type="checkbox" class="btn-check" id="btn-check-outlined_@item.Ten" autocomplete="off" val="@item.ID">
-                                                    <span class="btn btn-outline-primary" for="btn-check-outlined_@item.Ten">@item.Ten</span>
+                                                    <label for="btn-check-outlined_@item.Ten" style="background-color:@item.Ma">
+                                                        @if (item.Ma == "#000000")
+                                                                                            {
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" color="white" class="bi bi-check-circle" viewBox="0 0 16 16">
+                                                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                                                <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z" />
+                                                            </svg>
+                                                        }
+                                                        else
+                                                        {
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
+                                                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                                                <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z" />
+                                                            </svg>
+                                                        }
+                                                        
+                                                    </label>
                                                 </label>
                                                 
                                             }
-                                            @*<label class="c-1" for="sp-1">
-                                                <input type="radio" id="sp-1">
+                                            @*<label class="c-1" for="sp-1" style="background-color:red">
+                                                <input type="checkbox" id="sp-1">
                                             </label>*@
                                         </div>
                                     </div>
@@ -235,18 +272,22 @@
                     <div class="row" id="filtered-products">
                         @foreach (var item in Model)
                         {
-                            <div class="col-lg-4 col-md-6 col-sm-6">
-                                <div class="product__item">
-                                    <div class="product__item__pic set-bg">
-                                    <img src="/img/product/product-2.jpg">
-                                    </div>
-                                    <div class="product__item__text">
-                                        <h6>@item.Ten</h6>
-                                    <a onclick="addCart('@item.IdChiTietSanPham')" class="add-cart">+ ADD TO CART</a>
-                                    <h5 style="color:red">@item.GiaBan.ToString("n0") VND</h5>
+                            @if (item.TrangThaiCTSP == 1)
+                            {
+                                <div class="col-lg-4 col-md-6 col-sm-6">
+                                    <div class="product__item">
+                                        <div class="product__item__pic set-bg">
+                                            <img src="/img/product/product-2.jpg">
+                                        </div>
+                                        <div class="product__item__text">
+                                            <h6>@item.Ten</h6>
+                                            <a onclick="addCart('@item.IdChiTietSanPham')" class="add-cart">+ ADD TO CART</a>
+                                            <h5 style="color:red">@item.GiaBan.ToString("n0") VND</h5>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            }
+                            
                         }
                     
                     </div>
@@ -295,7 +336,7 @@
         return valuesort;
     }
     function filterLoaiSP(){
-        var checkboxes = $('#LoaiSpFilter input[type="checkbox"]:checked')
+        var checkboxes = $('#LoaiSpFilter input[type="radio"]:checked')
         var value = []
         checkboxes.each(function () {
             value.push($(this).attr('val'))
@@ -337,6 +378,25 @@
     function Search(){
         var name = document.getElementById("search").value
         return name
+    }
+    document.querySelectorAll(
+        'input[type=radio][name=loaiSP]').forEach((elem) => {
+            elem.addEventListener('click', allowUncheck);
+            // only needed if elem can be pre-checked
+            elem.previous = elem.checked;
+        });
+
+    function allowUncheck(e) {
+        if (this.previous) {
+            this.checked = false;
+            Filtered();
+        }
+        // need to update previous on all elements of this group
+        // (either that or store the id of the checked element)
+        document.querySelectorAll(
+            `input[type=radio][name=${this.name}]`).forEach((elem) => {
+                elem.previous = elem.checked;
+            });
     }
     function Filtered() {
         var PriceRange = Filter("filter-price");

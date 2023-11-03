@@ -65,6 +65,7 @@
                                             @*<i class="arrow_carrot-down"></i>*@
                                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                                 <li><a class="dropdown-item" asp-controller="Home" asp-action="Profile" asp-route-loginInfor="@session">Thông tin cá nhân</a></li>
+                                                <li><a class="dropdown-item" asp-controller="Home" asp-action="PurchaseOrder" asp-route-loginInfor="@session">Đơn mua</a></li>
                                                 @if (loginInfor.vaiTro == 0)
                                                 {
                                                     <li><a class="dropdown-item" asp-controller="VaiTro" asp-action="HomePageAdmin" asp-route-id="@loginInfor.Id">Quản lý cửa hàng</a></li>

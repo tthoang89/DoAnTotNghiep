@@ -22,7 +22,7 @@ namespace AppAPI.Services
             try
             {
                 var lstSanPham = await (from a in _context.SanPhams.Where(x => x.TrangThai == 1)
-                                        join b in _context.ChiTietSanPhams.Where(x => x.TrangThai == 1) on a.ID equals b.IDSanPham
+                                        join b in _context.ChiTietSanPhams on a.ID equals b.IDSanPham
                                         //join c in _context.Anhs.Where(x => x.TrangThai == 1) on a.ID equals c.IDSanPham
                                         join e in _context.LoaiSPs.Where(x=>x.LoaiSPCha!=null) on a.IDLoaiSP equals e.ID
                                   select new SanPhamViewModel()
@@ -30,6 +30,7 @@ namespace AppAPI.Services
                                       ID = a.ID,
                                       Ten = a.Ten,
                                       TrangThai = a.TrangThai,
+                                      TrangThaiCTSP= b.TrangThai,
                                       LoaiSP = e.Ten,
                                       IdChiTietSanPham = b.ID,
                                       Image = _context.Anhs.First(x=>x.IDMauSac==b.IDMauSac&&x.IDSanPham==a.ID).DuongDan,

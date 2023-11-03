@@ -4,6 +4,7 @@ using AppData.ViewModels.SanPham;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Newtonsoft.Json;
 using System.Web.Helpers;
 using X.PagedList;
@@ -240,10 +241,25 @@ namespace AppView.Controllers
                 {
                     lstSanphamfn = lstSanphamfn.OrderByDescending(p => p.NgayTao).ToList();
                 }
-
-
             }
-            return PartialView("_ReturnProducts", lstSanphamfn);
+            List<SanPhamViewModel>lstSanPhamfnR = new List<SanPhamViewModel>();
+            foreach (var item in lstSanphamfn)
+            {
+                if (item.TrangThaiCTSP == 1)
+                {
+                    lstSanPhamfnR.Add(item);
+                }
+                else
+                {
+                    SanPhamViewModel sanPhamViewModel = lstSanpham.FirstOrDefault(p=>p.ID == item.ID && p.TrangThaiCTSP == 1);
+                    if (lstSanPhamfnR.FirstOrDefault(p=>p.ID == sanPhamViewModel.ID) == null)
+                    {
+                        lstSanPhamfnR.Add(sanPhamViewModel);
+                    }
+                }
+            }
+
+            return PartialView("_ReturnProducts", lstSanPhamfnR);
         }
         #endregion
 
@@ -344,6 +360,11 @@ namespace AppView.Controllers
         public IActionResult ChangePassword()
         {
             return PartialView("ChangePassword");
+        }
+        public IActionResult PurchaseOrder()
+        {
+
+            return View();
         }
         [HttpPost]
         public IActionResult ChangePassword(string newPassword)

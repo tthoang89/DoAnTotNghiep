@@ -1,0 +1,126 @@
+﻿@model AppData.ViewModels.LoginViewModel
+@{
+    Layout = "_Layout";
+}
+<style>
+    #navbar {
+        display:flex;
+        justify-content: space-evenly;
+        align-items:center;
+        padding: 10px 0px 10px 0px;
+        background-color:white;
+        margin-bottom:24px;
+    }
+
+    #AllHoaDon{
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        background-color: white;
+    }
+    #navbar div label {
+        margin:0px;
+    }
+
+    #navbar div label span{
+        cursor: pointer;
+        padding:10px;
+    }
+    #navbar input[type="radio"]{
+        display:none;
+    }
+
+    #navbar label input[type="radio"]:checked ~ span{
+        border-bottom: 1px solid black;
+    }
+</style>
+<section style="background-color: #eee;">
+    <div class="container py-5">
+        <div class="row">
+            <div class="col">
+                <nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Đơn mua</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div  id="navbar">
+                    <div >
+                        <label>
+                            <input type="radio" name="menu" />
+                            <span>Tất cả</span>
+                        </label>
+                    </div>
+                    <div >
+                        <label>
+                            <input type="radio" name="menu" />
+                            <span>Vận chuyển</span>
+                        </label>
+                    </div>
+                    <div >
+                        <label>
+                            <input type="radio" name="menu" />
+                            <span>Chờ giao hàng</span>
+                        </label>
+                    </div>
+                    <div >
+                        <label>
+                            <input type="radio" name="menu" />
+                            <span>Hoàn thành</span>
+                        </label>
+                    </div>
+                    <div >
+                        <label>
+                            <input type="radio" name="menu" />
+                            <span>Đã hủy</span>
+                        </label>
+                    </div>
+                    <div >
+                        <label>
+                            <input type="radio" name="menu" />
+                            <span>Trả hàng hoàn tiền</span>
+                        </label>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div id="AllHoaDon">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">First</th>
+                        <th scope="col">Last</th>
+                        <th scope="col">Handle</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">1</th>
+                        <td>Mark</td>
+                        <td>Otto</td>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">2</th>
+                        <td>Jacob</td>
+                        <td>Thornton</td>
+                        <td>2</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">3</th>
+                        <td>Larry</td>
+                        <td>the Bird</td>
+                        <td>3</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+@await Html.PartialAsync("ChangePassword")
