@@ -3,16 +3,20 @@
 
 @{
     ViewData["Title"] = "GetAllKM";
-    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    Layout = "~/Views/Shared/_LayoutForAdmin.cshtml";
    
 
     int stt = 1;
 }
 <h2>Quản Lý Khuyến Mại</h2>
 
-<p>
-    <a asp-action="Create">Thêm Mới Khuyến mãi</a>
-</p>
+<button class="btn btn-dark">
+    <strong style="color:white">@Html.ActionLink("Thêm Khuyến Mãi", "Create")</strong>
+</button>
+<button class="btn btn-dark">
+    <strong style="color:white">@Html.ActionLink("Thêm Khuyến Mãi Cho Sản Phẩm", "GetAllQLKhuyenMaiSP")</strong>
+</button>
+<br />
 <form asp-action="TimKiemTenKM" asp-controller="QuanLyKM" method="get" enctype="multipart/form-data">
     <div class="input-group">
         <input type="text" name="TenKM" class="form-control" placeholder="Search for Khuyen Mai">
@@ -63,7 +67,12 @@
                     <strong style="color:red">@item.Ten</strong>
                 </td>
                 <td>
-                    <strong style="color:green">@item.GiaTri%</strong>
+                    @if(item.TrangThai==0){
+                        <strong style="color:red">@item.GiaTri.ToString("n0") VND</strong>
+                    }
+                    else{
+                        <strong style="color:green">@item.GiaTri %</strong>
+                    }
                 </td>
                 <td>
                     <strong style="color:green">@item.NgayApDung</strong>
@@ -100,7 +109,7 @@
                         @Html.ActionLink("Sửa", "Update", new { id = item.ID }, new { @style = "color:white;" })
                     </button>
                     <button class="btn btn-primary">
-                        @Html.ActionLink("Chi tiết", "Details", new { id = item.ID }, new { @style = "color:white;" })
+                        @Html.ActionLink("Chi tiết", "GetSPByIdKM", new { id = item.ID }, new { @style = "color:white;" })
                     </button>
                     <button class="btn btn-danger">
                         @Html.ActionLink("Xóa", "Delete", new { id = item.ID }, new { @style = "color:white;" })
@@ -126,3 +135,4 @@
         </ul>
     </nav>
 </div>
+

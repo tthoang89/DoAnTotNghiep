@@ -16,9 +16,12 @@ namespace AppAPI.Controllers
     public class KhachHangController : ControllerBase
     {
         private readonly IKhachHangService _khachHangService;
-        public KhachHangController(IKhachHangService khachHangService)
+        private readonly AssignmentDBContext _dbcontext;
+        public KhachHangController()
         {
-            this._khachHangService = khachHangService;
+            _khachHangService = new KhachHangService();
+            _dbcontext = new AssignmentDBContext();
+            
         }
         // GET: api/<SanPhamController>
         [HttpGet]
@@ -26,14 +29,47 @@ namespace AppAPI.Controllers
         {
             return _khachHangService.GetAll();
         }
+        [Route("TimKiemKH")]
+        [HttpGet]
+        public List<KhachHang> GetAllKhachHang(string? Ten, string? SDT)
+        {
+            return _dbcontext.KhachHangs.Where(x=>x.SDT.Contains(SDT)|| x.Ten.Contains(Ten)|| x.SDT.Contains(SDT) || x.Ten.Contains(Ten)).ToList();
+        }
+        [Route("GetById")]
+        [HttpGet]
+        public KhachHang GetById(Guid id)
+        {
+            return _khachHangService.GetById(id);
+        }
 
         // GET api/<SanPhamController>/5
-        [HttpGet("{id}")]
-        public KhachHang GetKhachHangById(Guid id)
+        [Route("PostKHView")]
+        [HttpPost]
+        public bool PostKHView(KhachHangView khv)
         {
-            var kh = _khachHangService.GetById(id);
-            return kh;
+            khv.IDKhachHang = Guid.NewGuid();
+            KhachHang kh = new KhachHang();
+            kh.IDKhachHang = khv.IDKhachHang;
+            kh.Ten = khv.Ten;
+            kh.Password = khv.Password;
+            kh.GioiTinh=khv.GioiTinh;
+            kh.NgaySinh=khv.NgaySinh;
+            kh.Email = khv.Email;
+            kh.DiaChi=khv.DiaChi;
+            kh.SDT = khv.SDT;
+            kh.TrangThai=1;
+            kh.DiemTich = 0;
+            _dbcontext.KhachHangs.Add(kh);
+            GioHang gh= new GioHang();
+            gh.IDKhachHang=kh.IDKhachHang;
+            gh.NgayTao=DateTime.Now;
+            _dbcontext.GioHangs.Add(gh);
+            _dbcontext.SaveChanges();
+             
+            return true;
         }
+       
+
 
         // POST api/<SanPhamController>
         [HttpPost]
@@ -48,23 +84,26 @@ namespace AppAPI.Controllers
             return Ok("Đăng ký thành công");
         }
         // PUT api/<SanPhamController>/5
-        [HttpPut("{id}")]
-        public bool Put(Guid id, string ten, string email, string password, string diachi, DateTime ngaysinh, int gioitinh, int diemtisch, int trnagthai, string sdt)
+        [Route("{id}")]
+        [HttpPut]
+        public bool PutKhView(KhachHangView khv)
         {
-            var nv = _khachHangService.GetById(id);
-            if (nv != null)
+            var kh = _khachHangService.GetById(khv.IDKhachHang);
+            if (kh != null)
             {
-                nv.Ten = ten;
-                nv.NgaySinh = ngaysinh;
-                nv.DiaChi = diachi;
-                nv.TrangThai = trnagthai;
-                nv.SDT = sdt;
-                nv.Email = email;
-                nv.Password = password;
-                nv.GioiTinh = gioitinh;
-                nv.DiemTich = diemtisch;
-                return _khachHangService.Update(nv);
-
+                
+                kh.Ten = khv.Ten;
+                kh.Password = khv.Password;
+                kh.GioiTinh = khv.GioiTinh;
+                kh.NgaySinh = khv.NgaySinh;
+                kh.Email = khv.Email;
+                kh.DiaChi = khv.DiaChi;
+                kh.SDT = khv.SDT;
+                kh.TrangThai = khv.TrangThai;
+                kh.DiemTich = 0;
+                _dbcontext.KhachHangs.Update(kh);
+                _dbcontext.SaveChanges();
+                return true;
             }
             return false;
 

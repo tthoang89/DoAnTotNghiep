@@ -8,7 +8,7 @@ namespace AppAPI.IServices
     {
         public bool Add(KhuyenMaiView kmv);
         public bool AdKMVoBT(List<Guid> btrequest, Guid IdKhuyenMai);
-        public bool Ad1KMVo1BT(Guid btrequest, Guid IdKhuyenMai);
+       
         public bool XoaAllKMRaBT(List<Guid> bienthes);
 
 
@@ -17,7 +17,7 @@ namespace AppAPI.IServices
 
         public KhuyenMai GetById(Guid Id);
         public List<KhuyenMai> GetAll();
-        public List<ChiTietSanPham> GetAllBienThe();
+       
         public List<KhuyenMai> GetKMByName(string Ten);
     }
 }
