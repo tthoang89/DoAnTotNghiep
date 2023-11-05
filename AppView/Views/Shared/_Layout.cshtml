@@ -46,14 +46,14 @@
                 <div class="row">
                     <div class="col-lg-6 col-md-7">
                         <div class="header__top__left">
-                            <p>Free shipping, 30-day return or refund guarantee.</p>
+                            <p>Miễn phí vận chuyển, đảm bảo hoàn trả hoặc hoàn tiền trong 30 ngày.</p>
                         </div>
                     </div>
                     <div class="col-lg-6 col-md-5">
                         <div class="header__top__right">
                             <div class="header__top__links">
 
-                                <a href="#">FAQs</a>
+                                <a href="#">Câu hỏi thường gặp</a>
                             </div>
                             <div class="header__top__hover">
                                 @{
@@ -66,18 +66,19 @@
                                             @*<i class="arrow_carrot-down"></i>*@
                                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                                 <li><a class="dropdown-item" asp-controller="Home" asp-action="Profile" asp-route-loginInfor="@session">Thông tin cá nhân</a></li>
+                                                <li><a class="dropdown-item" asp-controller="Home" asp-action="PurchaseOrder" asp-route-loginInfor="@session">Đơn mua</a></li>
                                                 @if (loginInfor.vaiTro == 0)
                                                 {
-                                                    <li><a class="dropdown-item" asp-controller="VaiTro" asp-action="HomePageAdmin" asp-route-id="@loginInfor.Id">Quản lý cửa hàng</a></li>
+                                                    <li><a class="dropdown-item" asp-controller="Admin" asp-action="HomePageAdmin" asp-route-id="@loginInfor.Id">Quản lý cửa hàng</a></li>
                                                 }
-                                                <li><a class="dropdown-item" asp-controller="Home" asp-action="LogOut">LOGOUT</a></li>
+                                                <li><a class="dropdown-item" asp-controller="Home" asp-action="LogOut">Đăng xuất</a></li>
                                             </ul>
                                         </span>
                                     }
                                     else
                                     {
                                         <a asp-controller="Home" asp-action="Login" style="color:white">
-                                            SIGN IN
+                                            Đăng nhập
                                         </a>
                                     }
                                 }
@@ -97,21 +98,25 @@
                 <div class="col-lg-6 col-md-6">
                     <nav class="header__menu mobile-menu">
                         <ul>
-                            <li class="active"><a asp-controller="Home" asp-action="Index">Home</a></li>
-                            <li><a asp-controller="Home" asp-action="Shop">Shop</a></li>
+                            <li class="active"><a asp-controller="Home" asp-action="Index">Trang chủ</a></li>
+                            <li><a asp-controller="Home" asp-action="Shop">Cửa hàng</a></li>
                             <li>
-                                <a href="#">Pages</a>
+                                <a href="#">Trang</a>
                                 <ul class="dropdown">
-                                    <li><a asp-controller="Home" asp-action="AboutUs">About Us</a></li>
-                                    <li><a asp-controller="Home" asp-action="ProductDetail">Shop Details</a></li>
-                                    <li><a asp-controller="Home" asp-action="ShoppingCart">Shopping Cart</a></li>
+                                    <li><a asp-controller="Home" asp-action="AboutUs">Thông tin cửa hàng</a></li>
+                                    <li>
+                                        <a asp-controller="Home" asp-action="ProductDetail">
+                                            Chi tiết cửa hàng
+                                        </a>
+                                    </li>
+                                    <li><a asp-controller="Home" asp-action="ShoppingCart">Giỏ hàng</a></li>
                                     <li><a asp-controller="Home" asp-action="CheckOut">Check Out</a></li>
-                                    <li><a asp-controller="Home" asp-action="BlogDetails">Blog Details</a></li>
+                                    <li><a asp-controller="Home" asp-action="BlogDetails">Chi tiết Blog</a></li>
                                 </ul>
                             </li>
 
                             <li><a asp-controller="Home" asp-action="Blog">Blog</a></li>
-                            <li><a asp-controller="Home" asp-action="Contacts">Contacts</a></li>
+                            <li><a asp-controller="Home" asp-action="Contacts">Liên lạc</a></li>
 
                         </ul>
                     </nav>
@@ -145,39 +150,39 @@
                         <div class="footer__logo">
                             <a href="#"><img src="/img/footer-logo.png" alt=""></a>
                         </div>
-                        <p>The customer is at the heart of our unique business model, which includes design.</p>
+                        <p>Khách hàng là trung tâm của mô hình kinh doanh độc đáo của chúng tôi, bao gồm cả thiết kế.</p>
                         <a href="#"><img src="/img/payment.png" alt=""></a>
                     </div>
                 </div>
                 <div class="col-lg-2 offset-lg-1 col-md-3 col-sm-6">
                     <div class="footer__widget">
-                        <h6>Shopping</h6>
+                        <h6>Mua sắm</h6>
                         <ul>
-                            <li><a href="#">Clothing Store</a></li>
-                            <li><a href="#">Trending Shoes</a></li>
-                            <li><a href="#">Accessories</a></li>
-                            <li><a href="#">Sale</a></li>
+                            <li><a href="#">Cửa hàng quần áo</a></li>
+                            <li><a href="#">Giày Xu Hướng</a></li>
+                            <li><a href="#">Phụ kiện</a></li>
+                            <li><a href="#">Doanh thu</a></li>
                         </ul>
                     </div>
                 </div>
                 <div class="col-lg-2 col-md-3 col-sm-6">
                     <div class="footer__widget">
-                        <h6>Shopping</h6>
+                        <h6>MUA SẮM</h6>
                         <ul>
-                            <li><a href="#">Contact Us</a></li>
-                            <li><a href="#">Payment Methods</a></li>
-                            <li><a href="#">Delivary</a></li>
-                            <li><a href="#">Return & Exchanges</a></li>
+                            <li><a href="#">Liên hệ chúng tôi</a></li>
+                            <li><a href="#">Phương thức thanh toán</a></li>
+                            <li><a href="#">Vận chuyển</a></li>
+                            <li><a href="#">Trả lại & Trao đổi</a></li>
                         </ul>
                     </div>
                 </div>
                 <div class="col-lg-3 offset-lg-1 col-md-6 col-sm-6">
                     <div class="footer__widget">
-                        <h6>NewLetter</h6>
+                        <h6>Tin tức thư</h6>
                         <div class="footer__newslatter">
-                            <p>Be the first to know about new arrivals, look books, sales & promos!</p>
+                            <p>Hãy là người đầu tiên biết về hàng mới, sách tra cứu, bán hàng và khuyến mãi!</p>
                             <form action="#">
-                                <input type="text" placeholder="Your email">
+                                <input type="text" placeholder="Email của bạn">
                                 <button type="submit"><span class="icon_mail_alt"></span></button>
                             </form>
                         </div>
@@ -189,12 +194,12 @@
                     <div class="footer__copyright__text">
                         <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
                         <p>
-                            Copyright ©
+                            Bnar quyền ©
                             <script>
                                 document.write(new Date().getFullYear());
                             </script>2020
-                            All rights reserved | This template is made with <i class="fa fa-heart-o"
-                                                                                aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+                            Mọi quyền được bảo lưu | Mẫu này được thực hiện với <i class="fa fa-heart-o"
+                                                                                aria-hidden="true"></i> bởi <a href="https://colorlib.com" target="_blank">Colorlib</a>
                         </p>
                         <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
                     </div>

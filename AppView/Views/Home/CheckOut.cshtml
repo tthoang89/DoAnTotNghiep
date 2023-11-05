@@ -10,11 +10,11 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="breadcrumb__text">
-                    <h4>Check Out</h4>
+                    <h4>Thanh toán</h4>
                     <div class="breadcrumb__links">
-                        <a href="./index.html">Home</a>
-                        <a href="./shop.html">Shop</a>
-                        <span>Check Out</span>
+                        <a href="./index.html">Trang chủ</a>
+                        <a href="./shop.html">Cửa hàng</a>
+                        <span>Thanh toán</span>
                     </div>
                 </div>
             </div>
@@ -29,18 +29,17 @@
             <div class="row">
                 <div class="col-lg-8 col-md-6">
                     <h6 class="coupon__code">
-                        <span class="icon_tag_alt"></span> Have a coupon? <a href="#">
-                            Click
-                            here
-                        </a> to enter your code
+                        <span class="icon_tag_alt"></span>Có phiếu giảm giá?<a href="#">
+                            Bấm vào đây
+                        </a> ể nhập mã của bạn
                     </h6>
-                    <h6 class="checkout__title">Billing Details</h6>
+                    <h6 class="checkout__title">Chi tiết thanh toán</h6>
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="checkout__input">
                                 <label for="ten">Tên</label>
                                 <input type="text" class="form-control" id="name" placeholder="" value="" required="" style="height:38px">
-                                <div class="invalid-feedback"> Khong de trong ten </div>
+                                <div class="invalid-feedback"> Không để trống tên</div>
                             </div>
                         </div>
                     </div>
@@ -49,14 +48,14 @@
                             <div class="checkout__input">
                                 <label for="sdt">SĐT</label>
                                 <input type="text" class="form-control" id="phone" placeholder="" value="" required="" style="height:38px">
-                                <div class="invalid-feedback"> Khong de trong SDT </div>
+                                <div class="invalid-feedback"> Không để trống SDT </div>
                             </div>
                         </div>
                         <div class="col-lg-6">
                             <div class="checkout__input">
                                 <label for="email">Email</label>
                                 <input type="text" class="form-control" id="email" placeholder="" value="" required="" style="height:38px">
-                                <div class="invalid-feedback"> Khong de trong email </div>
+                                <div class="invalid-feedback"> Không để trống email </div>
                             </div>
                         </div>
                     </div>
@@ -66,7 +65,7 @@
                                 <label for="tinh">Tỉnh</label>
                                 <select class="custom-select d-block w-100" id="province" required="">
                                 </select>
-                                <div class="invalid-feedback"> Valid first name is required. </div>
+                                <div class="invalid-feedback"> Tên hợp lệ là bắt buộc. </div>
                             </div>
                         </div>
                         <div class="col-lg-6">
@@ -74,7 +73,7 @@
                                 <label for="huyen">Huyện</label>
                                 <select class="custom-select d-block w-100" id="district" required="">
                                 </select>
-                                <div class="invalid-feedback"> Valid first name is required. </div>
+                                <div class="invalid-feedback"> VTên hợp lệ là bắt buộc. </div>
                             </div>
                         </div>
                     </div>
@@ -84,7 +83,7 @@
                                 <label for="xa">Xã</label>
                                 <select class="custom-select d-block w-100" id="ward" required="">
                                 </select>
-                                <div class="invalid-feedback"> Valid first name is required. </div>
+                                <div class="invalid-feedback"> Tên hợp lệ là bắt buộc. </div>
                             </div>
                         </div>
                         <div class="col-lg-6">
@@ -113,8 +112,7 @@
                     </div>*@
                     <div class="checkout__input__checkbox">
                         <p>
-                            Create an account by entering the information below. If you are a returning customer
-                            please login at the top of the page
+                            Tạo một tài khoản bằng cách nhập thông tin dưới đây. Nếu bạn là khách hàng cũ Vui lòng đăng nhập ở đầu trang.
                         </p>
                     </div>
                     @*<div class="checkout__input">
@@ -136,7 +134,7 @@
                 </div>
                 <div class="col-lg-4 col-md-6">
                     <div class="checkout__order">
-                        <h4 class="order__title">Your order</h4>
+                        <h4 class="order__title">Đơn hàng của bạn</h4>
                         @* <div class="checkout__order__products">Product <span>Total</span></div>
                         <ul class="checkout__total__products">
                         <li>01. Vanilla salted caramel <span>$ 300.0</span></li>
@@ -171,7 +169,9 @@
                         <span class="checkmark"></span>
                         </label>
                         </div>*@
-                        <button onclick="createhoadon()" class="site-btn">PLACE ORDER</button>
+                        <button onclick="createhoadon()" class="site-btn">
+                            ĐẶT HÀNG
+                        </button>
                     </div>
                 </div>
             </div>

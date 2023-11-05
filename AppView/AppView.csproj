@@ -14,10 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Remove="Views\QuanLyKM\AddKHuyenMaiVoSP.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.9" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.16" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
@@ -36,6 +32,34 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="VaiTro\Create.cshtml" />
+    <None Include="VaiTro\Details.cshtml" />
+    <None Include="VaiTro\Edit.cshtml" />
+    <None Include="VaiTro\GetAllVaiTro.cshtml" />
+    <None Include="Views\KhachHang\Create.cshtml" />
+    <None Include="Views\KhachHang\GetAllKhachHang.cshtml" />
+    <None Include="Views\KhachHang\Updates.cshtml" />
+    <None Include="Views\LichSuTichDiem\GetAllLSTDByID.cshtml" />
+    <None Include="Views\LoaiSP\Create.cshtml" />
+    <None Include="Views\LoaiSP\Details.cshtml" />
+    <None Include="Views\LoaiSP\Edit.cshtml" />
+    <None Include="Views\LoaiSP\Show.cshtml" />
+    <None Include="Views\NhanVien\Create.cshtml" />
+    <None Include="Views\NhanVien\Delete.cshtml" />
+    <None Include="Views\NhanVien\Details.cshtml" />
+    <None Include="Views\NhanVien\Edit.cshtml" />
+    <None Include="Views\NhanVien\Show.cshtml" />
+    <None Include="Views\QuanLyKM\AddCTSPByIdKMLayTuSession.cshtml" />
+    <None Include="Views\QuanLyKM\AddKHuyenMaiVoSP.cshtml" />
+    <None Include="Views\QuanLyKM\Create.cshtml" />
+    <None Include="Views\QuanLyKM\GetAllKM.cshtml" />
+    <None Include="Views\QuanLyKM\GetAllQLKhuyenMaiSP.cshtml" />
+    <None Include="Views\QuanLyKM\GetCTSPByIdKM.cshtml" />
+    <None Include="Views\QuanLyKM\GetSPByIdKM.cshtml" />
+    <None Include="Views\QuanLyKM\Update.cshtml" />
+    <None Include="Views\QuyDoiDiem\Create.cshtml" />
+    <None Include="Views\QuyDoiDiem\GetAllQuyDoiDiem.cshtml" />
+    <None Include="Views\QuyDoiDiem\Updates.cshtml" />
     <None Include="wwwroot\Admin\js\main.js" />
     <None Include="wwwroot\Admin\vendor\apexcharts\apexcharts.amd.js" />
     <None Include="wwwroot\Admin\vendor\apexcharts\apexcharts.common.js" />

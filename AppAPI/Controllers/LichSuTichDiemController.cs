@@ -1,6 +1,9 @@
 ﻿using AppAPI.IServices;
+using AppAPI.Services;
 using AppData.Models;
+using AppData.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -11,9 +14,11 @@ namespace AppAPI.Controllers
     public class LichSuTichDiemController : ControllerBase
     {
         private readonly ILishSuTichDiemServices _lichsu;
-        public LichSuTichDiemController(ILishSuTichDiemServices lishSuTichDiemServices)
+        private readonly AssignmentDBContext _dbcontext;
+        public LichSuTichDiemController()
         {
-            this._lichsu = lishSuTichDiemServices;
+            _dbcontext=new AssignmentDBContext();
+           _lichsu = new LishSuTichDiemServices();
         }
         // GET: api/<LichSuTichDiemController>
         [HttpGet]
@@ -21,7 +26,34 @@ namespace AppAPI.Controllers
         {
             return _lichsu.GetAll();
         }
-
+        // laam Strat
+        [Route("GetLSTDByIdKH")]
+        [HttpGet]
+        public async Task<List<LichSuTichDiemView>> GetAllLSTDByKH()
+        {
+            
+            var AllCTSP = await (from LSTD in _dbcontext.LichSuTichDiems.AsNoTracking()
+                                 join kh in _dbcontext.KhachHangs.AsNoTracking() on LSTD.IDKhachHang equals kh.IDKhachHang
+                                 join hd in _dbcontext.HoaDons.AsNoTracking() on LSTD.IDHoaDon equals hd.ID
+                                 join qdd in _dbcontext.QuyDoiDiems.AsNoTracking() on LSTD.IDQuyDoiDiem equals qdd.ID
+                                  
+                                 select new LichSuTichDiemView()
+                                 {
+                                     Id=LSTD.ID,
+                                     IDKhachHang = kh.IDKhachHang,
+                                     IDHoaDon = hd.ID,
+                                     IDQuyDoiDiem = qdd.ID,
+                                     NgayTichOrTieuDiem = hd.NgayThanhToan,
+                                     TenKhachHang = kh.Ten,
+                                     SDT = kh.SDT,
+                                    SoDiemTichOrTieu = qdd.SoDiem,
+                                     DiemTichKH = kh.DiemTich,
+                                    
+                                     TrangThai = LSTD.TrangThai
+                                 }).ToListAsync();
+            return AllCTSP;
+        }
+        // laam end
         // GET api/<LichSuTichDiemController>/5
         [HttpGet("{id}")]
         public LichSuTichDiem Get(Guid id)

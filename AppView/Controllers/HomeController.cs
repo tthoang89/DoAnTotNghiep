@@ -4,6 +4,7 @@ using AppData.ViewModels.SanPham;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Newtonsoft.Json;
 using System.Web.Helpers;
 using X.PagedList;
@@ -240,10 +241,25 @@ namespace AppView.Controllers
                 {
                     lstSanphamfn = lstSanphamfn.OrderByDescending(p => p.NgayTao).ToList();
                 }
-
-
             }
-            return PartialView("_ReturnProducts", lstSanphamfn);
+            List<SanPhamViewModel>lstSanPhamfnR = new List<SanPhamViewModel>();
+            foreach (var item in lstSanphamfn)
+            {
+                if (item.TrangThaiCTSP == 1)
+                {
+                    lstSanPhamfnR.Add(item);
+                }
+                else
+                {
+                    SanPhamViewModel sanPhamViewModel = lstSanpham.FirstOrDefault(p=>p.ID == item.ID && p.TrangThaiCTSP == 1);
+                    if (lstSanPhamfnR.FirstOrDefault(p=>p.ID == sanPhamViewModel.ID) == null)
+                    {
+                        lstSanPhamfnR.Add(sanPhamViewModel);
+                    }
+                }
+            }
+
+            return PartialView("_ReturnProducts", lstSanPhamfnR);
         }
         #endregion
 
@@ -251,10 +267,10 @@ namespace AppView.Controllers
         [HttpGet]
         public IActionResult ShoppingCart()
         {
-            List<ChiTietSanPhamViewModel> bienThes = new List<ChiTietSanPhamViewModel>();
+            List<ChiTietSanPhamViewModelAdmin> bienThes = new List<ChiTietSanPhamViewModelAdmin>();
             if (HttpContext.Session.GetString(KeyCart) != null)
             {
-                bienThes = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModel>>(HttpContext.Session.GetString(KeyCart));
+                bienThes = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModelAdmin>>(HttpContext.Session.GetString(KeyCart));
             }
             long tongtien = 0;
             foreach (var x in bienThes)
@@ -345,6 +361,11 @@ namespace AppView.Controllers
         {
             return PartialView("ChangePassword");
         }
+        public IActionResult PurchaseOrder()
+        {
+
+            return View();
+        }
         [HttpPost]
         public IActionResult ChangePassword(string newPassword)
         {
@@ -361,6 +382,10 @@ namespace AppView.Controllers
         {
             HttpContext.Session.Clear();
             return RedirectToAction("Index");
+        }
+        public IActionResult ForgotPassword()
+        {
+            return View();
         }
         #endregion
 

@@ -5,10 +5,11 @@ namespace AppAPI.IServices
 {
     public interface INhanVienService
     {
-        public bool Add(string ten, string email, string sdt, string diachi, Guid idVaiTro, int trangthai, string password);
-        public NhanVien GetById(Guid id);
+        public bool Add(string ten, string email, string password, string sdt, string diachi, int trangthai, Guid idvaitro);
+        public NhanVien? GetById(Guid id);
+        public IEnumerable<NhanVien> GetByName(string name);
         public bool Delete(Guid id);
-        public bool Update(NhanVien nv);
+        public bool Update(Guid id, string ten, string email, string password, string sdt, string diachi, int trangthai, Guid idvaitro);
         public List<NhanVien> GetAll();
     }
 }

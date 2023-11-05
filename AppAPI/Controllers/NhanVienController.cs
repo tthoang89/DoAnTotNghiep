@@ -23,38 +23,39 @@ namespace AppAPI.Controllers
         {
             return nhanVienService.GetAll();
         }
+        [HttpGet("[action]")]
+        public IEnumerable<NhanVien> SearchTheoTen(string name)
+        {
+            return nhanVienService.GetByName(name);
 
+
+        }
         // GET api/<NhanVienController>/5
         [HttpGet("{id}")]
-        public NhanVien GetNhanVienById(Guid id)
+        public NhanVien? GetById(Guid id)
         {
             return nhanVienService.GetById(id);
         }
 
+
         // POST api/<NhanVienController>
         [HttpPost("DangKyNhanVien")]
-        public async Task<IActionResult> DangKyNhanVien(string ten, string email, string sdt, string diachi, Guid idVaiTro, int trangthai, string password)
-        { 
-            nhanVienService.Add(ten,email, sdt, diachi,idVaiTro,trangthai,password);
-
-            return Ok("Đăng ký thành công");
+        public bool Add(string ten, string email, string password, string sdt, string diachi, int trangthai, Guid idvaitro)
+        {
+            if (nhanVienService.Add(ten, email, password, sdt, diachi, trangthai, idvaitro))
+            {
+                return true;
+            }
+            return false;
         }
 
         // PUT api/<NhanVienController>/5
         [HttpPut("{id}")]
-        public bool Put(Guid id, string ten, string email, string sdt, string diachi, Guid idVaiTro, int trangthai, string password)
+        public bool Put(Guid id, string ten, string email, string password, string sdt, string diachi, int trangthai, Guid idvaitro)
         {
-            var nv = nhanVienService.GetById(id);
-            if (nv != null)
+            if (nhanVienService.Update(id, ten, email, password, sdt, diachi, trangthai, idvaitro))
             {
-                nv.Ten = ten;
-                nv.Email = email;
-                nv.PassWord = password;
-                nv.SDT = sdt;
-                nv.DiaChi   = diachi;
-                nv.TrangThai = trangthai;
-                nv.IDVaiTro = idVaiTro;
-                return nhanVienService.Update(nv);
+                return true;
             }
             return false;
         }
@@ -63,12 +64,12 @@ namespace AppAPI.Controllers
         [HttpDelete("{id}")]
         public bool Delete(Guid id)
         {
-            var nv = nhanVienService.GetById(id);
-            if(nv != null)
+            if (nhanVienService.Delete(id))
             {
-                return nhanVienService.Delete(nv.ID);
+                return true;
             }
             return false;
         }
+
     }
 }
