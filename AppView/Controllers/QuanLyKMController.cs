@@ -1,6 +1,5 @@
 ﻿using AppData.Models;
 using AppData.ViewModels;
-using AppData.ViewModels.SanPham;
 using AppView.PhanTrang;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -16,6 +15,145 @@ namespace AppView.Controllers
             _httpClient = new HttpClient();
         }
         public int PageSize = 8;
+        #region QL Khuyen Mai Cho SP
+        // Get All QL Khuyen Mai
+        [HttpGet]
+        public async Task<IActionResult> GetAllQLKhuyenMaiSP(int ProductPage = 1)
+        {// list khuyen mai view
+            string apiURL = $"https://localhost:7095/api/KhuyenMai";
+            var response = await _httpClient.GetAsync(apiURL);
+            var apiData = await response.Content.ReadAsStringAsync();
+            var roles = JsonConvert.DeserializeObject<List<KhuyenMaiView>>(apiData);
+            ViewBag.KhuyenMaiView = roles;       
+            // // list AllViewsp
+            string apiURL1 = $"https://localhost:7095/api/KhuyenMai/GetAllSP";
+            var response1 = await _httpClient.GetAsync(apiURL1);
+            var apiData1 = await response1.Content.ReadAsStringAsync();
+            var qlsanphams = JsonConvert.DeserializeObject<List<AllViewSp>>(apiData1);
+            return View(new PhanTrangAllQLKMSP
+            {
+                listallsp = qlsanphams
+                        .Skip((ProductPage - 1) * PageSize).Take(PageSize),
+                PagingInfo = new PagingInfo
+                {
+                    ItemsPerPage = PageSize,
+                    CurrentPage = ProductPage,
+                    TotalItems = qlsanphams.Count()
+                }
+
+            });
+        }
+        [HttpGet]
+        // Tim kiem theo Id khuyen mai, id loai sp, id chat lieu
+        public async Task<IActionResult> TimKiemSPByKM(Guid? idkhuyenmai,Guid? idloaisp,Guid? idchatlieu, int ProductPage = 1)
+        {// list khuyen mai view
+            string apiURL = $"https://localhost:7095/api/KhuyenMai";
+            var response = await _httpClient.GetAsync(apiURL);
+            var apiData = await response.Content.ReadAsStringAsync();
+            var roles = JsonConvert.DeserializeObject<List<KhuyenMaiView>>(apiData);
+            ViewBag.KhuyenMaiView = roles;
+            // // list AllViewsp
+            string apiURL1 = $"https://localhost:7095/api/KhuyenMai/GetAllSPByKmLoaiSPChatLieu?idkm={idkhuyenmai}&idLoaiSP={idloaisp}&idChatLieu={idchatlieu}";
+            var response1 = await _httpClient.GetAsync(apiURL1);
+            var apiData1 = await response1.Content.ReadAsStringAsync();
+            var qlsanphams = JsonConvert.DeserializeObject<List<AllViewSp>>(apiData1);
+           
+            return View("GetAllQLKhuyenMaiSP",new PhanTrangAllQLKMSP
+            {
+                listallsp = qlsanphams
+                        .Skip((ProductPage - 1) * PageSize).Take(PageSize),
+                PagingInfo = new PagingInfo
+                {
+                    ItemsPerPage = PageSize,
+                    CurrentPage = ProductPage,
+                    TotalItems = qlsanphams.Count()
+                }
+
+            });
+        }
+        // add km vo list SP theo id SP
+        [HttpGet]
+        public async Task<IActionResult> AddKHuyenMaiVoSP(Guid id, int ProductPage = 1)
+        {           
+            // list khuyen mai view
+            string apiURL = $"https://localhost:7095/api/KhuyenMai";
+            var response = await _httpClient.GetAsync(apiURL);
+            var apiData = await response.Content.ReadAsStringAsync();
+            var roles = JsonConvert.DeserializeObject<List<KhuyenMaiView>>(apiData);
+            ViewBag.KhuyenMaiView = roles;
+            // list AllCTSP by SP
+            string apiURL1 = $"https://localhost:7095/api/KhuyenMai/GetAllCTSPBySP?idSanPham={id}";
+            var response1 = await _httpClient.GetAsync(apiURL1);
+            var apiData1 = await response1.Content.ReadAsStringAsync();
+            var bienthes = JsonConvert.DeserializeObject<List<AllViewCTSP>>(apiData1);
+            return View( new PhanTrangCTSPBySP
+            {
+               listallctspbysp = bienthes
+                        .Skip((ProductPage - 1) * PageSize).Take(PageSize),
+                PagingInfo = new PagingInfo
+                {
+                    ItemsPerPage = PageSize,
+                    CurrentPage = ProductPage,
+                    TotalItems = bienthes.Count()
+                }
+            });
+        }
+       
+       
+        [HttpPost]
+        public async Task<IActionResult> AddKHuyenMaiVoSP(Guid idKhuyenMai, List<Guid> bienthes)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"https://localhost:7095/api/KhuyenMai/AddKmVoBT?IdKhuyenMai={idKhuyenMai}", bienthes);
+            if (response.IsSuccessStatusCode) return Json(new { success = true, message = "Cập nhật thành công!" });
+            return Json(new { success = false });
+        }
+        // add km vo list SP theo id SP lay IDKhuyenMai Từ Session 
+        [HttpGet]
+        public async Task<IActionResult> AddCTSPByIdKMLayTuSession(Guid id, int ProductPage = 1)
+        {
+            // list khuyen mai view
+            string apiURL = $"https://localhost:7095/api/KhuyenMai";
+            var response = await _httpClient.GetAsync(apiURL);
+            var apiData = await response.Content.ReadAsStringAsync();
+            var roles = JsonConvert.DeserializeObject<List<KhuyenMaiView>>(apiData);
+            ViewBag.KhuyenMaiView = roles;
+            // list AllCTSP by SP
+            string apiURL1 = $"https://localhost:7095/api/KhuyenMai/GetAllCTSPBySP?idSanPham={id}";
+            var response1 = await _httpClient.GetAsync(apiURL1);
+            var apiData1 = await response1.Content.ReadAsStringAsync();
+            var bienthes = JsonConvert.DeserializeObject<List<AllViewCTSP>>(apiData1);
+            return View(new PhanTrangCTSPBySP
+            {
+                listallctspbysp = bienthes
+                        .Skip((ProductPage - 1) * PageSize).Take(PageSize),
+                PagingInfo = new PagingInfo
+                {
+                    ItemsPerPage = PageSize,
+                    CurrentPage = ProductPage,
+                    TotalItems = bienthes.Count()
+                }
+            });
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> AddCTSPByIdKMLayTuSession(List<Guid> bienthes)
+        {
+            // lay IdkhuyenMai Tu session
+            var idkhuyenmai = Guid.Parse(HttpContext.Session.GetString("IdKhuyenMai"));
+            var response = await _httpClient.PutAsJsonAsync($"https://localhost:7095/api/KhuyenMai/AddKmVoBT?IdKhuyenMai={idkhuyenmai}", bienthes);
+            if (response.IsSuccessStatusCode) return Json(new { success = true, message = "Cập nhật thành công!" });
+            return Json(new { success = false });
+        }
+        [HttpPost]
+        public async Task<IActionResult>XoaKHuyenMaiRaSP( List<Guid> bienthes)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"https://localhost:7095/api/KhuyenMai/XoaKmRaBT", bienthes);
+            if (response.IsSuccessStatusCode) return Json(new { success = true, message = "Xóa Khuyến Mãi ra  thành công!" });
+            return Json(new { success = false });
+        }
+        #endregion
+        #region Khuyen Mai
         // Get All KM
         [HttpGet]
         public async Task<IActionResult> GetAllKM(int ProductPage = 1)
@@ -30,7 +168,7 @@ namespace AppView.Controllers
 
             return View(new PhanTrangKhuyenMai
             {
-               listkms = roles
+                listkms = roles
                         .Skip((ProductPage - 1) * PageSize).Take(PageSize),
                 PagingInfo = new PagingInfo
                 {
@@ -39,11 +177,11 @@ namespace AppView.Controllers
                     TotalItems = roles.Count()
                 }
 
-            }) ;
+            });
         }
         // Ti Kiem ten KM
         [HttpGet]
-        public async Task<IActionResult> TimKiemTenKM( string TenKM,int ProductPage = 1)
+        public async Task<IActionResult> TimKiemTenKM(string TenKM, int ProductPage = 1)
         {// list khuyen mai view
             string apiURL = $"https://localhost:7095/api/KhuyenMai";
             var response = await _httpClient.GetAsync(apiURL);
@@ -53,9 +191,9 @@ namespace AppView.Controllers
 
 
 
-            return View("GetAllKM",new PhanTrangKhuyenMai
+            return View("GetAllKM", new PhanTrangKhuyenMai
             {
-                listkms = roles.Where(x=>x.Ten.Contains(TenKM))
+                listkms = roles.Where(x => x.Ten.Contains(TenKM))
                         .Skip((ProductPage - 1) * PageSize).Take(PageSize),
                 PagingInfo = new PagingInfo
                 {
@@ -66,69 +204,6 @@ namespace AppView.Controllers
 
             });
         }
-        // Get All QL Khuyen Mai
-        // add km vo list SP
-        [HttpGet]
-        public async Task<IActionResult> TimKiemAllBienTheViewModel(string Ten,int ProductPage = 1)
-        {
-            // list khuyen mai view
-            string apiURL = $"https://localhost:7095/api/KhuyenMai";
-            var response = await _httpClient.GetAsync(apiURL);
-            var apiData = await response.Content.ReadAsStringAsync();
-            var roles = JsonConvert.DeserializeObject<List<KhuyenMaiView>>(apiData);
-            ViewBag.KhuyenMaiView = roles;
-
-
-        // list san pham view model
-        https://localhost:7095/api/SanPham/getAll
-            string apiURLsp = $"https://localhost:7095/api/KhuyenMai";
-            var responsesp = await _httpClient.GetAsync(apiURLsp);
-            var apiDatasp = await responsesp.Content.ReadAsStringAsync();
-            var sanphams = JsonConvert.DeserializeObject<List<SanPhamViewModel>>(apiDatasp);
-            ViewBag.SanPhamViewModel = sanphams;
-            // list bienthe
-
-            string apiURLbt = $"https://localhost:7095/api/KhuyenMai/GetAllBienThe";
-            var responsebt = await _httpClient.GetAsync(apiURLbt);
-            var apiDatabt = await responsebt.Content.ReadAsStringAsync();
-            var bts = JsonConvert.DeserializeObject<List<ChiTietSanPham>>(apiDatabt);
-            ViewBag.BienThe = bts;
-            // // list bienthe View Model
-            string apiURL1 = $"https://localhost:7095/api/BienThe/getAll";
-            var response1 = await _httpClient.GetAsync(apiURL1);
-            var apiData1 = await response1.Content.ReadAsStringAsync();
-            var bienthes = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModel>>(apiData1);
-            return View("AddKHuyenMaiVoSP", new PhanTrangBienThe
-            {
-                listbienthes = bienthes.Where(x=>x.Ten.Contains(Ten))
-                        .Skip((ProductPage - 1) * PageSize).Take(PageSize),
-                PagingInfo = new PagingInfo
-                {
-                    ItemsPerPage = PageSize,
-                    CurrentPage = ProductPage,
-                    TotalItems = bienthes.Count()
-                }
-
-            });
-
-        }
-        [HttpPost]
-        public async Task<IActionResult> AddKHuyenMaiVoSP(Guid idKhuyenMai, List<Guid> bienthes)
-        {
-            var response = await _httpClient.PutAsJsonAsync($"https://localhost:7095/api/KhuyenMai/AddKmVoBT?IdKhuyenMai={idKhuyenMai}", bienthes);
-            if (response.IsSuccessStatusCode) return Json(new { success = true, message = "Cập nhật thành công!" });
-            return Json(new { success = false });
-        }
-        [HttpPost]
-        public async Task<IActionResult>XoaKHuyenMaiRaSP( List<Guid> bienthes)
-        {
-            var response = await _httpClient.PutAsJsonAsync($"https://localhost:7095/api/KhuyenMai/XoaKmRaBT", bienthes);
-            if (response.IsSuccessStatusCode) return Json(new { success = true, message = "Xóa Khuyến Mãi ra  thành công!" });
-            return Json(new { success = false });
-        }
-
-
-
         // create
         public IActionResult Create()
         {
@@ -170,5 +245,63 @@ namespace AppView.Controllers
             if (response.IsSuccessStatusCode) return RedirectToAction("GetAllKM");
             return BadRequest();
         }
+        // Get CTSP by Id Khuyen Mai
+        // https://localhost:7095/api/KhuyenMai/GetCTSPByIdKm?idkm=03327098-cd91-4764-b905-358873673882
+        public async Task<IActionResult> GetCTSPByIdKM(Guid id, int ProductPage = 1)
+        {
+            // list khuyen mai view
+            string apiURL = $"https://localhost:7095/api/KhuyenMai";
+            var response = await _httpClient.GetAsync(apiURL);
+            var apiData = await response.Content.ReadAsStringAsync();
+            var roles = JsonConvert.DeserializeObject<List<KhuyenMaiView>>(apiData);
+            ViewBag.KhuyenMaiView = roles;
+            // list AllCTSP by SP
+            string apiURL1 = $"https://localhost:7095/api/KhuyenMai/GetCTSPByIdKm?idkm={id}";
+            var response1 = await _httpClient.GetAsync(apiURL1);
+            var apiData1 = await response1.Content.ReadAsStringAsync();
+            var bienthes = JsonConvert.DeserializeObject<List<AllViewCTSP>>(apiData1);
+            return View(new PhanTrangCTSPBySP
+            {
+                listallctspbysp = bienthes
+                        .Skip((ProductPage - 1) * PageSize).Take(PageSize),
+                PagingInfo = new PagingInfo
+                {
+                    ItemsPerPage = PageSize,
+                    CurrentPage = ProductPage,
+                    TotalItems = bienthes.Count()
+                }
+            });
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetSPByIdKM(Guid id, int ProductPage = 1)
+        {
+            // list khuyen mai view
+            string apiURL = $"https://localhost:7095/api/KhuyenMai";
+            var response = await _httpClient.GetAsync(apiURL);
+            var apiData = await response.Content.ReadAsStringAsync();
+            var roles = JsonConvert.DeserializeObject<List<KhuyenMaiView>>(apiData);
+            ViewBag.KhuyenMaiView = roles;
+            // list AllCTSP by SP
+            string apiURL1 = $"https://localhost:7095/api/KhuyenMai/GetAllSPByKhuyenMai?idkm={id}";
+            var response1 = await _httpClient.GetAsync(apiURL1);
+            var apiData1 = await response1.Content.ReadAsStringAsync();
+            var bienthes = JsonConvert.DeserializeObject<List<AllViewSp>>(apiData1);
+            // lưu Id Khuyến Mãi Vô Session 
+            var KhuyenMai = bienthes.FirstOrDefault();
+            HttpContext.Session.SetString("IdKhuyenMai", KhuyenMai.IdKhuyenMai.ToString());
+            return View(new PhanTrangAllQLKMSP
+            {
+                listallsp = bienthes
+                        .Skip((ProductPage - 1) * PageSize).Take(PageSize),
+                PagingInfo = new PagingInfo
+                {
+                    ItemsPerPage = PageSize,
+                    CurrentPage = ProductPage,
+                    TotalItems = bienthes.Count()
+                }
+            });
+           
+        }
+        #endregion
     }
 }

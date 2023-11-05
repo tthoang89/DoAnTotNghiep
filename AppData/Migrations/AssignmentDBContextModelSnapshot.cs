@@ -198,11 +198,10 @@ namespace AppData.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("BinhLuan")
-                        .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
-                    b.Property<int>("Sao")
+                    b.Property<int?>("Sao")
                         .HasColumnType("int");
 
                     b.Property<int>("TrangThai")
@@ -422,7 +421,7 @@ namespace AppData.Migrations
 
             modelBuilder.Entity("AppData.Models.MauSac", b =>
                 {
-                    b.Property<Guid>("ID")
+                    b.Property<Guid?>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -433,7 +432,8 @@ namespace AppData.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(10)");
 
-                    b.Property<int>("TrangThai")
+                    b.Property<int?>("TrangThai")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.HasKey("ID");
@@ -471,6 +471,7 @@ namespace AppData.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<int?>("TrangThai")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.HasKey("ID");

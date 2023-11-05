@@ -11,9 +11,9 @@ namespace AppData.Models
     {
         public Guid ID { get; set; }
         [MaxLength(250, ErrorMessage = "Tối đa 250 ký tự")]
-        public string BinhLuan { get; set; }
+        public string? BinhLuan { get; set; }
         [Range(1, 5, ErrorMessage = "Số sao từ 1 đến 5")]
-        public int Sao { get; set; }
+        public int? Sao { get; set; }
         public int TrangThai { get; set; }
         public virtual ChiTietHoaDon ChiTietHoaDon { get; set; }
     }

@@ -10,7 +10,7 @@ namespace AppData.ViewModels.BanOffline
     {
         public Guid Id { get; set; }    
         public Guid IdHoaDon { get; set; }
-        public Guid IdBienThe { get; set; }
+        public Guid IdChiTietSanPham { get; set; }
         public int SoLuong { get; set; }
         public int DonGia { get; set; }
         public int TrangThai { get; set; }
