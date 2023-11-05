@@ -1,0 +1,355 @@
+﻿@{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+}
+<div class="d-flex flex-row align-items-stretch h-100">
+    <div class="d-flex flex-column bg-dark-light p-1" style="width:350px;">
+    </div>
+    <!--DANH SÁCH HÓA ĐƠN-->
+    <div class="d-flex flex-column p-3 flex-grow-1">
+        <div class="d-flex flex-row bg-primary align-items-center p-1" style="height:70px">
+        </div>
+        <div class="d-flex flex-column" style="height:100%">
+            <!-- Top Selling -->
+            <table class="table" id="table_bills" align=center cellpadding=10>
+                <thead>
+                    <tr>
+                        <th scope="col">Mã hóa đơn</th>
+                        <th scope="col">Thời gian</th>
+                        <th scope="col">Khách hàng</th>
+                        <th scope="col">Tổng tiền hàng</th>
+                        <th scope="col">Giảm giá</th>
+                        <th scope="col">Trạng thái</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!--Hóa đơn 1-->
+                    <tr onclick="showHideRow('hidden_row1');">
+                        <th scope="row"><a href="#"><img src="assets/img/product-5.jpg" alt=""></a></th>
+                        <td><a href="#" class="text-primary fw-bold">Sit unde debitis delectus repellendus</a></td>
+                        <td>$79</td>
+                        <td class="fw-bold">41</td>
+                        <td>$3,239</td>
+                        <td>Chờ xác nhận</td>
+                    </tr>
+                    <tr id="hidden_row1" class="hidden_row">
+                        <td colspan=6>
+                            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#thongtin" type="button" role="tab" aria-controls="home" aria-selected="true">Thông tin</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#lstt" type="button" role="tab" aria-controls="profile" aria-selected="false" tabindex="-1">Lịch sử thanh toán</button>
+                                </li>
+                            </ul>
+                            <div class="tab-content pt-2" id="myTabjustifiedContent">
+                                <!--Thông tin-->
+                                <div class="tab-pane fade p-3 show active" id="thongtin" role="tabpanel" aria-labelledby="home-tab">
+                                    <div class="row row-padding-15 row-flex">
+                                        <div class="col-lg-4 col-sm-12">
+                                            <div class="row">
+                                                <label class="col-sm-6 col-form-label">Mã hóa đơn:</label>
+                                                <div class="col-sm-6">
+                                                    <label class="col-sm-5 col-form-label"><strong>HD000004</strong></label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <label class="col-sm-6 col-form-label">Ngày tạo:</label>
+                                                <div class="col-sm-6">
+                                                    <label class="col-sm-5 col-form-label"><strong>HD000004</strong></label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <label class="col-sm-6 col-form-label">Ngày thanh toán:</label>
+                                                <div class="col-sm-6">
+                                                    <label class="col-sm-5 col-form-label"><strong>HD000004</strong></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4 col-sm-12">
+                                            <div class="row">
+                                                <label class="col-sm-6 col-form-label">Trạng thái:</label>
+                                                <div class="col-sm-6">
+                                                    <label class="col-sm-5 col-form-label"><strong>HD000004</strong></label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <label class="col-sm-6 col-form-label">Người tạo:</label>
+                                                <div class="col-sm-6">
+                                                    <label class="col-sm-5 col-form-label"><strong>HD000004</strong></label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <label class="col-sm-6 col-form-label">Người bán:</label>
+                                                <div class="col-sm-6">
+                                                    <label class="col-sm-5 col-form-label"><strong>HD000004</strong></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4 col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label control-label">Ghi chú:</label>
+                                                <div class="col-sm-10">
+                                                    <textarea class="form-control" style="height: 100px"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--Chi tiết hóa đơn-->
+                                    <div class="d-flex mt-2">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">Mã hàng</th>
+                                                    <th scope="col">Tên hàng</th>
+                                                    <th scope="col">Số lượng</th>
+                                                    <th scope="col">Đơn giá</th>
+                                                    <th scope="col">Giá bán</th>
+                                                    <th scope="col">Thành tiền</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th scope="row">5</th>
+                                                    <td>Raheem Lehner</td>
+                                                    <td>Dynamic Division Officer</td>
+                                                    <td>47</td>
+                                                    <td>2011-04-19</td>
+                                                    <td><b>2011-04-19</b></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!--Thanh Toán-->
+                                     <div class="d-flex">
+                                         <div class="d-flex flex-column ms-auto" style="width:35%">
+                                            <div class="row">
+                                                <label class="col-sm-6 col-form-label text-end">Tổng số lượng:</label>
+                                                <div class="col-sm-6">
+                                                    <label class="col-sm-5 col-form-label"><b>2</b></label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <label class="col-sm-6 col-form-label text-end">Tổng tiền hàng:</label>
+                                                <div class="col-sm-6">
+                                                    <label class="col-sm-5 col-form-label"><b>2</b></label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <label class="col-sm-6 col-form-label text-end">Giảm giá hóa đơn:</label>
+                                                <div class="col-sm-6">
+                                                    <label class="col-sm-5 col-form-label"><b>2</b></label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <label class="col-sm-6 col-form-label text-end">Khách cần trả:</label>
+                                                <div class="col-sm-6">
+                                                    <label class="col-sm-5 col-form-label"><b>2</b></label>
+                                                </div>
+                                            </div>
+                                         </div>
+                                    </div>
+                                </div>
+
+                                <!--Lịch sử giao dịch-->
+                                <div class="tab-pane fade" id="lstt" role="tabpanel" aria-labelledby="profile-tab">
+                                                                        <div class="d-flex mt-2">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">Mã giao dịch</th>
+                                                    <th scope="col">Thời gian</th>
+                                                    <th scope="col">Giá trị</th>
+                                                    <th scope="col">Phương thức</th>
+                                                    <th scope="col">Trạng thái</th>
+                                                    <th scope="col">Đã thu/chi</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th scope="row">5</th>
+                                                    <td>Raheem Lehner</td>
+                                                    <td>Dynamic Division Officer</td>
+                                                    <td>47</td>
+                                                    <td>2011-04-19</td>
+                                                    <td><b>2011-04-19</b></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <!--Hóa đơn 2-->
+                    <tr onclick="showHideRow('hidden_row2');">
+                        <th scope="row"><a href="#"><img src="assets/img/product-5.jpg" alt=""></a></th>
+                        <td><a href="#" class="text-primary fw-bold">Sit unde debitis delectus repellendus</a></td>
+                        <td>$79</td>
+                        <td class="fw-bold">41</td>
+                        <td>$3,239</td>
+                        <td>Chờ xác nhận</td>
+                    </tr>
+                    <tr id="hidden_row2" class="hidden_row">
+                        <td colspan=6>
+                            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#thongtin" type="button" role="tab" aria-controls="home" aria-selected="true">Thông tin</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#lstt" type="button" role="tab" aria-controls="profile" aria-selected="false" tabindex="-1">Lịch sử thanh toán</button>
+                                </li>
+                            </ul>
+                            <div class="tab-content pt-2" id="myTabjustifiedContent">
+                                <!--Thông tin-->
+                                <div class="tab-pane fade show active ms-2 me-2" id="thongtin" role="tabpanel" aria-labelledby="home-tab">
+                                    <div class="row row-padding-10 row-flex">
+                                        <div class="col-lg-4 col-sm-12">
+                                            <div class="row">
+                                                <label class="col-sm-6 col-form-label">Mã hóa đơn:</label>
+                                                <div class="col-sm-6">
+                                                    <label class="col-sm-5 col-form-label"><strong>HD000004</strong></label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <label class="col-sm-6 col-form-label">Ngày tạo:</label>
+                                                <div class="col-sm-6">
+                                                    <label class="col-sm-5 col-form-label"><strong>HD000004</strong></label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <label class="col-sm-6 col-form-label">Ngày thanh toán:</label>
+                                                <div class="col-sm-6">
+                                                    <label class="col-sm-5 col-form-label"><strong>HD000004</strong></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4 col-sm-12">
+                                            <div class="row">
+                                                <label class="col-sm-6 col-form-label">Trạng thái:</label>
+                                                <div class="col-sm-6">
+                                                    <label class="col-sm-5 col-form-label"><strong>HD000004</strong></label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <label class="col-sm-6 col-form-label">Người tạo:</label>
+                                                <div class="col-sm-6">
+                                                    <label class="col-sm-5 col-form-label"><strong>HD000004</strong></label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <label class="col-sm-6 col-form-label">Người bán:</label>
+                                                <div class="col-sm-6">
+                                                    <label class="col-sm-5 col-form-label"><strong>HD000004</strong></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4 col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label control-label">Ghi chú:</label>
+                                                <div class="col-sm-10">
+                                                    <textarea class="form-control" style="height: 100px"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--Chi tiết hóa đơn-->
+                                    <div class="d-flex mt-2">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">Mã hàng</th>
+                                                    <th scope="col">Tên hàng</th>
+                                                    <th scope="col">Số lượng</th>
+                                                    <th scope="col">Đơn giá</th>
+                                                    <th scope="col">Giá bán</th>
+                                                    <th scope="col">Thành tiền</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th scope="row">5</th>
+                                                    <td>Raheem Lehner</td>
+                                                    <td>Dynamic Division Officer</td>
+                                                    <td>47</td>
+                                                    <td>2011-04-19</td>
+                                                    <td><b>2011-04-19</b></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!--Thanh Toán-->
+                                     <div class="d-flex">
+                                         <div class="d-flex flex-column ms-auto" style="width:35%">
+                                            <div class="row">
+                                                <label class="col-sm-6 col-form-label text-end">Tổng số lượng:</label>
+                                                <div class="col-sm-6">
+                                                    <label class="col-sm-5 col-form-label"><b>2</b></label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <label class="col-sm-6 col-form-label text-end">Tổng tiền hàng:</label>
+                                                <div class="col-sm-6">
+                                                    <label class="col-sm-5 col-form-label"><b>2</b></label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <label class="col-sm-6 col-form-label text-end">Giảm giá hóa đơn:</label>
+                                                <div class="col-sm-6">
+                                                    <label class="col-sm-5 col-form-label"><b>2</b></label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <label class="col-sm-6 col-form-label text-end">Khách cần trả:</label>
+                                                <div class="col-sm-6">
+                                                    <label class="col-sm-5 col-form-label"><b>2</b></label>
+                                                </div>
+                                            </div>
+                                         </div>
+                                    </div>
+                                </div>
+
+                                <!--Lịch sử giao dịch-->
+                                <div class="tab-pane fade" id="lstt" role="tabpanel" aria-labelledby="profile-tab">
+                                                                        <div class="d-flex mt-2">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">Mã giao dịch</th>
+                                                    <th scope="col">Thời gian</th>
+                                                    <th scope="col">Giá trị</th>
+                                                    <th scope="col">Phương thức</th>
+                                                    <th scope="col">Trạng thái</th>
+                                                    <th scope="col">Đã thu/chi</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th scope="row">5</th>
+                                                    <td>Raheem Lehner</td>
+                                                    <td>Dynamic Division Officer</td>
+                                                    <td>47</td>
+                                                    <td>2011-04-19</td>
+                                                    <td><b>2011-04-19</b></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="d-flex flex-row bg-info-light p-1 mt-auto" style="height:50px">
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    function showHideRow(row) {
+        $("#" + row).toggle();
+    }
+</script> 

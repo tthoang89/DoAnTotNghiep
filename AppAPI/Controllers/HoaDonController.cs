@@ -25,6 +25,11 @@ namespace AppAPI.Controllers
         {
             return _iHoaDonService.GetAllHoaDon();
         }
+        [HttpGet("GetById/{idhd}")]
+        public HoaDon GetById(Guid idhd)
+        {
+            return _iHoaDonService.GetHoaDonById(idhd);
+        }
         [HttpGet("TimKiem")]
         public List<HoaDon> TimKiemVaLoc(string ten, int? loc)
         {
@@ -40,23 +45,39 @@ namespace AppAPI.Controllers
         {
             return _iHoaDonService.LichSuGiaoDich(idNguoidung);
         }
+        [HttpGet("LichSuGiaoDich/{idhd}")]
+        public LichSuTichDiem LichSuGiaoDichByIdHD(Guid idhd)
+        {
+            return _iHoaDonService.GetLichSuGiaoDichByIdHD(idhd);
+        }
+        [HttpGet("CheckLSGDHD/{idhd}")]
+        public bool CheckLichSuGiaoDichHD(Guid idhd)
+        {
+            return _iHoaDonService.CheckHDHasLSGD(idhd);
+        }
         [HttpPost]
         public bool CreateHoaDon(HoaDonViewModel hoaDon)
         {
             return _iHoaDonService.CreateHoaDon(hoaDon.ChiTietHoaDons, hoaDon);
         }
-        [HttpPost("Offline")]
-        public bool CreateHoaDonOffline(HoaDonNhap hdnhap)
+        [HttpPost("Offline/{idnhanvien}")]
+        public bool CreateHoaDonOffline(Guid idnhanvien)
         {
-            return _iHoaDonService.CreateHoaDonOffline(hdnhap);
+            return _iHoaDonService.CreateHoaDonOffline(idnhanvien);
+        }
+        [HttpGet("GetAllHDCho")]
+        public IActionResult GetAllHDCho()
+        {
+            var lsthdcho =  _iHoaDonService.GetAllHDCho();
+            return Ok(lsthdcho);
         }
         [HttpPut]
-        public bool UpdateTrangThai(Guid idhoadon, int trangthai,Guid idnhanvien)
+        public bool UpdateTrangThai(Guid idhoadon, int trangthai, Guid idnhanvien)
         {
-            return _iHoaDonService.UpdateTrangThaiGiaoHang(idhoadon, trangthai,idnhanvien);
+            return _iHoaDonService.UpdateTrangThaiGiaoHang(idhoadon, trangthai, idnhanvien);
         }
         [HttpPut("UpdateHoaDon")]
-        public bool UpDateHoaDon(HoaDon hoaDon)
+        public bool UpDateHoaDon(HoaDonThanhToanRequest hoaDon)
         {
             return _iHoaDonService.UpdateHoaDon(hoaDon);
         }
@@ -65,6 +86,25 @@ namespace AppAPI.Controllers
         {
             return _iHoaDonService.DeleteHoaDon(id);
         }
-
+        [HttpGet("PhuongThucThanhToan")]
+        public List<PhuongThucThanhToan> GetAllPTTT()
+        {
+            return _iHoaDonService.GetAllPTTT();
+        }
+        [HttpPost("PhuongThucThanhToan")]
+        public bool CreatePTT(PhuongThucThanhToan pttt)
+        {
+            return _iHoaDonService.CreatePTTT(pttt);
+        }
+        [HttpPut("PhuongThucThanhToan")]
+        public bool UpdatePTT(PhuongThucThanhToan pttt)
+        {
+            return _iHoaDonService.UpdatePTTT(pttt);
+        }
+        [HttpDelete("PhuongThucThanhToan/{id}")]
+        public bool DeletePTT(Guid id)
+        {
+            return _iHoaDonService.DeletePTTT(id);
+        }
     }
 }

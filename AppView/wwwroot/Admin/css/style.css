@@ -1311,7 +1311,7 @@ h6 {
     Tìm kiếm sản phẩm
 */
 .search-product {
-    height: 45px;
+    height: 50px;
     float: left
 }
 
@@ -1376,21 +1376,23 @@ h6 {
 .btn-create {
     color: #fff;
     font-size: 1rem;
-    height: 45px;
+    height: 50px;
     float: right;
 }
 
     .btn-create button {
         border-radius: 50%;
-        border: 1px solid transparent;
-        height: 35px;
-        width: 35px;
+        border: 0px solid transparent;
+        height: 37px;
+        width: 36px;
         align-items: center;
         justify-content: center;
+        text-align:center;
     }
 
         .btn-create button :hover {
             background: #0070f4;
+            
         }
 
         .btn-create button i {
@@ -1400,12 +1402,10 @@ h6 {
 .tabbill {
     padding-top: 5px;
     position: relative;
-    overflow-x: hidden;
-    overflow-y: hidden;
-    flex: 3;
-    height: 45px;
-    align-items: center;
-    justify-content: center;
+    overflow: hidden;
+    height: 50px;
+    max-width:600px;
+    width:100%;
 }
 
     .tabbill .icon {
@@ -1420,13 +1420,13 @@ h6 {
 .icon:first-child {
     left: 0;
     display: none;
-    background: linear-gradient(90deg, #0d6efd 10%, transparent);
+    background: linear-gradient(90deg, #4154f1 70%, transparent);
 }
 
 .icon:last-child {
     right: 0;
     justify-content: flex-end;
-    background: linear-gradient(-90deg, #0d6efd 10%, transparent);
+    background: linear-gradient(-90deg, #4154f1 70%, transparent);
 }
 
 .icon i {
@@ -1440,7 +1440,7 @@ h6 {
 }
 
     .icon i:hover {
-        background: #d1e7dd;
+        background: #98adff;
     }
 
 .icon:first-child i {
@@ -1457,8 +1457,9 @@ h6 {
     overflow-x: hidden;
     overflow-y: hidden;
     scroll-behavior: smooth;
-    height: 45px;
-    width:100%;
+    height: 50px;
+    box-sizing: border-box;
+    
 }
 
 .tabs-box.dragging {
@@ -1492,8 +1493,9 @@ h6 {
 
 .tabs-box .tab.active {
     color: #000;
-    background: #fff;
+    background: #f0f1f3;
     border-color: transparent;
+    font-weight: 600;
 }
 
 /*--------------------------------------------------------------
@@ -1503,7 +1505,7 @@ h6 {
 .products {
     display: -webkit-flex;
     display: flex;
-    width: 510px;
+    width: 550px;
     background: #fff;
     z-index: 1;
     min-height: calc(100vh-150px);
@@ -1555,7 +1557,7 @@ h6 {
     height: 82px;
     -ms-flex: 3;
     flex: 3;
-    font-size: 13px;
+    font-size: 14px;
     color: #000;
     word-break: break-word;
     padding: 5px 0px
@@ -1678,3 +1680,114 @@ h6 {
     text-align: right;
     width: 30%;
 }
+/*GIO HANG*/
+.cart {
+    border: 1px solid transparent;
+    padding: 5px;
+    font-size: 0.9rem;
+    overflow-x: hidden;
+    width: 100%;
+}
+
+.cart-item {
+    display: inline-flex;
+    grid-template-columns: auto auto;
+    -webkit-box-flex: 1;
+    flex: 1;
+    box-shadow: 0 1px 8px rgba(102,115,143,0.5);
+    border-radius: 5px;
+    width: 100%;
+}
+
+    .cart-item:hover {
+        border: 2px solid #4d9bf7;
+        border-radius: 5px;
+    }
+
+.cell-order {
+    width: 5%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cell-active {
+    width: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cell-content {
+    -webkit-box-orient: vertical;
+    overflow-x: hidden;
+    width: 76%;
+}
+
+.cell-content-top {
+    -webkit-box-direction: normal;
+    display: flex;
+    flex-wrap: nowrap;
+    width: 100%;
+}
+
+.cell-code {
+    padding-top: calc(0.17rem);
+    width: 30%;
+    word-break: break-word;
+    text-align: left;
+}
+
+.cell-name {
+    padding-top: calc(0.17rem);
+    word-break: break-word;
+    text-align: left;
+    width: 70%;
+}
+
+.cell-add {
+    width: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 8%;
+}
+
+.cell-content-bottom {
+    -webkit-box-direction: normal;
+    display: flex;
+    flex-wrap: nowrap;
+    margin-top: 10px;
+    overflow-x: hidden;
+    width: 100%;
+}
+
+.cell-quantity {
+    width: 40%;
+}
+
+.cell-changeprice {
+    width: 10rem;
+    text-align: right;
+    width: 30%;
+}
+/*Thanh toán */
+#modalthanhtoan {
+    position: fixed;
+    margin: auto;
+    width: 600px;
+    height: 100%;
+    right: 0px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    font-size:16px;
+}
+#modalthanhtoan-content {
+    height:100%;
+}
+/*Trang hóa đơn*/
+#table_bills{
+
+}
+    #table_bills .hidden_row {
+        display: none;
+    }

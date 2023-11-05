@@ -18,6 +18,7 @@ namespace AppAPI.Services
         private readonly IAllRepository<LichSuTichDiem> reposLichSuTichDiem;
         private readonly IAllRepository<KhachHang> reposKhachHang;
         private readonly IAllRepository<SanPham> reposSanPham;
+        private readonly IAllRepository<PhuongThucThanhToan> reposPTTT;
 
 
         AssignmentDBContext context = new AssignmentDBContext();
@@ -32,7 +33,18 @@ namespace AppAPI.Services
             reposLichSuTichDiem = new AllRepository<LichSuTichDiem>(context, context.LichSuTichDiems);
             reposKhachHang = new AllRepository<KhachHang>(context, context.KhachHangs);
             reposSanPham = new AllRepository<SanPham>(context, context.SanPhams);
+            reposPTTT = new AllRepository<PhuongThucThanhToan>(context, context.PhuongThucThanhToans);
             context = new AssignmentDBContext();
+        }
+
+        public bool CheckHDHasLSGD(Guid idHoaDon)
+        {
+            var exist = reposLichSuTichDiem.GetAll().Any(c => c.IDHoaDon == idHoaDon);
+            if(exist == true)
+            {
+                return true;
+            }
+            return false;
         }
 
         public int CheckVoucher(string ten, int tongtien)
@@ -168,16 +180,15 @@ namespace AppAPI.Services
         }
        
 
-        public bool CreateHoaDonOffline(HoaDonNhap hdnhap)
+        public bool CreateHoaDonOffline(Guid idnhanvien)
         {
             try
             {
                 HoaDon hoaDon1 = new HoaDon();
                 hoaDon1.ID = Guid.NewGuid();
-                hoaDon1.IDNhanVien = hdnhap.IdNhanVien;
+                hoaDon1.IDNhanVien = idnhanvien;
                 hoaDon1.NgayTao = DateTime.Now;
                 hoaDon1.TrangThaiGiaoHang = 1;
-                hoaDon1.TienShip = 0;
                 if (reposHoaDon.Add(hoaDon1))
                 {
                     return true;
@@ -193,14 +204,62 @@ namespace AppAPI.Services
             }
         }
 
+        public bool CreatePTTT(PhuongThucThanhToan pttt)
+        {
+            try
+            {
+                PhuongThucThanhToan phuongTTT = new PhuongThucThanhToan()
+                {
+                    ID = new Guid(),
+                    Ten = pttt.Ten,
+                    TrangThai = pttt.TrangThai,
+                };
+                reposPTTT.Add(phuongTTT);
+                return true;
+
+            }catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public bool DeleteHoaDon(Guid id)
         {
-            HoaDon hoaDon = reposHoaDon.GetAll().FirstOrDefault(p => p.ID == id);
-            var lsthdct = reposChiTietHoaDon.GetAll().Where(c => c.IDHoaDon == hoaDon.ID).ToList();
-            context.ChiTietHoaDons.RemoveRange(lsthdct);
-            //Cộng lại số lượng sản phẩm 
-            context.SaveChanges();
-            return reposHoaDon.Delete(hoaDon);
+            try
+            {
+                HoaDon hoaDon = reposHoaDon.GetAll().FirstOrDefault(p => p.ID == id);
+                var lsthdct = reposChiTietHoaDon.GetAll().Where(c => c.IDHoaDon == hoaDon.ID).ToList();
+                foreach (var item in lsthdct)
+                {
+                    var ctsp = repsCTSanPham.GetAll().FirstOrDefault(c => c.ID == item.IDCTSP);
+                    ctsp.SoLuong += item.SoLuong;
+                    repsCTSanPham.Update(ctsp);
+                }
+                context.ChiTietHoaDons.RemoveRange(lsthdct);
+                context.SaveChanges();
+                context.HoaDons.Remove(hoaDon);
+                context.SaveChanges();
+                return true;
+            }
+            catch(Exception e)
+            {
+                throw new Exception (e.Message);
+            }
+
+        }
+
+        public bool DeletePTTT(Guid id)
+        {
+            try
+            {
+                var pttt = reposPTTT.GetAll().FirstOrDefault(c => c.ID == id);
+                reposPTTT.Delete(pttt);
+                return true;
+
+            }catch(Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
         }
 
         public List<ChiTietHoaDon> GetAllChiTietHoaDon(Guid idHoaDon)
@@ -208,12 +267,31 @@ namespace AppAPI.Services
             return reposChiTietHoaDon.GetAll().Where(x => x.IDHoaDon == idHoaDon).ToList();
         }
 
+        public List<HoaDon> GetAllHDCho()
+        {
+            return reposHoaDon.GetAll().Where(c=> c.TrangThaiGiaoHang == 1).ToList();
+        }
+
         public List<HoaDon> GetAllHoaDon()
         {
             return reposHoaDon.GetAll();
         }
 
-        
+        public List<PhuongThucThanhToan> GetAllPTTT()
+        {
+            return reposPTTT.GetAll();
+        }
+
+        public HoaDon GetHoaDonById(Guid idhd)
+        {
+                return reposHoaDon.GetAll().FirstOrDefault(c=> c.ID == idhd);
+        }
+
+        public LichSuTichDiem GetLichSuGiaoDichByIdHD(Guid idHoaDon)
+        {
+            return reposLichSuTichDiem.GetAll().FirstOrDefault(c=>c.IDHoaDon ==idHoaDon);   
+        }
+
         public List<HoaDon> LichSuGiaoDich(Guid idNguoiDung)
         {
             var idhoadon = reposLichSuTichDiem.GetAll().Where(p => p.IDKhachHang == idNguoiDung).ToList();
@@ -241,21 +319,28 @@ namespace AppAPI.Services
             return timkiem;
         }
 
-        public bool UpdateHoaDon(HoaDon hoaDon)
+        public bool UpdateHoaDon(HoaDonThanhToanRequest hoaDon)
         {
-            var update = reposHoaDon.GetAll().FirstOrDefault(p => p.ID == hoaDon.ID);
-            update.IDNhanVien = null;
-            update.IDVoucher = null;
-            update.TenNguoiNhan = hoaDon.TenNguoiNhan;
-            update.SDT = hoaDon.SDT;
-            update.Email = hoaDon.Email;
-            update.NgayTao = hoaDon.NgayTao;
-            update.DiaChi = hoaDon.DiaChi;
-            update.TienShip = hoaDon.TienShip;
-            update.PhuongThucThanhToan = hoaDon.PhuongThucThanhToan;
-            update.TrangThaiGiaoHang = hoaDon.TrangThaiGiaoHang;
+            var update = reposHoaDon.GetAll().FirstOrDefault(p => p.ID == hoaDon.Id);
+            update.IDNhanVien = hoaDon.IdNhanVien;
+            update.NgayThanhToan = hoaDon.NgayThanhToan;
+            update.TrangThaiGiaoHang = hoaDon.TrangThai;
             return reposHoaDon.Update(update);
+        }
 
+        public bool UpdatePTTT(PhuongThucThanhToan pttt)
+        {
+            try
+            {
+                var phuongttt = reposPTTT.GetAll().FirstOrDefault(p => p.ID == pttt.ID);
+                pttt.Ten = phuongttt.Ten;
+                pttt.TrangThai = phuongttt.TrangThai;
+                reposPTTT.Update(pttt);
+                return true;
+            }catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public bool UpdateTrangThaiGiaoHang(Guid idHoaDon, int trangThai, Guid idNhanVien)

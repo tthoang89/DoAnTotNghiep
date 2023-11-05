@@ -4,20 +4,20 @@
 @{
     ViewData["Title"] = "GioHang";
 }
-<div class="cthd">
+<div class="cthd d-flex flex-column flex-grow-1 h-100">
     @{
-        var index = 1;
+        var index = Model.Count;
         var tsl = 0;
         var ttien = 0;
     }
 
-    <div class="cart">
+    <div class="d-flex flex-column mb-2 p-2 overflow-auto" style="scrollbar-width: thin;scrollbar-color: #aab7cf transparent;">
         @foreach (var item in Model)
         {
-            <div class="cart-item">
+            <div class="cart-item p-2">
                 <div class="cell-order">@index</div>
                 <div class="cell-active">
-                    <button class="btn" onclick="deleteHDCT('@item.Id','@item.IdHoaDon','@item.IDBienThe','@item.SoLuong')">
+                    <button class="btn" onclick="deleteHDCT('@item.Id','@item.IdHoaDon','@item.IDChiTietSanPham','@item.SoLuong')">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
@@ -40,52 +40,29 @@
                     </button>
                 </div>
             </div>
-            index++;
+            index--;
             tsl += @item.SoLuong;
             ttien += (@item.SoLuong * @item.DonGia);
         }
     </div>
 
-    <div class="row" style="margin-top:30px; font-size:15px">
-        <div class='col-6'>
-            <input class="form-control" type="text" placeholder="Ghi chú đơn hàng" />
+    <div class="d-flex flex-row mt-auto p-2 justify-content-center" style="font-size:18px;background:#e8eaed">
+        <div class="flex-fill">
+            <b>SL: </b>
         </div>
-        <div class='col-1'>
-            <p>SL: @tsl </p>
+        <div class="flex-fill">
+            <b id="tsl">@tsl</b>
         </div>
-        <div class='col-3'>
-            <p>Tổng tiền hàng: </p>
+        <div class="flex-fill">
+            <b >Tổng tiền hàng: </b>
         </div>
-        <div class='col-2'>
-            <p style="text-align:right; padding-right:20px">@ttien.ToString("n0")</p>
+        <div class="justify-content-end">
+            <b style="text-align:right; padding-right:70px"><b id="tongtienhang">@ttien.ToString("n0")</b></b>
         </div>
-    </div>
-
-    <div class="row" style="margin-top:5px">
-        <button class="btn btn-primary btn-block" data-target="#mycheckOut" data-toggle="modal">Thanh toán</button>
     </div>
 </div>
 <script type="text/javascript">
-    function loadData(idhd){
-        $('.cthd').load("/BanHangTaiQuay/getCTHD/" + idhd);
-    }
-    function deleteHDCT(idcthd,idhd,idbt,soluong){
-      var request = {Id:idcthd,IdBienThe: idbt, SoLuong :soluong}
-      console.log(request);
-      $.ajax({
-          url: "/BanHangTaiQuay/deleteHdct",
-          async: false,
-          type: 'DELETE',
-          dataType: 'json',
-          data:request,
-          success: function(response) {
-              alert("Xóa thành công r bạn");
-          },
-          error: function(response) {
-              alert("Xóa thất bại");
-          }
-      });
-    }
+    
 
 </script>
 
