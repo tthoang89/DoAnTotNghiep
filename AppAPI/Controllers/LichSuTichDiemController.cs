@@ -1,5 +1,7 @@
 ﻿using AppAPI.IServices;
+using AppAPI.Services;
 using AppData.Models;
+using AppData.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -21,7 +23,18 @@ namespace AppAPI.Controllers
         {
             return _lichsu.GetAll();
         }
-
+        [HttpGet("GetAllDonMua")]
+        public async Task<List<DonMuaViewModel>> GetAllDonMua(Guid IDkhachHang)
+        {
+            var listDonMua = await _lichsu.getAllDonMua(IDkhachHang);
+            return listDonMua;
+        }
+        [HttpGet("GetAllDonMuaChiTiet")]
+        public async Task<List<DonMuaChiTietViewModel>> GetAllDonMuaCT(Guid idHoaDon)
+        {
+            var listDonMuaCT = await _lichsu.getAllDonMuaChiTiet(idHoaDon);
+            return listDonMuaCT;
+        }
         // GET api/<LichSuTichDiemController>/5
         [HttpGet("{id}")]
         public LichSuTichDiem Get(Guid id)

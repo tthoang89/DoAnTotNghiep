@@ -57,6 +57,14 @@ namespace AppAPI.Services
                                       NgayTao = b.NgayTao,
                                       GiaBan = b.IDKhuyenMai==null?b.GiaBan:b.GiaBan*(100-(_context.KhuyenMais.First(x=>x.ID==b.IDKhuyenMai).GiaTri))/100
                                   }).ToListAsync();
+                foreach (var item in lstSanPham)
+                {
+                    List<ChiTietSanPham> ctsp = _context.ChiTietSanPhams.Where(p => p.IDSanPham == item.ID).ToList();
+                    foreach (var x in ctsp)
+                    {
+                        item.SoLuong += x.SoLuong;
+                    }
+                }
                 return lstSanPham;
             }
             catch
