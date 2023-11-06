@@ -1,26 +1,19 @@
-﻿@model IEnumerable<AppData.Models.NhanVien>
+﻿@model AppView.PhanTrang.PhanTrangNhanVien
 @{
     Layout = "~/Views/Shared/_LayoutForAdmin.cshtml";
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="~/css/nv.css">
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+
     ViewData["Title"] = "Show";
     AppData.Models.AssignmentDBContext dBContext = new AppData.Models.AssignmentDBContext();
     int stt = 1;
-    string searchName = ViewBag.SearchName as string;
-    if (searchName == null)
-    {
-        searchName = "";
-    }
-    bool isSearchButtonClicked = false;
+    string searchData = "";
+
 }
 
 <h1 style="text-align:center;  animation: blink 1s linear infinite;
     margin-top: 100px;
-    margin-bottom: 50px" onclick="Show">
+    margin-bottom: 50px">
     <b>Danh sách nhân viên </b>
 </h1>
 <div class="row" style=" margin: 5px">
@@ -28,154 +21,133 @@
         <a class="btn-create" asp-action="Create">Thêm mới</a>
     </div>
     <div class="col-3">
-        <form id="searchForm" action="/NhanVien/Show" method="get">
-            <input id="searchName" class="tk1" type="text" name="searchName" placeholder="Tìm kiếm theo tên" value="@searchName"
-                   onkeydown="if (event.keyCode === 8) { window.location.href = '@Url.Action("Show", "NhanVien")' }" />
-
-            <input class="tk" style="padding: 5px 15px;border-radius: 50px;outline: 0;border: 0;background: #3b3da1; font-weight: 400;color: #fff;" type="submit" value="Tìm kiếm" />
-        </form>
+        <form asp-action="SearchTheoTen" asp-controller="NhanVien" method="get" enctype="multipart/form-data">
+                <input class="tk1" type="text" name="Ten" placeholder="Tìm kiếm theo tên" />
+                <input class="tk" type="submit" value="Tìm kiếm" />
+            </form>
     </div>
     <div id="searchErrorMessage" class="alert alert-warning" role="alert" style="display: none;"></div>
 </div>
-
-@if (!string.IsNullOrEmpty(ViewData["Message"] as string))
-{
-    <div class="alert alert-warning" role="alert">
-        @ViewData["Message"]
-    </div>
-}
-
-@if (Model.Count() > 0)
-{
-    <table class="table" style="margin-left: 20px">
-        <thead >
-            <tr>
-                <th style=" background-color: darkslategray;
+<table class="table" style="margin-left: 20px">
+    <thead>
+        <tr>
+            <th style=" background-color: darkslategray;
     color: white;">STT</th>
-                <th style=" background-color: darkslategray;
-    color: white;">@Html.DisplayNameFor(model => model.Ten)</th>
-                <th style=" background-color: darkslategray;
-    color: white;">@Html.DisplayNameFor(model => model.Email)</th>
-                <th style=" background-color: darkslategray;
-    color: white;">@Html.DisplayNameFor(model => model.PassWord)</th>
-                <th style=" background-color: darkslategray;
-    color: white;">@Html.DisplayNameFor(model => model.SDT)</th>
-                <th style =" background-color: darkslategray;
-        color: white;">@Html.DisplayNameFor(model => model.DiaChi)</th>
-                <th style=" background-color: darkslategray;
-    color: white;">@Html.DisplayNameFor(model => model.TrangThai)</th>
-                <th style=" background-color: darkslategray;
+            <th style=" background-color: darkslategray;
+    color: white;">Ten</th>
+            <th style=" background-color: darkslategray;
+    color: white;">Email</th>
+            <th style=" background-color: darkslategray;
+    color: white;">Password</th>
+            <th style=" background-color: darkslategray;
+    color: white;">SDT</th>
+            <th style=" background-color: darkslategray;
+        color: white;">DiaChi</th>
+            <th style=" background-color: darkslategray;
+    color: white;">TrangThai</th>
+            <th style=" background-color: darkslategray;
     color: white;">Vai Trò</th>
-                <th style=" background-color: darkslategray;
+            <th style=" background-color: darkslategray;
     color: white;"> </th>
-            </tr>
-        </thead>
-        <tbody id="tableBody">
-            @{
-                foreach (var item in Model)
-                {
-                    if (item != null)
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.listNv)
+        {
+
+            <tr>
+                <td>@stt</td>
+                <td>@Html.DisplayFor(modelItem => item.Ten)</td>
+                <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PassWord)
+                    <i class="icofont-eye"></i>
+                    <i class="icofont-eye-blocked"></i>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SDT)
+                </td>
+                <td>@Html.DisplayFor(modelItem => item.DiaChi)</td>
+                <td>
+                    @if (item.TrangThai == 0)
                     {
-                        <tr>
-                            <td>@stt</td>
-                            <td>@Html.DisplayFor(modelItem => item.Ten)</td>
-                            <td>@Html.DisplayFor(modelItem => item.Email)</td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.PassWord)
-                                <i class="icofont-eye"></i>
-                                <i class="icofont-eye-blocked"></i>
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.SDT)
-                            </td>
-                            <td>@Html.DisplayFor(modelItem => item.DiaChi)</td>
-                            <td>
-                                @if (item.TrangThai == 0)
-                                {
-                                    <dl>Đang làm</dl>
-                                }
-                                else if (item.TrangThai == 1)
-                                {
-                                    <b><dl style="color: red;">Nghỉ làm</dl></b>
-                                }
-                                else
-                                {
-                                    <dl>Trạng thái không xác định</dl>
-                                }
-                            </td>
-                            <td>
-                                @{
-                                    var vai = dBContext.VaiTros.Find(item.IDVaiTro);
-                                    @vai.Ten
-                                    ;
-                                }
-                            </td>
-                            <td>
-                                <button type="button" class="btn-edit">
-                                    @Html.ActionLink("Edit", "Edit", new {  id=item.ID }, new { @style = "color:white;"})
-                                </button>
-                                <button class="btn-details">
-                                    @Html.ActionLink("Details", "Details", new { id= item.ID }, new { @style = "color:white;"})
-                                </button>
-                                <button type="button" class="btn-delete">
-                                    @Html.ActionLink("Delete", "Delete", new { id=item.ID}, new { @style = "color:white;"})
-                                </button>
-                            </td>
-                        </tr>
-                        stt++;
+                        <dl>Đang làm</dl>
                     }
+                    else if (item.TrangThai == 1)
+                    {
+                        <b><dl style="color: red;">Nghỉ làm</dl></b>
+                    }
+                    else
+                    {
+                        <dl>Trạng thái không xác định</dl>
+                    }
+                </td>
+                <td>
+                    @{
+                        var vai = dBContext.VaiTros.Find(item.IDVaiTro);
+                        @vai.Ten
+                        ;
+                    }
+                </td>
+                <td>
+                    @*<button type="button" class="btn-edit">
+                @Html.ActionLink("Edit", "Edit", new {  id=item.ID }, new { @style = "color:white;"})
+                </button>*@
+                    <button class="btn-details">
+                        @Html.ActionLink("Details", "Details", new { id= item.ID }, new { @style = "color:white;"})
+                    </button>
+                    <button type="button" class="btn-delete">
+                        @Html.ActionLink("Delete", "Delete", new { id=item.ID}, new { @style = "color:white;"})
+                    </button>
+                </td>
+                @{
+                    stt++;
                 }
-            }
-        </tbody>
-    </table>
-}
-else
-{
-    <div class="alert alert-warning" role="alert">
-        Không tìm thấy kết quả.
-    </div>
-}
-
+            </tr>
+        }
+    </tbody>
+</table>
+<div style="text-align: center;">
+    @if (Model.PagingInfo.CurrentPage > 1)
+    {
+        <a  href="@Url.Action("Show", new { ProductPage = Model.PagingInfo.CurrentPage - 1 })">Previous</a>
+    }
+    @Model.PagingInfo.CurrentPage
+    @if (Model.PagingInfo.CurrentPage < Model.PagingInfo.TotalPages)
+    {
+        <a href="@Url.Action("Show", new { ProductPage = Model.PagingInfo.CurrentPage + 1 })">Next</a>
+    }
+</div>
+<div style="margin-left: 200px;margin-bottom: 50px;">
+    <a asp-action="Show">Back to List</a>
+</div>
 <script>
-    $(document).ready(function () {
-        $('#h1').hover(function () {
-            $(this).addClass('hovered');
-        }, function () {
-            $(this).removeClass('hovered');
-        });
+    document.getElementById('searchForm').addEventListener('submit', function (event) {
+        // Lấy dữ liệu tìm kiếm từ biến toàn cục
+        var searchInput = document.querySelector('.tk1');
+        searchData = sessionStorage.getItem('searchData');
+        // Sử dụng dữ liệu tìm kiếm để thực hiện tìm kiếm
+        var url = '/NhanVien/SearchTheoTen?Ten=' + searchData;
+        window.location.href = url;
     });
-    $(document).ready(function () {
-        var searchNameValue = '@searchName';
-        var originalUrl = window.location.href;
-        $('#searchForm').submit(function (event) {
-            event.preventDefault();
-            var searchName = $('#searchName').val().trim();
 
-            if (searchName === "") {
-                $('#searchErrorMessage').text('Vui lòng nhập tên nhân viên để tìm kiếm.');
-                $('#searchErrorMessage').show();
-            } else {
-                searchNameValue = searchName;
-                isSearchButtonClicked = true;
-                var newUrl = updateQueryStringParameter(originalUrl, 'searchName', searchNameValue);
-                window.location.href = newUrl;
-            }
-        });
-        $(document).on('keydown', function (e) {
-            if (e.keyCode === 8) {
-                searchNameValue = '';
-                var newUrl = updateQueryStringParameter(originalUrl, 'searchName', searchNameValue);
-                window.location.href = newUrl;
-            }
-        });
-        function updateQueryStringParameter(uri, key, value) {
-            var re = new RegExp('([?&])' + key + '=.*?(&|$)', 'i');
-            var separator = uri.indexOf('?') !== -1 ? '&' : '?';
-            if (uri.match(re)) {
-                return uri.replace(re, '$1' + key + '=' + value + '$2');
-            } else {
-                return uri + separator + key + '=' + value;
-            }
+    window.addEventListener('load', function (event) {
+        // Lấy dữ liệu tìm kiếm từ biến toàn cục
+        var searchInput = document.querySelector('.tk1');
+        searchData = sessionStorage.getItem('searchData');
+        // Nếu có dữ liệu tìm kiếm, thì điền dữ liệu đó vào ô tìm kiếm
+        if (searchData) {
+            searchInput.value = searchData;
         }
     });
+
+    document.addEventListener('keydown', function (event) {
+        // Nếu ấn backspace, thì load lại trang ban đầu
+        if (event.key === 'Backspace') {
+            var url = '/NhanVien/Show';
+            window.location.href = url;
+        }
+    });
+    
 </script>
+

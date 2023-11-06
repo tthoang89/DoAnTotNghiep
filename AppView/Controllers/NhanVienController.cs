@@ -1,6 +1,10 @@
 ﻿using AppData.Models;
+using AppData.ViewModels;
+using AppView.PhanTrang;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Drawing.Printing;
+using System.Net.Http;
 using System.Text;
 
 namespace AppView.Controllers
@@ -14,49 +18,48 @@ namespace AppView.Controllers
             _httpClient = new HttpClient();
             dBContext = new AssignmentDBContext();
         }
+        public int PageSize = 10;
 
-        public async Task<IActionResult> Show()
+        public async Task<IActionResult> Show(int ProductPage= 1)
         {
             string apiUrl = $"https://localhost:7095/api/NhanVien/GetAll";
-            var search = new List<NhanVien>();
-            var searchName = Request.Query["searchName"].ToString();
-
-            if (!string.IsNullOrEmpty(searchName))
-            {
-                search = await SearchTheoTen(searchName);
-                if (search.Count == 0)
-                {
-                    ViewData["Message"] = "Không tìm thấy nhân viên nào với tên " + searchName;
-                }
-                else
-                {
-                    ViewBag.SearchName = searchName;
-                    ViewData["searchName"] = searchName;
-
-                    return View(search.ToList());
-                }
-            }
-            else if (Request.Method.Equals("POST", StringComparison.OrdinalIgnoreCase))
-            {
-                ViewData["Message"] = "Vui lòng nhập tên nhân viên để tìm kiếm.";
-            }
-
             var response = await _httpClient.GetAsync(apiUrl);
             string apiData = await response.Content.ReadAsStringAsync();
             var users = JsonConvert.DeserializeObject<List<NhanVien>>(apiData);
-
-            return View(users);
+            return View(new PhanTrangNhanVien
+            {
+                listNv = users
+                        .Skip((ProductPage - 1) * PageSize).Take(PageSize),
+                PagingInfo = new PagingInfo
+                {
+                    ItemsPerPage = PageSize,
+                    CurrentPage = ProductPage,
+                    TotalItems = users.Count()
+                }
+            });
         }
 
         [HttpGet]
-        public async Task<List<NhanVien>> SearchTheoTen(string name)
+        public async Task<IActionResult> SearchTheoTen(string? Ten,int ProductPage = 1)
         {
-            var apiUrl = $"https://localhost:7095/api/NhanVien/SearchTheoTen?name={name}";
+            string apiUrl = $"https://localhost:7095/api/NhanVien/TimKiemNhanVien?Ten={Ten}";
             var response = await _httpClient.GetAsync(apiUrl);
-            var search = JsonConvert.DeserializeObject<IEnumerable<NhanVien>>(await response.Content.ReadAsStringAsync());
+            string apiData = await response.Content.ReadAsStringAsync();
+            var users= JsonConvert.DeserializeObject<List<NhanVien>>(apiData);
 
-            return search.ToList();
+            return View("Show", new PhanTrangNhanVien
+            {
+                listNv = users
+                         .Skip((ProductPage - 1) * PageSize).Take(PageSize),
+                PagingInfo = new PagingInfo
+                {
+                    ItemsPerPage = PageSize,
+                    CurrentPage = ProductPage,
+                    TotalItems = users.Count()
+                }
+            });
         }
+
         [HttpGet]
         public IActionResult Create()
         {
@@ -82,7 +85,7 @@ namespace AppView.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(Guid id)
         {
-            string apiUrl = $"https://localhost:7095/api/NhanVien/{id}";
+            string apiUrl = $"https://localhost:7095/api/NhanVien/GetById?id={id}";
             var response = await _httpClient.GetAsync(apiUrl);
             string apiData = await response.Content.ReadAsStringAsync();
 
@@ -94,7 +97,7 @@ namespace AppView.Controllers
 
         public IActionResult Edit(Guid id)
         {
-            string apiUrl = $"https://localhost:7095/api/NhanVien/{id}";
+            string apiUrl = $"https://localhost:7095/api/NhanVien/GetById?id={id}";
             var response = _httpClient.GetAsync(apiUrl).Result;
             var apiData = response.Content.ReadAsStringAsync().Result;
             var user = JsonConvert.DeserializeObject<NhanVien>(apiData);
@@ -115,13 +118,7 @@ namespace AppView.Controllers
                 }
             }
             return View(nv);
-            //var content = new StringContent(JsonConvert.SerializeObject(nv), Encoding.UTF8, "application/json");
-            //var response = await _httpClient.PutAsync(apiUrl, content);
-            //if (response.IsSuccessStatusCode)
-            //{
-            //    return RedirectToAction("Show");
-            //}
-            //return View(nv);
+
         }
         public async Task<IActionResult> Delete(Guid id)
         {
@@ -141,5 +138,26 @@ namespace AppView.Controllers
 
             //return View("DeleteError");
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Next(int ProductPage = 1)
+        {
+            // Chuyển sang trang tiếp theo
+            ProductPage++;
+
+            // Gọi phương thức Show() để hiển thị trang tiếp theo
+            return await Show(ProductPage);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Previous(int ProductPage = 1)
+        {
+            // Giảm trang hiện tại
+            ProductPage--;
+
+            // Gọi phương thức Show() để hiển thị trang trước đó
+            return await Show(ProductPage);
+        }
+
     }
 }

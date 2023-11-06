@@ -41,7 +41,8 @@ namespace AppView.Controllers
         {
             return View();
         }
-
+        #region SanPham
+        [HttpGet]
         public IActionResult Shop(int? pages)
         {
             HttpResponseMessage responseLoaiSP = _httpClient.GetAsync(_httpClient.BaseAddress + "LoaiSP/getAll").Result;
@@ -75,6 +76,14 @@ namespace AppView.Controllers
             PagedList<SanPhamViewModel> lst = new PagedList<SanPhamViewModel>(lstSanpham, pageNumber, pageSize);
             return View(lst);
         }
+        [HttpGet]
+        public async Task<IActionResult> ProductDetail(string idSanPham)
+        {
+            HttpResponseMessage response = await _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllChiTietSanPhamHome?idSanPham="+ idSanPham);
+            var chiTietSanPham = JsonConvert.DeserializeObject<ChiTietSanPhamViewModelHome>(response.Content.ReadAsStringAsync().Result);
+            return View(chiTietSanPham);
+        }
+        #endregion
         #region Filter
         public IActionResult GetFilteredProducts([FromBody] FilterData filter)
         {

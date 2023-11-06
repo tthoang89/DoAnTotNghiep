@@ -1,6 +1,5 @@
 ﻿const tabsBox = document.querySelector(".tabs-box"),
     arrowIcons = document.querySelectorAll(".icon i");
-
 let isDragging = false;
 
 const handleIcons = (scrollVal) => {

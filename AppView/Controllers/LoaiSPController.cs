@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System.Text;
 using System.Net.Http;
 using Microsoft.EntityFrameworkCore;
+using AppView.PhanTrang;
 
 namespace AppView.Controllers
 {
@@ -15,13 +16,49 @@ namespace AppView.Controllers
         {
             _httpClient = new HttpClient();
         }
-        public async Task<IActionResult> Show()
+        public int PageSize = 8;
+        // laam them 
+        public async Task<IActionResult> Show(int ProductPage = 1)
         {
             string apiUrl = "https://localhost:7095/api/LoaiSP/getAll";
             var response = await _httpClient.GetAsync(apiUrl);
             string apiData = await response.Content.ReadAsStringAsync();
             var LoaiSPs = JsonConvert.DeserializeObject<List<LoaiSP>>(apiData);
-            return View(LoaiSPs);
+            return View(new PhanTrangLoaiSP
+            {
+                listlsp = LoaiSPs
+                         .Skip((ProductPage - 1) * PageSize).Take(PageSize),
+                PagingInfo = new PagingInfo
+                {
+                    ItemsPerPage = PageSize,
+                    CurrentPage = ProductPage,
+                    TotalItems = LoaiSPs.Count()
+                }
+
+            }
+                 );
+        }
+        // Tim kiem Loai SP theo ten
+        [HttpGet]
+        public async Task<IActionResult> TimKiemLoaiSPTheoTen(string Ten,int ProductPage = 1)
+        {
+            string apiUrl = "https://localhost:7095/api/LoaiSP/getAll";
+            var response = await _httpClient.GetAsync(apiUrl);
+            string apiData = await response.Content.ReadAsStringAsync();
+            var LoaiSPs = JsonConvert.DeserializeObject<List<LoaiSP>>(apiData);
+            return View(new PhanTrangLoaiSP
+            {
+                listlsp = LoaiSPs.Where(x=>x.Ten.Contains(Ten))
+                         .Skip((ProductPage - 1) * PageSize).Take(PageSize),
+                PagingInfo = new PagingInfo
+                {
+                    ItemsPerPage = PageSize,
+                    CurrentPage = ProductPage,
+                    TotalItems = LoaiSPs.Count()
+                }
+
+            }
+                 );
         }
         public async Task<IActionResult> Create()
         {

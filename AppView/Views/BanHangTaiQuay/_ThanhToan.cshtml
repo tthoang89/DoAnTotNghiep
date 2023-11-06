@@ -1,0 +1,51 @@
+﻿@using AppData.Models
+@model AppData.ViewModels.BanOffline.HoaDonThanhToanViewModel
+@{
+    var lstPttt = ViewData["lstPttt"] as List<PhuongThucThanhToan>;
+}
+<div class="d-flex flex-column" style="height:100%">
+    <form class="row g-3 p-3">
+        <div class="d-flex flex-row lh-1">
+            <div class="flex-fill"><label id="nhanVien" value="">@Model.NhanVien</label></div>
+            <div class="flex-fill text-end"><p id="ngay"></p>@Model.NgayThanhToan</div>
+        </div>
+        <hr />
+        <div class="d-flex flex-row lh-1">
+            <div class="flex-fill"><label for="inputName5" class="form-label fw-bold">Khách hàng</label></div>
+            <div class="flex-fill text-end"> <p id="tenkh">@Model.KhachHang</p></div>
+        </div>
+        <div class="d-flex flex-row lh-1">
+            <div class="flex-fill"><label class="form-label fw-bold">Số lượng</label></div>
+            <div class="flex-fill text-end"> <p id="soLuong">@Model.TongSL</p></div>
+        </div>
+        <div class="d-flex flex-row lh-1">
+            <div class="flex-fill"><label for="inputEmail5" class="form-label fw-bold">Tổng tiền hàng</label></div>
+            <div class="flex-fill text-end"> <p id="tongTien">@Model.TongTien.ToString("n0")</p></div>
+        </div>
+        <div class="d-flex flex-row lh-1">
+            <div class="flex-fill"><label for="inputEmail5" class="form-label fw-bold">Giảm giá</label></div>
+            <div class="flex-fill text-end"> <input type="number" class="form-control" id="giamGia"></div>
+        </div>
+        <div class="d-flex flex-row lh-1">
+            <div class="flex-fill"><label for="inputEmail5" class="form-label fw-bold">Khách cần trả</label></div>
+            <div class="flex-fill text-end"><p id="khachCanTra">@Model.TongTien.ToString("n0")</p></div>
+        </div>
+        <div class="d-flex flex-row lh-1">
+            <div class="flex-fill"><label for="inputState" class="form-label fw-bold">Phương thức thanh toán </label></div>
+        </div>
+        <div class="d-flex flex-row">
+            @foreach (var item in lstPttt)
+            {
+                <div class="flex-fill m-2">
+                    <input class="form-check-input" type="radio" name="pttt" id="" value="@item.ID" checked>
+                    <label class="form-check-label" for="gridRadios1">
+                        @item.Ten
+                    </label>
+                </div>
+            }
+        </div>
+    </form>
+    <div class="d-flex flex-row mt-auto">
+        <button type="button" onclick="thanhToan('@Model.Id')" class="btn btn-primary fw-bold btn-block w-100" style="height:60px; font-size:24px">THANH TOÁN</button>
+    </div>
+</div>

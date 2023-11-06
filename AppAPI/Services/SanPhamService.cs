@@ -38,7 +38,7 @@ namespace AppAPI.Services
             try
             {
                 var lstSanPham = await (from a in _context.SanPhams.Where(x => x.TrangThai == 1)
-                                        join b in _context.ChiTietSanPhams on a.ID equals b.IDSanPham
+                                        join b in _context.ChiTietSanPhams.Where(x=>x.TrangThai==1) on a.ID equals b.IDSanPham
                                         //join c in _context.Anhs.Where(x => x.TrangThai == 1) on a.ID equals c.IDSanPham
                                         join e in _context.LoaiSPs.Where(x=>x.LoaiSPCha!=null) on a.IDLoaiSP equals e.ID
                                   select new SanPhamViewModel()
@@ -132,33 +132,71 @@ namespace AppAPI.Services
                 return true;
             }catch { return false; }
         }
+        public async Task<bool> AddAnhToSanPham(List<AnhRequest> request)
+        {
+            try
+            {
+                foreach (var x in request)
+                {
+                    Anh anh = new Anh() { ID = Guid.NewGuid(), DuongDan = x.DuongDan, IDSanPham = x.IDSanPham, IDMauSac = x.IDMauSac ,TrangThai =2};
+                    _context.Anhs.Add(anh);
+                }
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
         #endregion
 
         #region ChiTietSanPham
+        public async Task<ChiTietSanPhamViewModelHome> GetAllChiTietSanPhamHome(Guid idSanPham)
+        {
+            var sanPham = await _context.SanPhams.FindAsync(idSanPham);
+            List<ChiTietSanPham> lstChiTietSanPham = _context.ChiTietSanPhams.Where(x => x.IDSanPham == idSanPham).ToList();
+            List<string> mauSacs = new List<string>();
+            List<string> kichCos = new List<string>();
+            foreach(var x in lstChiTietSanPham)
+            {
+                mauSacs.Add(_context.MauSacs.FindAsync(x.IDMauSac).Result.Ma);
+                kichCos.Add(_context.KichCos.FindAsync(x.IDKichCo).Result.Ten);
+            }
+            ChiTietSanPhamViewModelHome chiTietSanPham = new ChiTietSanPhamViewModelHome();
+            chiTietSanPham.Ten = sanPham.Ten;
+            chiTietSanPham.SoSao = sanPham.TongSoSao;
+            chiTietSanPham.SoDanhGia = sanPham.TongDanhGia;
+            chiTietSanPham.Anhs = _context.Anhs.Where(x => x.IDSanPham == idSanPham).ToList(); ;
+            chiTietSanPham.ChiTietSanPhams = lstChiTietSanPham;
+            chiTietSanPham.MaMauSacs = mauSacs;
+            chiTietSanPham.TenKichCo = kichCos;
+            return chiTietSanPham;
+        }
         public Task<bool> UpdateChiTietSanPham(ChiTietSanPham chiTietSanPham)
         {
             throw new NotImplementedException();
         }
-        public async Task<List<MauSac>> AddChiTietSanPham(ChiTietSanPhamRequest chiTietSanPham)
+        public async Task<List<AnhRequest>> AddChiTietSanPham(ChiTietSanPhamRequest chiTietSanPham)
         {
             try
             {
-                List<MauSac> lstMauSac = new List<MauSac>();
-                MauSac? mauSac;
+                List<AnhRequest> lstanhRequest = new List<AnhRequest>();
+                AnhRequest? anhRequest;
                 foreach(var x in chiTietSanPham.MauSacs)
                 {
                     foreach(var y in chiTietSanPham.KichCos)
                     {
-                        mauSac = AddChiTietSanPham(x, y, chiTietSanPham.IDSanPham);
-                        if(mauSac != null) lstMauSac.Add(mauSac);
+                        anhRequest = AddChiTietSanPham(x, y, chiTietSanPham.IDSanPham);
+                        if(anhRequest != null) lstanhRequest.Add(anhRequest);
                         _context.SaveChanges();
                     }
                 }
-                return lstMauSac.Distinct().ToList();
+                return lstanhRequest.DistinctBy(x=>x.IDMauSac).ToList();
             }
             catch
             {
-                return new List<MauSac>();
+                return new List<AnhRequest>();
             }
         }
         public async Task<List<ChiTietSanPhamViewModelAdmin>> GetAllChiTietSanPhamAdmin(Guid idSanPham)
@@ -219,7 +257,7 @@ namespace AppAPI.Services
                 return false;
             }
         }
-        public MauSac? AddChiTietSanPham(MauSac mauSacRequest, string tenKichCo,Guid idSanPham)
+        public AnhRequest? AddChiTietSanPham(MauSac mauSacRequest, string tenKichCo,Guid idSanPham)
         {
             var temp = 0;
             var mauSac = _context.MauSacs.FirstOrDefault(x => x.Ma == mauSacRequest.Ma);
@@ -240,14 +278,20 @@ namespace AppAPI.Services
             {
                 var chiTietSanPham = new ChiTietSanPham() { ID = Guid.NewGuid(), SoLuong = 0, GiaBan = 0, NgayTao = DateTime.Now, TrangThai = 2, IDSanPham = idSanPham, IDMauSac = mauSac.ID.Value, IDKichCo = kichCo.ID };
                 _context.Add(chiTietSanPham);
-                return mauSac;
+                return new AnhRequest() { IDMauSac = mauSac.ID.Value, TenMauSac = mauSac.Ten, MaMauSac=mauSac.Ma, IDSanPham = idSanPham};
             }
             else if (!_context.ChiTietSanPhams.Any(x => x.IDMauSac == mauSac.ID && x.IDKichCo == kichCo.ID && x.IDSanPham==idSanPham))
             {
                 var chiTietSanPham = new ChiTietSanPham() { ID = Guid.NewGuid(), SoLuong = 0, GiaBan = 0, NgayTao = DateTime.Now, TrangThai = 2, IDSanPham = idSanPham, IDMauSac = mauSac.ID.Value, IDKichCo = kichCo.ID };
                 _context.Add(chiTietSanPham);
-                if (!_context.Anhs.Any(x => x.IDMauSac == mauSac.ID && x.IDSanPham == idSanPham)) return mauSac;
-                else return null;
+                if (!_context.Anhs.Any(x => x.IDMauSac == mauSac.ID && x.IDSanPham == idSanPham))
+                {
+                    return new AnhRequest() { IDMauSac = mauSac.ID.Value, TenMauSac = mauSac.Ten, MaMauSac = mauSac.Ma, IDSanPham = idSanPham };
+                }
+                else
+                {
+                    return null;
+                }
             }
             return null;
         }

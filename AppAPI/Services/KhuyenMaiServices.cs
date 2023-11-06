@@ -5,60 +5,38 @@ using AppData.Repositories;
 using AppData.ViewModels;
 using AppData.ViewModels.SanPham;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks.Dataflow;
 
 namespace AppAPI.Services
 {
     public class KhuyenMaiServices : IKhuyenMaiServices
     {
         private readonly IAllRepository<KhuyenMai> _repos;
-        private readonly IAllRepository<ChiTietSanPham> _reposchitietsanpham;
-        AssignmentDBContext context= new AssignmentDBContext();
+        private readonly IAllRepository<ChiTietSanPham> _reposCTSP;
+        private readonly IAllRepository<SanPham> _reposSP;
+        private readonly IAllRepository<MauSac> _reposMS;
+        private readonly IAllRepository<KichCo> _reposSize;
+        AssignmentDBContext context = new AssignmentDBContext();
         public KhuyenMaiServices()
         {
-            _repos= new AllRepository<KhuyenMai>(context,context.KhuyenMais);
-            _reposchitietsanpham = new AllRepository<ChiTietSanPham>(context,context.ChiTietSanPhams);
+            _repos = new AllRepository<KhuyenMai>(context, context.KhuyenMais);
+            _reposCTSP = new AllRepository<ChiTietSanPham>(context, context.ChiTietSanPhams);
+            _reposSP = new AllRepository<SanPham>(context, context.SanPhams);
+            _reposMS = new AllRepository<MauSac>(context, context.MauSacs);
         }
 
-        public bool Ad1KMVo1BT(Guid ctsprequest, Guid IdKhuyenMai)
-        {
-            var idbt= _reposchitietsanpham.GetAll().FirstOrDefault(x=>x.ID== ctsprequest);
-            if (idbt != null)
-            {
-                var timkiem=_repos.GetAll().FirstOrDefault(x=>x.ID == IdKhuyenMai);
-                if (timkiem != null)
-                {
-                    if (timkiem.NgayKetThuc < DateTime.Now)
-                    {
-                        return false;
-                    }
-                    else
-                    {
-                        idbt.IDKhuyenMai = IdKhuyenMai;
-                       return _reposchitietsanpham.Update(idbt);
-                    }
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                return false;
-            }
-           
-        }
+       
 
         public bool Add(KhuyenMaiView kmv)
         {
             kmv.ID = Guid.NewGuid();
-           var khuyenmai= new KhuyenMai();
-            khuyenmai.ID=kmv.ID;
-            khuyenmai.Ten=kmv.Ten;
-            khuyenmai.GiaTri=kmv.GiaTri;
+            var khuyenmai = new KhuyenMai();
+            khuyenmai.ID = kmv.ID;
+            khuyenmai.Ten = kmv.Ten;
+            khuyenmai.GiaTri = kmv.GiaTri;
             khuyenmai.MoTa = kmv.MoTa;
-            khuyenmai.NgayApDung=kmv.NgayApDung;
-            khuyenmai.NgayKetThuc =kmv. NgayKetThuc;
+            khuyenmai.NgayApDung = kmv.NgayApDung;
+            khuyenmai.NgayKetThuc = kmv.NgayKetThuc;
             if (khuyenmai.NgayApDung > khuyenmai.NgayKetThuc)
             {
                 return false;
@@ -69,7 +47,7 @@ namespace AppAPI.Services
 
         public bool AdKMVoBT(List<Guid> btrequest, Guid IdKhuyenMai)
         {
-            
+
             foreach (var km in btrequest)
             {
                 var timidkm = _repos.GetAll().FirstOrDefault(x => x.ID == IdKhuyenMai);
@@ -79,11 +57,11 @@ namespace AppAPI.Services
                 }
                 else
                 {
-                    var tim = _reposchitietsanpham.GetAll().FirstOrDefault(x => x.ID == km);
+                    var tim = _reposCTSP.GetAll().FirstOrDefault(x => x.ID == km);
                     if (tim != null)
                     {
                         tim.IDKhuyenMai = IdKhuyenMai;
-                        _reposchitietsanpham.Update(tim);
+                        _reposCTSP.Update(tim);
                     }
                 }
 
@@ -94,14 +72,14 @@ namespace AppAPI.Services
         {
             foreach (var km in bienthes)
             {
-               
-                    var tim = _reposchitietsanpham.GetAll().FirstOrDefault(x => x.ID == km);
-                    if (tim != null)
-                    {
-                        tim.IDKhuyenMai = null;
-                    _reposchitietsanpham.Update(tim);
-                    }
-               
+
+                var tim = _reposCTSP.GetAll().FirstOrDefault(x => x.ID == km);
+                if (tim != null)
+                {
+                    tim.IDKhuyenMai = null;
+                    _reposCTSP.Update(tim);
+                }
+
 
             }
             return true;
@@ -112,7 +90,7 @@ namespace AppAPI.Services
             var khuyenmai = _repos.GetAll().FirstOrDefault(x => x.ID == Id);
             if (khuyenmai != null)
             {
-               
+
                 return _repos.Delete(khuyenmai);
             }
             else
@@ -123,13 +101,10 @@ namespace AppAPI.Services
 
         public List<KhuyenMai> GetAll()
         {
-           return _repos.GetAll();
+            return _repos.GetAll();
         }
 
-        public List<ChiTietSanPham> GetAllBienThe()
-        {
-            return _reposchitietsanpham.GetAll();
-        }
+       
 
         public KhuyenMai GetById(Guid Id)
         {
@@ -138,13 +113,13 @@ namespace AppAPI.Services
 
         public List<KhuyenMai> GetKMByName(string Ten)
         {
-            return _repos.GetAll().Where(x=>x.Ten.Contains(Ten)).ToList();
+            return _repos.GetAll().Where(x => x.Ten.Contains(Ten)).ToList();
         }
 
         public bool Update(KhuyenMaiView kmv)
         {
-            var khuyenmai= _repos.GetAll().FirstOrDefault(x => x.ID == kmv.ID);
-            if(khuyenmai!=null)
+            var khuyenmai = _repos.GetAll().FirstOrDefault(x => x.ID == kmv.ID);
+            if (khuyenmai != null)
             {
                 khuyenmai.Ten = kmv.Ten;
                 khuyenmai.GiaTri = kmv.GiaTri;
@@ -164,6 +139,6 @@ namespace AppAPI.Services
             }
         }
 
-       
+
     }
 }
