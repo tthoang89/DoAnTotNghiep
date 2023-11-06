@@ -12,29 +12,32 @@ namespace AppAPI.Controllers
     [ApiController]
     public class NhanVienController : ControllerBase
     {
-        private readonly INhanVienService nhanVienService;
-        public NhanVienController(INhanVienService nhanVienService)
+        private readonly INhanVienService _nhanVienService;
+        private readonly AssignmentDBContext _dbContext;
+        public NhanVienController()
         {
-            this.nhanVienService = nhanVienService;
+            _nhanVienService = new NhanVienService();
+            _dbContext = new AssignmentDBContext();
         }
         // GET: api/<NhanVienController>
         [HttpGet("GetAll")]
         public List<NhanVien> GetAllNhanVien()
         {
-            return nhanVienService.GetAll();
+            return _nhanVienService.GetAll();
         }
-        [HttpGet("[action]")]
-        public IEnumerable<NhanVien> SearchTheoTen(string name)
+        [Route("TimKiemNhanVien")]
+        [HttpGet]
+        public List<NhanVien> GetAllNhanVien(string? Ten)
         {
-            return nhanVienService.GetByName(name);
+            return _dbContext.NhanViens.Where(v => v.Ten.Contains(Ten)).ToList();
 
 
         }
         // GET api/<NhanVienController>/5
-        [HttpGet("{id}")]
-        public NhanVien? GetById(Guid id)
+        [HttpGet("GetById")]
+        public NhanVien GetById(Guid id)
         {
-            return nhanVienService.GetById(id);
+            return _nhanVienService.GetById(id);
         }
 
 
@@ -42,29 +45,47 @@ namespace AppAPI.Controllers
         [HttpPost("DangKyNhanVien")]
         public bool Add(string ten, string email, string password, string sdt, string diachi, int trangthai, Guid idvaitro)
         {
-            if (nhanVienService.Add(ten, email, password, sdt, diachi, trangthai, idvaitro))
-            {
-                return true;
-            }
-            return false;
+            NhanVien nv = new NhanVien();
+            nv.ID = Guid.NewGuid();
+            nv.Ten = ten;
+            nv.Email = email;
+            nv.PassWord = password;
+            nv.SDT = sdt;
+            nv.DiaChi = diachi;
+            nv.TrangThai = trangthai;
+            nv.IDVaiTro = idvaitro;
+            _dbContext.NhanViens.Add(nv);
+            _dbContext.SaveChanges();
+            return true;
         }
 
         // PUT api/<NhanVienController>/5
         [HttpPut("{id}")]
         public bool Put(Guid id, string ten, string email, string password, string sdt, string diachi, int trangthai, Guid idvaitro)
         {
-            if (nhanVienService.Update(id, ten, email, password, sdt, diachi, trangthai, idvaitro))
+            var nv = _nhanVienService.GetById(id);
+            if (nv != null)
             {
+                nv.Ten = ten;
+                nv.Email = email;
+                nv.PassWord = password;
+                nv.SDT = sdt;
+                nv.DiaChi = diachi;
+                nv.TrangThai = trangthai;
+                nv.IDVaiTro = idvaitro;
+                _dbContext.NhanViens.Update(nv);
+                _dbContext.SaveChanges();
                 return true;
             }
             return false;
+
         }
 
         // DELETE api/<NhanVienController>/5
         [HttpDelete("{id}")]
         public bool Delete(Guid id)
         {
-            if (nhanVienService.Delete(id))
+            if (_nhanVienService.Delete(id))
             {
                 return true;
             }
