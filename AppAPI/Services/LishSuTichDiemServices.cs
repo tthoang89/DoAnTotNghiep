@@ -2,6 +2,9 @@
 using AppData.IRepositories;
 using AppData.Models;
 using AppData.Repositories;
+using AppData.ViewModels;
+using AppData.ViewModels.SanPham;
+using Microsoft.EntityFrameworkCore;
 
 namespace AppAPI.Services
 {
@@ -43,6 +46,7 @@ namespace AppAPI.Services
         {
             return _allRepository.GetAll(); 
         }
+       
 
         public LichSuTichDiem GetById(Guid Id)
         {
@@ -64,6 +68,120 @@ namespace AppAPI.Services
             else
             {
                 return false;
+            }
+        }
+        //dũng
+        public async Task<List<DonMuaViewModel>> getAllDonMua(Guid idKhachHang)
+        {
+            try
+            {
+                var lstDonMua = await(from a in context.LichSuTichDiems
+                                       join b in context.HoaDons on a.IDHoaDon equals b.ID
+                                       join c in context.Vouchers on b.IDVoucher equals c.ID
+                                       join d in context.KhachHangs on a.IDKhachHang equals d.IDKhachHang
+                                       join e in context.QuyDoiDiems on a.IDQuyDoiDiem equals e.ID
+                                      select new DonMuaViewModel()
+                                       {
+                                           IDLichSu = a.ID,
+                                           Diem = a.Diem,
+                                           TrangThaiLSTD = a.TrangThai,
+                                           IDHoaDon = b.ID,
+                                           NgayTao = b.NgayTao,
+                                           NgayThanhToan = b.NgayThanhToan,
+                                           TenNguoiNhan = b.TenNguoiNhan,
+                                           SDT = b.SDT,
+                                           Email = b.Email,
+                                           DiaChi = b.DiaChi,   
+                                           TienShip = b.TienShip,
+                                           TrangThaiGiaoHang = b.TrangThaiGiaoHang,
+                                           IDVoucher = c.ID,
+                                           HinhThucGiamGia = c.HinhThucGiamGia,
+                                           GiaTri= c.GiaTri,
+                                           IdNguoiDung = d.IDKhachHang,
+                                           TiLeTichDiem = e.TiLeTichDiem,
+                                           TiLeTieuDiem = e.TiLeTieuDiem,
+                                           TongTien =0
+                                       }).ToListAsync();
+                foreach (var item in lstDonMua)
+                {
+                    List<ChiTietHoaDon> cthd = context.ChiTietHoaDons.Where(p => p.IDHoaDon == item.IDHoaDon).ToList();
+                    foreach (var x in cthd)
+                    {
+                        item.TongTien += x.DonGia * x.SoLuong;
+                    }
+                    if (item.HinhThucGiamGia == 0)
+                    {
+                        item.TongTien = (item.TongTien * (100 - item.GiaTri / 100))+item.TienShip;
+                    }
+                    else if (item.HinhThucGiamGia == 1)
+                    {
+                        item.TongTien = (item.TongTien - item.GiaTri) + item.TienShip;
+                    }
+                    if (item.TrangThaiLSTD == 0)
+                    {
+                        item.TongTien = item.TongTien - (item.TiLeTieuDiem*item.Diem);
+                    }
+                }
+                lstDonMua = lstDonMua.Where(P => P.IdNguoiDung == idKhachHang).ToList();
+                return lstDonMua;
+            }
+            catch
+            {
+                return new List<DonMuaViewModel>();
+            }
+
+        }
+
+        public async Task<List<DonMuaChiTietViewModel>> getAllDonMuaChiTiet(Guid idHoaDon)
+        {
+            try
+            {
+                var lstDonMuaCT = await(from a in context.HoaDons
+                                      join b in context.LichSuTichDiems on a.ID equals b.IDHoaDon
+                                      join c in context.ChiTietHoaDons on a.ID equals c.IDHoaDon
+                                      join d in context.DanhGias on c.ID equals d.ID
+                                      join e in context.ChiTietSanPhams on c.IDCTSP equals e.ID
+                                      join f in context.KichCos on e.IDKichCo equals f.ID
+                                      join g in context.MauSacs on e.IDMauSac equals g.ID
+                                      join h in context.Anhs on g.ID equals h.IDMauSac
+                                      join i in context.SanPhams on e.IDSanPham equals i.ID
+                                      join k in context.Vouchers on a.IDVoucher equals k.ID
+                                      join l in context.QuyDoiDiems on b.IDQuyDoiDiem equals l.ID
+                                      select new DonMuaChiTietViewModel()
+                                      {
+                                         ID = a.ID,
+                                         NgayTao = a.NgayTao,
+                                         NgayThanhToan = a.NgayThanhToan,
+                                         TenNguoiNhan = a.TenNguoiNhan,
+                                         SDT = a.SDT,
+                                         Email = a.Email,
+                                         DiaChi = a.DiaChi,
+                                         TienShip = a.TienShip,
+                                         PhuongThucThanhToan = a.PhuongThucThanhToan,
+                                         TrangThaiGiaoHang = a.TrangThaiGiaoHang,
+                                         Diem = b.Diem,
+                                         TrangThaiLichSuTichDiem = b.TrangThai,
+                                         IDCTHD = c.ID,
+                                         DonGia = c.DonGia,
+                                         SoLuong = c.SoLuong,
+                                         TenKichCo = f.Ten,
+                                         TenMau = g.Ten,
+                                         TenSanPham = i.Ten,
+                                         DuongDan = h.DuongDan,
+                                         HinhThucGiamGia = k.HinhThucGiamGia,
+                                         GiaTri = k.GiaTri,
+                                         TiLeTieuDiem = l.TiLeTieuDiem,
+                                         TrangThaiDanhGia = d.TrangThai
+                                      }).ToListAsync();
+                
+                
+               
+                
+                return lstDonMuaCT.Where(p=>p.ID == idHoaDon).ToList();
+            }
+            catch
+            {
+                return new List<DonMuaChiTietViewModel>();
             }
         }
     }

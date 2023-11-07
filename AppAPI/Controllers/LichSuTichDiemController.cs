@@ -54,6 +54,18 @@ namespace AppAPI.Controllers
             return AllCTSP;
         }
         // laam end
+        [HttpGet("GetAllDonMua")]
+        public async Task<List<DonMuaViewModel>> GetAllDonMua(Guid IDkhachHang)
+        {
+            var listDonMua = await _lichsu.getAllDonMua(IDkhachHang);
+            return listDonMua;
+        }
+        [HttpGet("GetAllDonMuaChiTiet")]
+        public async Task<List<DonMuaChiTietViewModel>> GetAllDonMuaCT(Guid idHoaDon)
+        {
+            var listDonMuaCT = await _lichsu.getAllDonMuaChiTiet(idHoaDon);
+            return listDonMuaCT;
+        }
         // GET api/<LichSuTichDiemController>/5
         [HttpGet("{id}")]
         public LichSuTichDiem Get(Guid id)

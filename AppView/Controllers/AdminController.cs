@@ -1,5 +1,6 @@
 ﻿using AppData.Models;
 using AppData.ViewModels.SanPham;
+using AppView.IServices;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -9,11 +10,13 @@ namespace AppView.Controllers
     {
         private readonly HttpClient _httpClient;
         private readonly IWebHostEnvironment _hostEnvironment;
-        public AdminController(IWebHostEnvironment hostEnvironment)
+        private readonly IFileService _iFileService;
+        public AdminController(IWebHostEnvironment hostEnvironment,IFileService iFileService)
         {
             _httpClient = new HttpClient();
             _httpClient.BaseAddress = new Uri("https://localhost:7095/api/");
             _hostEnvironment = hostEnvironment;
+            _iFileService = iFileService;
         }
         public IActionResult HomePageAdmin(Guid id)
         {
@@ -64,14 +67,7 @@ namespace AppView.Controllers
         public async Task<IActionResult> AddSanPham(SanPhamRequest sanPhamRequest, IFormFile image)
         {
             string wwwrootPath = _hostEnvironment.WebRootPath;
-            string fileName = Path.GetFileNameWithoutExtension(image.FileName);
-            string extension = Path.GetExtension(image.FileName);
-            sanPhamRequest.DuongDanAnh = fileName = fileName + DateTime.Now.ToString("yymmssfff") + extension;
-            string path = Path.Combine(wwwrootPath + "/img/product/", fileName);
-            using(var fileStream = new FileStream(path, FileMode.Create))
-            {
-                await image.CopyToAsync(fileStream);
-            }
+            sanPhamRequest.DuongDanAnh = await _iFileService.AddFile(image,wwwrootPath);
             HttpResponseMessage response = _httpClient.PostAsJsonAsync(_httpClient.BaseAddress + "SanPham/AddSanPham", sanPhamRequest).Result;
             if (response.IsSuccessStatusCode)
             {
@@ -96,13 +92,13 @@ namespace AppView.Controllers
         [HttpPost]
         public async Task<IActionResult> AddChiTietSanPham(ChiTietSanPhamRequest request)
         {
-            string idSanPham = TempData["IDSanPham"].ToString();
+            string idSanPham = TempData.Peek("IDSanPham").ToString();
             request.IDSanPham = new Guid(idSanPham);
             var response = await _httpClient.PostAsJsonAsync(_httpClient.BaseAddress + "SanPham/AddChiTietSanPham", request);
             if (response.IsSuccessStatusCode)
             {
-                List<MauSac> lstMauSac = JsonConvert.DeserializeObject<List<MauSac>>(response.Content.ReadAsStringAsync().Result);
-                TempData["MauSacs"] = JsonConvert.SerializeObject(lstMauSac);
+                List<AnhRequest> lstAnhRequest = JsonConvert.DeserializeObject<List<AnhRequest>>(response.Content.ReadAsStringAsync().Result);
+                TempData["MauSacs"] = JsonConvert.SerializeObject(lstAnhRequest);
                 return RedirectToAction("AddAnhToMauSac");
             }
             else return BadRequest();
@@ -110,8 +106,22 @@ namespace AppView.Controllers
         [HttpGet]
         public IActionResult AddAnhToMauSac()
         {
-            var lstMauSac = JsonConvert.DeserializeObject<List<MauSac>>(TempData["MauSacs"].ToString());
-            return View(lstMauSac);
+            var lstAnhRequest = JsonConvert.DeserializeObject<List<AnhRequest>>(TempData["MauSacs"].ToString());
+            return View(lstAnhRequest);
+        }
+        [HttpPost]
+        public IActionResult AddAnhToMauSac(List<string> idMauSacs,List<IFormFile> images)
+        {
+            string wwwrootPath = _hostEnvironment.WebRootPath;
+            string idSanPham = TempData["IDSanPham"].ToString();
+            List<AnhRequest> lstAnhRequest = new List<AnhRequest>();
+            for (var i = 0; i < images.Count; i++)
+            {
+                lstAnhRequest.Add(new AnhRequest() { IDSanPham = new Guid(idSanPham), IDMauSac = new Guid(idMauSacs[i]), DuongDan = _iFileService.AddFile(images[i], wwwrootPath).Result });
+            }
+            HttpResponseMessage response = _httpClient.PostAsJsonAsync(_httpClient.BaseAddress + "SanPham/AddAnh", lstAnhRequest).Result;
+            if (response.IsSuccessStatusCode) return RedirectToAction("ProductManager");
+            else return BadRequest();
         }
     }
 }

@@ -64,11 +64,21 @@ namespace AppAPI.Controllers
             var sanPham = await _sanPhamServices.DeleteSanPham(id);
             return Ok();
         }
+        [HttpPost("AddAnh")]
+        public async Task<IActionResult> AddAnhToSanPham(List<AnhRequest> request)
+        {
+            var reponse = await _sanPhamServices.AddAnhToSanPham(request);
+            return Ok(reponse);
+        }
         #endregion
 
         #region ChiTietSanPham
-        //[HttpGet("GetAllChiTietSanPham/{id}")]
-        //public async Task<IActionResult> GetAllChiTietSanPham(Guid id)
+        [HttpGet("GetAllChiTietSanPhamHome")]
+        public async Task<IActionResult> GetAllChiTietSanPhamHome(string idSanPham)
+        {
+            var lstChiTietSanPham = await _sanPhamServices.GetAllChiTietSanPhamHome(new Guid(idSanPham));
+            return Ok(lstChiTietSanPham);
+        }
         [HttpGet("GetAllChiTietSanPhamAdmin")]
         public async Task<IActionResult> GetAllChiTietSanPham(Guid idSanPham)
         {
@@ -105,10 +115,11 @@ namespace AppAPI.Controllers
         }
         #endregion
 
+        #region Other
         [HttpGet("GetAllMauSac")]
         public async Task<IActionResult> GetAllMauSac()
         {
-            var lstMauSac =  await _sanPhamServices.GetAllMauSac();
+            var lstMauSac = await _sanPhamServices.GetAllMauSac();
             return Ok(lstMauSac);
         }
         [HttpGet("GetAllKichCo")]
@@ -123,5 +134,6 @@ namespace AppAPI.Controllers
             var lstChatLieu = await _sanPhamServices.GetAllChatLieu();
             return Ok(lstChatLieu);
         }
+        #endregion
     }
 }

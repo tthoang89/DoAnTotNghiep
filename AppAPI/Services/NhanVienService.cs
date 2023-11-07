@@ -33,13 +33,6 @@ namespace AppAPI.Services
             return _dbContext.NhanViens.ToList();
         }
 
-        public IEnumerable<NhanVien> GetByName(string name)
-        {
-            var nv = _dbContext.NhanViens.Where(x => x.Ten.ToLower().StartsWith(name.ToLower()));
-            return nv;
-
-        }
-
         public bool Update(Guid id, string ten, string email, string password, string sdt, string diachi, int trangthai, Guid idvaitro)
         {
             var nv = _dbContext.NhanViens.FirstOrDefault(x => x.ID == id);
@@ -59,31 +52,26 @@ namespace AppAPI.Services
             return false;
         }
 
-        public bool Add(string ten, string email, string password, string sdt, string diachi, int trangthai, Guid idvaitro)
+        public async Task<NhanVien> Add(string ten, string email, string password, string sdt, string diachi, int trangthai, Guid idvaitro)
         {
+            NhanVien nv = new NhanVien()
+            {
+                ID = Guid.NewGuid(),
+                Ten = ten,
+                Email = email,
+                PassWord = password,
+                SDT = sdt,
+                DiaChi = diachi,
+                TrangThai = trangthai,
+                IDVaiTro = idvaitro,
+            };
+            _dbContext.NhanViens.Add(nv);
+            _dbContext.SaveChanges();
+            return nv;
 
-            try
-            {
-                NhanVien nv = new NhanVien();
-                nv.ID = Guid.NewGuid();
-                nv.Ten = ten;
-                nv.Email = email;
-                nv.PassWord = password;
-                nv.SDT = sdt;
-                nv.DiaChi = diachi;
-                nv.TrangThai = trangthai;
-                nv.IDVaiTro =idvaitro;
-                _dbContext.NhanViens.Add(nv);
-                _dbContext.SaveChanges();
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
         }
 
-        public NhanVien? GetById(Guid id)
+        public NhanVien GetById(Guid id)
         {
             var nv = _dbContext.NhanViens.FirstOrDefault(nv => nv.ID == id);
             return nv;

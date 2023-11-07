@@ -142,6 +142,7 @@ namespace AppAPI.Services
                                 };
                                 reposLichSuTichDiem.Add(lichSuTichDiem);
                             }
+                            //dùng điểm
                             else
                             {
                                 if (khachHang.DiemTich >= hoaDon.Diem)

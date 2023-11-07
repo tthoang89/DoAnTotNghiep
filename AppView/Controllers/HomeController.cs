@@ -1,5 +1,6 @@
 ﻿using AppData.Models;
 using AppData.ViewModels;
+using AppData.ViewModels.BanOffline;
 using AppData.ViewModels.SanPham;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -40,7 +41,8 @@ namespace AppView.Controllers
         {
             return View();
         }
-
+        #region SanPham
+        [HttpGet]
         public IActionResult Shop(int? pages)
         {
             HttpResponseMessage responseLoaiSP = _httpClient.GetAsync(_httpClient.BaseAddress + "LoaiSP/getAll").Result;
@@ -74,6 +76,14 @@ namespace AppView.Controllers
             PagedList<SanPhamViewModel> lst = new PagedList<SanPhamViewModel>(lstSanpham, pageNumber, pageSize);
             return View(lst);
         }
+        [HttpGet]
+        public async Task<IActionResult> ProductDetail(string idSanPham)
+        {
+            HttpResponseMessage response = await _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllChiTietSanPhamHome?idSanPham="+ idSanPham);
+            var chiTietSanPham = JsonConvert.DeserializeObject<ChiTietSanPhamViewModelHome>(response.Content.ReadAsStringAsync().Result);
+            return View(chiTietSanPham);
+        }
+        #endregion
         #region Filter
         public IActionResult GetFilteredProducts([FromBody] FilterData filter)
         {
@@ -130,6 +140,7 @@ namespace AppView.Controllers
                             lstSanphamfn.Add(x);
                         }
                     }
+
                 }
             }
             else
@@ -241,13 +252,21 @@ namespace AppView.Controllers
                 {
                     lstSanphamfn = lstSanphamfn.OrderByDescending(p => p.NgayTao).ToList();
                 }
+                else if (filter.sortSP == "9")
+                {
+                    lstSanphamfn = lstSanphamfn.OrderByDescending(p => p.SoLuong).ToList();
+                }
             }
             List<SanPhamViewModel>lstSanPhamfnR = new List<SanPhamViewModel>();
             foreach (var item in lstSanphamfn)
             {
                 if (item.TrangThaiCTSP == 1)
                 {
-                    lstSanPhamfnR.Add(item);
+                    if (lstSanPhamfnR.FirstOrDefault(p => p.ID == item.ID) == null)
+                    {
+                        lstSanPhamfnR.Add(item);
+                    }
+                    
                 }
                 else
                 {
@@ -267,10 +286,10 @@ namespace AppView.Controllers
         [HttpGet]
         public IActionResult ShoppingCart()
         {
-            List<ChiTietSanPhamViewModelAdmin> bienThes = new List<ChiTietSanPhamViewModelAdmin>();
+            List<ChiTietSanPhamViewModel> bienThes = new List<ChiTietSanPhamViewModel>();
             if (HttpContext.Session.GetString(KeyCart) != null)
             {
-                bienThes = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModelAdmin>>(HttpContext.Session.GetString(KeyCart));
+                bienThes = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModel>>(HttpContext.Session.GetString(KeyCart));
             }
             long tongtien = 0;
             foreach (var x in bienThes)
@@ -363,8 +382,29 @@ namespace AppView.Controllers
         }
         public IActionResult PurchaseOrder()
         {
-
-            return View();
+            var session = HttpContext.Session.GetString("LoginInfor");
+            LoginViewModel loginViewModel = JsonConvert.DeserializeObject<LoginViewModel>(session);
+            List<DonMuaViewModel> donMuaViewModels = new List<DonMuaViewModel>();
+            HttpResponseMessage responseDonMua = _httpClient.GetAsync(_httpClient.BaseAddress + $"LichSuTichDiem/GetAllDonMua?IDkhachHang={loginViewModel.Id}").Result;
+            if (responseDonMua.IsSuccessStatusCode)
+            {
+                donMuaViewModels = JsonConvert.DeserializeObject<List<DonMuaViewModel>>(responseDonMua.Content.ReadAsStringAsync().Result);
+            }
+            return View("PurchaseOrder", donMuaViewModels);
+        }
+        public IActionResult PurchaseOrderDetail(Guid idHoaDon)
+        {
+            List<DonMuaChiTietViewModel> DonMuaCT = new List<DonMuaChiTietViewModel>();
+            HttpResponseMessage responseDonMuaCT = _httpClient.GetAsync(_httpClient.BaseAddress + $"LichSuTichDiem/GetAllDonMuaChiTiet?idHoaDon={idHoaDon}").Result;
+            if (responseDonMuaCT.IsSuccessStatusCode)
+            {
+                DonMuaCT = JsonConvert.DeserializeObject<List<DonMuaChiTietViewModel>>(responseDonMuaCT.Content.ReadAsStringAsync().Result);
+            }
+            return View("PurchaseOrderDetail", DonMuaCT);
+        }
+        public IActionResult ReviewsProduct(Guid idCTHD)
+        {
+            return PartialView();
         }
         [HttpPost]
         public IActionResult ChangePassword(string newPassword)

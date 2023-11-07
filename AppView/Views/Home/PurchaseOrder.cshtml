@@ -1,4 +1,5 @@
-﻿@model AppData.ViewModels.LoginViewModel
+﻿@using AppData.ViewModels;
+@model List<DonMuaViewModel>
 @{
     Layout = "_Layout";
 }
@@ -51,20 +52,20 @@
                 <div  id="navbar">
                     <div >
                         <label>
-                            <input type="radio" name="menu" />
+                            <input type="radio" name="menu" checked/>
                             <span>Tất cả</span>
                         </label>
                     </div>
                     <div >
                         <label>
                             <input type="radio" name="menu" />
-                            <span>Vận chuyển</span>
+                            <span>Chờ bàn giao</span>
                         </label>
                     </div>
                     <div >
                         <label>
                             <input type="radio" name="menu" />
-                            <span>Chờ giao hàng</span>
+                            <span>Đang giao</span>
                         </label>
                     </div>
                     <div >
@@ -93,34 +94,50 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">First</th>
-                        <th scope="col">Last</th>
-                        <th scope="col">Handle</th>
+                        <th scope="col">Mã đơn hàng</th>
+                        <th scope="col">Ngày Đặt</th>
+                        <th scope="col">Thành tiền</th>
+                        <th scope="col">Trạng thái giao hàng</th>
+                        <th scope="col">Điểm tích</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>1</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">2</th>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>2</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">3</th>
-                        <td>Larry</td>
-                        <td>the Bird</td>
-                        <td>3</td>
-                    </tr>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <th scope="row"><a asp-controller="Home" asp-action="PurchaseOrderDetail" asp-route-idHoaDon="@item.IDHoaDon">@item.IDHoaDon.ToString().Substring(0,8)</a></th>
+                            <td>@item.NgayTao</td>
+                            <td>@item.TongTien.ToString("n0") VNĐ</td>
+                            @if (item.TrangThaiGiaoHang == 2)
+                            {
+                                <td>Chờ xác nhận</td>
+                            }
+                            else if (item.TrangThaiGiaoHang == 3)
+                            {
+                                <td>Đang giao</td>
+                            }
+                            else if (item.TrangThaiGiaoHang == 6)
+                            {
+                                <td>Giao hàng thành công</td>
+                            }
+                            else if (item.TrangThaiGiaoHang == 7)
+                            {
+                                <td>Đơn hủy</td>
+                            }else
+                            {
+                                <td>Chờ xác nhận</td>
+                            }
+                            @if (item.TrangThaiLSTD == 1)
+                            {
+                                <td>@item.Diem</td>
+                            }else{
+                                <td>Người dùng sử dụng điểm</td>
+                            }
+                            
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>
     </div>
 </section>
-@await Html.PartialAsync("ChangePassword")
