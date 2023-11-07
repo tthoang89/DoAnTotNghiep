@@ -8,6 +8,7 @@ namespace AppAPI.IServices
     {
         public List<ChiTietHoaDon> GetAllCTHoaDon();
         public Task<ChiTietHoaDon> SaveCTHoaDon(HoaDonChiTietRequest chiTietHoaDon);
+        public Task<ChiTietHoaDon> UpdateSL(Guid id,int sl);
         public Task<bool> DeleteCTHoaDon(Guid id);
         public Task<List<HoaDonChiTietViewModel>> GetHDCTByIdHD(Guid idhd);
 

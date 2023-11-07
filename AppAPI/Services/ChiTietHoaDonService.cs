@@ -21,17 +21,17 @@ namespace AppAPI.Services
             var CTSPexist = _context.ChiTietHoaDons.Where(c => c.IDHoaDon == request.IdHoaDon).Any(c => c.IDCTSP == request.IdChiTietSanPham);
             if (CTSPexist != true) //k tồn tại -> chưa có hdct-> tạo
             {
-                var danhgia = new DanhGia()
-                {
-                    ID = request.Id,
-                    TrangThai = 0,
-                };
-                await _context.DanhGias.AddAsync(danhgia);
-                await _context.SaveChangesAsync();
+                //var danhgia = new DanhGia()
+                //{
+                //    ID = request.Id,
+                //    TrangThai = 0,
+                //};
+                //await _context.DanhGias.AddAsync(danhgia);
+                //await _context.SaveChangesAsync();
 
                 var hdct = new ChiTietHoaDon()
                 {
-                    ID = danhgia.ID,
+                    ID = new Guid(),
                     IDHoaDon = request.IdHoaDon,
                     IDCTSP = request.IdChiTietSanPham,
                     SoLuong = request.SoLuong,
@@ -75,7 +75,7 @@ namespace AppAPI.Services
             _context.ChiTietSanPhams.Update(ctsp);
             await _context.SaveChangesAsync();
             //Xóa đánh giá 
-            var danhgia = await _context.DanhGias.Where(c => c.ID == id).FirstOrDefaultAsync();
+            var danhgia = await _context.DanhGias.Where(c => c.IDDanhGia == id).FirstOrDefaultAsync();
             _context.DanhGias.Remove(danhgia);
             await _context.SaveChangesAsync();
             _context.ChiTietHoaDons.Remove(exist);
@@ -109,6 +109,28 @@ namespace AppAPI.Services
                               DonGia = cthd.DonGia,
                           }).ToListAsync();
             return result;
+        }
+
+        public async Task<ChiTietHoaDon> UpdateSL(Guid id, int sl)
+        {
+            try
+            {
+                var cthd = _context.ChiTietHoaDons.Find(id);
+                var ctsp = _context.ChiTietSanPhams.Find(cthd.IDCTSP);
+
+                var chenhlech = cthd.SoLuong - sl;
+                ctsp.SoLuong += chenhlech;
+                _context.ChiTietSanPhams.Update(ctsp);
+                await _context.SaveChangesAsync();
+                cthd.SoLuong = sl;
+
+                _context.ChiTietHoaDons.Update(cthd);
+                await _context.SaveChangesAsync();
+                return cthd;
+            }catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

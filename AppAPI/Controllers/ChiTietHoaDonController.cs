@@ -36,6 +36,12 @@ namespace AppAPI.Controllers
             var hdct = await _idchiTietHoaDon.SaveCTHoaDon(request);
             return Ok(hdct);
         }
+        [HttpPost("UpdateSL")]
+        public async Task<IActionResult> UpdateSL(Guid id, int sl)
+        {
+            var hdct = await _idchiTietHoaDon.UpdateSL(id,sl);
+            return Ok(hdct);
+        }
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteLoaiSP(Guid id)
         {
