@@ -21,7 +21,7 @@ namespace AppView.Controllers
         [HttpGet]
         public async Task<IActionResult> BanHang()
         {
-            ViewBag.IdNhanVien = "4fdf0898-771a-48cf-b6cf-64090a764de7";
+            ViewBag.IdNhanVien = "d34a62d4-a0c1-4ea2-8a1c-4212c952abe9";
             var listhdcho = await _httpClient.GetFromJsonAsync<List<HoaDon>>("HoaDon/GetAllHDCho");
             listhdcho = listhdcho.OrderByDescending(c => c.NgayTao).ToList();
             ViewData["lsthdcho"] = listhdcho;
@@ -122,7 +122,7 @@ namespace AppView.Controllers
             var hdrequest = new HoaDonThanhToanRequest()
             {
                 Id = request.Id,
-                IdNhanVien = Guid.Parse("4fdf0898-771a-48cf-b6cf-64090a764de7"),
+                IdNhanVien = Guid.Parse("d34a62d4-a0c1-4ea2-8a1c-4212c952abe9"),
                 NgayThanhToan = DateTime.Now,
                 IdVoucher = request.IdVoucher,
                 TrangThai = 7,

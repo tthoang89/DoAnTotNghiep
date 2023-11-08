@@ -11,6 +11,9 @@
         public string? Email { get; set; }
         public string? DiaChi { get; set; }
         public int TienShip { get; set; }
+        public int? ThueVAT { get; set; }
+        public int? TongTien { get; set; }
+        public int LoaiHD { get; set; } // Off-1 // On-0
         public string? PhuongThucThanhToan { get; set; }
         public int TrangThaiGiaoHang { get; set; }
         //Các trạng thái của đơn hàng
@@ -27,9 +30,6 @@
          */
         public Guid? IDNhanVien { get; set; }
         public Guid? IDVoucher { get; set; }
-        public int? ThueVAT { get; set; }
-        public int? TongTien { get; set; }
-        public int LoaiHD { get; set; } // Hóa đơn Online-0, Tại quầy-1
         public virtual IEnumerable<LichSuTichDiem>? LichSuTichDiems { get; set; }
         public virtual NhanVien? NhanVien { get; set; }
         public virtual Voucher? Voucher { get; set; }

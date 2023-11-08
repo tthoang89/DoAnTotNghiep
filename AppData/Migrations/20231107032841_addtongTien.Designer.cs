@@ -4,6 +4,7 @@ using AppData.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppData.Migrations
 {
     [DbContext(typeof(AssignmentDBContext))]
-    partial class AssignmentDBContextModelSnapshot : ModelSnapshot
+    [Migration("20231107032841_addtongTien")]
+    partial class addtongTien
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -266,13 +268,13 @@ namespace AppData.Migrations
                     b.Property<string>("TenNguoiNhan")
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int?>("ThueVAT")
+                    b.Property<int>("ThueVAT")
                         .HasColumnType("int");
 
                     b.Property<int>("TienShip")
                         .HasColumnType("int");
 
-                    b.Property<int?>("TongTien")
+                    b.Property<int>("TongTien")
                         .HasColumnType("int");
 
                     b.Property<int>("TrangThaiGiaoHang")

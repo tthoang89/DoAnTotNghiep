@@ -190,6 +190,8 @@ namespace AppAPI.Services
                 hoaDon1.IDNhanVien = idnhanvien;
                 hoaDon1.NgayTao = DateTime.Now;
                 hoaDon1.TrangThaiGiaoHang = 1;
+                hoaDon1.LoaiHD = 1;
+                hoaDon1.MaHD = (hoaDon1.ID).ToString().Substring(0, 8);
                 if (reposHoaDon.Add(hoaDon1))
                 {
                     return true;
