@@ -19,9 +19,9 @@ namespace AppView.Controllers
         }
         //Giao diện bán hàng
         [HttpGet]
-        public async Task<IActionResult> BanHang()
+        public async Task<IActionResult> BanHang(Guid id)
         {
-            ViewBag.IdNhanVien = "d34a62d4-a0c1-4ea2-8a1c-4212c952abe9";
+            ViewBag.IdNhanVien = id;
             var listhdcho = await _httpClient.GetFromJsonAsync<List<HoaDon>>("HoaDon/GetAllHDCho");
             listhdcho = listhdcho.OrderByDescending(c => c.NgayTao).ToList();
             ViewData["lsthdcho"] = listhdcho;
