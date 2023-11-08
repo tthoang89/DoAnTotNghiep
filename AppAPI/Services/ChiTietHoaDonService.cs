@@ -21,17 +21,17 @@ namespace AppAPI.Services
             var CTSPexist = _context.ChiTietHoaDons.Where(c => c.IDHoaDon == request.IdHoaDon).Any(c => c.IDCTSP == request.IdChiTietSanPham);
             if (CTSPexist != true) //k tồn tại -> chưa có hdct-> tạo
             {
-                //var danhgia = new DanhGia()
-                //{
-                //    ID = request.Id,
-                //    TrangThai = 0,
-                //};
-                //await _context.DanhGias.AddAsync(danhgia);
-                //await _context.SaveChangesAsync();
+                var danhgia = new DanhGia()
+                {
+                    ID = request.Id,
+                    TrangThai = 0,
+                };
+                await _context.DanhGias.AddAsync(danhgia);
+                await _context.SaveChangesAsync();
 
                 var hdct = new ChiTietHoaDon()
                 {
-                    ID = new Guid(),
+                    ID = danhgia.ID,
                     IDHoaDon = request.IdHoaDon,
                     IDCTSP = request.IdChiTietSanPham,
                     SoLuong = request.SoLuong,

@@ -13,6 +13,9 @@ namespace AppData.ViewModels.BanOffline
         public Guid IdPTTT { get; set; }
         public DateTime NgayThanhToan { get; set; }
         public Guid IdVoucher { get; set; }
+        public int TongTien { get; set; }
+        public int ThueVAT { get; set; }
+
         public int TrangThai { get; set; }
     }
 }

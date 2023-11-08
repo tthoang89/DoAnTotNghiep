@@ -38,54 +38,53 @@
     </div>
 </div>
 <script type="text/javascript">
-    var pageSize =15;// Tối đa 10sp 1 trang
-    var pageIndex =1;
+    var pageSizehd =15;// Tối đa 10sp 1 trang
+    var pageIndexhd =1;
     $(document).ready(function() {
         loadBill();
     })
     //Load Danh sách hóa đơn
-               function loadBill() {
-                $.ajax({
-                    url: "/BanHangTaiQuay/LoadAllHoaDon",
-                    type: "GET",
-                    data:{
-                    page: pageIndex,
-                    pagesize:pageSize,
-                    },
-                    dataType: "json",
-                    success: function(response) {
-                        console.log(response.data);
-                        $(".billRecord").empty();
-                        for (let i = 0; i < response.data.length; i++) {
-                            $(".billRecord").append(`
-                                                        <tr onclick="billDetail('response.data[i]');">
-                                                            <th scope="row">response.data[i]</th>
-                                                            <td>response.data[i].ngayThanhToan</td>
-                                                            <td>response.data[i].khachHang</td>
-                                                            <td>response.data[i].tongTien</td>
-                                                            <td>response.data[i].giamGia</td>
-                                                            <td>response.data[i].trangThai</td>
-                                                        </tr>
-                                                        `);
-                        }
-                        paging(response.total, function(){
-                                loadBill();
-                        });
-                    },
-                    error: function(err) {
-                        console.log('Error:', err);
+        function loadBill() {
+            $.ajax({
+                url: "/BanHangTaiQuay/LoadAllHoaDon",
+                type: "GET",
+                data:{
+                page: pageIndexhd,
+                pagesize:pageSizehd,
+                },
+                dataType: "json",
+                success: function(response) {
+                    $(".billRecord").empty();
+                    for (let i = 0; i < response.data.length; i++) {
+                        $(".billRecord").append(`
+                                                    <tr onclick="billDetail('response.data[i]');">
+                                                        <th scope="row">response.data[i]</th>
+                                                        <td>response.data[i].ngayThanhToan</td>
+                                                        <td>response.data[i].khachHang</td>
+                                                        <td>response.data[i].tongTien</td>
+                                                        <td>response.data[i].giamGia</td>
+                                                        <td>response.data[i].trangThai</td>
+                                                    </tr>
+                                                    `);
                     }
-                });
-            }
+                    paginghd(response.total, function(){
+                            loadBill();
+                    });
+                },
+                error: function(err) {
+                    console.log('Error:', err);
+                }
+            });
+        }
 
-    //Phân trang
-        function paging(totalrow, callback){
-            var totalgages = Math.ceil(totalrow/pageSize);
+//Phân trang
+        function paginghd(totalrow, callback){
+            var totalgages = Math.ceil(totalrow/pageSizehd);
                 $("#pagination1").twbsPagination({
                 totalPages: totalgages,
                 visiblePages: 5,
                 onPageClick: function (event, page) {
-                    pageIndex = page;
+                    pageIndexhd = page;
                     setTimeout(callback,200);
                 }
             });

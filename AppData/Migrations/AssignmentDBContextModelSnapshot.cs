@@ -244,6 +244,13 @@ namespace AppData.Migrations
                     b.Property<Guid?>("IDVoucher")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("LoaiHD")
+                        .HasColumnType("int");
+
+                    b.Property<string>("MaHD")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("NgayTao")
                         .HasColumnType("datetime");
 
@@ -259,7 +266,13 @@ namespace AppData.Migrations
                     b.Property<string>("TenNguoiNhan")
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<int?>("ThueVAT")
+                        .HasColumnType("int");
+
                     b.Property<int>("TienShip")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TongTien")
                         .HasColumnType("int");
 
                     b.Property<int>("TrangThaiGiaoHang")

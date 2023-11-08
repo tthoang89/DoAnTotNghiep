@@ -16,7 +16,6 @@ namespace AppData.Configurations
             builder.Property(x => x.Email).HasColumnType("nvarchar(50)");
             builder.Property(x => x.DiaChi).HasColumnType("nvarchar(100)");
             builder.Property(x => x.TienShip).HasColumnType("int");
-            builder.Property(x => x.PhuongThucThanhToan).HasColumnType("nvarchar(20)");
             builder.Property(x => x.TrangThaiGiaoHang).HasColumnType("int");
             builder.HasOne(x => x.NhanVien).WithMany(x => x.HoaDons).HasForeignKey(x => x.IDNhanVien);
             builder.HasOne(x => x.Voucher).WithMany(x => x.HoaDons).HasForeignKey(x => x.IDVoucher);

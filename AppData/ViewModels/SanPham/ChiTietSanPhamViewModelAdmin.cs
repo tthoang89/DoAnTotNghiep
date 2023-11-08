@@ -8,6 +8,8 @@ namespace AppData.ViewModels.SanPham
 {
     public class ChiTietSanPhamViewModelAdmin
     {
+        public Guid ID { get; set; }
+        public string TenMauSac { get; set; }
         public string MaMauSac { get; set; }
         public string TenKichCo { get; set; }
         public int SoLuong { get; set; }
