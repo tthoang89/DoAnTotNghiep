@@ -122,10 +122,17 @@ namespace AppAPI.Services
                             chiTietHoaDon.SoLuong = x.SoLuong;
                             chiTietHoaDon.DonGia = x.DonGia;
                             chiTietHoaDon.TrangThai = 1;
+                            DanhGia danhGia = new DanhGia();
+                            danhGia.ID = chiTietHoaDon.ID;
+                            danhGia.Sao = null;
+                            danhGia.BinhLuan = null;
+                            danhGia.TrangThai = 0;
+                            reposDanhGia.Add(danhGia);
                             reposChiTietHoaDon.Add(chiTietHoaDon);
                             var CTsanPham = repsCTSanPham.GetAll().FirstOrDefault(p => p.ID == x.IDChiTietSanPham);
                             CTsanPham.SoLuong -= chiTietHoaDon.SoLuong;
                             repsCTSanPham.Update(CTsanPham);
+                            
                         }
                         //tích điểm, dùng điểm
                         if (hoaDon.IDNguoiDung != null)
