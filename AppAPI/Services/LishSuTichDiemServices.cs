@@ -143,8 +143,8 @@ namespace AppAPI.Services
                                       join e in context.ChiTietSanPhams on c.IDCTSP equals e.ID
                                       join f in context.KichCos on e.IDKichCo equals f.ID
                                       join g in context.MauSacs on e.IDMauSac equals g.ID
-                                      join h in context.Anhs on g.ID equals h.IDMauSac
                                       join i in context.SanPhams on e.IDSanPham equals i.ID
+                                      join h in context.Anhs on i.ID equals h.IDSanPham
                                       join k in context.Vouchers on a.IDVoucher equals k.ID
                                       join l in context.QuyDoiDiems on b.IDQuyDoiDiem equals l.ID
                                       select new DonMuaChiTietViewModel()
@@ -182,6 +182,40 @@ namespace AppAPI.Services
             catch
             {
                 return new List<DonMuaChiTietViewModel>();
+            }
+        }
+
+        public async Task<ChiTietHoaDonDanhGiaViewModel> getCTHDDanhGia(Guid idcthd)
+        {
+            try
+            {
+                var getCTHDDanhGia = (from a in context.ChiTietHoaDons.Where(p=>p.ID == idcthd)
+                                        join b in context.ChiTietSanPhams on a.IDCTSP equals b.ID
+                                        join c in context.KichCos on b.IDKichCo equals c.ID
+                                        join d in context.MauSacs on b.IDMauSac equals d.ID
+                                        join e in context.SanPhams on b.IDSanPham equals e.ID
+                                        join f in context.Anhs on e.ID equals f.IDSanPham
+                                        join g in context.HoaDons on a.IDHoaDon equals g.ID
+                                       
+                                        select new ChiTietHoaDonDanhGiaViewModel()
+                                        {
+                                            ID = a.ID,
+                                            TenSanPham = e.Ten,
+                                            TenMau = d.Ten,
+                                            TenKichThuoc = c.Ten,
+                                            DuongDan = f.DuongDan,
+                                            IDHoaDon = g.ID
+                                            
+                                        }).FirstOrDefault();
+
+
+
+
+                return getCTHDDanhGia;
+            }
+            catch
+            {
+                return new ChiTietHoaDonDanhGiaViewModel();
             }
         }
     }

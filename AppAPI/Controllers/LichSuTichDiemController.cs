@@ -60,6 +60,11 @@ namespace AppAPI.Controllers
             var listDonMua = await _lichsu.getAllDonMua(IDkhachHang);
             return listDonMua;
         }
+        [HttpGet("GetCTHDDANHGIA")]
+        public Task<ChiTietHoaDonDanhGiaViewModel> getCTHDDanhGia(Guid idhdct)
+        {
+            return _lichsu.getCTHDDanhGia(idhdct);
+        }
         [HttpGet("GetAllDonMuaChiTiet")]
         public async Task<List<DonMuaChiTietViewModel>> GetAllDonMuaCT(Guid idHoaDon)
         {

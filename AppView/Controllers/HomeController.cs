@@ -281,7 +281,6 @@ namespace AppView.Controllers
             return PartialView("_ReturnProducts", lstSanPhamfnR);
         }
         #endregion
-
         #region Cart
         [HttpGet]
         public IActionResult ShoppingCart()
@@ -402,9 +401,15 @@ namespace AppView.Controllers
             }
             return View("PurchaseOrderDetail", DonMuaCT);
         }
-        public IActionResult ReviewsProduct(Guid idCTHD)
+        public IActionResult ReviewProducts(Guid idCTHD)
         {
-            return PartialView();
+            ChiTietHoaDonDanhGiaViewModel hdctDanhGia = new ChiTietHoaDonDanhGiaViewModel();
+            HttpResponseMessage responseDonMuaCT = _httpClient.GetAsync(_httpClient.BaseAddress + $"LichSuTichDiem/GetCTHDDANHGIA?idhdct={idCTHD}").Result;
+            if (responseDonMuaCT.IsSuccessStatusCode)
+            {
+                hdctDanhGia = JsonConvert.DeserializeObject<ChiTietHoaDonDanhGiaViewModel>(responseDonMuaCT.Content.ReadAsStringAsync().Result);
+            }
+            return View("ReviewProducts",hdctDanhGia);
         }
         [HttpPost]
         public IActionResult ChangePassword(string newPassword)
@@ -417,6 +422,31 @@ namespace AppView.Controllers
             HttpContext.Session.Remove("LoginInfor");
             if(response.IsSuccessStatusCode) return RedirectToAction("Login");
             else return BadRequest();
+        }
+        public IActionResult DanhGiaSanPham([FromBody] DanhGiaCTHDViewModel danhGiaCTHDView)
+        {
+            HttpResponseMessage responseDonMuaCT = _httpClient.PutAsync(_httpClient.BaseAddress + $"DanhGia?idCTHD={danhGiaCTHDView.idCTHD}&soSao={danhGiaCTHDView.soSao}&binhLuan={danhGiaCTHDView.danhgia}",null).Result;
+            if (responseDonMuaCT.IsSuccessStatusCode)
+            {
+                RedirectToAction("PurchaseOrderDetail", danhGiaCTHDView.idHD);
+            }
+            return RedirectToAction("PurchaseOrderDetail", danhGiaCTHDView.idHD);
+        }
+        public IActionResult GetHoaDonByTrangThai([FromBody] HoaDon danhGiaCTHDView)
+        {
+            var session = HttpContext.Session.GetString("LoginInfor");
+            LoginViewModel loginViewModel = JsonConvert.DeserializeObject<LoginViewModel>(session);
+            List<DonMuaViewModel> donMuaViewModels = new List<DonMuaViewModel>();
+            HttpResponseMessage responseDonMua = _httpClient.GetAsync(_httpClient.BaseAddress + $"LichSuTichDiem/GetAllDonMua?IDkhachHang={loginViewModel.Id}").Result;
+            if (responseDonMua.IsSuccessStatusCode)
+            {
+                donMuaViewModels = JsonConvert.DeserializeObject<List<DonMuaViewModel>>(responseDonMua.Content.ReadAsStringAsync().Result);
+            }
+            if (danhGiaCTHDView.TrangThaiGiaoHang != 0 && danhGiaCTHDView.TrangThaiGiaoHang != null)
+            {
+                donMuaViewModels = donMuaViewModels.Where(p => p.TrangThaiGiaoHang == danhGiaCTHDView.TrangThaiGiaoHang).ToList();
+            }
+            return PartialView("_ReturnHoaDon", donMuaViewModels);
         }
         public IActionResult LogOut()
         {

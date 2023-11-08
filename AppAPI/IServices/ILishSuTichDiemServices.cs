@@ -12,5 +12,6 @@ namespace AppAPI.IServices
         public List<LichSuTichDiem> GetAll();
         public Task<List<DonMuaViewModel>> getAllDonMua(Guid idKhachHang);
         public Task<List<DonMuaChiTietViewModel>> getAllDonMuaChiTiet(Guid idHoaDon);
+        public Task<ChiTietHoaDonDanhGiaViewModel> getCTHDDanhGia (Guid idcthd);
     }
 }
