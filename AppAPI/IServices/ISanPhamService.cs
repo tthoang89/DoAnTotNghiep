@@ -11,7 +11,7 @@ namespace AppAPI.IServices
         Task<List<SanPhamViewModel>> TimKiemSanPham(SanPhamTimKiemNangCao sp);
         Task<SanPhamDetail> GetSanPhamById(Guid id);
         Task<List<SanPhamViewModel>> GetSanPhamByIdDanhMuc(Guid idloaisp);
-        Task<bool> AddSanPham(SanPhamRequest request);
+        Task<ChiTietSanPhamUpdateRequest> AddSanPham(SanPhamRequest request);
         Task<bool> UpdateSanPham(SanPhamRequest request);
         Task<bool> DeleteSanPham(Guid id);
         bool CheckTrungTenSP(SanPhamRequest lsp);
@@ -34,8 +34,9 @@ namespace AppAPI.IServices
         Task<List<ChiTietSanPhamViewModelAdmin>> GetAllChiTietSanPhamAdmin(Guid idSanPham);
         Task<bool> DeleteChiTietSanPham(Guid id);
         Task<bool> UpdateChiTietSanPham(ChiTietSanPham chiTietSanPham);
-        Task<List<AnhRequest>> AddChiTietSanPham(ChiTietSanPhamRequest chiTietSanPham);
-        AnhRequest? AddChiTietSanPham(MauSac mauSac, string tenKichCo,Guid idSanPham);
+        public Task<bool> AddChiTietSanPhamFromSanPham(ChiTietSanPhamUpdateRequest request);
+        //Task<List<AnhRequest>> AddChiTietSanPham(ChiTietSanPhamUpdateRequest chiTietSanPham);
+        //AnhRequest? AddChiTietSanPham(MauSac mauSac, string tenKichCo,Guid idSanPham);
         //Task<bool> IsExistChiTietSanPham(string maMauSac, string tenKichCo);
         #endregion
         Task<List<MauSac>> GetAllMauSac();

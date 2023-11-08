@@ -3,7 +3,56 @@
     Layout = "_Layout";
 }
 <link href="~/css/productdetail.css" rel="stylesheet" type="text/css" />
+<style>
+    #filter-color input[type="radio"], #filter-size input[type="radio"], #LoaiSpFilter input[type="radio"], #filter-material input[type="radio"] {
+        display: none;
+    }
 
+    #filter-color label input[type="radio"]:checked ~ span, #filter-size label input[type="radio"]:checked ~ span, #LoaiSpFilter label input[type="radio"]:checked ~ span, #filter-material label input[type="radio"]:checked ~ span {
+        background: black;
+        color: #e5e5e5;
+    }
+
+    #filter-color label span, #filter-size label span, #filter-material label span, #LoaiSpFilter label span {
+        color: #111111;
+        font-size: 15px;
+        font-weight: 700;
+        text-transform: uppercase;
+        display: inline-block;
+        border: 1px solid #e5e5e5;
+        padding: 6px 25px;
+        margin-bottom: 10px;
+        margin-right: 5px;
+        cursor: pointer;
+    }
+
+    #tronMau label {
+        left: -3px;
+        top: -3px;
+        height: 36px;
+        width: 36px;
+        border: 1px solid #e5e5e5;
+        content: "";
+        border-radius: 50%;
+        border: 2px solid black;
+        align-items: center;
+        justify-content: center;
+        display: flex;
+    }
+
+    #tronMau svg {
+        visibility: hidden
+    }
+
+    #tronMau input[type="radio"]:checked ~ label svg {
+        visibility: visible
+    }
+
+    #filter-color label span:hover, #filter-size label span:hover, #filter-material label span:hover, #LoaiSpFilter label span:hover {
+        background: black;
+        color: white;
+    }
+</style>
 <div class="container mt-5 mb-5">
     <div class="card">
         <div class="row g-0">
@@ -14,7 +63,7 @@
                     </div>
                     <div class="thumbnail_images">
                         <ul id="thumbnail">
-                            @foreach(var x in Model.Anhs)
+                            @foreach (var x in Model.Anhs)
                             {
                                 <li><img onclick="changeImage(this)" src="~/img/product/@x.DuongDan" width="70"></li>
                             }
@@ -40,13 +89,32 @@
                     </div>
                     <div class="mt-5">
                         <span class="fw-bold">Màu Sắc</span>
-                        <div class="colors">
-                            <ul id="colors">
-                                @foreach(var item in Model.MaMauSacs)
+                        <div class="colors" id="filter-color">
+                            
+                                @foreach (var item in Model.MaMauSacs.Distinct())
                                 {
-                                    <li id="marker-1">@item</li>
-                                }                               
-                            </ul>
+                                <label id="tronMau">
+                                    <input type="radio" class="btn-check" id="btn-check-outlined_@item" autocomplete="off" val="@item" name="color">
+                                    <label for="btn-check-outlined_@item" style="background-color:@item">
+                                        @if (item == "#000000")
+                                        {
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" color="white" class="bi bi-check-circle" viewBox="0 0 16 16">
+                                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                                <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z" />
+                                            </svg>
+                                        }
+                                        else
+                                        {
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
+                                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                                <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z" />
+                                            </svg>
+                                        }
+
+                                    </label>
+                                </label>
+                                }
+                            
                         </div>
                     </div>
                     <div class="mt-5">
@@ -55,7 +123,7 @@
                             <ul id="sizes">
                                 @foreach (var item in Model.TenKichCo)
                                 {
-                                    <li id="marker-1">@item</li>
+                                    <li>@item</li>
                                 }
                             </ul>
                         </div>

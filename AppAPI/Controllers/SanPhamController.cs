@@ -86,10 +86,10 @@ namespace AppAPI.Controllers
             return Ok(lstChiTietSanPham);
         }
         [HttpPost("AddChiTietSanPham")]
-        public async Task<IActionResult> AddChiTietSanPham(ChiTietSanPhamRequest request)
+        public async Task<IActionResult> AddChiTietSanPham(ChiTietSanPhamUpdateRequest request)
         {
             if (request == null) return BadRequest();
-            var response = await _sanPhamServices.AddChiTietSanPham(request);
+            var response = await _sanPhamServices.AddChiTietSanPhamFromSanPham(request);
             return Ok(response);
         }
         [HttpGet("GetAllChiTietSanPham")]
