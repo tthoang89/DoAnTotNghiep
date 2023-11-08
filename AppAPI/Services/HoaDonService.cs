@@ -142,6 +142,7 @@ namespace AppAPI.Services
                                 };
                                 reposLichSuTichDiem.Add(lichSuTichDiem);
                             }
+                            //dùng điểm
                             else
                             {
                                 if (khachHang.DiemTich >= hoaDon.Diem)
@@ -271,6 +272,23 @@ namespace AppAPI.Services
         {
             return reposHoaDon.GetAll().Where(c=> c.TrangThaiGiaoHang == 1).ToList();
         }
+        //Nhinh
+        //public List<HoaDonThanhToanViewModel> GetAllHDQly()
+        //{
+        //    var result = (from hd in reposHoaDon.GetAll()
+        //                  join cthd in reposChiTietHoaDon.GetAll() on hd.ID equals cthd.IDHoaDon
+        //                  join lstd in reposLichSuTichDiem.GetAll() on hd.ID equals lstd.IDHoaDon
+        //                  join kh in reposKhachHang.GetAll() on lstd.IDKhachHang equals kh.IDKhachHang
+        //                  select new HoaDonThanhToanViewModel()
+        //                  {
+        //                      Id = hd.ID,
+        //                      KhachHang = kh.Ten == null ? "Khách lẻ":kh.Ten,
+        //                      NhanVien = null,
+        //                      NgayThanhToan = hd.NgayThanhToan,
+        //                      TongSL = 
+
+        //                  }
+        //}
 
         public List<HoaDon> GetAllHoaDon()
         {

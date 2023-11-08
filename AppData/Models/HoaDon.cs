@@ -3,6 +3,7 @@
     public class HoaDon
     {
         public Guid ID { get; set; }
+        public string MaHD { get; set; }
         public DateTime NgayTao { get; set; }
         public DateTime? NgayThanhToan { get; set; }
         public string? TenNguoiNhan { get; set; }
@@ -26,6 +27,9 @@
          */
         public Guid? IDNhanVien { get; set; }
         public Guid? IDVoucher { get; set; }
+        public int? ThueVAT { get; set; }
+        public int? TongTien { get; set; }
+        public int LoaiHD { get; set; } // Hóa đơn Online-0, Tại quầy-1
         public virtual IEnumerable<LichSuTichDiem>? LichSuTichDiems { get; set; }
         public virtual NhanVien? NhanVien { get; set; }
         public virtual Voucher? Voucher { get; set; }

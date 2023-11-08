@@ -6,7 +6,7 @@
 <div class="d-flex flex-column" style="height:100%">
     <form class="row g-3 p-3">
         <div class="d-flex flex-row lh-1">
-            <div class="flex-fill"><label id="nhanVien" value="">@Model.NhanVien</label></div>
+            <div class="flex-fill text-start"><p id="nhanVien"></p>@Model.NhanVien</div>
             <div class="flex-fill text-end"><p id="ngay"></p>@Model.NgayThanhToan</div>
         </div>
         <hr />
@@ -21,10 +21,6 @@
         <div class="d-flex flex-row lh-1">
             <div class="flex-fill"><label for="inputEmail5" class="form-label fw-bold">Tổng tiền hàng</label></div>
             <div class="flex-fill text-end"> <p id="tongTien">@Model.TongTien.ToString("n0")</p></div>
-        </div>
-        <div class="d-flex flex-row lh-1">
-            <div class="flex-fill"><label for="inputEmail5" class="form-label fw-bold">Giảm giá</label></div>
-            <div class="flex-fill text-end"> <input type="number" class="form-control" id="giamGia"></div>
         </div>
         <div class="d-flex flex-row lh-1">
             <div class="flex-fill"><label for="inputEmail5" class="form-label fw-bold">Khách cần trả</label></div>

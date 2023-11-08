@@ -23,10 +23,10 @@
             </li>
         </ul>
         <div class="tab-content pt-2 h-100" id="borderedTabContent" style=" background:#f0f1f3">
-            <div class="tab-pane fade show active" id="banhang"  style="height:85vh" role="tabpanel" aria-labelledby="banhang-tab">
+            <div class="tab-pane fade show active" id="banhang" style="height:85vh" role="tabpanel" aria-labelledby="banhang-tab">
                 <!--Chỗ bán hàng-->
                 <div class="row d-flex flex-row bg-primary text-white ms-1 me-1" style="background:#5372F0;height:50px;">
-                    <div class="col-5 d-flex justify-content-start" style="padding-left: 20px; width:550px">
+                    <div class="col-5 d-flex justify-content-start" style="padding-left: 20px; width:540px">
                         <div class="search-product d-flex align-items-center">
                             <div class="search-bar">
                                 <form class="search-form d-flex align-items-center" method="POST" action="#">
@@ -38,9 +38,10 @@
                     </div>
 
                     <!--Hiển thị danh sách hóa đơn chờ-->
-                    <div class="col-7 d-flex" style="max-width:1400px; min-width:700px">
-                        <div class="tabbill">
-                            <div class="icon"><i id="left" class="fa-solid fa-angle-left"></i></div>
+                    <div class="col-7 d-flex flex-shrink-1">
+                        <div class="tabbill flex-grow-1">
+                            <div class="icon me-auto"><i id="left" class="fa-solid fa-angle-left"></i></div>
+
                             @if (lsthdcho != null)
                             {
                                 <ul class="tabs-box">
@@ -59,9 +60,9 @@
                                     }
                                 </ul>
                             }
-                            <div class="icon"><i id="right" class="fa-solid fa-angle-right"></i></div>
+                            <div class="icon ms-auto"><i id="right" class="fa-solid fa-angle-right"></i></div>
                         </div>
-                        <div class="me-auto">
+                        <div class="me-4 ms-auto">
                             <div class="btn-create d-flex align-items-center">
                                 <button type="button" onclick="addHDCho()" class="btn btn-primary d-flex align-items-center ms-auto" title="Thêm mới">
                                     <i class="bi bi-plus-circle"></i>
@@ -94,10 +95,9 @@
                                 </div>
                             </div>
                             <div class="search-product d-flex align-items-center flex-grow-1 ms-2">
-                                <div class="row" style="width:100%">
-                                    <label for="inputText" class="col-sm-3 col-form-label text-end">Ghi chú</label>
-                                    <div class="col-sm-9">
-                                        <input type="text" class="form-control" id="ghichu" placeholder="Nhập ghi chú">
+                                <div class="d-lex flex-row me-3" style="width:100%">
+                                    <div class="search-form d-flex flex-grow-1 align-items-center">
+                                        <input type="text" id="ghichu" placeholder="Nhập ghi chú" style="width:100%">
                                     </div>
                                 </div>
                             </div>
@@ -243,19 +243,17 @@
                         $(".product-list").empty();
                         for (let i = 0; i < response.data.length; i++) {
                             $(".product-list").append(`
-                                                        <li class="product-item" onclick="addHDCT('${response.data[i].id}',${response.data[i].giaBan})">
-                                                            <a class="row g-0">
+                                                        <li class="product-item d-flex flex-row" onclick="addHDCT('${response.data[i].id}',${response.data[i].giaBan})">
                                                                 <div class="product-img">
                                                                     <img src="/img/variants/jeans-basic-den.png" class="img-fluid rounded-start" alt="...">
                                                                 </div>
-                                                                <div class="product-detail d-flex flex-column">
+                                                                <div class="product-detail d-flex flex-column flex-grow-1">
                                                                     <span class="product-name mt-1">${response.data[i].ten}</span>
                                                                     <div class="product-infor mt-auto">
                                                                         <span style="flex-basis: 59.5%;"><b style="color:blue;font-size:14px; font-weight:700">${response.data[i].giaBan.toLocaleString()}</b></span>
                                                                         <span style="flex-basis: 49.5%;">SL: ${response.data[i].soLuong}</span>
                                                                     </div>
                                                                 </div>
-                                                            </a>
                                                         </li>
                                                         `);
                         }

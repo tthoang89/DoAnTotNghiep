@@ -68,6 +68,7 @@ namespace AppView.Controllers
                 var kh = await _httpClient.GetFromJsonAsync<KhachHang>($"KhachHang/{id}");
                 khachHang = kh.Ten;
             }
+            var nvien = await _httpClient.GetFromJsonAsync<NhanVien>($"NhanVien/{hd.IDNhanVien}");
             var soluong = lstcthd.Sum(c => c.SoLuong);
             var ttien = lstcthd.Sum(c => c.SoLuong * c.DonGia);
             ViewData["lstPttt"] = listpttt;
@@ -78,6 +79,7 @@ namespace AppView.Controllers
                 KhachHang = khachHang,
                 TongSL = soluong,
                 TongTien = ttien,
+                NhanVien = nvien.Ten,
             };
             return PartialView("_ThanhToan", hdtt);
         }
@@ -123,7 +125,7 @@ namespace AppView.Controllers
                 IdNhanVien = Guid.Parse("4fdf0898-771a-48cf-b6cf-64090a764de7"),
                 NgayThanhToan = DateTime.Now,
                 IdVoucher = request.IdVoucher,
-                TrangThai = 3,
+                TrangThai = 7,
             };
             var response = await _httpClient.PutAsJsonAsync("HoaDon/UpdateHoaDon/",hdrequest);
             if (response.IsSuccessStatusCode) return Json(new { success = true, message = "Thanh toán thành công" });

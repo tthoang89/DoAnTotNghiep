@@ -261,7 +261,7 @@
                                     <option value="5">Tên: Z-A</option>
                                     <option value="6">Cũ nhất</option>
                                     <option value="7">Mới nhất</option>
-                                    <option value="8">Bán chạy nhất</option>
+                                   @* <option value="8">Bán chạy nhất</option>*@
                                     <option value="9">Tồn kho giảm dần</option>
                                 </select>
                             </div>
@@ -269,7 +269,7 @@
                     </div>
                 </div>
                     <div class="row" id="filtered-products">
-                        @foreach (var item in Model)
+                        @foreach (var item in Model.Where(p=>p.TrangThaiCTSP == 1))
                         {
                             <div class="col-lg-4 col-md-6 col-sm-6">
                                 <div class="product__item">

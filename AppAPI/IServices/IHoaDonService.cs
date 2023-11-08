@@ -20,6 +20,7 @@ namespace AppAPI.IServices
         public bool DeleteHoaDon(Guid id);
         public bool UpdateHoaDon(HoaDonThanhToanRequest hoaDon);
         public List<HoaDon> GetAllHDCho();
+        //public List<HoaDonThanhToanViewModel> GetAllHDQly();
         //Phương thức thanh toán
         public List<PhuongThucThanhToan> GetAllPTTT();
         public bool CreatePTTT(PhuongThucThanhToan pttt);
