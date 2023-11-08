@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace AppData.ViewModels.SanPham
 {
-    public class AnhRequest
+    public class MauSacRequest
     {
         public string? DuongDan { get; set; }
-        public string MaMau { get; set; }
-        public Guid IDSanPham { get; set; }
+        public Guid IDMauSac { get; set; }
     }
 }
