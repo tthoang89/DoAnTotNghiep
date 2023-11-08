@@ -71,6 +71,12 @@ namespace AppAPI.Controllers
             var lsthdcho =  _iHoaDonService.GetAllHDCho();
             return Ok(lsthdcho);
         }
+        [HttpGet("GetHDBanHang/{idhd}")]
+        public IActionResult GetHDBanHang(Guid idhd)
+        {
+            var lsthdcho = _iHoaDonService.GetHDBanHang(idhd);
+            return Ok(lsthdcho);
+        }
         [HttpPut]
         public bool UpdateTrangThai(Guid idhoadon, int trangthai, Guid idnhanvien)
         {

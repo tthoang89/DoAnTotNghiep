@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AppData.ViewModels.BanOffline
 {
-    public class HoaDonChiTietRequest
+    public class HoaDonChiTietRequest // Tạo chi tiết hóa đơn
     {
         public Guid Id { get; set; }    
         public Guid IdHoaDon { get; set; }

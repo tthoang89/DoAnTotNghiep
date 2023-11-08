@@ -41,6 +41,12 @@ namespace AppAPI.Controllers
         {
             return _khachHangService.GetById(id);
         }
+        //Nhinh
+        [HttpGet("getBySDT")]
+        public KhachHang GetBySDT(string sdt)
+        {
+            return _khachHangService.GetBySDT(sdt);
+        }
 
         // GET api/<SanPhamController>/5
         [Route("PostKHView")]

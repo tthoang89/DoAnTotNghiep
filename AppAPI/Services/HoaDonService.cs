@@ -19,6 +19,9 @@ namespace AppAPI.Services
         private readonly IAllRepository<KhachHang> reposKhachHang;
         private readonly IAllRepository<SanPham> reposSanPham;
         private readonly IAllRepository<PhuongThucThanhToan> reposPTTT;
+        private readonly IAllRepository<ChiTietPTTT> reposChiTietPTTT;
+        private readonly IAllRepository<DanhGia> reposDanhGia;
+        private readonly IAllRepository<NhanVien> reposNhanVien;
 
 
         AssignmentDBContext context = new AssignmentDBContext();
@@ -34,13 +37,15 @@ namespace AppAPI.Services
             reposKhachHang = new AllRepository<KhachHang>(context, context.KhachHangs);
             reposSanPham = new AllRepository<SanPham>(context, context.SanPhams);
             reposPTTT = new AllRepository<PhuongThucThanhToan>(context, context.PhuongThucThanhToans);
+            reposDanhGia = new AllRepository<DanhGia>(context, context.DanhGias);
+            reposChiTietPTTT = new AllRepository<ChiTietPTTT>(context, context.ChiTietPTTTs);
             context = new AssignmentDBContext();
         }
 
         public bool CheckHDHasLSGD(Guid idHoaDon)
         {
             var exist = reposLichSuTichDiem.GetAll().Any(c => c.IDHoaDon == idHoaDon);
-            if(exist == true)
+            if (exist == true)
             {
                 return true;
             }
@@ -170,7 +175,7 @@ namespace AppAPI.Services
                     }
                 }
                 else
-                { 
+                {
                     return false;
                 }
             }
@@ -179,8 +184,8 @@ namespace AppAPI.Services
                 return false;
             }
         }
-       
 
+        //Bán hàng tại quầy
         public bool CreateHoaDonOffline(Guid idnhanvien)
         {
             try
@@ -191,7 +196,7 @@ namespace AppAPI.Services
                 hoaDon1.NgayTao = DateTime.Now;
                 hoaDon1.TrangThaiGiaoHang = 1;
                 hoaDon1.LoaiHD = 1;
-                hoaDon1.MaHD = (hoaDon1.ID).ToString().Substring(0, 8);
+                hoaDon1.MaHD = "HD" + (hoaDon1.ID).ToString().Substring(0, 8).ToUpper();
                 if (reposHoaDon.Add(hoaDon1))
                 {
                     return true;
@@ -220,7 +225,8 @@ namespace AppAPI.Services
                 reposPTTT.Add(phuongTTT);
                 return true;
 
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
@@ -244,9 +250,9 @@ namespace AppAPI.Services
                 context.SaveChanges();
                 return true;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                throw new Exception (e.Message);
+                throw new Exception(e.Message);
             }
 
         }
@@ -259,7 +265,8 @@ namespace AppAPI.Services
                 reposPTTT.Delete(pttt);
                 return true;
 
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message, ex);
             }
@@ -272,23 +279,25 @@ namespace AppAPI.Services
 
         public List<HoaDon> GetAllHDCho()
         {
-            return reposHoaDon.GetAll().Where(c=> c.TrangThaiGiaoHang == 1).ToList();
+            return reposHoaDon.GetAll().Where(c => c.TrangThaiGiaoHang == 1).OrderBy(c => c.NgayTao).ToList();
         }
         //Nhinh
         //public List<HoaDonThanhToanViewModel> GetAllHDQly()
         //{
         //    var result = (from hd in reposHoaDon.GetAll()
-        //                  join cthd in reposChiTietHoaDon.GetAll() on hd.ID equals cthd.IDHoaDon
+        //                  join nv in reposNhanVien.GetAll() on hd.IDNhanVien equals nv.ID
+        //                  join vc in reposVoucher.GetAll() on hd.IDVoucher equals vc.ID
         //                  join lstd in reposLichSuTichDiem.GetAll() on hd.ID equals lstd.IDHoaDon
         //                  join kh in reposKhachHang.GetAll() on lstd.IDKhachHang equals kh.IDKhachHang
         //                  select new HoaDonThanhToanViewModel()
         //                  {
         //                      Id = hd.ID,
-        //                      KhachHang = kh.Ten == null ? "Khách lẻ":kh.Ten,
-        //                      NhanVien = null,
+        //                      KhachHang = kh.Ten == null ? "Khách lẻ" : kh.Ten,
+        //                      NhanVien = nv.Ten,
         //                      NgayThanhToan = hd.NgayThanhToan,
-        //                      TongSL = 
-
+        //                      TongSL = (from cthd in reposChiTietHoaDon.GetAll()
+        //                                where cthd.IDHoaDon == hd.ID select cthd.SoLuong).ToList().Sum(),
+        //                      TongTien = hd.TongTien,
         //                  }
         //}
 
@@ -302,14 +311,42 @@ namespace AppAPI.Services
             return reposPTTT.GetAll();
         }
 
+        public HoaDonViewModelBanHang GetHDBanHang(Guid id)
+        {
+            var result = (from hd in reposHoaDon.GetAll()
+                          join lstd in reposLichSuTichDiem.GetAll() on hd.ID equals lstd.IDHoaDon into lstdGroup
+                          from lstd in lstdGroup.DefaultIfEmpty()
+                          join kh in reposKhachHang.GetAll() on lstd?.IDKhachHang equals kh?.IDKhachHang into khGroup
+                          from kh in khGroup.DefaultIfEmpty()
+                          where hd.ID == id
+                          select new HoaDonViewModelBanHang()
+                          {
+                              Id = hd.ID,
+                              MaHD = hd.MaHD,
+                              IdKhachHang = kh?.IDKhachHang,
+                              TenKhachHang = kh?.Ten,
+                              lstHDCT = (from cthd in reposChiTietHoaDon.GetAll()
+                                         where cthd.IDHoaDon == id
+                                         select new HoaDonChiTietViewModel()
+                                         {
+                                             Id = cthd.ID,
+                                             IdHoaDon = cthd.IDHoaDon,
+                                             IDChiTietSanPham = cthd.IDCTSP,
+                                             SoLuong = cthd.SoLuong,
+                                             DonGia = cthd.DonGia,
+                                         }).Reverse().ToList(),
+                          }).FirstOrDefault();
+            return result;
+        }
+
         public HoaDon GetHoaDonById(Guid idhd)
         {
-                return reposHoaDon.GetAll().FirstOrDefault(c=> c.ID == idhd);
+            return reposHoaDon.GetAll().FirstOrDefault(c => c.ID == idhd);
         }
 
         public LichSuTichDiem GetLichSuGiaoDichByIdHD(Guid idHoaDon)
         {
-            return reposLichSuTichDiem.GetAll().FirstOrDefault(c=>c.IDHoaDon ==idHoaDon);   
+            return reposLichSuTichDiem.GetAll().FirstOrDefault(c => c.IDHoaDon == idHoaDon);
         }
 
         public List<HoaDon> LichSuGiaoDich(Guid idNguoiDung)
@@ -342,9 +379,21 @@ namespace AppAPI.Services
         public bool UpdateHoaDon(HoaDonThanhToanRequest hoaDon)
         {
             var update = reposHoaDon.GetAll().FirstOrDefault(p => p.ID == hoaDon.Id);
+            ChiTietPTTT ctPTTT = new ChiTietPTTT()
+            {
+                ID = new Guid(),
+                SoTien = hoaDon.TongTien,
+                TrangThai = 0,
+                IDHoaDon = update.ID,
+                IDPTTT = hoaDon.IdPTTT,
+            };
+            reposChiTietPTTT.Add(ctPTTT);
+
             update.IDNhanVien = hoaDon.IdNhanVien;
             update.NgayThanhToan = hoaDon.NgayThanhToan;
             update.TrangThaiGiaoHang = hoaDon.TrangThai;
+            update.TongTien = hoaDon.TongTien;
+            update.ThueVAT = hoaDon.ThueVAT;
             return reposHoaDon.Update(update);
         }
 
@@ -357,7 +406,8 @@ namespace AppAPI.Services
                 pttt.TrangThai = phuongttt.TrangThai;
                 reposPTTT.Update(pttt);
                 return true;
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }

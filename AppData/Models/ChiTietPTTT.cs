@@ -13,8 +13,8 @@ namespace AppData.Models
         public int TrangThai { get; set; }
         public Guid IDPTTT { get; set; }
         public Guid IDHoaDon { get; set; }
-        public virtual HoaDon HoaDon { get; set; }
-        public virtual PhuongThucThanhToan PhuongThucThanhToan { get; set; }
+        public virtual HoaDon? HoaDon { get; set; }
+        public virtual PhuongThucThanhToan? PhuongThucThanhToan { get; set; }
         
     }
 }

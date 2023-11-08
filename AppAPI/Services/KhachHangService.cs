@@ -65,6 +65,11 @@ namespace AppAPI.Services
             return _dbContext.KhachHangs.FirstOrDefault(x => x.IDKhachHang == id);
 
         }
+        //Nhinh thêm
+        public KhachHang GetBySDT(string sdt)
+        {
+            return _dbContext.KhachHangs.FirstOrDefault(c=>c.SDT == sdt);
+        }
 
         public bool Update(KhachHang khachHang)
         {
