@@ -1,19 +1,46 @@
-﻿@using AppData.ViewModels
-@model AppView.PhanTrang.PhanTrangAllQLKMSP
+﻿@model AppView.PhanTrang.PhanTrangAllQLKMSP
 
 @{
-    ViewData["Title"] = "GetSPByIdKM";
+    ViewData["Title"] = "GetSPNoKM";
     Layout = "~/Views/Shared/_LayoutForAdmin.cshtml";
-    int stt = 1;
     AppData.Models.AssignmentDBContext Dbcontext = new AppData.Models.AssignmentDBContext();
-    List<KhuyenMaiView> listkms = ViewBag.KhuyenMaiView;
+    int stt = 1;
 }
-<button class="btn btn-dark">
-    <strong style="color:white">@Html.ActionLink("Thêm Sản Phẩm Vô KM", "GetSPNoKM")</strong>
-</button>
-<h1> Các Sản Phẩm</h1>
+<form asp-controller="QuanLyKM" asp-action="GetSPNoKMLoaiSPCL" method="get" enctype="multipart/form-data">
+    <div>
+        
+        <select name="idloaisp" class="form-control" style="width:600px;height:40px">
+            if (idloaisp == null)
+            {
+            <option value="">Chọn Tên Loại SP</option>
+            }
+            @foreach (var loaisp in Dbcontext.LoaiSPs.ToList())
+            {
+                <option value="@loaisp.ID">@loaisp.Ten</option>
+            }
+
+        </select>
+
+        <select name="idchatlieu" class="form-control" style="width:600px;height:40px">
+            if (idchatlieu == null)
+            {
+            <option value="">Chọn Tên Chất Liệu</option>
+            }
+            @foreach (var loaisp in Dbcontext.ChatLieus.ToList())
+            {
+                <option value="@loaisp.ID">@loaisp.Ten</option>
+            }
+
+        </select>
+    </div>
+
+    <button type="submit" class="fa fa-search"></button>
 
 
+</form>
+<br />
+<br />
+<br />
 <table class="table">
     <thead>
         <tr>
@@ -137,7 +164,7 @@
             <li class="page-item disabled"><a class="page-link" href="#">Previous</span></a></li>
             @for (int i = 1; i <= Model.PagingInfo.TotalPages; i++)
             {
-                <li class="page-item"><a class="page-link" href="/QuanLyKM/GetAllQLKhuyenMaiSP?ProductPage=@i">@i</a></li>
+                <li class="page-item"><a class="page-link" href="/QuanLyKM/GetSpNoKM?ProductPage=@i">@i</a></li>
 
             }
 
@@ -145,3 +172,7 @@
         </ul>
     </nav>
 </div>
+<div>
+    <a asp-action="GetAllKM">Quay Lại</a>
+</div>
+

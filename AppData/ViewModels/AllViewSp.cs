@@ -12,10 +12,11 @@ namespace AppData.ViewModels
         [Key]
         public Guid ID { get; set; }
         [StringLength(40, ErrorMessage = "Ten san pham khong duoc dai qua 40 tu.")]
+        public int SoLuongCTSP { get; set; }
         public string Ten { get; set; }
         [Required]
         public string MoTa { get; set; }
-        public string TenAnh { get; set; }  
+        public string? TenAnh { get; set; }  
         public int TrangThai { get; set; }
         public int TongSoSao { get; set; }
         public int TongDanhGia { get; set; }
