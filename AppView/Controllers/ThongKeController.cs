@@ -13,9 +13,13 @@ namespace AppView.Controllers
         {
             _httpClient = new HttpClient();
         }
+        public IActionResult ThongKe()
+        {
+            return View();
+        }
         #region Thống Kê Sản Phẩm Được Mua nhiều Theo Ngày, Tháng, Năm 
         [HttpGet]
-        
+
         public async Task<IActionResult> ThongKeSP()
         {
             string apiUrl = $"https://localhost:7095/api/ThongKeView/ThongKeMSSanPhamBan";
