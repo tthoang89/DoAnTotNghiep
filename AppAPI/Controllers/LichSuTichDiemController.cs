@@ -29,7 +29,7 @@ namespace AppAPI.Controllers
         // laam Strat
         [Route("GetLSTDByIdKH")]
         [HttpGet]
-        public async Task<List<LichSuTichDiemView>> GetAllLSTDByKH()
+        public async Task<List<LichSuTichDiemView>> GetAllLSTDByKH(Guid idkh)
         {
             
             var AllCTSP = await (from LSTD in _dbcontext.LichSuTichDiems.AsNoTracking()
@@ -50,22 +50,10 @@ namespace AppAPI.Controllers
                                      DiemTichKH = kh.DiemTich,
                                     
                                      TrangThai = LSTD.TrangThai
-                                 }).ToListAsync();
+                                 }).Where(x=>x.IDKhachHang==idkh).ToListAsync();
             return AllCTSP;
         }
         // laam end
-        [HttpGet("GetAllDonMua")]
-        public async Task<List<DonMuaViewModel>> GetAllDonMua(Guid IDkhachHang)
-        {
-            var listDonMua = await _lichsu.getAllDonMua(IDkhachHang);
-            return listDonMua;
-        }
-        [HttpGet("GetAllDonMuaChiTiet")]
-        public async Task<List<DonMuaChiTietViewModel>> GetAllDonMuaCT(Guid idHoaDon)
-        {
-            var listDonMuaCT = await _lichsu.getAllDonMuaChiTiet(idHoaDon);
-            return listDonMuaCT;
-        }
         // GET api/<LichSuTichDiemController>/5
         [HttpGet("{id}")]
         public LichSuTichDiem Get(Guid id)

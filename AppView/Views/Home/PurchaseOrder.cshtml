@@ -49,40 +49,40 @@
         </div>
         <div class="row">
             <div class="col">
-                <div  id="navbar">
+                <div onchange="FilterHoaDon()" id="navbar">
                     <div >
                         <label>
-                            <input type="radio" name="menu" checked/>
+                            <input type="radio" name="menu" value="0" checked/>
                             <span>Tất cả</span>
                         </label>
                     </div>
                     <div >
                         <label>
-                            <input type="radio" name="menu" />
+                            <input type="radio" name="menu" value="2" />
                             <span>Chờ bàn giao</span>
                         </label>
                     </div>
                     <div >
                         <label>
-                            <input type="radio" name="menu" />
+                            <input type="radio" name="menu" value="3" />
                             <span>Đang giao</span>
                         </label>
                     </div>
                     <div >
                         <label>
-                            <input type="radio" name="menu" />
+                            <input type="radio" name="menu" value="6" />
                             <span>Hoàn thành</span>
                         </label>
                     </div>
                     <div >
                         <label>
-                            <input type="radio" name="menu" />
+                            <input type="radio" name="menu" value="7"/>
                             <span>Đã hủy</span>
                         </label>
                     </div>
                     <div >
                         <label>
-                            <input type="radio" name="menu" />
+                            <input type="radio" name="menu" value="5"/>
                             <span>Trả hàng hoàn tiền</span>
                         </label>
                     </div>
@@ -90,7 +90,7 @@
                 
             </div>
         </div>
-        <div id="AllHoaDon">
+        <div id="AllHoaDon" style="display:inherit;">
             <table class="table">
                 <thead>
                     <tr>
@@ -141,3 +141,28 @@
         </div>
     </div>
 </section>
+<script>
+    function FilterHoaDon(){
+        var x = document.querySelector('input[name="menu"]:checked').value;
+        var data = {
+            TrangThaiGiaoHang: x
+        }
+            fetch("/Home/GetHoaDonByTrangThai", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        }).then(function (reponse) {
+            if (reponse.ok) {
+                return reponse.text();
+            } else {
+                throw new Error("Error sending data to controller");
+            }
+        }).then(function (result) {
+            $("#AllHoaDon").html(result);
+        }).catch(function (error) {
+            console.log("An error occured", error)
+        })
+    }
+</script>

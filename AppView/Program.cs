@@ -33,6 +33,6 @@ app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}");
+    pattern: "{controller=ThongKe}/{action=ThongKe}");
 
 app.Run();

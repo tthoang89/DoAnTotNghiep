@@ -62,47 +62,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col">
-                <div id="navbar">
-                    <div>
-                        <label>
-                            <input type="radio" name="menu" checked />
-                            <span>Tất cả</span>
-                        </label>
-                    </div>
-                    <div>
-                        <label>
-                            <input type="radio" name="menu" />
-                            <span>Chờ bàn giao</span>
-                        </label>
-                    </div>
-                    <div>
-                        <label>
-                            <input type="radio" name="menu" />
-                            <span>Đang giao</span>
-                        </label>
-                    </div>
-                    <div>
-                        <label>
-                            <input type="radio" name="menu" />
-                            <span>Hoàn thành</span>
-                        </label>
-                    </div>
-                    <div>
-                        <label>
-                            <input type="radio" name="menu" />
-                            <span>Đã hủy</span>
-                        </label>
-                    </div>
-                    <div>
-                        <label>
-                            <input type="radio" name="menu" />
-                            <span>Trả hàng hoàn tiền</span>
-                        </label>
-                    </div>
-                </div>
-
-            </div>
+            
         </div>
         @*<div id="AllHoaDon">
             <table class="table">
@@ -154,7 +114,12 @@
                             <td class="cart__price">@((item.DonGia * item.SoLuong).ToString("n0")) VNĐ</td>
                             @if (item.TrangThaiGiaoHang == 6 && item.TrangThaiDanhGia == 0)
                             {
-                                <td class="cart__price"><button style="border: none; border-radius: 10px; color: white; background-color: black;">Đánh giá sản phẩm</button></td>
+                                <td class="cart__price">
+                                    <div style="border: none; border-radius: 10px; color: white; background-color: black; text-align:center;">
+                                        <a style="color:white;" asp-controller="Home" asp-action="ReviewProducts" asp-route-idCTHD="@item.IDCTHD" >Đánh giá sản phẩm</a>
+                                    </div>
+                                    
+                                </td>
                             }
                             @{
                                 giaSP += item.DonGia * item.SoLuong;
@@ -196,7 +161,8 @@
                                 {
                                     tongtien = giaSP + tienShip;
                                 }
-                               
+                                int diemtich = diem * tileTieuDiem;
+
                             }
                             <tr>
                                 <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: 70%;">
@@ -234,7 +200,7 @@
                                     <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;">
                                         Điểm
                                     </td>
-                                    <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: 130px;padding-right: 70px; text-align: right;">- @diem*@tileTieuDiem.ToString("n0") VNĐ</td>
+                                    <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: 130px;padding-right: 70px; text-align: right;">- @diemtich.ToString("n0") VNĐ</td>
                                 </tr>
                             }
                             
@@ -251,3 +217,4 @@
         </div>
     </div>
 </section>
+@*@Html.PartialAsync("ReviewProduct")*@
