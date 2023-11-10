@@ -126,7 +126,7 @@ namespace AppAPI.Services
                 var smtpClient = new SmtpClient("smtp.gmail.com", 465);
                 smtpClient.UseDefaultCredentials = false;
                 smtpClient.EnableSsl = true;
-                smtpClient.Credentials = new NetworkCredential("nhu3006a12@gmail.com", "nhucong0342231964.");
+                smtpClient.Credentials = new NetworkCredential("nhu3006a12@gmail.com", "nhucong.");
                 var messsage = new MailMessage();
                 messsage.From = new MailAddress("nhu3006a12@gmail.com");
                 messsage.To.Add(new MailAddress(email));
