@@ -290,12 +290,14 @@ namespace AppView.Controllers
             {
                 bienThes = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModel>>(HttpContext.Session.GetString(KeyCart));
             }
-            long tongtien = 0;
-            foreach (var x in bienThes)
+            // laam them
+            int cout = 0;
+            for (int i = 0; i < bienThes.Sum(c => c.SoLuong); i++)
             {
-                tongtien += x.GiaBan * x.SoLuong;
+                cout++;
             }
-            TempData["TongTien"] = tongtien.ToString("n0");
+            ViewData["cout"] = cout;
+            // lam end
             TempData["ListBienThe"] = JsonConvert.SerializeObject(bienThes);
             return View(bienThes);
         }
