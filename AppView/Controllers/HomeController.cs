@@ -296,6 +296,12 @@ namespace AppView.Controllers
             {
                 cout++;
             }
+            long tongtien = 0;
+            foreach (var x in bienThes)
+            {
+                tongtien += x.GiaBan * x.SoLuong;
+            }
+            TempData["TongTien"] = tongtien.ToString("n0");
             ViewData["cout"] = cout;
             // lam end
             TempData["ListBienThe"] = JsonConvert.SerializeObject(bienThes);
@@ -489,11 +495,6 @@ namespace AppView.Controllers
             if (response.IsSuccessStatusCode) return Json(new { success = true, message = "Pay successfully" });
             else return Json(new { success = false, message = "Pay fail" }); ;
         }
-        //public IActionResult CheckOut(long tongtien)
-        //{
-        //    ViewData["TongTien"] = tongtien;
-        //    return View();
-        //}
         #endregion
 
         #region Other
