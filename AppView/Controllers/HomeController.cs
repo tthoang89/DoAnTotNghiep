@@ -303,21 +303,21 @@ namespace AppView.Controllers
         [HttpPost]
         public ActionResult AddToCart(string id)
         {
-            HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + $"BienThe/getBienTheById/{id}").Result;
+            HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + $"SanPham/GetChiTietSanPhamByID?id="+id).Result;
             if (response.IsSuccessStatusCode)
             {
-                List<ChiTietSanPhamViewModel> bienThes;
-                ChiTietSanPhamViewModel bienThe = JsonConvert.DeserializeObject<ChiTietSanPhamViewModel>(response.Content.ReadAsStringAsync().Result);
+                List<ChiTietSanPhamViewModel> chiTietSanPhams;
+                ChiTietSanPhamViewModel chiTietSanPham = JsonConvert.DeserializeObject<ChiTietSanPhamViewModel>(response.Content.ReadAsStringAsync().Result);
                 string? result = HttpContext.Session.GetString(KeyCart);
                 if (string.IsNullOrEmpty(result))
                 {
-                    bienThe.SoLuong = 1;
-                    bienThes = new List<ChiTietSanPhamViewModel>() { bienThe };
+                    chiTietSanPham.SoLuong = 1;
+                    chiTietSanPhams = new List<ChiTietSanPhamViewModel>() { chiTietSanPham };
                 }
                 else
                 {
-                    bienThes = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModel>>(result);
-                    var tempBienThe = bienThes.FirstOrDefault(x => x.ID == bienThe.ID);
+                    chiTietSanPhams = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModel>>(result);
+                    var tempBienThe = chiTietSanPhams.FirstOrDefault(x => x.ID == chiTietSanPham.ID);
                     if (tempBienThe != null)
                     {
                         //Sua 
@@ -325,11 +325,11 @@ namespace AppView.Controllers
                     }
                     else
                     {
-                        bienThe.SoLuong = 1;
-                        bienThes.Add(bienThe);
+                        chiTietSanPham.SoLuong = 1;
+                        chiTietSanPhams.Add(chiTietSanPham);
                     }
                 }
-                HttpContext.Session.SetString(KeyCart, JsonConvert.SerializeObject(bienThes));
+                HttpContext.Session.SetString(KeyCart, JsonConvert.SerializeObject(chiTietSanPhams));
                 return Json(new { success = true, message = "Add to cart successfully" });
             }
             else return Json(new { success = false, message = "Add to cart fail" });
