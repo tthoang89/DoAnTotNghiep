@@ -27,15 +27,17 @@ namespace AppAPI.Controllers
         }
         [Route("TimKiemNhanVien")]
         [HttpGet]
-        public List<NhanVien> GetAllNhanVien(string? Ten)
+        public List<NhanVien> GetAllNhanVien(string? name)
         {
-            return _dbContext.NhanViens.Where(v => v.Ten.Contains(Ten)).ToList();
+            return _dbContext.NhanViens.Where(v => v.Ten.Contains(name)).ToList();
 
 
         }
-        // GET api/<NhanVienController>/5
-        [HttpGet("GetById")]
-        public NhanVien GetById(Guid id)
+    
+    // GET api/<NhanVienController>/5
+        [Route("GetById")]
+        [HttpGet]
+        public NhanVien? GetById(Guid id)
         {
             return _nhanVienService.GetById(id);
         }

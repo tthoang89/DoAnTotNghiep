@@ -3,8 +3,10 @@ using AppData.IRepositories;
 using AppData.Models;
 using AppData.Repositories;
 using AppData.ViewModels;
-using Microsoft.AspNetCore.Mvc;
+using AppData.ViewModels.QLND;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
+using System.Net.Mail;
 
 namespace AppAPI.Services
 {
@@ -18,7 +20,126 @@ namespace AppAPI.Services
         {
             reposNV = new AllRepository<NhanVien>(context, context.NhanViens);
             reposKH = new AllRepository<KhachHang>(context, context.KhachHangs);
+        }
+        public async Task<bool> ForgetPassword(string email)
+        {
+            if (string.IsNullOrEmpty(email))
+            {
+                return false;
+            }
+            bool isEmployee = await CheckIfEmployee(email);
+            if (isEmployee)
+            {
+                string resetToken = GenerateToken();
+                await SaveUserData(email, resetToken, isEmployee);
+                string subject = "Reset Password";
+                string messageBody = "You have requested a password reset. Your reset token is: " + resetToken;
+                await SendEmail(email, subject, messageBody);
 
+                return true;
+            }
+            return false;
+        }
+        public async Task<bool> ResetPassword(ResetPasswordRequest model)
+        {
+            if (string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.Password))
+            {
+                return false;
+            }
+            bool isEmployee = await CheckIfEmployee(model.Email);
+
+            if (isEmployee)
+            {
+                var nv = await context.NhanViens.FirstOrDefaultAsync(a => a.Email == model.Email);
+                if (nv != null)
+                {
+                    nv.PassWord = model.Password;
+                    await context.SaveChangesAsync();
+                    await SendEmail(nv.Email, "Đổi Mật Khẩu Thành Công", "Mật khẩu của bạn đã được đặt lại thành công.");
+
+                    return true;
+                }
+            }
+            else
+            {
+                var kh = await context.KhachHangs.FirstOrDefaultAsync(a => a.Email == model.Email);
+                if (kh != null)
+                {
+                    kh.Password = model.Password;
+
+                    await context.SaveChangesAsync();
+                    await SendEmail(kh.Email, "Đặt lại mật khẩu thành công", "Mật khẩu của bạn đã được đặt lại thành công.");
+                    return true;
+                }
+            }
+            await SendEmail(model.Email, "Lỗi Đặt lại Mật khẩu", "Đã xảy ra lỗi khi đặt lại mật khẩu của bạn. Vui lòng thử lại sau.");
+            return false;
+        }
+        private string GenerateToken()
+        {
+            string token = Guid.NewGuid().ToString();
+            return token;
+        }
+
+        public async Task<bool> CheckIfEmployee(string email)
+        {
+            if (string.IsNullOrEmpty(email))
+            {
+                return false;
+            }
+            var nv = await context.NhanViens.FirstOrDefaultAsync(a => a.Email == email);
+            var kh = await context.KhachHangs.FirstOrDefaultAsync(a => a.Email == email);
+            return nv != null || kh != null;
+        }
+        private async Task<bool> SaveUserData(string email, string data, bool isEmployee)
+        {
+            if (string.IsNullOrEmpty(email))
+            {
+                return false;
+            }
+            if (isEmployee)
+            {
+                var nv = await context.NhanViens.FirstOrDefaultAsync(a => a.Email == email);
+                if (nv != null)
+                {
+                    nv.PassWord = data;
+                    await context.SaveChangesAsync();
+                    return true;
+                }
+            }
+            else
+            {
+                var kh = await context.KhachHangs.FirstOrDefaultAsync(a => a.Email == email);
+                if (kh != null)
+                {
+                    kh.Password = data;
+                    await context.SaveChangesAsync();
+                    return true;
+                }
+            }
+            return false;
+        }
+        private async Task<bool> SendEmail(string email, string subject, string body)
+        {
+            try
+            {
+                var smtpClient = new SmtpClient("smtp.gmail.com", 465);
+                smtpClient.UseDefaultCredentials = false;
+                smtpClient.EnableSsl = true;
+                smtpClient.Credentials = new NetworkCredential("nhu3006a12@gmail.com", "nhucong0342231964.");
+                var messsage = new MailMessage();
+                messsage.From = new MailAddress("nhu3006a12@gmail.com");
+                messsage.To.Add(new MailAddress(email));
+                messsage.Subject = subject;
+                messsage.Body = body;
+                await smtpClient.SendMailAsync(messsage);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error sending email: " + ex.Message);
+                return false;
+            }
         }
 
         public async Task<bool> ChangePassword(string email, string password, string newPassword)

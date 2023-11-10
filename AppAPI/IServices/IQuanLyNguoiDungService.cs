@@ -1,5 +1,6 @@
 ﻿using AppData.Models;
 using AppData.ViewModels;
+using AppData.ViewModels.QLND;
 
 namespace AppAPI.IServices
 {
@@ -10,5 +11,8 @@ namespace AppAPI.IServices
         Task<NhanVien> RegisterNhanVien(NhanVienViewModel nhanVien);
         Task<bool> ChangePassword(string email, string password, string newPassword);
         Task<bool> ChangePassword(ChangePasswordRequest request);
+        Task<bool> ForgetPassword(string email);
+
+        Task<bool> ResetPassword(ResetPasswordRequest model);
     }
 }

@@ -2,9 +2,11 @@
 using AppAPI.Services;
 using AppData.Models;
 using AppData.ViewModels;
+using AppData.ViewModels.QLND;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.ComponentModel.DataAnnotations;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -98,6 +100,106 @@ namespace AppAPI.Controllers
             {
                 return BadRequest("Đổi mật khẩu  thành công");
             }
+        }
+        [HttpPost("ForgotPassword")]
+        public async Task<IActionResult> ForgotPassword(string request)
+        {
+            if (!IsValidEmailAddress(request))
+            {
+                return BadRequest("địa chỉ email không hợp lệ");
+            }
+
+            var result = await service.ForgetPassword(request);
+
+            if (result)
+            {
+                return Ok("Success");
+            }
+            else
+            {
+                return BadRequest("Loi khi gui mail");
+            }
+        }
+        private bool IsValidEmailAddress(string email)
+        {
+            if (string.IsNullOrEmpty(email))
+            {
+                return false;
+            }
+
+            var emailAddressAttribute = new EmailAddressAttribute();
+
+            return emailAddressAttribute.IsValid(email);
+        }
+        [HttpPost("ResetPassword")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordRequest request)
+        {
+            if (!IsValidEmailAddress(request.Email))
+            {
+                return BadRequest("địa chỉ email không hợp lệ");
+            }
+
+            if (!IsValidPassword(request.Password))
+            {
+                return BadRequest("Mật khẩu không hợp lệ");
+            }
+
+            if (request.Password != request.ConfirmPassword)
+            {
+                return BadRequest("mật khẩu không khớp");
+            }
+
+            var result = await service.ResetPassword(request);
+
+            if (result)
+            {
+                return Ok("Đặt lại mật khẩu thành công");
+            }
+            else
+            {
+                return BadRequest("Không thể đặt lại mật khẩu");
+            }
+        }
+        private bool IsValidPassword(string password)
+        {
+            if (string.IsNullOrEmpty(password))
+            {
+                return false;
+            }
+
+            // Password must have at least 8 characters
+            if (password.Length < 8)
+            {
+                return false;
+            }
+
+            var hasUpperCase = false;
+            var hasLowerCase = false;
+            var hasDigit = false;
+            var hasSpecialChar = false;
+
+            // Check each character in the password
+            foreach (var c in password)
+            {
+                if (char.IsUpper(c))
+                {
+                    hasUpperCase = true;
+                }
+                else if (char.IsLower(c))
+                {
+                    hasLowerCase = true;
+                }
+                else if (char.IsDigit(c))
+                {
+                    hasDigit = true;
+                }
+                else
+                {
+                    hasSpecialChar = true;
+                }
+            }
+
+            return hasUpperCase && hasLowerCase && hasDigit && hasSpecialChar;
         }
         //Tam
         [HttpPut("ChangePassword")]
