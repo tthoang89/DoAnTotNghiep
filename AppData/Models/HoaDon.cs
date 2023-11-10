@@ -26,7 +26,6 @@
          * 6-Giao hàng thành công
          * 7-Đơn hủy
          * 8-Hàng thất lạc- hư hỏng
-         * 9-Hóa đơn chờ
          */
         public Guid? IDNhanVien { get; set; }
         public Guid? IDVoucher { get; set; }
