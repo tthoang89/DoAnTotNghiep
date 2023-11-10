@@ -33,7 +33,7 @@
         width: 36px;
         border: 1px solid #e5e5e5;
         content: "";
-        border-radius: 50%;
+        border-radius: 30%;
         border: 2px solid black;
         align-items: center;
         justify-content: center;
@@ -59,7 +59,7 @@
             <div class="col-md-6 border-end">
                 <div class="d-flex flex-column justify-content-center">
                     <div class="main_image">
-                        <img src="~/img/product/@Model.Anhs.First(x=>x.TrangThai==1).DuongDan" id="main_product_image" width="350">
+                        <img src="" id="main_product_image" width="350">
                     </div>
                     <div class="thumbnail_images">
                         <ul id="thumbnail">
@@ -74,9 +74,10 @@
             <div class="col-md-6">
                 <div class="p-3 right-side">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h3>@Model.Ten</h3>
+                        Tên: <strong>@Model.Ten</strong>
+                        Mã: <strong id="maSP">@Model.ChiTietSanPhams.First(x=>x.TrangThai==1).ID</strong>
                     </div>
-                    <h3>@Model.ChiTietSanPhams.First(x=>x.TrangThai==1).GiaBan</h3>
+                    <h3>@Model.ChiTietSanPhams.First(x=>x.TrangThai==1).GiaBan.ToString("n0") VNĐ</h3>
                     <div class="ratings d-flex flex-row align-items-center">
                         <div class="d-flex flex-row">
                             <i class='bx bxs-star'></i>
@@ -89,28 +90,12 @@
                     </div>
                     <div class="mt-5">
                         <span class="fw-bold">Màu Sắc</span>
-                        <div class="colors" id="filter-color">
-                            
-                                @foreach (var item in Model.MaMauSacs.Distinct())
+                        <div class="colors" id="filter-color">                            
+                                @foreach (var item in Model.MauSacs)
                                 {
                                 <label id="tronMau">
-                                    <input type="radio" class="btn-check" id="btn-check-outlined_@item" autocomplete="off" val="@item" name="color">
-                                    <label for="btn-check-outlined_@item" style="background-color:@item">
-                                        @if (item == "#000000")
-                                        {
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" color="white" class="bi bi-check-circle" viewBox="0 0 16 16">
-                                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                                                <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z" />
-                                            </svg>
-                                        }
-                                        else
-                                        {
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
-                                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                                                <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z" />
-                                            </svg>
-                                        }
-
+                                    <input type="radio" class="btn-check" id="btn-check-outlined_@item.Ma" autocomplete="off" value="@item.ID" name="color" onclick="getMauSac(this)"/>
+                                    <label for="btn-check-outlined_@item.Ma" style="background-color:@item.Ma;border:white 1px solid;cursor:pointer" id="label_@item.ID">
                                     </label>
                                 </label>
                                 }
@@ -120,10 +105,10 @@
                     <div class="mt-5">
                         <span class="fw-bold">Kích cỡ</span>
                         <div class="colors">
-                            <ul id="sizes">
-                                @foreach (var item in Model.TenKichCo)
+                            <ul id="sizes" style="height:35px">
+                                @foreach (var item in Model.KichCos)
                                 {
-                                    <li>@item</li>
+                                    <li style="width:70px;height:100%"><input type="button" value="@item.Ten" class="btn btn-light" style="border:1px solid gray!important;width:100%;height:100%" id="@item.Ten" onclick="getKichCo(this)" /></li>
                                 }
                             </ul>
                         </div>
@@ -137,11 +122,54 @@
         </div>
     </div>
 </div>
-
+<script src="~/js/jquery-3.3.1.min.js"></script>
 <script>
+    var anhs = @Html.Raw(Json.Serialize(Model.Anhs));
+    var chiTietSanPhams = @Html.Raw(Json.Serialize(Model.ChiTietSanPhams));
+    var mauSacs = @Html.Raw(Json.Serialize(Model.MauSacs));
+    var kichCos = @Html.Raw(Json.Serialize(Model.KichCos));
+    var color = "";
+    var size = "";
+    $(document).ready(function () {
+        var chiTietSanPham = chiTietSanPhams.find(x => x.trangThai == 1);
+        color = chiTietSanPham.idMauSac;
+        size = chiTietSanPham.idKichCo;
+        var anhMacDinh = anhs.find(x => x.idMauSac == color).duongDan;
+        document.getElementById("main_product_image").src = "/img/product/" + anhMacDinh;
+    });
     function changeImage(element) {
 
         var main_prodcut_image = document.getElementById('main_product_image');
         main_prodcut_image.src = element.src;
+    }
+    function getMauSac(element) {
+        color = element.value;
+        var chiTietSP = chiTietSanPhams.find(x => x.idMauSac == element.value && x.idKichCo == size);
+        console.log(chiTietSP);
+        var anh = anhs.find(x => x.idMauSac == element.value);
+        var lstMauSacElement = document.getElementById("filter-color").children;
+        for (let i = 0; i < lstMauSacElement.length;i++){
+            if (lstMauSacElement[i].children[1].style.border = "1px black solid") {
+                lstMauSacElement[i].children[1].style.border = "1px white solid";
+            }
+        }
+        var label = document.getElementById("label_" + element.value);
+        label.style.border = "2px black solid";
+        document.getElementById("main_product_image").src = "/img/product/" + anh.duongDan;
+        document.getElementById("maSP").innerHTML = chiTietSP.id;
+    }
+    function getKichCo(element) {
+        size = kichCos.find(x=>x.ten==element.value).id;
+        var chiTietSP = chiTietSanPhams.find(x => x.idKichCo == size && x.idMauSac==color);
+        console.log(chiTietSP);
+        var lstKichCoElement = document.getElementById("sizes").children;
+        for (let i = 0; i < lstKichCoElement.length; i++) {
+            if (lstKichCoElement[i].children[0].style.border = "2px black solid") {
+                lstKichCoElement[i].children[0].style.border = "1px solid gray";
+            }
+        }
+        var ip = document.getElementById(element.value);
+        ip.style.border = "2px black solid";
+        document.getElementById("maSP").innerHTML = chiTietSP.id;
     }
 </script>

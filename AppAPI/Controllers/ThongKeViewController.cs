@@ -209,6 +209,61 @@ namespace AppAPI.Controllers
                 .ToList();
             return result;
         }
+        // thong ke So CTSP da ban
+        [HttpGet("ThongKeSLCTSPBan")]
+        public ThongKeSLSPDaBan DemSanPhamBan()
+        {
+            var dem = _dbContext.ChiTietHoaDons
+                .Join(_dbContext.HoaDons, cthd => cthd.IDHoaDon, hd => hd.ID, (cthd, hd) => new { ChiTietHoaDon = cthd, HoaDon = hd }).
+                Where(x => x.HoaDon.NgayThanhToan.HasValue)
+                .GroupBy(x => x.HoaDon.NgayThanhToan.Value.Month).
+                Select(group => new ThongKeSLSPDaBan
+                {
+                    SoLuong = group.Sum(x => x.ChiTietHoaDon.SoLuong),
+                    Ngay = group.FirstOrDefault().HoaDon.NgayThanhToan.Value
+                }).Where(x => x.Ngay.Month == DateTime.Now.Month).FirstOrDefault();
+            return dem;             
+        }
+        [HttpGet("ThongKeSLCTSP")]
+        public int DemSanPham()
+        {
+            var dem = _dbContext.ChiTietSanPhams.
+                
+                Select(group => new ThongKeSLCTSP
+                {
+                    SoLuong = group.SoLuong
+                   
+                }).Sum(x=>x.SoLuong);
+            return dem;
+        }
+        [HttpGet("ThongKeTongDTTrongThang")]
+        public ThongKeDTTrongThang TongDoanhThu()
+        {
+            var tim = _dbContext.ChiTietHoaDons
+                .Join(_dbContext.HoaDons, cthd => cthd.IDHoaDon, hd => hd.ID, (cthd, hd) => new { ChiTietHoaDon = cthd, HoaDon = hd }).
+                Where(x => x.HoaDon.NgayThanhToan.HasValue)
+                .GroupBy(x => x.HoaDon.NgayThanhToan.Value.Month).
+                Select(group => new ThongKeDTTrongThang
+                {
+                   TongTien = group.Sum(x=>(x.ChiTietHoaDon.SoLuong*x.ChiTietHoaDon.DonGia+x.HoaDon.TienShip)*(100-x.HoaDon.ThueVAT.Value)/100),
+                    Ngay = group.FirstOrDefault().HoaDon.NgayThanhToan.Value
+                }).Where(x => x.Ngay.Month == DateTime.Now.Month).FirstOrDefault();
+            return tim;
+        }
+        [HttpGet("ThongKeSoDonTrongThang")]
+        public ThongKeSDonTrongThang TongSoDon()
+        {
+            var tim = _dbContext.ChiTietHoaDons
+                .Join(_dbContext.HoaDons, cthd => cthd.IDHoaDon, hd => hd.ID, (cthd, hd) => new { ChiTietHoaDon = cthd, HoaDon = hd }).
+                Where(x => x.HoaDon.NgayThanhToan.HasValue)
+                .GroupBy(x => x.HoaDon.NgayThanhToan.Value.Month).
+                Select(group => new ThongKeSDonTrongThang
+                {
+                    SoDon = group.Sum(x=>x.HoaDon.ID!=null?1:0),
+                    Ngay = group.FirstOrDefault().HoaDon.NgayThanhToan.Value
+                }).Where(x => x.Ngay.Month == DateTime.Now.Month).FirstOrDefault();
+            return tim;
+        }
     }
 
 

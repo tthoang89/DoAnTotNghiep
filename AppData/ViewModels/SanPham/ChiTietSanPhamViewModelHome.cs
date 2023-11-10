@@ -12,10 +12,9 @@ namespace AppData.ViewModels.SanPham
         public string Ten { get; set; }
         public int SoSao { get; set; }
         public int SoDanhGia { get; set; }
-        //public List<DanhGia> DanhGias { get; set; }
-        public List<string> MaMauSacs { get; set; }
+        public List<MauSac> MauSacs { get; set; }
         public List<Anh> Anhs { get; set; }
-        public List<string> TenKichCo { get; set; }
+        public List<KichCo> KichCos { get; set; }
         public List<ChiTietSanPham> ChiTietSanPhams { get; set; }
 
     }

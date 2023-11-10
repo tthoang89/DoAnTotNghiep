@@ -13,10 +13,7 @@ namespace AppView.Controllers
         {
             _httpClient = new HttpClient();
         }
-        public IActionResult ThongKe()
-        {
-            return View();
-        }
+      
         #region Thống Kê Sản Phẩm Được Mua nhiều Theo Ngày, Tháng, Năm 
         [HttpGet]
 
@@ -202,6 +199,46 @@ namespace AppView.Controllers
             var timkiem = ChatLieus.ToList();
             timkiem = timkiem.Where(x => x.Ngay.Year >= NgayStart.Year && x.Ngay.Year <= NgayEnd.Year).ToList();
             return View("ThongKeDoanhThuTheoNam", timkiem);
+        }
+        #endregion
+        #region Thống Kê Số liệu 
+        [HttpGet]
+        public async Task<IActionResult> ThongKe()
+        {
+            string apiUrl = $"https://localhost:7095/api/ThongKeView/ThongKeSLCTSPBan";
+            var response = await _httpClient.GetAsync(apiUrl);
+            string apiData = await response.Content.ReadAsStringAsync();
+            var ThongKeSLSPBan = JsonConvert.DeserializeObject<ThongKeSLSPDaBan>(apiData);
+            ViewBag.ThongKeSLSPDaBan = ThongKeSLSPBan;
+
+            string apiUrl1 = $"https://localhost:7095/api/ThongKeView/ThongKeSLCTSP";
+
+            var response1 = await _httpClient.GetAsync(apiUrl1);
+            string apiData1 = await response1.Content.ReadAsStringAsync();
+            var ThongKeSLCTSP = JsonConvert.DeserializeObject<int>(apiData1);
+            ViewBag.ThongKeSLCTSP = ThongKeSLCTSP;
+
+            string apiUrl2 = $"https://localhost:7095/api/ThongKeView/ThongKeTongDTTrongThang";
+            var response2 = await _httpClient.GetAsync(apiUrl2);
+            string apiData2= await response2.Content.ReadAsStringAsync();
+            var ThongKeDTTrongThang= JsonConvert.DeserializeObject<ThongKeDTTrongThang>(apiData2);
+            ViewBag.ThongKeDTTrongThang = ThongKeDTTrongThang;
+
+            string apiUrl3 = $"https://localhost:7095/api/ThongKeView/ThongKeSoDonTrongThang";
+            var response3 = await _httpClient.GetAsync(apiUrl3);
+            string apiData3 = await response3.Content.ReadAsStringAsync();
+            var ThongKeSDonTrongThang = JsonConvert.DeserializeObject<ThongKeSDonTrongThang>(apiData3);
+            ViewBag.ThongKeSDonTrongThang= ThongKeSDonTrongThang;
+
+            string apiUrl4 = $"https://localhost:7095/api/ThongKeView/ThongKeKHTheoSoLuongHoaDon";
+            var response4 = await _httpClient.GetAsync(apiUrl4);
+            string apiData4 = await response4.Content.ReadAsStringAsync();
+            var ChatLieus = JsonConvert.DeserializeObject<List<ThongKeKHMuaNhieu>>(apiData4);
+            var timkiem = ChatLieus.ToList();
+
+            timkiem = timkiem.Where(x => x.Ngay.Month ==DateTime.Now.Month).Take(7).ToList();
+            ViewBag.ThongKeKHMuaNhieu = timkiem;
+            return View();
         }
         #endregion
     }

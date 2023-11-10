@@ -104,6 +104,7 @@ namespace AppAPI.Services
                         hoaDon1.IDVoucher = null;
                     }
                     hoaDon1.TenNguoiNhan = hoaDon.Ten;
+                    hoaDon1.MaHD= "HD" + (hoaDon1.ID).ToString().Substring(0, 8).ToUpper();
                     hoaDon1.SDT = hoaDon.SDT;
                     hoaDon1.Email = hoaDon.Email;
                     hoaDon1.NgayTao = DateTime.Now;
@@ -167,7 +168,7 @@ namespace AppAPI.Services
                                         IDKhachHang = hoaDon.IDNguoiDung,
                                         IDQuyDoiDiem = quyDoiDiem.ID,
                                         IDHoaDon = hoaDon1.ID,
-                                        Diem = hoaDon.Diem,
+                                        Diem = hoaDon.Diem.Value,
                                         TrangThai = 0
                                     };
                                     reposLichSuTichDiem.Add(lichSuTichDiem);
