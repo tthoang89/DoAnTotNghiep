@@ -32,3 +32,12 @@ tabsBox.addEventListener("mousedown", () => isDragging = true);
 tabsBox.addEventListener("mousemove", dragging);
 document.addEventListener("mouseup", dragStop);
 
+
+$("#select-trangThai").toggleClass("open");
+$("#select-kenh").toggleClass("open");
+$("#select-trangThai").on("click", function () {
+    $(this).toggleClass("open");
+});
+$("#select-kenh").on("click", function () {
+    $(this).toggleClass("open");
+});

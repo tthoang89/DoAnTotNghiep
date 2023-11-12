@@ -130,7 +130,7 @@ h6 {
 --------------------------------------------------------------*/
 #main {
     margin-top: 60px;
-    padding: 20px 30px;
+    padding: 10px 20px;
     transition: all 0.3s;
 }
 
@@ -1490,7 +1490,7 @@ h6 {
     }
 
     .tabs-box .tab:last-child {
-        margin-left: 5px;
+        margin-right: 5px;
     }
 
     .tabs-box .tab:hover {
@@ -1983,20 +1983,6 @@ tbody td {
     display: none;
 }
 
-#loccontent::-webkit-scrollbar {
-    width: 6px;
-    height: 8px;
-    overflow: scroll;
-}
-
-#loccontent::-webkit-scrollbar-track {
-    background-color: #aab7cf transparent;
-}
-
-#loccontent::-webkit-scrollbar-thumb {
-    background-color: #aab7cf transparent;
-}
-
 .scroll-cthd::-webkit-scrollbar {
     width: 6px;
     height: 8px;
@@ -2009,3 +1995,23 @@ tbody td {
 .scroll-cthd::-webkit-scrollbar-thumb {
     background-color: #aab7cf;
 }
+.tbbills thead th, .jsgrid .jsgrid-table thead th {
+    border-top: 0;
+    padding: .875rem 0.9375rem;
+}
+
+.tbbills td, .jsgrid .jsgrid-table td {
+    padding: .875rem 0.9375rem;
+}
+    .tbbills td .badge {
+        border-radius: 0;
+        font-size: 14px;
+        line-height: 1;
+        padding: .375rem .5625rem;
+        font-weight: normal;
+    }
+.tbbills > td:hover,
+.tbbills > th:hover {
+    background-color: #c8cbcf;
+}
+/*Search HD*/

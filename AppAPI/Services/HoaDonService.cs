@@ -306,13 +306,7 @@ namespace AppAPI.Services
                               ThoiGian = hd.NgayThanhToan,
                               KhachTra = hd.TongTien,
                               LoaiHD = hd.LoaiHD,
-                              TrangThai =(hd.TrangThaiGiaoHang == 2? "Chờ bàn giao" :
-                                        (hd.TrangThaiGiaoHang == 3 ? "Đang giao":
-                                        (hd.TrangThaiGiaoHang == 4 ? "Đang hoàn hàng" :
-                                        (hd.TrangThaiGiaoHang == 5 ? "Hoàn hàng thành công":
-                                        (hd.TrangThaiGiaoHang == 6 ? "Thành công" : 
-                                        (hd.TrangThaiGiaoHang == 7 ? "Đơn hủy" :
-                                        (hd.TrangThaiGiaoHang == 8 ? "Đơn hàng thất lạc": "Khác"))))))),
+                              TrangThai = hd.TrangThaiGiaoHang,
                           }).ToList();
             return result;
         }
