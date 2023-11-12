@@ -5,6 +5,10 @@
     Layout = "~/Views/Shared/_LayoutForAdmin.cshtml";
     AppData.Models.AssignmentDBContext Dbcontext = new AppData.Models.AssignmentDBContext();
     int stt = 1;
+    List<string> imageExtensions = new List<string>()
+    {
+         ".png", ".jpg", ".jpeg", ".gif", ".tiff", ".pdf",".webp",".jfif"
+    };
 }
 <form asp-controller="QuanLyKM" asp-action="GetSPNoKMLoaiSPCL" method="get" enctype="multipart/form-data">
     <div>
@@ -96,7 +100,25 @@
                     <strong style="color:black">@item.MoTa</strong>
                 </td>
                 <td>
-                    <strong style="color:black">@item.TenAnh</strong>
+                    @{
+
+                        if (item.TenAnh != null)
+                        {
+                            string extension = System.IO.Path.GetExtension(item.TenAnh);
+                            if (imageExtensions.Contains(extension.Trim()))
+                            {
+                                <img class="img-fluid w-100" src="/img/product/@item.TenAnh" />
+                            }
+                            else
+                            {
+                                <img class="img-fluid w-100" src="~/imgs/product-2.jpg" height="100px">
+                            }
+                        }
+                        else
+                        {
+                            <strong></strong>
+                        }
+                    }
                 </td>
                 <td>
                     <strong style="color:green">@item.SoLuongCTSP</strong>
