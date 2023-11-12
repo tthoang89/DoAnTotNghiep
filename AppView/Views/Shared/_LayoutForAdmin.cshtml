@@ -26,6 +26,7 @@
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
 
     <!-- Vendor CSS Files -->
@@ -36,7 +37,6 @@
     <link href="~/Admin/vendor/quill/quill.bubble.css" rel="stylesheet">
     <link href="~/Admin/vendor/remixicon/remixicon.css" rel="stylesheet">
     <link href="~/Admin/vendor/simple-datatables/style.css" rel="stylesheet">
-
     <!-- Template Main CSS File -->
     <link href="~/Admin/css/style.css" rel="stylesheet">
 
@@ -109,30 +109,35 @@
                     <span>Trang chủ</span>
                 </a>
             </li><!-- End Dashboard Nav -->
-
             <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" asp-controller="BanHangTaiQuay" asp-action="BanHang">
-                    <i class="bi bi-menu-button-wide"></i><span>Bán hàng</span><i class="bi bi-chevron-down ms-auto"></i>
+                <a class="nav-link collapsed" asp-controller="BanHangTaiQuay" asp-action="BanHang">
+                    <i class="bi bi-menu-button-wide"></i><span>Bán hàng</span>
                 </a>
-                <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     <li>
-                        <a asp-controller="BanHangTaiQuay" asp-action="BanHang">
-                            <i class="bi bi-circle"></i><span>Hóa đơn chờ</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a asp-controller="BanHangTaiQuay" asp-action="ThanhToanRightSide">
-                            <i class="bi bi-circle"></i><span>Tất cả hóa đơn</span>
+                        <a asp-controller="LoaiSP" asp-action="Show">
+                            <i class="bi bi-circle"></i><span>Loại Sản Phẩm</span>
                         </a>
                     </li>
                 </ul>
-            </li><!-- End Components Nav -->
-
+            </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" asp-controller="QuanLyHoaDon" asp-action="_QuanLyHoaDon">
+                    <i class="bi bi-menu-button-wide"></i><span>Quản lý hóa đơn</span>
+                </a>
+                <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a asp-controller="LoaiSP" asp-action="Show">
+                            <i class="bi bi-circle"></i><span>Loại Sản Phẩm</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
             <li class="nav-item">
                 <a class="nav-link collapsed" asp-controller="Admin" asp-action="ProductManager">
                     <i class="bi bi-journal-text"></i><span>Quản lý sản phẩm</span>
                 </a>
-                 <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     <li>
                         <a asp-controller="LoaiSP" asp-action="Show">
                             <i class="bi bi-circle"></i><span>Loại Sản Phẩm</span>
@@ -143,7 +148,7 @@
                             <i class="bi bi-circle"></i><span>Form Layouts</span>
                         </a>
                     </li>
-                </ul> 
+                </ul>
             </li><!-- End Forms Nav -->
 
             <li class="nav-item">
@@ -170,7 +175,7 @@
             </li><!-- End Tables Nav -->
 
             <li class="nav-item">
-               @*<a class="nav-link collapsed" asp-controller="NhanVien" asp-action="Show">
+                @*<a class="nav-link collapsed" asp-controller="NhanVien" asp-action="Show">
                     <i class="bi bi-bar-chart"></i><span>Quản lý nhân viên</span></a>*@
                 <ul id="charts-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     <li>
@@ -281,6 +286,9 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.2/js/toastr.min.js"></script>
+
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
     <!-- Template Main JS File -->
     <script src="~/Admin/js/main.js"></script>
 

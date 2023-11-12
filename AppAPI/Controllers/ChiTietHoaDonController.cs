@@ -34,7 +34,8 @@ namespace AppAPI.Controllers
         {
             if (request == null) return BadRequest();
             var hdct = await _idchiTietHoaDon.SaveCTHoaDon(request);
-            return Ok(hdct);
+            if(hdct == true) return Ok();
+            else return BadRequest();
         }
         [HttpPost("UpdateSL")]
         public async Task<IActionResult> UpdateSL(Guid id, int sl)
