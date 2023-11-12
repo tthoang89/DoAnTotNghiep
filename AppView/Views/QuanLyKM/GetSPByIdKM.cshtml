@@ -8,7 +8,9 @@
     AppData.Models.AssignmentDBContext Dbcontext = new AppData.Models.AssignmentDBContext();
     List<KhuyenMaiView> listkms = ViewBag.KhuyenMaiView;
 }
-
+<button class="btn btn-dark">
+    <strong style="color:white">@Html.ActionLink("Thêm Sản Phẩm Vô KM", "GetSPNoKM")</strong>
+</button>
 <h1> Các Sản Phẩm</h1>
 
 
@@ -27,7 +29,9 @@
             <th>
                 Tên Ảnh
             </th>
-
+            <th>
+                Số lượng CTSP
+            </th>
             <th>
                 Tổng số sao
             </th>
@@ -66,6 +70,9 @@
                 </td>
                 <td>
                     <strong style="color:black">@item.TenAnh</strong>
+                </td>
+                <td>
+                    <strong style="color:green">@item.SoLuongCTSP</strong>
                 </td>
 
                 <td>

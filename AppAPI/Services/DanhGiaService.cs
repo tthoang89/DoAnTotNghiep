@@ -1,5 +1,7 @@
 ﻿using AppAPI.IServices;
+using AppData.IRepositories;
 using AppData.Models;
+using AppData.Repositories;
 using AppData.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,9 +10,11 @@ namespace AppAPI.Services
     public class DanhGiaService : IDanhGiaService
     {
         private readonly AssignmentDBContext _context;
+        private readonly IAllRepository<DanhGia> reposDanhGia;
         public DanhGiaService()
         {
             _context = new AssignmentDBContext();
+            reposDanhGia = new AllRepository<DanhGia>(_context, _context.DanhGias);
         }
 
         public async Task<bool> AnDanhGia(Guid id)
@@ -134,6 +138,24 @@ namespace AppAPI.Services
             //    throw new Exception(ex.Message);
             //}
             throw new NotImplementedException();
+        }
+
+        public bool UpdateDanhGia(Guid idCTHD, int soSao, string binhLuan)
+        {
+            try
+            {
+                DanhGia danhGia = reposDanhGia.GetAll().FirstOrDefault(p=>p.ID == idCTHD);
+                danhGia.BinhLuan = binhLuan;
+                danhGia.Sao = soSao;
+                danhGia.TrangThai = 1;
+                reposDanhGia.Update(danhGia);
+                return true;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
     }
 }

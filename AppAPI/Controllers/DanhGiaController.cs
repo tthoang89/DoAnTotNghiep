@@ -51,5 +51,10 @@ namespace AppAPI.Controllers
             var result = await _danhGiaService.AnDanhGia(id);
             return Ok(result);
         }
+        [HttpPut]
+        public bool UpdateDanhGia(Guid idCTHD, int soSao, string binhLuan)
+        {
+            return _danhGiaService.UpdateDanhGia(idCTHD,soSao,binhLuan);
+        }
     }
 }

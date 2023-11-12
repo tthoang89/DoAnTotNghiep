@@ -75,7 +75,7 @@
             cursor: pointer
         }
 
-            .colors ul li:nth-child(1) {
+            /*.colors ul li:nth-child(1) {
                 background-color: #6c704d
             }
 
@@ -93,7 +93,7 @@
 
             .colors ul li:nth-child(5) {
                 background-color: black
-            }
+            }*/
 
 .right-side {
     position: relative

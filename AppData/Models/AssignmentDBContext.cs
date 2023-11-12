@@ -39,7 +39,7 @@ namespace AppData.Models
         //THUYNHU\SQLEXPRESS
         //DESKTOP-UOIH77U\SQLEXPRESS
         //LAPTOP-A15NGLBG\SQLEXPRESS
-        // lam DESKTOP-S6G7NFV\SQLEXPRESS
+        // lam DESKTOP-S6G7NFV\SQLEXPRESS // 1AppBanQuanAoThoiTrangNam
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());

@@ -152,16 +152,22 @@ namespace AppAPI.Services
         #endregion
 
         #region ChiTietSanPham
+        public async Task<ChiTietSanPhamViewModel> GetChiTietSanPhamByID(Guid id)
+        {
+            var temp = _context.ChiTietSanPhams.First(x => x.ID == id);
+            ChiTietSanPhamViewModel chiTietSanPham = new ChiTietSanPhamViewModel() { ID = temp.ID, Ten = _context.SanPhams.First(x=>x.ID==temp.IDSanPham).Ten,SoLuong=temp.SoLuong,GiaBan=temp.IDKhuyenMai==null?temp.GiaBan:(100-_context.KhuyenMais.First(x=>x.ID==temp.IDKhuyenMai).GiaTri)/100*temp.GiaBan,GiaGoc=temp.GiaBan,TrangThai=temp.TrangThai,Anh=_context.Anhs.First(x=>x.IDMauSac==temp.IDMauSac && x.IDSanPham==temp.IDSanPham).DuongDan};
+            return chiTietSanPham;
+        }
         public async Task<ChiTietSanPhamViewModelHome> GetAllChiTietSanPhamHome(Guid idSanPham)
         {
             var sanPham = await _context.SanPhams.FindAsync(idSanPham);
             List<ChiTietSanPham> lstChiTietSanPham = _context.ChiTietSanPhams.Where(x => x.IDSanPham == idSanPham).ToList();
-            List<string> mauSacs = new List<string>();
-            List<string> kichCos = new List<string>();
+            List<MauSac> mauSacs = new List<MauSac>();
+            List<KichCo> kichCos = new List<KichCo>();
             foreach (var x in lstChiTietSanPham)
             {
-                mauSacs.Add(_context.MauSacs.FindAsync(x.IDMauSac).Result.Ma);
-                kichCos.Add(_context.KichCos.FindAsync(x.IDKichCo).Result.Ten);
+                mauSacs.Add(_context.MauSacs.FindAsync(x.IDMauSac).Result);
+                kichCos.Add(_context.KichCos.FindAsync(x.IDKichCo).Result);
             }
             ChiTietSanPhamViewModelHome chiTietSanPham = new ChiTietSanPhamViewModelHome();
             chiTietSanPham.Ten = sanPham.Ten;
@@ -169,8 +175,8 @@ namespace AppAPI.Services
             chiTietSanPham.SoDanhGia = sanPham.TongDanhGia;
             chiTietSanPham.Anhs = _context.Anhs.Where(x => x.IDSanPham == idSanPham).ToList(); ;
             chiTietSanPham.ChiTietSanPhams = lstChiTietSanPham;
-            chiTietSanPham.MaMauSacs = mauSacs;
-            chiTietSanPham.TenKichCo = kichCos;
+            chiTietSanPham.MauSacs = mauSacs.Distinct().ToList();
+            chiTietSanPham.KichCos = kichCos.Distinct().ToList();
             return chiTietSanPham;
         }
         public Task<bool> UpdateChiTietSanPham(ChiTietSanPham chiTietSanPham)

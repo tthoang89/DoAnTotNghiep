@@ -17,7 +17,7 @@ namespace AppView.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllLSTDByID(int ProductPage = 1)
         {
-            
+        //https://localhost:7095/api/LichSuTichDiem/GetLSTDByIdKH?idkh=8ba92174-c33b-4766-aad0-945166e776fc
             string apiURL = $"https://localhost:7095/api/LichSuTichDiem/GetLSTDByIdKH";
             var response = await _httpClient.GetAsync(apiURL);
             var apiData = await response.Content.ReadAsStringAsync();
