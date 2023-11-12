@@ -50,71 +50,7 @@ function dashboard(){
 
 };
 
-  Highcharts.chart('barchart', {
-      title: {
-          text: 'Combination chart'
-      },
-      xAxis: {
-          categories: ['Apples', 'Oranges', 'Pears', 'Bananas', 'Plums']
-      },
-      labels: {
-          items: [{
-              html: 'Total fruit consumption',
-              style: {
-                  left: '130px',
-                  top: '18px',
-                  color: (Highcharts.theme && Highcharts.theme.textColor) || 'black'
-              }
-          }]
-      },
-      series: [{
-          type: 'column',
-          name: 'Jane',
-          data: [3, 2, 1, 3, 4],
-          color:'#f57c00'
-      }, {
-          type: 'column',
-          name: 'John',
-          data: [4, 3, 5, 7, 6],
-          color:'#2BBBAD'
-      }, {
-          type: 'column',
-          name: 'Joe',
-          data: [3, 4, 2, 9, 5],
-          color:'#39444e'
-      }, {
-          type: 'spline',
-          name: 'Average',
-          data: [3.5, 2.67, 3, 6.33, 3.33],
-          marker: {
-              lineWidth: 2,
-              lineColor: Highcharts.getOptions().colors[3],
-              fillColor: 'white'
-          }
-      }, {
-          type: 'pie',
-          name: 'Total consumption',
-          data: [{
-              name: 'Jane',
-              y: 13,
-              color: '#f57c00'
-          }, {
-              name: 'John',
-              y: 23,
-              color:'#2BBBAD'
-          }, {
-              name: 'Joe',
-              y: 19,
-              color:'#39444e'
-          }],
-          center: [40, 20],
-          size: 100,
-          showInLegend: false,
-          dataLabels: {
-              enabled: false
-          }
-      }]
-  });
+ 
 
 
  
