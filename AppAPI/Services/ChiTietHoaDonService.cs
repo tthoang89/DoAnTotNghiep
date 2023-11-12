@@ -15,54 +15,60 @@ namespace AppAPI.Services
             _context = new AssignmentDBContext();
         }
 
-        public async Task<ChiTietHoaDon> SaveCTHoaDon(HoaDonChiTietRequest request)
+        public async Task<bool> SaveCTHoaDon(HoaDonChiTietRequest request)
         {
-            // Kiểm tra sp tồn tại trong hóa đơn này chưa
-            var CTSPexist = _context.ChiTietHoaDons.Where(c => c.IDHoaDon == request.IdHoaDon).Any(c => c.IDCTSP == request.IdChiTietSanPham);
-            if (CTSPexist != true) //k tồn tại -> chưa có hdct-> tạo
+            try
             {
-                var danhgia = new DanhGia()
+                // Kiểm tra sp tồn tại trong hóa đơn này chưa
+                var CTSPexist = _context.ChiTietHoaDons.Where(c => c.IDHoaDon == request.IdHoaDon).Any(c => c.IDCTSP == request.IdChiTietSanPham);
+                if (CTSPexist != true) //k tồn tại -> chưa có hdct-> tạo
                 {
-                    ID = request.Id,
-                    TrangThai = 0,
-                };
-                await _context.DanhGias.AddAsync(danhgia);
-                await _context.SaveChangesAsync();
+                    var danhgia = new DanhGia()
+                    {
+                        ID = request.Id,
+                        TrangThai = 0,
+                    };
+                    await _context.DanhGias.AddAsync(danhgia);
+                    await _context.SaveChangesAsync();
 
-                var hdct = new ChiTietHoaDon()
+                    var hdct = new ChiTietHoaDon()
+                    {
+                        ID = danhgia.ID,
+                        IDHoaDon = request.IdHoaDon,
+                        IDCTSP = request.IdChiTietSanPham,
+                        SoLuong = request.SoLuong,
+                        DonGia = request.DonGia,
+                        TrangThai = 0,
+                    };
+                    await _context.ChiTietHoaDons.AddAsync(hdct);
+                    await _context.SaveChangesAsync();
+                    //Trừ số lượng CTSP
+                    var ctsp = _context.ChiTietSanPhams.Find(request.IdChiTietSanPham);
+                    ctsp.SoLuong -= request.SoLuong;
+                    _context.ChiTietSanPhams.Update(ctsp);
+                    await _context.SaveChangesAsync();
+                    return true;
+                }
+                else
                 {
-                    ID = danhgia.ID,
-                    IDHoaDon = request.IdHoaDon,
-                    IDCTSP = request.IdChiTietSanPham,
-                    SoLuong = request.SoLuong,
-                    DonGia = request.DonGia,
-                    TrangThai = 0,
-                };
-                await _context.ChiTietHoaDons.AddAsync(hdct);
-                await _context.SaveChangesAsync();
-                //Trừ số lượng CTSP
-                var ctsp = _context.ChiTietSanPhams.Find(request.IdChiTietSanPham);
-                ctsp.SoLuong -= request.SoLuong;
-                _context.ChiTietSanPhams.Update(ctsp);
-                await _context.SaveChangesAsync();
-                return hdct;
-            }
-            else
+                    var exist = _context.ChiTietHoaDons.Where(c => c.IDCTSP == request.IdChiTietSanPham && c.IDHoaDon == request.IdHoaDon).FirstOrDefault();
+                    var ctsp = _context.ChiTietSanPhams.Find(request.IdChiTietSanPham);
+                    exist.SoLuong += request.SoLuong;
+                    exist.DonGia = request.DonGia;
+                    _context.Update(exist);
+                    await _context.SaveChangesAsync();
+
+                    //Thay đổi số lượng bt
+                    ctsp.SoLuong -= request.SoLuong;
+                    _context.ChiTietSanPhams.Update(ctsp);
+                    await _context.SaveChangesAsync();
+                    return true;
+                }
+
+            }catch(Exception ex)
             {
-                var exist = _context.ChiTietHoaDons.Where(c => c.IDCTSP == request.IdChiTietSanPham && c.IDHoaDon == request.IdHoaDon).FirstOrDefault();
-                var ctsp = _context.ChiTietSanPhams.Find(request.IdChiTietSanPham);
-                exist.SoLuong += request.SoLuong;
-                exist.DonGia = request.DonGia;
-                _context.Update(exist);
-                await _context.SaveChangesAsync();
-
-                //Thay đổi số lượng bt
-                ctsp.SoLuong -=request.SoLuong;
-                _context.ChiTietSanPhams.Update(ctsp);
-                await _context.SaveChangesAsync();
-                return exist;
+                return false;
             }
-
         }
 
         public async Task<bool> DeleteCTHoaDon(Guid id)

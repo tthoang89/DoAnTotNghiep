@@ -4,6 +4,15 @@
 }
 <link href="~/css/productdetail.css" rel="stylesheet" type="text/css" />
 <style>
+    .icon-hover:hover {
+        border-color: #3b71ca !important;
+        background-color: white !important;
+        color: #3b71ca !important;
+    }
+
+    .icon-hover:hover i {
+        color: #3b71ca !important;
+    }
     #filter-color input[type="radio"], #filter-size input[type="radio"], #LoaiSpFilter input[type="radio"], #filter-material input[type="radio"] {
         display: none;
     }
@@ -51,6 +60,12 @@
     #filter-color label span:hover, #filter-size label span:hover, #filter-material label span:hover, #LoaiSpFilter label span:hover {
         background: black;
         color: white;
+    }
+
+    .MoTa, .DanhGia{
+        background-color:white;
+        margin-top: 15px;
+        padding:10px;
     }
 </style>
 <div class="container mt-5 mb-5">
@@ -121,6 +136,179 @@
             </div>
         </div>
     </div>
+    @*ssss*@
+    
+    <section class="bg-light border-top py-4">
+        <div class="container">
+            <div class="row gx-4">
+                <div class="col-lg-8 mb-4">
+                    <div class="border rounded-2 px-3 py-2 bg-white">
+                        <!-- Pills navs -->
+                        <h3>MÔ TẢ SẢN PHẨM</h3>
+                        <!-- Pills navs -->
+                        <!-- Pills content -->
+                        <div class="tab-content" id="ex1-content">
+                            <div class="tab-pane fade show active" id="ex1-pills-1" role="tabpanel" aria-labelledby="ex1-tab-1">
+                                <p>
+                                    @Model.MoTa
+                                </p>
+                            </div>
+                        </div>
+                        <!-- Pills content -->
+                    </div>
+                    <div class="border rounded-2 px-3 py-2 bg-white" style="margin-top:24px">
+                        <!-- Pills navs -->
+                        <h3>ĐÁNH GIÁ SẢN PHẨM</h3>
+                        <div class="container" style="border-top:1px solid;">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-sm-6 text-center">
+                                            <h1 class="text-warning mt-4 mb-4">
+                                                <b><span id="average_rating">@Model.SoSao</span> / 5</b>
+                                            </h1>
+                                            <div class="mb-3">
+                                                @{
+                                                    for (int i = 0; i < Model.SoSao; i++)
+                                                    {
+                                                        <i class="fas fa-star text-warning"></i>
+                                                        
+                                                    }
+                                                    if (Model.SoSao < 5)
+                                                    {
+                                                        for (int i = 4; i > 5-Convert.ToInt32(Model.SoSao); i--)
+                                                        {
+                                                            <i class="fas fa-star star-light mr-1 main_star"></i>
+                                                        }
+                                                    }
+                                                    
+                                                }
+                                                
+                                            </div>
+                                            
+                                        </div>
+                                        <div class="col-sm-6 text-center">
+                                            <h3><span id="total_review">@Model.SoDanhGia</span> Đánh giá</h3>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="mt-5" id="review_content"></div>
+                        </div>
+                        @{
+                            foreach (var item in Model.LSTDanhGia)
+                            {
+                                <div class="container" style="border-top:1px solid #dee2e6;padding-top:15px;">
+                                    <div class="row" style="border-bottom:1px solid #dee2e6;padding-bottom:20px;padding-top:20px;">
+                                        <div class="col-2">
+                                            <h4 style="text-align: center; width: 60px; height: 60px; vertical-align: middle; background-color: gray; border-radius: 50%; display: table-cell;">@item.TenKH.Substring(0,1).ToUpper()</h4>
+                                        </div>
+                                        <div class="col-10">
+                                            <div>
+                                                <span>@item.TenKH</span>
+                                            </div>
+                                            <div>
+                                                @{
+                                                    for (int i = 0; i < item.Sao; i++)
+                                                    {
+                                                        <i class="fas fa-star text-warning"></i>
+
+                                                    }
+                                                    if (Model.SoSao < 5)
+                                                    {
+                                                        for (int i = 4; i > 5 - item.Sao; i--)
+                                                        {
+                                                            <i class="fas fa-star star-light mr-1 main_star"></i>
+                                                        }
+                                                    }
+
+                                                }
+                                            </div>
+                                            <div style="margin-top:6px;">
+                                                <span style="color:gray">2023-02-13 15:42</span>
+                                            </div>
+                                            <div style="margin-top:6px;">
+                                                <span style="color:gray">Chất liệu: </span>@item.ChatLieu
+                                            </div>
+                                            <div style="margin-top:6px;">
+                                                <span style="color:gray">Màu sắc: </span>@item.MauSac
+                                            </div>
+                                            <div style="margin-top:6px;">
+                                                <span style="color:gray">Kích cỡ: </span>@item.KichCo
+                                            </div>
+                                            <div style="margin-top:6px;">
+                                                <span>@item.BinhLuan</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            }
+                        }
+                        
+                    </div>
+                </div>
+
+                <div id="rateYo"></div>
+
+                <div class="col-lg-4">
+                    <div class="px-0 border rounded-2 shadow-0">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">SẢN PHẨM TƯƠNG TỰ</h5>
+                                <div class="d-flex mb-3">
+                                    <a href="#" class="me-3">
+                                        <img src="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/8.webp" style="min-width: 96px; height: 96px;" class="img-md img-thumbnail" />
+                                    </a>
+                                    <div class="info">
+                                        <a href="#" class="nav-link mb-1">
+                                            Rucksack Backpack Large <br />
+                                            Line Mounts
+                                        </a>
+                                        <strong class="text-dark"> $38.90</strong>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex mb-3">
+                                    <a href="#" class="me-3">
+                                        <img src="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/9.webp" style="min-width: 96px; height: 96px;" class="img-md img-thumbnail" />
+                                    </a>
+                                    <div class="info">
+                                        <a href="#" class="nav-link mb-1">
+                                            Summer New Men's Denim <br />
+                                            Jeans Shorts
+                                        </a>
+                                        <strong class="text-dark"> $29.50</strong>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex mb-3">
+                                    <a href="#" class="me-3">
+                                        <img src="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/10.webp" style="min-width: 96px; height: 96px;" class="img-md img-thumbnail" />
+                                    </a>
+                                    <div class="info">
+                                        <a href="#" class="nav-link mb-1"> T-shirts with multiple colors, for men and lady </a>
+                                        <strong class="text-dark"> $120.00</strong>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex">
+                                    <a href="#" class="me-3">
+                                        <img src="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/11.webp" style="min-width: 96px; height: 96px;" class="img-md img-thumbnail" />
+                                    </a>
+                                    <div class="info">
+                                        <a href="#" class="nav-link mb-1"> Blazer Suit Dress Jacket for Men, Blue color </a>
+                                        <strong class="text-dark"> $339.90</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
 <script src="~/js/jquery-3.3.1.min.js"></script>
 <script>

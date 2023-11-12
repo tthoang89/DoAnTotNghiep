@@ -77,6 +77,18 @@ namespace AppAPI.Controllers
             var lsthdcho = _iHoaDonService.GetHDBanHang(idhd);
             return Ok(lsthdcho);
         }
+        [HttpGet("GetAllHDQly")]
+        public IActionResult GetAllHDQly()
+        {
+            var hdql = _iHoaDonService.GetAllHDQly();
+            return Ok(hdql);
+        }
+        [HttpGet("ChiTietHoaDonQL/{idhd}")]
+        public IActionResult ChiTietHoaDonQL(Guid idhd)
+        {
+            var result = _iHoaDonService.GetCTHDByID(idhd);
+            return Ok(result);
+        }
         [HttpPut]
         public bool UpdateTrangThai(Guid idhoadon, int trangthai, Guid idnhanvien)
         {
