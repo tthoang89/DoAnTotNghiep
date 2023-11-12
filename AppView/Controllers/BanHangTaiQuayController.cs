@@ -16,12 +16,12 @@ namespace AppView.Controllers
         {
             _httpClient = new HttpClient();
             _httpClient.BaseAddress = new Uri("https://localhost:7095/api/");
+
         }
         //Giao diện bán hàng
         [HttpGet]
-        public async Task<IActionResult> BanHang(Guid id)
+        public async Task<IActionResult> BanHang()
         {
-            ViewBag.IdNhanVien = id;
             var listhdcho = await _httpClient.GetFromJsonAsync<List<HoaDon>>("HoaDon/GetAllHDCho");
             ViewData["lsthdcho"] = listhdcho;
             var listpttt = await _httpClient.GetFromJsonAsync<List<PhuongThucThanhToan>>("HoaDon/PhuongThucThanhToan");
@@ -111,7 +111,6 @@ namespace AppView.Controllers
             {
                 loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
             }
-            var nvien = await _httpClient.GetFromJsonAsync<NhanVien>($"NhanVien/GetById?id={loginInfor.Id}");
             var soluong = lstcthd.Sum(c => c.SoLuong);
             var ttien = lstcthd.Sum(c => c.SoLuong * c.DonGia);
             ViewData["lstPttt"] = listpttt;
@@ -124,11 +123,11 @@ namespace AppView.Controllers
                 TongSL = soluong,
                 TongTien = ttien,
                 DiemKH = dtkh,
-                DiemTichHD =Convert.ToInt32(ttien* qddActive.TiLeTichDiem/qddActive.SoDiem),
-                NhanVien = nvien.Ten,
+                DiemTichHD = qddActive != null? Convert.ToInt32(ttien* qddActive?.TiLeTichDiem/qddActive?.SoDiem):0,
+                NhanVien = loginInfor.Ten,
                 ThueVAT = (ttien * 10 / 100), // 10%
             }; 
-            ViewBag.tileTieu =((double)qddActive.TiLeTieuDiem)/ ((double)qddActive.TiLeTichDiem);
+            ViewBag.tileTieu = qddActive != null ? ((double)qddActive.TiLeTieuDiem)/ ((double)qddActive.TiLeTichDiem): 0;
             return PartialView("_ThanhToan", hdtt);
         }
 

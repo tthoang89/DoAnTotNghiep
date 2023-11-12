@@ -1,13 +1,21 @@
 ﻿@using AppData.Models
 @using AppData.ViewModels
+@using Newtonsoft.Json
 @{
     ViewData["Title"] = "BanHang";
     <script src="~/Admin/js/bantaiquay.js" defer></script>
     var lsthdcho = ViewData["lsthdcho"] as List<HoaDon>;
     var lstPttt = ViewData["lstPttt"] as List<PhuongThucThanhToan>;
+
+   var loginInfor = new LoginViewModel();
+    string? session = Context.Session.GetString("LoginInfor");
+    if (session != null)
+    {
+        loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(Context.Session.GetString("LoginInfor"));
+    }
 }
 
-<div class="d-flex flex-row align-items-stretch"  style="background: #f0f1f3">
+<div class="d-flex flex-row align-items-stretch" style="background: #f0f1f3">
     <!--Hiển thị giỏ hàng-->
     <div class="d-flex flex-column align-items-stretch flex-grow-1">
         <div class="d-flex flex-row bg-primary text-white w-100 flex-shrink-1" style="background:#5372F0;height:50px;">
@@ -208,13 +216,13 @@
     }
      //THÊM HÓA ĐƠN CHỜ
     function addHDCho() {
-        var idnv = "@ViewBag.IdNhanVien";
         $.ajax({
-            url: `https://localhost:7095/api/HoaDon/Offline/${idnv}`,
+            url: `https://localhost:7095/api/HoaDon/Offline/${'@loginInfor.Id'}`,
             type: "POST",
             dataType: 'json',
             contentType: 'application/json',
             success: function(response) {
+                console.log(response);
                 toastr.success('Thêm thành công', "Success Alert", { timeOut: 300 });
                 loadHDCHO(function(){
                      activeTab(1);
@@ -340,8 +348,7 @@
         var thuevat =$("#thueVAT").val();
         var tichdiemhd = $("#diemtichhd").text();
         var tichdiemsd = parseInt($('#diemKHSD').val());
-        console.log("@ViewBag.IdNhanVien");
-        var request={Id: id, IdPTTT: idPTTT,IdNhanVien:"@ViewBag.IdNhanVien", IdVoucher: null,TongTien: ttien, ThueVAT: thuevat, DiemTichHD: tichdiemhd, DiemSD: tichdiemsd};
+        var request={Id: id, IdPTTT: idPTTT,IdNhanVien:'@loginInfor.Id', IdVoucher: null,TongTien: ttien, ThueVAT: thuevat, DiemTichHD: tichdiemhd, DiemSD: tichdiemsd};
         $.ajax({
               url: "/BanHangTaiQuay/ThanhToan",
               async: false,
