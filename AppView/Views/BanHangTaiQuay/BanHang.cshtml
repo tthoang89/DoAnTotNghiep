@@ -340,6 +340,7 @@
         var thuevat =$("#thueVAT").val();
         var tichdiemhd = $("#diemtichhd").text();
         var tichdiemsd = parseInt($('#diemKHSD').val());
+        console.log("@ViewBag.IdNhanVien");
         var request={Id: id, IdPTTT: idPTTT,IdNhanVien:"@ViewBag.IdNhanVien", IdVoucher: null,TongTien: ttien, ThueVAT: thuevat, DiemTichHD: tichdiemhd, DiemSD: tichdiemsd};
         $.ajax({
               url: "/BanHangTaiQuay/ThanhToan",

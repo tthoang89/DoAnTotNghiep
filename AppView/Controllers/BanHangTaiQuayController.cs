@@ -21,7 +21,7 @@ namespace AppView.Controllers
         [HttpGet]
         public async Task<IActionResult> BanHang(Guid id)
         {
-            ViewBag.IdNhanVien = "D34A62D4-A0C1-4EA2-8A1C-4212C952ABE9";
+            ViewBag.IdNhanVien = id;
             var listhdcho = await _httpClient.GetFromJsonAsync<List<HoaDon>>("HoaDon/GetAllHDCho");
             ViewData["lsthdcho"] = listhdcho;
             var listpttt = await _httpClient.GetFromJsonAsync<List<PhuongThucThanhToan>>("HoaDon/PhuongThucThanhToan");
@@ -105,7 +105,13 @@ namespace AppView.Controllers
                 khachHang = kh.Ten;
                 dtkh = kh.DiemTich;
             }
-            var nvien = await _httpClient.GetFromJsonAsync<NhanVien>($"NhanVien/GetById?id={hd.IDNhanVien}");
+            var loginInfor = new LoginViewModel();
+            string? session = HttpContext.Session.GetString("LoginInfor");
+            if (session != null)
+            {
+                loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
+            }
+            var nvien = await _httpClient.GetFromJsonAsync<NhanVien>($"NhanVien/GetById?id={loginInfor.Id}");
             var soluong = lstcthd.Sum(c => c.SoLuong);
             var ttien = lstcthd.Sum(c => c.SoLuong * c.DonGia);
             ViewData["lstPttt"] = listpttt;
