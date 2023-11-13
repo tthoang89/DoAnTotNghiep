@@ -316,10 +316,10 @@ namespace AppAPI.Services
             return reposHoaDon.GetAll();
         }
 
-        public List<PhuongThucThanhToan> GetAllPTTT()
-        {
-            return reposPTTT.GetAll();
-        }
+        //public List<PhuongThucThanhToan> GetAllPTTT()
+        //{
+        //    return reposPTTT.GetAll();
+        //}
 
         public ChiTietHoaDonQL GetCTHDByID(Guid idhd)
         {
@@ -438,15 +438,15 @@ namespace AppAPI.Services
         public bool UpdateHoaDon(HoaDonThanhToanRequest hoaDon)
         {
             var update = reposHoaDon.GetAll().FirstOrDefault(p => p.ID == hoaDon.Id);
-            ChiTietPTTT ctPTTT = new ChiTietPTTT()
-            {
-                ID = new Guid(),
-                SoTien = hoaDon.TongTien,
-                TrangThai = 0,
-                IDHoaDon = update.ID,
-                IDPTTT = hoaDon.IdPTTT,
-            };
-            reposChiTietPTTT.Add(ctPTTT);
+            //ChiTietPTTT ctPTTT = new ChiTietPTTT()
+            //{
+            //    ID = new Guid(),
+            //    SoTien = hoaDon.TongTien,
+            //    TrangThai = 0,
+            //    IDHoaDon = update.ID,
+            //    IDPTTT = hoaDon.IdPTTT,
+            //};
+            //reposChiTietPTTT.Add(ctPTTT);
             //Update LSTD tích
             var lstd = reposLichSuTichDiem.GetAll().FirstOrDefault(c => c.IDHoaDon == hoaDon.Id);
             if(lstd != null)

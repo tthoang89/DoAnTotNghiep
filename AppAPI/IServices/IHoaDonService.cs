@@ -25,9 +25,9 @@ namespace AppAPI.IServices
         public List<HoaDonQL> GetAllHDQly();
         public ChiTietHoaDonQL GetCTHDByID(Guid idhd);
             //Phương thức thanh toán
-        public List<PhuongThucThanhToan> GetAllPTTT();
-        public bool CreatePTTT(PhuongThucThanhToan pttt);
-        public bool UpdatePTTT(PhuongThucThanhToan pttt);   
-        public bool DeletePTTT(Guid id);   
+        //public List<PhuongThucThanhToan> GetAllPTTT();
+        //public bool CreatePTTT(PhuongThucThanhToan pttt);
+        //public bool UpdatePTTT(PhuongThucThanhToan pttt);   
+        //public bool DeletePTTT(Guid id);   
     }
 }
