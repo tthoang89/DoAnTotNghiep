@@ -1,5 +1,7 @@
 using AppAPI.IServices;
 using AppAPI.Services;
+using AppData.ViewModels.Mail;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +20,21 @@ builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo()
+    {
+        Title = "Example API",
+        Version = "v1",
+        Description = "An example of an ASP.NET Core Web API",
+        Contact = new OpenApiContact
+        {
+            Name = "Example Contact",
+            Email = "example@example.com",
+            Url = new Uri("https://example.com/contact"),
+        },
+    });
+});
 //builder.Services.AddScoped<IChiTietKhuyenMaiServices,ChiTietKhuyenMaiServices>();
 builder.Services.AddScoped<IChiTietGioHangServices, ChiTietGioHangServices>();
 builder.Services.AddScoped<IGioHangServices, GioHangServices>();
@@ -34,6 +50,9 @@ builder.Services.AddScoped<ISanPhamService, SanPhamService>();
 builder.Services.AddScoped<IVoucherServices, VoucherServices>();
 builder.Services.AddScoped<IVaiTroService, VaiTroSevice>();
 
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
+builder.Services.AddTransient<IMailServices, MailServices>();
+
 builder.Services.AddControllersWithViews().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 var app = builder.Build();
 
@@ -41,7 +60,10 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(option =>
+    {
+        option.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+    });
 }
 
 app.UseHttpsRedirection();

@@ -18,8 +18,8 @@ namespace AppAPI.Services
         private readonly IAllRepository<LichSuTichDiem> reposLichSuTichDiem;
         private readonly IAllRepository<KhachHang> reposKhachHang;
         private readonly IAllRepository<SanPham> reposSanPham;
-        private readonly IAllRepository<PhuongThucThanhToan> reposPTTT;
-        private readonly IAllRepository<ChiTietPTTT> reposChiTietPTTT;
+        //private readonly IAllRepository<PhuongThucThanhToan> reposPTTT;
+        //private readonly IAllRepository<ChiTietPTTT> reposChiTietPTTT;
         private readonly IAllRepository<DanhGia> reposDanhGia;
         private readonly IAllRepository<NhanVien> reposNhanVien;
 
@@ -36,9 +36,9 @@ namespace AppAPI.Services
             reposLichSuTichDiem = new AllRepository<LichSuTichDiem>(context, context.LichSuTichDiems);
             reposKhachHang = new AllRepository<KhachHang>(context, context.KhachHangs);
             reposSanPham = new AllRepository<SanPham>(context, context.SanPhams);
-            reposPTTT = new AllRepository<PhuongThucThanhToan>(context, context.PhuongThucThanhToans);
+            //reposPTTT = new AllRepository<PhuongThucThanhToan>(context, context.PhuongThucThanhToans);
             reposDanhGia = new AllRepository<DanhGia>(context, context.DanhGias);
-            reposChiTietPTTT = new AllRepository<ChiTietPTTT>(context, context.ChiTietPTTTs);
+            //reposChiTietPTTT = new AllRepository<ChiTietPTTT>(context, context.ChiTietPTTTs);
             context = new AssignmentDBContext();
         }
 
@@ -220,25 +220,25 @@ namespace AppAPI.Services
             }
         }
 
-        public bool CreatePTTT(PhuongThucThanhToan pttt)
-        {
-            try
-            {
-                PhuongThucThanhToan phuongTTT = new PhuongThucThanhToan()
-                {
-                    ID = new Guid(),
-                    Ten = pttt.Ten,
-                    TrangThai = pttt.TrangThai,
-                };
-                reposPTTT.Add(phuongTTT);
-                return true;
+        //public bool CreatePTTT(PhuongThucThanhToan pttt)
+        //{
+        //    try
+        //    {
+        //        PhuongThucThanhToan phuongTTT = new PhuongThucThanhToan()
+        //        {
+        //            ID = new Guid(),
+        //            Ten = pttt.Ten,
+        //            TrangThai = pttt.TrangThai,
+        //        };
+        //        reposPTTT.Add(phuongTTT);
+        //        return true;
 
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception(ex.Message);
+        //    }
+        //}
 
         public bool DeleteHoaDon(Guid id)
         {
@@ -265,20 +265,20 @@ namespace AppAPI.Services
 
         }
 
-        public bool DeletePTTT(Guid id)
-        {
-            try
-            {
-                var pttt = reposPTTT.GetAll().FirstOrDefault(c => c.ID == id);
-                reposPTTT.Delete(pttt);
-                return true;
+        //public bool DeletePTTT(Guid id)
+        //{
+        //    try
+        //    {
+        //        var pttt = reposPTTT.GetAll().FirstOrDefault(c => c.ID == id);
+        //        reposPTTT.Delete(pttt);
+        //        return true;
 
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message, ex);
-            }
-        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception(ex.Message, ex);
+        //    }
+        //}
 
         public List<ChiTietHoaDon> GetAllChiTietHoaDon(Guid idHoaDon)
         {
@@ -314,10 +314,10 @@ namespace AppAPI.Services
             return reposHoaDon.GetAll();
         }
 
-        public List<PhuongThucThanhToan> GetAllPTTT()
-        {
-            return reposPTTT.GetAll();
-        }
+        //public List<PhuongThucThanhToan> GetAllPTTT()
+        //{
+        //    return reposPTTT.GetAll();
+        //}
 
         public HoaDonViewModelBanHang GetHDBanHang(Guid id)
         {
@@ -384,42 +384,42 @@ namespace AppAPI.Services
             return timkiem;
         }
 
-        public bool UpdateHoaDon(HoaDonThanhToanRequest hoaDon)
-        {
-            var update = reposHoaDon.GetAll().FirstOrDefault(p => p.ID == hoaDon.Id);
-            ChiTietPTTT ctPTTT = new ChiTietPTTT()
-            {
-                ID = new Guid(),
-                SoTien = hoaDon.TongTien,
-                TrangThai = 0,
-                IDHoaDon = update.ID,
-                IDPTTT = hoaDon.IdPTTT,
-            };
-            reposChiTietPTTT.Add(ctPTTT);
+        //public bool UpdateHoaDon(HoaDonThanhToanRequest hoaDon)
+        //{
+        //    var update = reposHoaDon.GetAll().FirstOrDefault(p => p.ID == hoaDon.Id);
+        //    ChiTietPTTT ctPTTT = new ChiTietPTTT()
+        //    {
+        //        ID = new Guid(),
+        //        SoTien = hoaDon.TongTien,
+        //        TrangThai = 0,
+        //        IDHoaDon = update.ID,
+        //        IDPTTT = hoaDon.IdPTTT,
+        //    };
+        //    reposChiTietPTTT.Add(ctPTTT);
 
-            update.IDNhanVien = hoaDon.IdNhanVien;
-            update.NgayThanhToan = hoaDon.NgayThanhToan;
-            update.TrangThaiGiaoHang = hoaDon.TrangThai;
-            update.TongTien = hoaDon.TongTien;
-            update.ThueVAT = hoaDon.ThueVAT;
-            return reposHoaDon.Update(update);
-        }
+        //    update.IDNhanVien = hoaDon.IdNhanVien;
+        //    update.NgayThanhToan = hoaDon.NgayThanhToan;
+        //    update.TrangThaiGiaoHang = hoaDon.TrangThai;
+        //    update.TongTien = hoaDon.TongTien;
+        //    update.ThueVAT = hoaDon.ThueVAT;
+        //    return reposHoaDon.Update(update);
+        //}
 
-        public bool UpdatePTTT(PhuongThucThanhToan pttt)
-        {
-            try
-            {
-                var phuongttt = reposPTTT.GetAll().FirstOrDefault(p => p.ID == pttt.ID);
-                pttt.Ten = phuongttt.Ten;
-                pttt.TrangThai = phuongttt.TrangThai;
-                reposPTTT.Update(pttt);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
+        //public bool UpdatePTTT(PhuongThucThanhToan pttt)
+        //{
+        //    try
+        //    {
+        //        var phuongttt = reposPTTT.GetAll().FirstOrDefault(p => p.ID == pttt.ID);
+        //        pttt.Ten = phuongttt.Ten;
+        //        pttt.TrangThai = phuongttt.TrangThai;
+        //        reposPTTT.Update(pttt);
+        //        return true;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception(ex.Message);
+        //    }
+        //}
 
         public bool UpdateTrangThaiGiaoHang(Guid idHoaDon, int trangThai, Guid idNhanVien)
         {

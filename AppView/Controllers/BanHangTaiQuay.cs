@@ -25,8 +25,8 @@ namespace AppView.Controllers
             var listhdcho = await _httpClient.GetFromJsonAsync<List<HoaDon>>("HoaDon/GetAllHDCho");
             listhdcho = listhdcho.OrderByDescending(c => c.NgayTao).ToList();
             ViewData["lsthdcho"] = listhdcho;
-            var listpttt = await _httpClient.GetFromJsonAsync<List<PhuongThucThanhToan>>("HoaDon/PhuongThucThanhToan");
-            ViewData["lstPttt"] = listpttt;
+            //var listpttt = await _httpClient.GetFromJsonAsync<List<PhuongThucThanhToan>>("HoaDon/PhuongThucThanhToan");
+            //ViewData["lstPttt"] = listpttt;
             return View();
         }
         // Load Sản phẩm
@@ -89,7 +89,7 @@ namespace AppView.Controllers
         {
             var hd = await _httpClient.GetFromJsonAsync<HoaDon>($"HoaDon/GetById/{id}");
             var lstcthd = await _httpClient.GetFromJsonAsync<List<HoaDonChiTietViewModel>>($"ChiTietHoaDon/getByIdHD/{id}");
-            var listpttt = await _httpClient.GetFromJsonAsync<List<PhuongThucThanhToan>>("HoaDon/PhuongThucThanhToan");
+            //var listpttt = await _httpClient.GetFromJsonAsync<List<PhuongThucThanhToan>>("HoaDon/PhuongThucThanhToan");
             //Kiểm tra là hóa đơn của khách có tài khoản không?
             var khachHang = "Khách lẻ";
             var response = await _httpClient.GetFromJsonAsync<bool>($"HoaDon/CheckLSGDHD/{id}");
@@ -102,7 +102,7 @@ namespace AppView.Controllers
             var nvien = await _httpClient.GetFromJsonAsync<NhanVien>($"NhanVien/GetById?id={hd.IDNhanVien}");
             var soluong = lstcthd.Sum(c => c.SoLuong);
             var ttien = lstcthd.Sum(c => c.SoLuong * c.DonGia);
-            ViewData["lstPttt"] = listpttt;
+            //ViewData["lstPttt"] = listpttt;
             var hdtt = new HoaDonThanhToanViewModel()
             {
                 Id = hd.ID,

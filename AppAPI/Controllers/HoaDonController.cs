@@ -82,35 +82,35 @@ namespace AppAPI.Controllers
         {
             return _iHoaDonService.UpdateTrangThaiGiaoHang(idhoadon, trangthai, idnhanvien);
         }
-        [HttpPut("UpdateHoaDon")]
-        public bool UpDateHoaDon(HoaDonThanhToanRequest hoaDon)
-        {
-            return _iHoaDonService.UpdateHoaDon(hoaDon);
-        }
+        //[HttpPut("UpdateHoaDon")]
+        //public bool UpDateHoaDon(HoaDonThanhToanRequest hoaDon)
+        //{
+        //    return _iHoaDonService.UpdateHoaDon(hoaDon);
+        //}
         [HttpDelete("deleteHoaDon/{id}")]
         public bool Delete(Guid id)
         {
             return _iHoaDonService.DeleteHoaDon(id);
         }
-        [HttpGet("PhuongThucThanhToan")]
-        public List<PhuongThucThanhToan> GetAllPTTT()
-        {
-            return _iHoaDonService.GetAllPTTT();
-        }
-        [HttpPost("PhuongThucThanhToan")]
-        public bool CreatePTT(PhuongThucThanhToan pttt)
-        {
-            return _iHoaDonService.CreatePTTT(pttt);
-        }
-        [HttpPut("PhuongThucThanhToan")]
-        public bool UpdatePTT(PhuongThucThanhToan pttt)
-        {
-            return _iHoaDonService.UpdatePTTT(pttt);
-        }
-        [HttpDelete("PhuongThucThanhToan/{id}")]
-        public bool DeletePTT(Guid id)
-        {
-            return _iHoaDonService.DeletePTTT(id);
-        }
+        //[HttpGet("PhuongThucThanhToan")]
+        //public List<PhuongThucThanhToan> GetAllPTTT()
+        //{
+        //    return _iHoaDonService.GetAllPTTT();
+        //}
+        //[HttpPost("PhuongThucThanhToan")]
+        //public bool CreatePTT(PhuongThucThanhToan pttt)
+        //{
+        //    return _iHoaDonService.CreatePTTT(pttt);
+        //}
+        //[HttpPut("PhuongThucThanhToan")]
+        //public bool UpdatePTT(PhuongThucThanhToan pttt)
+        //{
+        //    return _iHoaDonService.UpdatePTTT(pttt);
+        //}
+        //[HttpDelete("PhuongThucThanhToan/{id}")]
+        //public bool DeletePTT(Guid id)
+        //{
+        //    return _iHoaDonService.DeletePTTT(id);
+        //}
     }
 }

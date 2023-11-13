@@ -41,6 +41,37 @@ namespace AppAPI.Controllers
         {
             return _khachHangService.GetById(id);
         }
+        [HttpGet("GetKhachHangByEmail")] 
+        public KhachHangViewModel GetKhachHangByEmail(string email)
+        {
+            var temp = _dbcontext.KhachHangs.FirstOrDefault(x => x.Email == email);
+            if (temp != null)
+            {
+                var khachHang = new KhachHangViewModel()
+                {
+                    Id = temp.IDKhachHang,
+                    Email = temp.Email
+                };
+                return khachHang;
+            }
+            else return new KhachHangViewModel();
+        }
+        [HttpPost("ChangeForgotPassword")]
+        public async Task<bool> ChangeForgotPassword(KhachHangViewModel khachHang)
+        {
+            try
+            {
+                var temp = _dbcontext.KhachHangs.First(x => x.IDKhachHang == khachHang.Id);
+                temp.Password = khachHang.Password;
+                _dbcontext.Update(temp);
+                await _dbcontext.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
         //Nhinh
         [HttpGet("getBySDT")]
         public KhachHang GetBySDT(string sdt)
