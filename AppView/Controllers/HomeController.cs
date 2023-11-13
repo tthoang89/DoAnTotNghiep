@@ -2,12 +2,14 @@
 using AppData.ViewModels;
 using AppData.ViewModels.BanOffline;
 using AppData.ViewModels.Mail;
+using AppData.ViewModels.QLND;
 using AppData.ViewModels.SanPham;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Newtonsoft.Json;
+using System.Text;
 using System.Web.Helpers;
 using X.PagedList;
 
@@ -464,8 +466,55 @@ namespace AppView.Controllers
             return RedirectToAction("Index");
         }
         [HttpGet]
+
+        #endregion
+
+        #region ForgotPassword
+        [HttpGet]
         public IActionResult ForgotPassword()
         {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest request)
+        {
+            try
+            {
+                string apiUrl = $"https://localhost:7095/api/QuanLyNguoiDung/ForgotPassword?request={request.Email}";
+                var response = await _httpClient.PostAsync(apiUrl, new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json"));
+                if (response.IsSuccessStatusCode)
+                {
+                    // Xử lý phản hồi từ controller
+                    var result = await response.Content.ReadAsStringAsync();
+                    if (result == "EmailExists")
+                    {
+                        TempData["Message"] = "Vui lòng kiểm tra email của bạn .";
+                        return RedirectToAction("Login"); 
+                    }
+                    else if (result == "Email này không tồn tại")
+                    {
+                        TempData["Message"] = "Email này không tồn tại.";
+                    }
+                    else
+                    {
+                        TempData["Message"] = "Không thể gửi lại email. Vui lòng thử lại sau..";
+                    }
+                }
+                else
+                {
+                    // Xử lý khi controller trả về lỗi
+                    var errorResponse = await response.Content.ReadAsStringAsync();
+                    ModelState.AddModelError("", errorResponse);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Xử lý khi có lỗi trong quá trình gửi yêu cầu đến controller
+                Console.WriteLine(ex.Message);
+                ModelState.AddModelError("", "Không thể gửi lại email. Vui lòng thử lại sau.");
+            }
             return View();
         }
         [HttpPost]
@@ -517,8 +566,61 @@ namespace AppView.Controllers
             }
             else return BadRequest();
         }
-        #endregion
 
+
+        [HttpGet]
+        public IActionResult ResetPassword(string email)
+        {
+            // Kiểm tra email và chuyển đến trang ResetPassword nếu email hợp lệ
+            if (!string.IsNullOrEmpty(email))
+            {
+                ResetPasswordRequest request = new ResetPasswordRequest
+                {
+                    Email = email
+                };
+                return View(request);
+            }
+            else
+            {
+                // Xử lý khi email không hợp lệ
+                TempData["Message"] = "Invalid email.";
+                return RedirectToAction("Login");
+            }
+            
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetPassword(ResetPasswordRequest request)
+        {
+
+            if (ModelState.IsValid)
+            {
+                // Validate password and confirm password match
+                if (request.Password != request.ConfirmPassword)
+                {
+                    ModelState.AddModelError("", "Passwords do not match");
+                    return View("ResetPassword");
+                }
+
+                // Implement the code to save the new password in your QuanLyNguoiDungService
+                string apiUrl = "https://localhost:7095/api/QuanLyNguoiDung/ResetPassword";
+                var response = await _httpClient.PostAsync(apiUrl, new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json"));
+                if (response.IsSuccessStatusCode)
+                {
+                    TempData["Message"] = "Password reset successfully";
+                    return RedirectToAction("Login"); 
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Không thể đặt lại mật khẩu");
+                }
+            }
+
+            return View("ResetPassword");
+        }
+
+        #endregion
         #region CheckOut
         [HttpGet]
         public IActionResult CheckOut()

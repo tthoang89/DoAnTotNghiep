@@ -44,6 +44,7 @@ namespace AppAPI.Controllers
                                  {
                                      ID = CTSP.ID,                                                               
                                      TenSanPham = sp.Ten,
+                                     TenAnh= (from anh in _dbcontext.Anhs where sp.ID == anh.IDSanPham &&mausac.ID==anh.IDMauSac select anh.DuongDan).FirstOrDefault(),
                                      IdKhuyenMai = (from km in _dbcontext.KhuyenMais where CTSP.IDKhuyenMai == km.ID select CTSP.IDKhuyenMai).FirstOrDefault(),
                                      TenMauSac = mausac.Ten,
                                      TenKichCo = size.Ten,                                    

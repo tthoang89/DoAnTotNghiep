@@ -6,6 +6,10 @@
     Layout = "~/Views/Shared/_LayoutForAdmin.cshtml";
     int stt = 1;
     List<KhuyenMaiView> listkms = ViewBag.KhuyenMaiView;
+    List<string> imageExtensions = new List<string>()
+    {
+         ".png", ".jpg", ".jpeg", ".gif", ".tiff", ".pdf",".webp",".jfif"
+    };
 }
 
 <table class="table">
@@ -16,6 +20,9 @@
             </th>
             <th>
                 STT
+            </th>
+            <th>
+                Ảnh
             </th>
             <th>
                 Tên Màu Sắc
@@ -55,6 +62,28 @@
                     @stt
                 </td>
 
+                
+                <td>
+                    @{
+
+                        if (item.TenAnh != null)
+                        {
+                            string extension = System.IO.Path.GetExtension(item.TenAnh);
+                            if (imageExtensions.Contains(extension.Trim()))
+                            {
+                                <img class="img-fluid w-100" src="/img/product/@item.TenAnh" />
+                            }
+                            else
+                            {
+                                <img class="img-fluid w-100" src="~/imgs/product-2.jpg" height="100px">
+                            }
+                        }
+                        else
+                        {
+                            <strong></strong>
+                        }
+                    }
+                </td>
                 <td>
                     <strong style="color:red">@item.TenMauSac</strong>
                 </td>

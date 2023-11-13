@@ -171,12 +171,41 @@ namespace AppAPI.Services
             }
             ChiTietSanPhamViewModelHome chiTietSanPham = new ChiTietSanPhamViewModelHome();
             chiTietSanPham.Ten = sanPham.Ten;
-            chiTietSanPham.SoSao = sanPham.TongSoSao;
-            chiTietSanPham.SoDanhGia = sanPham.TongDanhGia;
+            
             chiTietSanPham.Anhs = _context.Anhs.Where(x => x.IDSanPham == idSanPham).ToList(); ;
             chiTietSanPham.ChiTietSanPhams = lstChiTietSanPham;
             chiTietSanPham.MauSacs = mauSacs.Distinct().ToList();
             chiTietSanPham.KichCos = kichCos.Distinct().ToList();
+            chiTietSanPham.MoTa = sanPham.MoTa;
+            var query = await (from sp in _context.SanPhams.Where(p=>p.ID == idSanPham)
+                               join ctsp in _context.ChiTietSanPhams on sp.ID equals ctsp.IDSanPham
+                               join cthd in _context.ChiTietHoaDons on ctsp.ID equals cthd.IDCTSP
+                               join dg in _context.DanhGias on cthd.ID equals dg.ID
+                               join hd in _context.HoaDons on cthd.IDHoaDon equals hd.ID
+                               join lstd in _context.LichSuTichDiems on hd.ID equals lstd.IDHoaDon
+                               join kh in _context.KhachHangs on lstd.IDKhachHang equals kh.IDKhachHang
+                               join cl in _context.ChatLieus on sp.IDChatLieu equals cl.ID
+                               join ms in _context.MauSacs on ctsp.IDMauSac equals ms.ID
+                               join kc in _context.KichCos on ctsp.IDKichCo equals kc.ID
+                               select new DanhGiaViewModel()
+                               {
+                                   ID = dg.ID,
+                                   Sao = dg.Sao,
+                                   BinhLuan = dg.BinhLuan,
+                                   TrangThai = dg.TrangThai,
+                                   TenKH = kh.Ten,
+                                   ChatLieu = cl.Ten,
+                                   MauSac = ms.Ten,
+                                   KichCo = kc.Ten,
+
+                               }).ToListAsync();
+            chiTietSanPham.LSTDanhGia = query;
+            foreach (var item in query)
+            {
+                chiTietSanPham.SoSao += Convert.ToInt32(item.Sao);
+            }
+            chiTietSanPham.SoSao = chiTietSanPham.SoSao / query.Count();
+            chiTietSanPham.SoDanhGia = query.Count();
             return chiTietSanPham;
         }
         public Task<bool> UpdateChiTietSanPham(ChiTietSanPham chiTietSanPham)

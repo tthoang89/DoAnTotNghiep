@@ -26,6 +26,18 @@ namespace AppAPI.Controllers
         {
             return _lichsu.GetAll();
         }
+        [HttpGet("GetAllDonMua")]
+        public async Task<List<DonMuaViewModel>> GetAllDonMua(Guid IDkhachHang)
+        {
+            var listDonMua = await _lichsu.getAllDonMua(IDkhachHang);
+            return listDonMua;
+        }
+        [HttpGet("GetAllDonMuaChiTiet")]
+        public async Task<List<DonMuaChiTietViewModel>> GetAllDonMuaCT(Guid idHoaDon)
+        {
+            var listDonMuaCT = await _lichsu.getAllDonMuaChiTiet(idHoaDon);
+            return listDonMuaCT;
+        }
         // laam Strat
         [Route("GetLSTDByIdKH")]
         [HttpGet]

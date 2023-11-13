@@ -82,16 +82,30 @@
 /*--------------------------------------------------------------
 # General
 --------------------------------------------------------------*/
+html {
+    font-size: 16px;
+}
+
 :root {
     scroll-behavior: smooth;
 }
 
 body {
-    font-family: "Open Sans", sans-serif;
+    font-family: inherit, sans-serif;
     background: #f6f9ff;
     color: #444444;
 }
+body ::-webkit-scrollbar {
+    width: 6px;
+    height: 5px;
+}
 
+body ::-webkit-scrollbar-track {
+    background-color: #aab7cf;
+}
+body ::-webkit-scrollbar-thumb {
+    background-color: #aab7cf;
+}
 a {
     color: #4154f1;
     text-decoration: none;
@@ -116,9 +130,8 @@ h6 {
 --------------------------------------------------------------*/
 #main {
     margin-top: 60px;
-    height: calc(100vh-60px);
-    /*  padding: 20px 30px;
-*/ transition: all 0.3s;
+    padding: 10px 20px;
+    transition: all 0.3s;
 }
 
 @media (max-width: 1199px) {
@@ -1403,6 +1416,7 @@ h6 {
     position: relative;
     overflow: hidden;
     height: 50px;
+    width: 750px;
 }
 
     .tabbill .icon {
@@ -1440,13 +1454,6 @@ h6 {
         background: #98adff;
     }
 
-.icon:first-child i {
-    margin-left: 5px;
-}
-
-.icon:last-child i {
-    margin-right: 5px;
-}
 
 .tabbill .tabs-box {
     display: flex;
@@ -1477,6 +1484,14 @@ h6 {
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
 }
+
+    .tabs-box .tab:first-child {
+        margin-left: 5px;
+    }
+
+    .tabs-box .tab:last-child {
+        margin-right: 5px;
+    }
 
     .tabs-box .tab:hover {
         background: #004392;
@@ -1782,13 +1797,221 @@ h6 {
     height: 100%;
 }
 /*Trang hóa đơn*/
-#table_bills {
+.tablehd td,
+.tablehd th {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    min-width: 200px;
+    max-width: 200px;
 }
 
-    #table_bills thead tr {
-        background: #e8eaed;
+tbody td {
+    font-weight: 500;
+    color: #999999;
+}
+/*Lọc HD*/
+.select-btn {
+    display: flex;
+    height: 50px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #fff;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+    .select-btn .btn-text {
+        font-size: 16px;
+        font-weight: 600;
+        color: #333;
     }
 
-    #table_bills .hidden_row {
-        display: none;
+    .select-btn .arrow-dwn {
+        display: flex;
+        height: 21px;
+        width: 21px;
+        color: #fff;
+        font-size: 14px;
+        border-radius: 50%;
+        background: #6e93f7;
+        align-items: center;
+        justify-content: center;
+        transition: 0.3s;
     }
+
+    .select-btn.open .arrow-dwn {
+        transform: rotate(-180deg);
+    }
+
+.list-items {
+    position: relative;
+    margin-top: 10px;
+    border-radius: 4px;
+    padding: 10px;
+    background-color: #fff;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    display: none;
+}
+
+.select-btn.open ~ .list-items {
+    display: block;
+}
+
+.list-items .item {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    height: 50px;
+    cursor: pointer;
+    transition: 0.3s;
+    padding: 0 15px;
+    border-radius: 4px;
+}
+
+    .list-items .item:hover {
+        background-color: #e7edfe;
+    }
+
+.item .item-text {
+    font-size: 16px;
+    font-weight: 400;
+    color: #333;
+}
+
+.item .checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 16px;
+    width: 16px;
+    border-radius: 4px;
+    margin-right: 12px;
+    border: 1.5px solid #c0c0c0;
+    transition: all 0.3s ease-in-out;
+}
+
+.item.checked .checkbox {
+    background-color: #4070f4;
+    border-color: #4070f4;
+}
+
+.checkbox .check-icon {
+    color: #fff;
+    font-size: 11px;
+    transform: scale(0);
+    transition: all 0.2s ease-in-out;
+}
+
+.item.checked .check-icon {
+    transform: scale(1);
+}
+
+/**/
+::selection {
+    background: #d5bbf7;
+}
+
+.radiothoigian {
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #fff;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1rem;
+}
+
+    .radiothoigian .btn-text {
+        font-size: 16px;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .radiothoigian .content {
+        padding: 10px 0px;
+    }
+
+    .radiothoigian label.box {
+        background: #ddd;
+        margin-top: 12px;
+        padding: 10px 12px;
+        display: flex;
+        border-radius: 5px;
+        border: 2px solid transparent;
+        cursor: pointer;
+        transition: all 0.25s ease;
+    }
+
+#one:checked ~ label.first,
+#two:checked ~ label.second {
+    border-color: #8E49E8;
+    background: #d5bbf7;
+}
+
+.radiothoigian label.box:hover {
+    background-color: #e7edfe;
+}
+
+.radiothoigian label.box .circle {
+    height: 20px;
+    width: 20px;
+    background: #ccc;
+    border: 5px solid transparent;
+    display: inline-block;
+    margin-right: 15px;
+    border-radius: 50%;
+    transition: all 0.25s ease;
+    box-shadow: inset -4px -4px 10px rgba(0, 0, 0, 0.2);
+}
+
+#one:checked ~ label.first .circle,
+#two:checked ~ label.second .circle {
+    background: #fff;
+}
+
+.radiothoigian label.box .plan {
+    display: flex;
+    width: 100%;
+    align-items: center;
+}
+
+.radiothoigian input[type="radio"] {
+    display: none;
+}
+
+.scroll-cthd::-webkit-scrollbar {
+    width: 6px;
+    height: 8px;
+}
+
+.scroll-cthd::-webkit-scrollbar-track {
+    background-color: #aab7cf;
+}
+
+.scroll-cthd::-webkit-scrollbar-thumb {
+    background-color: #aab7cf;
+}
+.tbbills thead th, .jsgrid .jsgrid-table thead th {
+    border-top: 0;
+    padding: .875rem 0.9375rem;
+}
+
+.tbbills td, .jsgrid .jsgrid-table td {
+    padding: .875rem 0.9375rem;
+}
+    .tbbills td .badge {
+        border-radius: 0;
+        font-size: 14px;
+        line-height: 1;
+        padding: .375rem .5625rem;
+        font-weight: normal;
+    }
+.tbbills > td:hover,
+.tbbills > th:hover {
+    background-color: #c8cbcf;
+}
+/*Search HD*/

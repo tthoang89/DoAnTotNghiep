@@ -137,6 +137,7 @@
     <None Include="wwwroot\Admin\vendor\echarts\extension\dataTool.js" />
     <None Include="wwwroot\Admin\vendor\echarts\extension\dataTool.js.map" />
     <None Include="wwwroot\Admin\vendor\echarts\extension\dataTool.min.js" />
+    <None Include="wwwroot\Admin\vendor\php-email-form\validate.js" />
     <None Include="wwwroot\Admin\vendor\quill\quill.core.js" />
     <None Include="wwwroot\Admin\vendor\quill\quill.js" />
     <None Include="wwwroot\Admin\vendor\quill\quill.min.js" />

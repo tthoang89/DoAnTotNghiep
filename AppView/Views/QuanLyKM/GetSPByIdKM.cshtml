@@ -7,6 +7,10 @@
     int stt = 1;
     AppData.Models.AssignmentDBContext Dbcontext = new AppData.Models.AssignmentDBContext();
     List<KhuyenMaiView> listkms = ViewBag.KhuyenMaiView;
+    List<string> imageExtensions = new List<string>()
+    {
+         ".png", ".jpg", ".jpeg", ".gif", ".tiff", ".pdf",".webp",".jfif"
+    };
 }
 <button class="btn btn-dark">
     <strong style="color:white">@Html.ActionLink("Thêm Sản Phẩm Vô KM", "GetSPNoKM")</strong>
@@ -23,6 +27,7 @@
             <th>
                 Tên Sản Phẩm
             </th>
+           
             <th>
                 Mô Tả
             </th>
@@ -69,7 +74,25 @@
                     <strong style="color:black">@item.MoTa</strong>
                 </td>
                 <td>
-                    <strong style="color:black">@item.TenAnh</strong>
+                    @{
+
+                        if (item.TenAnh != null)
+                        {
+                            string extension = System.IO.Path.GetExtension(item.TenAnh);
+                            if (imageExtensions.Contains(extension.Trim()))
+                            {
+                                <img class="img-fluid w-100" src="/img/product/@item.TenAnh" />
+                            }
+                            else
+                            {
+                                <img class="img-fluid w-100" src="~/imgs/product-2.jpg" height="100px">
+                            }
+                        }
+                        else
+                        {
+                            <strong></strong>
+                        }
+                    }
                 </td>
                 <td>
                     <strong style="color:green">@item.SoLuongCTSP</strong>

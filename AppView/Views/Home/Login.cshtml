@@ -34,7 +34,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-6 d-flex justify-content-center">
+                        <div id="forgotPasswordDiv" class="col-md-6 d-flex justify-content-center">
                             <!-- Simple link -->
                             <a href="ForgotPassword">Forgot password?</a>
                         </div>
@@ -52,3 +52,21 @@
         <div class=col-4></div>
     </div>
 </div>
+<script>
+    function showForgotPasswordForm() {
+        var csrfToken = $('input[name="__RequestVerificationToken"]').val();
+        $.ajax({
+            url: '@Url.Action("ForgotPassword", "Home")',
+            type: 'POST',
+            headers: {
+                'RequestVerificationToken': csrfToken
+            },
+            success: function (result) {
+                $('#forgotPasswordDiv').empty().html(result);
+            },
+            error: function () {
+                alert('An error occurred while loading the form.');
+            }
+        });
+    }
+</script>

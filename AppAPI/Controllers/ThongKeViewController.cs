@@ -38,7 +38,7 @@ namespace AppAPI.Controllers
                     Ngay = group.FirstOrDefault().HoaDon.NgayThanhToan.Value
                 })
 
-                .OrderByDescending(item => item.SoLuong).Take(10)
+                .OrderByDescending(item => item.SoLuong).Where(x=>x.Ngay.Month==DateTime.Now.Month).Take(7)
                 .ToList();
 
             return result;
@@ -84,7 +84,8 @@ namespace AppAPI.Controllers
                     SoHoaDon = group.Count(),
                     DoanhThu = group.Sum(ch => ch.DonGia * ch.SoLuong + ch.HoaDon.TienShip)
                 })
-                .OrderByDescending(t => t.Ngay.Date)
+                .OrderByDescending(t => t.Ngay.Date).
+                Where(x=>x.Ngay.Date<=DateTime.Today.Date).Take(7)
                 .ToListAsync();
 
             return Ok(result);
@@ -129,9 +130,8 @@ namespace AppAPI.Controllers
                     Ngay = group.FirstOrDefault().HoaDon.NgayThanhToan.Value
                 })
 
-                .OrderByDescending(item => item.Ngay.Month).Take(10)
+                .OrderByDescending(item => item.Ngay.Month).Where(x=>x.Ngay.Month<=DateTime.Today.Month).Take(7)
                 .ToList();
-
             return result;
         }
         [HttpGet("LocThongKeDoanhThuTheoThang")]

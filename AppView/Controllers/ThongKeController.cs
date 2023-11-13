@@ -238,6 +238,28 @@ namespace AppView.Controllers
 
             timkiem = timkiem.Where(x => x.Ngay.Month ==DateTime.Now.Month).Take(7).ToList();
             ViewBag.ThongKeKHMuaNhieu = timkiem;
+
+            string apiUrl5 = $"https://localhost:7095/api/ThongKeView/ThongKeDoanhThuTheoNgay";
+
+            var response5 = await _httpClient.GetAsync(apiUrl5);
+            string apiData5 = await response5.Content.ReadAsStringAsync();
+            var ThongKeDoanhThuTheoNgay = JsonConvert.DeserializeObject<List<ThongKeDoanhThu>>(apiData5);
+            ViewBag.ThongKeDoanhThuTheoNgay= ThongKeDoanhThuTheoNgay;
+
+            string apiUrl6 = $"https://localhost:7095/api/ThongKeView/ThongKeDoanhThuTheoThang";
+
+            var response6 = await _httpClient.GetAsync(apiUrl6);
+            string apiData6 = await response6.Content.ReadAsStringAsync();
+            var ThongKeDoanhThuTheoThang = JsonConvert.DeserializeObject<List<ThongKeDoanhThu>>(apiData6);
+            ViewBag.ThongKeDoanhThuTheoThang = ThongKeDoanhThuTheoThang;
+
+            string apiUrl7 = $"https://localhost:7095/api/ThongKeView/ThongKeMSSanPhamBan";
+
+            var response7 = await _httpClient.GetAsync(apiUrl7);
+            string apiData7 = await response7.Content.ReadAsStringAsync();
+            var ThongKeMSSanPhamTheoSoLuong = JsonConvert.DeserializeObject<List<ThongKeMSSanPhamTheoSoLuong>>(apiData7);
+            ViewBag.ThongKeMSSanPhamTheoSoLuong= ThongKeMSSanPhamTheoSoLuong;
+
             return View();
         }
         #endregion

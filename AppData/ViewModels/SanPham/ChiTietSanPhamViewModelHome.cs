@@ -10,12 +10,14 @@ namespace AppData.ViewModels.SanPham
     public class ChiTietSanPhamViewModelHome
     {
         public string Ten { get; set; }
-        public int SoSao { get; set; }
+        public float SoSao { get; set; }
         public int SoDanhGia { get; set; }
         public List<MauSac> MauSacs { get; set; }
         public List<Anh> Anhs { get; set; }
         public List<KichCo> KichCos { get; set; }
         public List<ChiTietSanPham> ChiTietSanPhams { get; set; }
+        public string MoTa { get; set; }
+        public List<DanhGiaViewModel> LSTDanhGia { get; set;}
 
     }
 }
