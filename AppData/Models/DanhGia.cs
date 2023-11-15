@@ -14,6 +14,7 @@ namespace AppData.Models
         public string? BinhLuan { get; set; }
         [Range(1, 5, ErrorMessage = "Số sao từ 1 đến 5")]
         public int? Sao { get; set; }
+        public DateTime? NgayDanhGia { get; set; }
         public int TrangThai { get; set; }
         public virtual ChiTietHoaDon ChiTietHoaDon { get; set; }
     }

@@ -1,6 +1,7 @@
 ﻿using AppData.Models;
 using AppData.ViewModels;
 using AppData.ViewModels.BanOffline;
+using AppData.ViewModels.Mail;
 using AppData.ViewModels.QLND;
 using AppData.ViewModels.SanPham;
 using Microsoft.AspNetCore.Http;
@@ -283,6 +284,7 @@ namespace AppView.Controllers
             return PartialView("_ReturnProducts", lstSanPhamfnR);
         }
         #endregion
+
         #region Cart
         [HttpGet]
         public IActionResult ShoppingCart()
@@ -463,6 +465,7 @@ namespace AppView.Controllers
             HttpContext.Session.Clear();
             return RedirectToAction("Index");
         }
+        [HttpGet]
 
         #endregion
 
@@ -513,6 +516,55 @@ namespace AppView.Controllers
                 ModelState.AddModelError("", "Không thể gửi lại email. Vui lòng thử lại sau.");
             }
             return View();
+        }
+        [HttpPost]
+        public IActionResult ForgotPassword(string email)
+        {
+            var khachHang = JsonConvert.DeserializeObject<KhachHangViewModel>(_httpClient.GetAsync(_httpClient.BaseAddress + "KhachHang/GetKhachHangByEmail?email=" + email).Result.Content.ReadAsStringAsync().Result);
+            if(khachHang.Id != null) {
+                string ma = Guid.NewGuid().ToString().Substring(0, 5);
+                MailData mailData = new MailData() { EmailToId = email, EmailToName = email, EmailSubject = "Mã xác nhận", EmailBody = "Mã xác nhận: " + ma };
+                HttpResponseMessage response = _httpClient.PostAsJsonAsync(_httpClient.BaseAddress + "Mail/SendMail", mailData).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    HttpContext.Session.SetString("ForgotPassword", khachHang.Id + ":" + ma);
+                    return RedirectToAction("SubmitForgotPassword");
+                }
+                else return BadRequest();
+            }
+            else return BadRequest("Không tìm thấy email");
+        }
+        [HttpGet]
+        public IActionResult SubmitForgotPassword()
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult SubmitForgotPassword(string code)
+        {
+            string[] submit = HttpContext.Session.GetString("ForgotPassword").Split(":");
+            if (code == submit[1])
+            {
+                return RedirectToAction("ChangeForgotPassword");
+            }
+            else return BadRequest("Mã không hợp lệ");
+        }
+        [HttpGet]
+        public IActionResult ChangeForgotPassword()
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult ChangeForgotPassword(string password)
+        {
+            string[] submit = HttpContext.Session.GetString("ForgotPassword").Split(":");
+            KhachHangViewModel khachHang = new KhachHangViewModel() { Id = new Guid(submit[0]),Password = password };
+            HttpResponseMessage response = _httpClient.PostAsJsonAsync(_httpClient.BaseAddress + "KhachHang/ChangeForgotPassword", khachHang).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Login");
+            }
+            else return BadRequest();
         }
 
 

@@ -30,11 +30,9 @@ namespace AppData.Models
         public DbSet<VaiTro> VaiTros { get; set; }
         public DbSet<Voucher> Vouchers { get; set; }
         public DbSet<Anh> Anhs { get; set; }
-        public DbSet<ChiTietPTTT> ChiTietPTTTs { get; set; }
-        public DbSet<PhuongThucThanhToan> PhuongThucThanhToans { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Data Source=LAPTOP-G189FU38\SQLEXPRESS;Initial Catalog=AppBanQuanAoThoiTrangNam;Integrated Security=True");
+            optionsBuilder.UseSqlServer(@"Data Source=LAPTOP-A15NGLBG\SQLEXPRESS;Initial Catalog=1AppBanQuanAoThoiTrangNam;Integrated Security=True");
         }
         //THUYNHU\SQLEXPRESS
         //DESKTOP-UOIH77U\SQLEXPRESS

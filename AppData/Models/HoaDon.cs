@@ -15,6 +15,7 @@
         public int? TongTien { get; set; }
         public int LoaiHD { get; set; } // Off-1 // On-0
         public string? PhuongThucThanhToan { get; set; }
+        public string? GhiChu { get; set; }
         public int TrangThaiGiaoHang { get; set; }
         //Các trạng thái của đơn hàng
         /*
@@ -33,6 +34,5 @@
         public virtual NhanVien? NhanVien { get; set; }
         public virtual Voucher? Voucher { get; set; }
         public virtual IEnumerable<ChiTietHoaDon>? ChiTietHoaDons { get; set; }
-        public virtual IEnumerable<ChiTietPTTT>? ChiTietPTTTs { get; set; }
     }
 }
