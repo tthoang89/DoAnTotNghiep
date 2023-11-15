@@ -172,6 +172,9 @@
                         <button onclick="createhoadon()" class="site-btn">
                             ĐẶT HÀNG
                         </button>
+                        <a class="site-btn" asp-action="Pay" asp-controller="Home" style="text-align:center">
+                            THANH TOÁN
+                        </a>
                     </div>
                 </div>
             </div>
@@ -289,7 +292,7 @@
             async: false,
             type: 'POST',
             dataType: 'json',
-            url: '/Home/Pay',
+            url: '/Home/Order',
             data: objHoaDon,
             success: function (response) {
                 debugger;
