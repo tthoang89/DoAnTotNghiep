@@ -141,5 +141,26 @@ namespace AppAPI.Controllers
             return Ok(lstChatLieu);
         }
         #endregion
+
+        #region SanPhamBanHang
+        [HttpGet("getAllSPBanHang")]
+        public async Task<IActionResult> GetAllSanPhamBanHang()
+        {
+            var listSP = await _sanPhamServices.GetAllSanPhamTaiQuay();
+            return Ok(listSP);
+        }
+        [HttpGet("getChiTietSPBHById/{idsp}")]
+        public async Task<IActionResult> GetChiTietSPBHById(Guid idsp)
+        {
+            var listSP = await _sanPhamServices.GetChiTietSPBHById(idsp);
+            return Ok(listSP);
+        }
+        [HttpGet("getChiTietCTSPBHById/{idsp}")]
+        public async Task<IActionResult> GetChiTietCTSPBHById(Guid idsp)
+        {
+            var listCTSP = await _sanPhamServices.GetChiTietCTSPBanHang(idsp);
+            return Ok(listCTSP);
+        }
+        #endregion
     }
 }

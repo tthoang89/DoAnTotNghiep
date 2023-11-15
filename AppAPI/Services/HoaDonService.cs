@@ -359,7 +359,8 @@ namespace AppAPI.Services
                                                 IDChiTietSanPham = cthd.IDCTSP,
                                                 Ten = sp.Ten,
                                                 SoLuong = cthd.SoLuong,
-                                                DonGia = cthd.DonGia,
+                                                GiaGoc = ctsp.GiaBan,
+                                                GiaLuu = cthd.DonGia,
                                             }).ToList(),
 
                               }
@@ -383,16 +384,21 @@ namespace AppAPI.Services
                               TenKhachHang = kh?.Ten,
                               lstHDCT = (from cthd in reposChiTietHoaDon.GetAll()
                                          join ctsp in repsCTSanPham.GetAll() on cthd.IDCTSP equals ctsp.ID 
+                                         join km in context.KhuyenMais on ctsp.IDKhuyenMai equals km.ID
+                                         join kc in context.KichCos on ctsp.IDKichCo equals kc.ID
+                                         join ms in context.MauSacs on ctsp.IDMauSac equals ms.ID
                                          join sp in reposSanPham.GetAll() on ctsp.IDSanPham equals sp.ID
                                          where cthd.IDHoaDon == id
                                          select new HoaDonChiTietViewModel()
                                          {
                                              Id = cthd.ID,
                                              Ten = sp.Ten,
+                                             PhanLoai = ms.Ten + " - "+ kc.Ten,
                                              IdHoaDon = cthd.IDHoaDon,
                                              IDChiTietSanPham = cthd.IDCTSP,
                                              SoLuong = cthd.SoLuong,
-                                             DonGia = cthd.DonGia,
+                                             GiaGoc  = ctsp.GiaBan,
+                                             GiaKM = km.TrangThai == null ? ctsp.GiaBan :(km.TrangThai == 1 ? (ctsp.GiaBan - km.GiaTri) :(ctsp.GiaBan * (100-km.GiaTri)/100)),
                                          }).Reverse().ToList(),
                           }).FirstOrDefault();
             return result;

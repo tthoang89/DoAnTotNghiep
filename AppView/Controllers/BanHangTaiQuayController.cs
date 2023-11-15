@@ -32,7 +32,7 @@ namespace AppView.Controllers
         [HttpGet]
         public async Task<IActionResult> LoadSp(int page, int pagesize)
         {
-            var listsanPham = await _httpClient.GetFromJsonAsync<List<ChiTietSanPhamViewModel>>("SanPham/GetAllChiTietSanPham");
+            var listsanPham = await _httpClient.GetFromJsonAsync<List<SanPhamBanHang>>("SanPham/getAllSPBanHang");
             var model = listsanPham.Skip((page - 1) * pagesize).Take(pagesize).ToList();
             int totalRow = listsanPham.Count;
             return Json(new
@@ -42,7 +42,20 @@ namespace AppView.Controllers
                 status = true,
             });
         }
-        
+        //Hiển thị sản phẩm
+        [HttpGet("/BanHangTaiQuay/ShowSPDetail/{idsp}")]
+        public async Task<IActionResult> ShowSPDetail(string idsp)
+        {
+            var sP = await _httpClient.GetFromJsonAsync<ChiTietSanPhamBanHang>($"SanPham/getChiTietSPBHById/{idsp}");
+            return PartialView("_SanPhamDetail",sP);
+        }
+        // Lấy Load CTSP trong SP
+        [HttpGet("/BanHangTaiQuay/ShowListCTSP/{idsp}")]
+        public async Task<IActionResult> ShowListCTSP(string idsp)
+        {
+            var lstctsP = await _httpClient.GetFromJsonAsync<List<ChiTietCTSPBanHang>>($"SanPham/getChiTietCTSPBHById/{idsp}");
+            return Json(new {data=lstctsP});
+        }
         //Lấy Hóa đơn chi tiết
         [HttpGet("/BanHangTaiQuay/getCTHD/{id}")]
         public async Task<IActionResult> getCTHD(string id)
@@ -83,7 +96,20 @@ namespace AppView.Controllers
             if (response.IsSuccessStatusCode) return Json(new { success = true, message = "Xóa thành công" });
             return Json(new { success = false, message = "Xóa thất bại" });
         }
-
+        //Cập nhật số lượng 
+        public async Task<IActionResult> UpdateSL(string idhdct, int sl)
+        {
+            try
+            {
+                var response = await _httpClient.PostAsync($"ChiTietHoaDon/UpdateSL?id={idhdct}&sl={sl}", null);
+                if(response.IsSuccessStatusCode) return Json(new { success = true, message = "Thêm số lượng thành công" });
+                else return Json(new { success = false, message = "Thêm số lượng thất bại" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Thêm số lượng thất bại" });
+            }
+        }
         //Load Modal Thanh Toan
         [HttpGet("/BanHangTaiQuay/ViewThanhToan/{id}")]
         public async Task<IActionResult> ViewThanhToan(string id)
@@ -112,7 +138,7 @@ namespace AppView.Controllers
                 loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
             }
             var soluong = lstcthd.Sum(c => c.SoLuong);
-            var ttien = lstcthd.Sum(c => c.SoLuong * c.DonGia);
+            var ttien = lstcthd.Sum(c => c.SoLuong * c.GiaKM);
             ViewData["lstPttt"] = listpttt;
             var hdtt = new HoaDonThanhToanViewModel()
             {

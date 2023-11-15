@@ -65,7 +65,8 @@ namespace AppAPI.Services
                     return true;
                 }
 
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return false;
             }
@@ -97,23 +98,28 @@ namespace AppAPI.Services
         public async Task<List<HoaDonChiTietViewModel>> GetHDCTByIdHD(Guid idhd)
         {
             var x = (from cthd in _context.ChiTietHoaDons
-                          join ctsp in _context.ChiTietSanPhams on cthd.IDCTSP equals ctsp.ID
-                          join sp in _context.SanPhams on ctsp.IDSanPham equals sp.ID
-                          where cthd.IDHoaDon == idhd
-                          select new {cthd,ctsp,sp });
-            var result = await(from cthd in _context.ChiTietHoaDons
-                               join bt in _context.ChiTietSanPhams on cthd.IDCTSP equals bt.ID
-                               join sp in _context.SanPhams on bt.IDSanPham equals sp.ID
-                               where cthd.IDHoaDon == idhd
-                               select new HoaDonChiTietViewModel()
-                          {
-                              Id = cthd.ID,
-                              IdHoaDon = cthd.IDHoaDon,
-                              IDChiTietSanPham = bt.ID,
-                              Ten = sp.Ten,
-                              SoLuong = cthd.SoLuong,
-                              DonGia = cthd.DonGia,
-                          }).ToListAsync();
+                     join ctsp in _context.ChiTietSanPhams on cthd.IDCTSP equals ctsp.ID
+                     join sp in _context.SanPhams on ctsp.IDSanPham equals sp.ID
+                     where cthd.IDHoaDon == idhd
+                     select new { cthd, ctsp, sp });
+            var result = await (from cthd in _context.ChiTietHoaDons
+                                join ctsp in _context.ChiTietSanPhams on cthd.IDCTSP equals ctsp.ID
+                                join kc in _context.KichCos on ctsp.IDKichCo equals kc.ID
+                                join ms in _context.MauSacs on ctsp.IDMauSac equals ms.ID
+                                join km in _context.KhuyenMais on ctsp.IDKhuyenMai equals km.ID
+                                join sp in _context.SanPhams on ctsp.IDSanPham equals sp.ID
+                                where cthd.IDHoaDon == idhd
+                                select new HoaDonChiTietViewModel()
+                                {
+                                    Id = cthd.ID,
+                                    IdHoaDon = cthd.IDHoaDon,
+                                    IDChiTietSanPham = ctsp.ID,
+                                    Ten = sp.Ten,
+                                    PhanLoai = ms.Ten + " - " + kc.Ten,
+                                    SoLuong = cthd.SoLuong,
+                                    GiaGoc = ctsp.GiaBan,
+                                    GiaKM = km.TrangThai == null ? ctsp.GiaBan : (km.TrangThai == 1 ? (ctsp.GiaBan - km.GiaTri) : (ctsp.GiaBan * (100 - km.GiaTri) / 100)),
+                                }).ToListAsync();
             return result;
         }
 
@@ -133,7 +139,8 @@ namespace AppAPI.Services
                 _context.ChiTietHoaDons.Update(cthd);
                 await _context.SaveChangesAsync();
                 return cthd;
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
