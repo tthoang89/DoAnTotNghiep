@@ -16,6 +16,6 @@ namespace AppData.ViewModels
         public string MauSac { get; set; }
         public string KichCo { get; set; }
         public string TenKH { get; set; }
-
+        public DateTime? NgayDanhGia { get; set; }
     }
 }

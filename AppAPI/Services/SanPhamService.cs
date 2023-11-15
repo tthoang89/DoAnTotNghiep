@@ -197,15 +197,27 @@ namespace AppAPI.Services
                                    ChatLieu = cl.Ten,
                                    MauSac = ms.Ten,
                                    KichCo = kc.Ten,
-
+                                   NgayDanhGia = dg.NgayDanhGia
                                }).ToListAsync();
             chiTietSanPham.LSTDanhGia = query;
             foreach (var item in query)
             {
                 chiTietSanPham.SoSao += Convert.ToInt32(item.Sao);
             }
+            var sptt = await (from sp in _context.SanPhams.Where(p => p.IDLoaiSP == sanPham.IDLoaiSP)
+                               join ctsp in _context.ChiTietSanPhams.Where(p=>p.TrangThai == 1) on sp.ID equals ctsp.IDSanPham
+                               join ms in _context.MauSacs on ctsp.IDMauSac equals ms.ID
+                               join anh in _context.Anhs on ms.ID equals anh.IDMauSac
+                               select new SanPhamTuongTuViewModel()
+                               {
+                                   IDSP = sp.ID,
+                                   TenSP = sp.Ten,
+                                   GiaSPTT = ctsp.GiaBan,
+                                   DuongDanSPTT = anh.DuongDan
+                               }).ToListAsync();
             chiTietSanPham.SoSao = chiTietSanPham.SoSao / query.Count();
             chiTietSanPham.SoDanhGia = query.Count();
+            chiTietSanPham.LSTSPTuongTu = sptt;
             return chiTietSanPham;
         }
         public Task<bool> UpdateChiTietSanPham(ChiTietSanPham chiTietSanPham)
