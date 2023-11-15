@@ -245,7 +245,7 @@ namespace AppAPI.Controllers
                 .GroupBy(x => x.HoaDon.NgayThanhToan.Value.Month).
                 Select(group => new ThongKeDTTrongThang
                 {
-                   TongTien = group.Sum(x=>(x.ChiTietHoaDon.SoLuong*x.ChiTietHoaDon.DonGia+x.HoaDon.TienShip)*(100-x.HoaDon.ThueVAT.Value)/100),
+                    TongTien = group.Sum(x => (x.ChiTietHoaDon.SoLuong * x.ChiTietHoaDon.DonGia + x.HoaDon.TienShip) * (100 - x.HoaDon.ThueVAT.Value) / 100),
                     Ngay = group.FirstOrDefault().HoaDon.NgayThanhToan.Value
                 }).Where(x => x.Ngay.Month == DateTime.Now.Month).FirstOrDefault();
             return tim;
