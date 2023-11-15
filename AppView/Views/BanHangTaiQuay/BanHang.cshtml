@@ -7,7 +7,7 @@
     var lsthdcho = ViewData["lsthdcho"] as List<HoaDon>;
     // var lstPttt = ViewData["lstPttt"] as List<PhuongThucThanhToan>;
 
-   var loginInfor = new LoginViewModel();
+    var loginInfor = new LoginViewModel();
     string? session = Context.Session.GetString("LoginInfor");
     if (session != null)
     {
@@ -53,15 +53,10 @@
         </div>
 
         <!--Hiển thị hóa đơn chi tiết-->
-        <div class="d-flex flex-column p-2 mx-3 mt-3 border-0 rounded-3 flex-grow-1 bg-white">
-            <div class="d-flex flex-column p-2 m-2">
-                <div id="partialGioHang" style="height:490px">
+        <div class="d-flex flex-column p-2 mx-3 mt-3 border-0 rounded-3 flex-grow-1 bg-white" style="height:640px;">
+            <div class="d-flex flex-column p-2">
+                <div id="partialGioHang">
                 </div>
-            </div>
-            <div class="d-flex flex-row bg-light mt-auto align-items-stretch" style="justify-content:center; height:50px; font-size:24px">
-                <button type="button" id="btnThanhToan" class="btn btn-primary fw-bold btn-block w-100" style="height:50px; font-size:20px" data-bs-toggle="modal" data-bs-target="#thanhtoan">
-                    THANH TOÁN
-                </button>
             </div>
         </div>
     </div>
@@ -81,7 +76,7 @@
             </div>
         </div>
         <!--Hiển thị sản phẩm-->
-        <div class="d-flex flex-column p-2  mt-3 border-0 rounded-3 bg-white">
+        <div class="d-flex flex-column p-2  mt-3 border-0 rounded-3 bg-white" style="height:640px">
             <ul class="product-list">
             </ul>
             <div class="d-flex flex-row bg-light mt-auto" style="justify-content:center">
@@ -106,6 +101,23 @@
         </div>
     </div>
 </div>
+<!--Model sản phẩm-->
+<div class="modal border-0 rounded-0" id="sanpham" tabindex="-1">
+    <div class="modal-dialog" id="modalsanpham">
+        <div class="modal-content" id="modalsanpham-content">
+            <div class="modal-header bg-primary">
+                <h5 class="modal-title fw-700 text-white align-center">Chi tiết sản phẩm</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="sanphambody">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bỏ qua</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
@@ -152,15 +164,15 @@
                     $(".product-list").empty();
                     for (let i = 0; i < response.data.length; i++) {
                         $(".product-list").append(`
-                                                    <li class="product-item d-flex flex-row" onclick="addHDCT('${response.data[i].id}',${response.data[i].giaBan})">
+                                                    <li class="product-item d-flex flex-row" onclick="showSPDetail('${response.data[i].id}')">
                                                             <div class="product-img">
-                                                                <img src="/img/variants/jeans-basic-den.png" class="img-fluid rounded-start" alt="...">
+                                                                <img src="/img/product/${response.data[i].anh}" class="img-fluid rounded-start" alt="...">
                                                             </div>
                                                             <div class="product-detail d-flex flex-column flex-grow-1">
                                                                 <span class="product-name mt-1">${response.data[i].ten}</span>
                                                                 <div class="product-infor mt-auto">
-                                                                    <span style="flex-basis: 59.5%;"><b style="color:blue;font-size:14px; font-weight:700">${response.data[i].giaBan.toLocaleString()}</b></span>
-                                                                    <span style="flex-basis: 49.5%;">SL: ${response.data[i].soLuong}</span>
+                                                                    <span style="flex-basis:100%"><b style="color:blue;font-size:14px; font-weight:700">${response.data[i].giaBan.toLocaleString()}</b></span>
+
                                                                 </div>
                                                             </div>
                                                     </li>
@@ -257,10 +269,10 @@
         }
     }
     //Thêm SP vào Hóa đơn
-    function addHDCT(idbt,dongia){
+    function addCTSP(idctsp,dongia){
         var activeTab = $(".tabs-box .tab").filter(".active");
         var elementValue = activeTab.find("span").attr("value");
-        var request = {IdHoaDon:elementValue, IdChiTietSanPham: idbt, DonGia: dongia,SoLuong:1}
+        var request = {IdHoaDon:elementValue, IdChiTietSanPham: idctsp, DonGia: dongia,SoLuong:1}
         $.ajax({
             url: "/BanHangTaiQuay/addHdct",
             async: false,
@@ -271,7 +283,7 @@
                 if(response.success == true){
                     toastr.success('Thêm thành công', "Success Alert", {timeOut : 300});
                     gethdct(request.IdHoaDon);
-                    loadsp();
+                    loadCTSPByID();
                 }else{
                     toastr.error('Thêm thất bại', 'Error Alert', { timeOut: 300 });
                 }
@@ -289,17 +301,14 @@
     }
 
     //Xóa HDCT
-    function deleteHDCT(idcthd,idhd,idbt,soluong){
-        var request = {Id:idcthd,IdBienThe: idbt, SoLuong :soluong}
+    function deleteHDCT(idcthd,idhd){
         $.ajax({
-            url: "/BanHangTaiQuay/deleteHdct",
+            url: "/BanHangTaiQuay/deleteHdct/"+idcthd,
             async: false,
             type: 'DELETE',
             dataType: 'json',
-            data:request,
             success: function(response) {
                 gethdct(idhd)
-                loadsp();
             },
             error: function(response) {
                 alert("Xóa thất bại");
@@ -325,30 +334,20 @@
             },
         })
     }}
-    //Lưu ghi chú
-    //var inputElement = document.getElementById("ghichu");
-    //    inputElement.addEventListener("blur", function(event) {
-    //    var inputValue = event.target.value;
-    //    var activeTab = $(".tabs-box .tab").filter(".active");
-    //    var elementValue = activeTab.find("span").attr("value");
-    //});
+    //Mở chi tiết sản phẩm
+    function showSPDetail(idsp){
+        $("#sanphambody").load("/BanHangTaiQuay/ShowSPDetail/"+idsp);
+         $("#sanpham").modal("show");
+    }
 
-
-    // Mở modal thanh toán
-    $("#btnThanhToan").on("click", function() {
-        var activeTab = $(".tabs-box .tab").filter(".active");
-        var elementValue = activeTab.find("span").attr("value");
-        $("#thanhtoanbody").load("/BanHangTaiQuay/ViewThanhToan/"+elementValue);
-         $("#thanhtoan").modal("show");
-    });
     //Thanh toán chuyển trạng thái
     function thanhToan(id){
-        var idPTTT = $('input[name="pttt"]:checked').val();
+        var pttt = $('input[name="pttt"]:checked').val();
         var ttien = $("#khachCanTra").text();
         var thuevat =$("#thueVAT").val();
         var tichdiemhd = $("#diemtichhd").text();
         var tichdiemsd = parseInt($('#diemKHSD').val());
-        var request={Id: id, IdPTTT: idPTTT,IdNhanVien:'@loginInfor.Id', IdVoucher: null,TongTien: ttien, ThueVAT: thuevat, DiemTichHD: tichdiemhd, DiemSD: tichdiemsd};
+        var request={Id: id, PTTT: pttt,IdNhanVien:'@loginInfor.Id', IdVoucher: null,TongTien: ttien, ThueVAT: thuevat, DiemTichHD: tichdiemhd, DiemSD: tichdiemsd};
         $.ajax({
               url: "/BanHangTaiQuay/ThanhToan",
               async: false,

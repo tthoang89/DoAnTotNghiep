@@ -37,7 +37,7 @@ namespace AppAPI.Services
                         IDHoaDon = request.IdHoaDon,
                         IDCTSP = request.IdChiTietSanPham,
                         SoLuong = request.SoLuong,
-                        DonGia = request.DonGia,
+                        //DonGia = request.DonGia,
                         TrangThai = 0,
                     };
                     await _context.ChiTietHoaDons.AddAsync(hdct);
@@ -54,18 +54,18 @@ namespace AppAPI.Services
                     var exist = _context.ChiTietHoaDons.Where(c => c.IDCTSP == request.IdChiTietSanPham && c.IDHoaDon == request.IdHoaDon).FirstOrDefault();
                     var ctsp = _context.ChiTietSanPhams.Find(request.IdChiTietSanPham);
                     exist.SoLuong += request.SoLuong;
-                    exist.DonGia = request.DonGia;
+                    //exist.DonGia = request.DonGia;
                     _context.Update(exist);
                     await _context.SaveChangesAsync();
 
-                    //Thay đổi số lượng bt
+                    //Thay đổi số lượng ctsp
                     ctsp.SoLuong -= request.SoLuong;
                     _context.ChiTietSanPhams.Update(ctsp);
                     await _context.SaveChangesAsync();
                     return true;
                 }
-
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return false;
             }
@@ -73,20 +73,26 @@ namespace AppAPI.Services
 
         public async Task<bool> DeleteCTHoaDon(Guid id)
         {
-            var exist = _context.ChiTietHoaDons.Find(id);
-            if (exist == null) throw new Exception($"Không tìm thấy CTHD: {id}");
-            //Tăng lại số lượng cho sp
-            var ctsp = await _context.ChiTietSanPhams.FindAsync(exist.IDCTSP);
-            ctsp.SoLuong += exist.SoLuong;
-            _context.ChiTietSanPhams.Update(ctsp);
-            await _context.SaveChangesAsync();
-            //Xóa đánh giá 
-            var danhgia = await _context.DanhGias.Where(c => c.ID == id).FirstOrDefaultAsync();
-            _context.DanhGias.Remove(danhgia);
-            await _context.SaveChangesAsync();
-            _context.ChiTietHoaDons.Remove(exist);
-            await _context.SaveChangesAsync();
-            return true;
+            try
+            {
+                var exist = _context.ChiTietHoaDons.Find(id);
+                if (exist == null) throw new Exception($"Không tìm thấy CTHD: {id}");
+                //Tăng lại số lượng cho sp
+                var ctsp = await _context.ChiTietSanPhams.FindAsync(exist.IDCTSP);
+                ctsp.SoLuong += exist.SoLuong;
+                _context.ChiTietSanPhams.Update(ctsp);
+                await _context.SaveChangesAsync();
+                //Xóa đánh giá 
+                var danhgia = await _context.DanhGias.Where(c => c.ID == id).FirstOrDefaultAsync();
+                _context.DanhGias.Remove(danhgia);
+                await _context.SaveChangesAsync();
+                _context.ChiTietHoaDons.Remove(exist);
+                await _context.SaveChangesAsync();
+                return true;
+            }catch(Exception ex)
+            {
+                return false;
+            }
         }
 
         public List<ChiTietHoaDon> GetAllCTHoaDon()
@@ -96,25 +102,27 @@ namespace AppAPI.Services
 
         public async Task<List<HoaDonChiTietViewModel>> GetHDCTByIdHD(Guid idhd)
         {
-            var x = (from cthd in _context.ChiTietHoaDons
-                          join ctsp in _context.ChiTietSanPhams on cthd.IDCTSP equals ctsp.ID
-                          join sp in _context.SanPhams on ctsp.IDSanPham equals sp.ID
-                          where cthd.IDHoaDon == idhd
-                          select new {cthd,ctsp,sp });
-            var result = await(from cthd in _context.ChiTietHoaDons
-                               join bt in _context.ChiTietSanPhams on cthd.IDCTSP equals bt.ID
-                               join sp in _context.SanPhams on bt.IDSanPham equals sp.ID
-                               where cthd.IDHoaDon == idhd
-                               select new HoaDonChiTietViewModel()
-                          {
-                              Id = cthd.ID,
-                              IdHoaDon = cthd.IDHoaDon,
-                              IDChiTietSanPham = bt.ID,
-                              Ten = sp.Ten,
-                              SoLuong = cthd.SoLuong,
-                              DonGia = cthd.DonGia,
-                          }).ToListAsync();
-            return result;
+            List<HoaDonChiTietViewModel> lsthdct = await (from cthd in _context.ChiTietHoaDons
+                                                          join ctsp in _context.ChiTietSanPhams on cthd.IDCTSP equals ctsp.ID
+                                                          join ms in _context.MauSacs on ctsp.IDMauSac equals ms.ID
+                                                          join kc in _context.KichCos on ctsp.IDKichCo equals kc.ID
+                                                          join sp in _context.SanPhams on ctsp.IDSanPham equals sp.ID
+                                                          join km in _context.KhuyenMais on ctsp.IDKhuyenMai equals km.ID
+                                                          into kmGroup
+                                                          from km in kmGroup.DefaultIfEmpty()
+                                                          where cthd.IDHoaDon == idhd
+                                                          select new HoaDonChiTietViewModel()
+                                                          {
+                                                              Id = cthd.ID,
+                                                              IdHoaDon = cthd.IDHoaDon,
+                                                              IdSP = sp.ID,
+                                                              Ten = sp.Ten,
+                                                              PhanLoai = ms.Ten + " - " + kc.Ten,
+                                                              SoLuong = cthd.SoLuong,
+                                                              GiaGoc = ctsp.GiaBan,
+                                                              GiaKM = km.TrangThai == null ? ctsp.GiaBan : (km.TrangThai == 1 ? ctsp.GiaBan - km.GiaTri : (ctsp.GiaBan * (100 - km.GiaTri) / 100)),
+                                                          }).ToListAsync();
+            return lsthdct;
         }
 
         public async Task<ChiTietHoaDon> UpdateSL(Guid id, int sl)
@@ -133,7 +141,8 @@ namespace AppAPI.Services
                 _context.ChiTietHoaDons.Update(cthd);
                 await _context.SaveChangesAsync();
                 return cthd;
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }

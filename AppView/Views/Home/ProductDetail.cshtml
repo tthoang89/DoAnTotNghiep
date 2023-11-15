@@ -164,11 +164,19 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-sm-6 text-center">
-                                            <h1 class="text-warning mt-4 mb-4">
-                                                <b><span id="average_rating">@Model.SoSao</span> / 5</b>
-                                            </h1>
+                                            <h3 class="text-warning mt-4 mb-4">
+                                                @if (Model.SoSao.ToString() == "NaN")
+                                                {
+                                                    <b><span id="average_rating">0</span> / 5</b>
+                                                }else
+                                                {
+                                                    <b><span id="average_rating">@Model.SoSao</span> / 5</b>
+                                                }
+                                                
+                                            </h3>
                                             <div class="mb-3">
                                                 @{
+
                                                     for (int i = 0; i < Model.SoSao; i++)
                                                     {
                                                         <i class="fas fa-star text-warning"></i>
@@ -181,13 +189,19 @@
                                                             <i class="fas fa-star star-light mr-1 main_star"></i>
                                                         }
                                                     }
-                                                    
+                                                    if (Model.SoSao.ToString() == "NaN")
+                                                    {
+                                                        for (int i = 0; i < 5; i++)
+                                                        {
+                                                            <i class="fas fa-star star-light mr-1 main_star"></i>
+                                                        }
+                                                    }
                                                 }
                                                 
                                             </div>
                                             
                                         </div>
-                                        <div class="col-sm-6 text-center">
+                                        <div class="col-sm-6 text-center" style="display: flex; align-items: center; justify-content: center;">
                                             <h3><span id="total_review">@Model.SoDanhGia</span> Đánh giá</h3>
                                         </div>
                                     </div>
@@ -226,7 +240,7 @@
                                                 }
                                             </div>
                                             <div style="margin-top:6px;">
-                                                <span style="color:gray">2023-02-13 15:42</span>
+                                                <span style="color:gray">@item.NgayDanhGia</span>
                                             </div>
                                             <div style="margin-top:6px;">
                                                 <span style="color:gray">Chất liệu: </span>@item.ChatLieu
@@ -257,51 +271,22 @@
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title">SẢN PHẨM TƯƠNG TỰ</h5>
-                                <div class="d-flex mb-3">
-                                    <a href="#" class="me-3">
-                                        <img src="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/8.webp" style="min-width: 96px; height: 96px;" class="img-md img-thumbnail" />
-                                    </a>
-                                    <div class="info">
-                                        <a href="#" class="nav-link mb-1">
-                                            Rucksack Backpack Large <br />
-                                            Line Mounts
-                                        </a>
-                                        <strong class="text-dark"> $38.90</strong>
-                                    </div>
-                                </div>
-
-                                <div class="d-flex mb-3">
-                                    <a href="#" class="me-3">
-                                        <img src="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/9.webp" style="min-width: 96px; height: 96px;" class="img-md img-thumbnail" />
-                                    </a>
-                                    <div class="info">
-                                        <a href="#" class="nav-link mb-1">
-                                            Summer New Men's Denim <br />
-                                            Jeans Shorts
-                                        </a>
-                                        <strong class="text-dark"> $29.50</strong>
-                                    </div>
-                                </div>
-
-                                <div class="d-flex mb-3">
-                                    <a href="#" class="me-3">
-                                        <img src="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/10.webp" style="min-width: 96px; height: 96px;" class="img-md img-thumbnail" />
-                                    </a>
-                                    <div class="info">
-                                        <a href="#" class="nav-link mb-1"> T-shirts with multiple colors, for men and lady </a>
-                                        <strong class="text-dark"> $120.00</strong>
-                                    </div>
-                                </div>
-
-                                <div class="d-flex">
-                                    <a href="#" class="me-3">
-                                        <img src="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/11.webp" style="min-width: 96px; height: 96px;" class="img-md img-thumbnail" />
-                                    </a>
-                                    <div class="info">
-                                        <a href="#" class="nav-link mb-1"> Blazer Suit Dress Jacket for Men, Blue color </a>
-                                        <strong class="text-dark"> $339.90</strong>
-                                    </div>
-                                </div>
+                                @{
+                                    foreach (var item in Model.LSTSPTuongTu)
+                                    {
+                                        <div class="d-flex mb-3">
+                                            <a asp-action="ProductDetail" asp-route-idSanPham="@item.IDSP" class="me-3">
+                                                <img src="~/img/product/@item.DuongDanSPTT" style="min-width: 96px; height: 96px;" class="img-md img-thumbnail" />
+                                            </a>
+                                            <div class="info">
+                                                <a href="#" class="nav-link mb-1">
+                                                    @item.TenSP <br />
+                                                </a>
+                                                <strong class="text-dark"> @item.GiaSPTT.ToString("n0") VNĐ</strong>
+                                            </div>
+                                        </div>
+                                    }
+                                }
                             </div>
                         </div>
                     </div>

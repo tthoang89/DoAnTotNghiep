@@ -95,17 +95,20 @@ body {
     background: #f6f9ff;
     color: #444444;
 }
-body ::-webkit-scrollbar {
-    width: 6px;
-    height: 5px;
-}
 
-body ::-webkit-scrollbar-track {
-    background-color: #aab7cf;
-}
-body ::-webkit-scrollbar-thumb {
-    background-color: #aab7cf;
-}
+    body ::-webkit-scrollbar {
+        width: 6px;
+        height: 5px;
+    }
+
+    body ::-webkit-scrollbar-track {
+        background-color: #aab7cf;
+    }
+
+    body ::-webkit-scrollbar-thumb {
+        background-color: #aab7cf;
+    }
+
 a {
     color: #4154f1;
     text-decoration: none;
@@ -1616,6 +1619,7 @@ h6 {
     flex: 1;
     box-shadow: 0 1px 8px rgba(102,115,143,0.5);
     border-radius: 5px;
+    min-height:105px;
     width: 100%;
 }
 
@@ -1649,6 +1653,8 @@ h6 {
     display: flex;
     flex-wrap: nowrap;
     width: 100%;
+    height:45px;
+    text-align:left;
 }
 
 .cell-code {
@@ -1661,36 +1667,53 @@ h6 {
 .cell-name {
     padding-top: calc(0.17rem);
     word-break: break-word;
+    font-weight:600;
     text-align: left;
     width: 70%;
 }
 
 .cell-add {
-    width: 3rem;
-    display: flex;
     justify-content: center;
     align-items: center;
     width: 8%;
 }
-
-.cell-content-bottom {
-    -webkit-box-direction: normal;
-    display: flex;
-    flex-wrap: nowrap;
-    margin-top: 10px;
-    overflow-x: hidden;
-    width: 100%;
+.number span {
+    cursor: pointer;
+    font-size: 14px;
 }
 
-.cell-quantity {
+.number input {
+    height: 30px;
+    width: 70px;
+    text-align: center;
+    border: none;
+    border-bottom: 2px solid #2c384e;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+    .number input::-webkit-outer-spin-button,
+    .number input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+    }
+
+    .number input:focus {
+        border: none;
+        border-bottom: 3px solid #4154f1;
+        outline: none;
+    }
+
+.cell-changeprice1 {
+    text-align:left;
     width: 40%;
+    font-weight:700;
+}
+.cell-changeprice2 {
+    text-align:right;
+    width: 30%;
+    font-weight: 700;
 }
 
-.cell-changeprice {
-    width: 10rem;
-    text-align: right;
-    width: 30%;
-}
 /*GIO HANG*/
 .cart {
     border: 1px solid transparent;
@@ -1786,7 +1809,7 @@ h6 {
 #modalthanhtoan {
     position: fixed;
     margin: auto;
-    width: 600px;
+    min-width: 600px;
     height: 100%;
     right: 0px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
@@ -1795,6 +1818,28 @@ h6 {
 
 #modalthanhtoan-content {
     height: 100%;
+}/*Model SanPham*/
+#modalsanpham {
+    position: fixed;
+    margin: auto;
+    min-width: 700px;
+    height: 100%;
+    right: 0px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    font-size: 16px;
+}
+
+#modalsanpham-content {
+    height: 100%;
+}
+/*Model SanPham*/
+/*Modal thanh toán*/
+.formthanhtoan .form-label {
+    font-weight: 600;
+    color:#000;
+}
+.formthanhtoan span{
+   color:#000;
 }
 /*Trang hóa đơn*/
 .tablehd td,
@@ -1995,6 +2040,7 @@ tbody td {
 .scroll-cthd::-webkit-scrollbar-thumb {
     background-color: #aab7cf;
 }
+
 .tbbills thead th, .jsgrid .jsgrid-table thead th {
     border-top: 0;
     padding: .875rem 0.9375rem;
@@ -2003,6 +2049,7 @@ tbody td {
 .tbbills td, .jsgrid .jsgrid-table td {
     padding: .875rem 0.9375rem;
 }
+
     .tbbills td .badge {
         border-radius: 0;
         font-size: 14px;
@@ -2010,8 +2057,17 @@ tbody td {
         padding: .375rem .5625rem;
         font-weight: normal;
     }
+
 .tbbills > td:hover,
 .tbbills > th:hover {
     background-color: #c8cbcf;
 }
+.ctspitem {
+    border: 1px solid transparent;
+    border-radius: 5px;
+}
+    .ctspitem:hover {
+        border: 2px solid #4154f1;
+        border-radius: 5px;
+    }
 /*Search HD*/
