@@ -17,7 +17,7 @@ namespace AppAPI.IServices
         //Nhinh sửa
         public bool CreateHoaDonOffline(Guid idnhanvien);
         public bool DeleteHoaDon(Guid id);
-        public bool UpdateHoaDon(HoaDonThanhToanRequest hoaDon);
+        //public bool UpdateHoaDon(HoaDonThanhToanRequest hoaDon);
         public bool CheckHDHasLSGD( Guid idHoaDon);
         public LichSuTichDiem GetLichSuGiaoDichByIdHD(Guid idHoaDon);
         public List<HoaDon> GetAllHDCho();
@@ -25,9 +25,9 @@ namespace AppAPI.IServices
         public List<HoaDonQL> GetAllHDQly();
         public ChiTietHoaDonQL GetCTHDByID(Guid idhd);
             //Phương thức thanh toán
-        public List<PhuongThucThanhToan> GetAllPTTT();
-        public bool CreatePTTT(PhuongThucThanhToan pttt);
-        public bool UpdatePTTT(PhuongThucThanhToan pttt);   
-        public bool DeletePTTT(Guid id);   
+        //public List<PhuongThucThanhToan> GetAllPTTT();
+        //public bool CreatePTTT(PhuongThucThanhToan pttt);
+        //public bool UpdatePTTT(PhuongThucThanhToan pttt);   
+        //public bool DeletePTTT(Guid id);   
     }
 }
