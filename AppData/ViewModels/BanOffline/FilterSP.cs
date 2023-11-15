@@ -8,7 +8,7 @@ namespace AppData.ViewModels.BanOffline
 {
     public class FilterCTSP
     {
-
+        public Guid IdSanPham { get; set; }
         public List<Guid> lstIdMS { get; set; }
         public List<Guid> lstIdKC { get; set; }
     }

@@ -1654,6 +1654,7 @@ h6 {
     flex-wrap: nowrap;
     width: 100%;
     height:45px;
+    text-align:left;
 }
 
 .cell-code {
@@ -1676,19 +1677,6 @@ h6 {
     align-items: center;
     width: 8%;
 }
-
-.cell-content-bottom {
-    -webkit-box-direction: normal;
-    display: flex;
-    flex-wrap: nowrap;
-    overflow-x: hidden;
-    width: 45px;
-}
-
-.cell-quantity {
-    width: 40%;
-}
-
 .number span {
     cursor: pointer;
     font-size: 14px;
@@ -1715,12 +1703,17 @@ h6 {
         outline: none;
     }
 
-.cell-changeprice {
-    width: 10rem;
-    text-align: right;
-    width: 30%;
+.cell-changeprice1 {
+    text-align:left;
+    width: 40%;
     font-weight:700;
 }
+.cell-changeprice2 {
+    text-align:right;
+    width: 30%;
+    font-weight: 700;
+}
+
 /*GIO HANG*/
 .cart {
     border: 1px solid transparent;
@@ -1840,7 +1833,14 @@ h6 {
     height: 100%;
 }
 /*Model SanPham*/
-
+/*Modal thanh toán*/
+.formthanhtoan .form-label {
+    font-weight: 600;
+    color:#000;
+}
+.formthanhtoan span{
+   color:#000;
+}
 /*Trang hóa đơn*/
 .tablehd td,
 .tablehd th {

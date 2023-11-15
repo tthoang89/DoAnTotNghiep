@@ -270,8 +270,6 @@
     }
     //Thêm SP vào Hóa đơn
     function addCTSP(idctsp,dongia){
-        console.log(dongia);
-        console.log(idctsp);
         var activeTab = $(".tabs-box .tab").filter(".active");
         var elementValue = activeTab.find("span").attr("value");
         var request = {IdHoaDon:elementValue, IdChiTietSanPham: idctsp, DonGia: dongia,SoLuong:1}
@@ -285,7 +283,7 @@
                 if(response.success == true){
                     toastr.success('Thêm thành công', "Success Alert", {timeOut : 300});
                     gethdct(request.IdHoaDon);
-                    loadsp();
+                    loadCTSPByID();
                 }else{
                     toastr.error('Thêm thất bại', 'Error Alert', { timeOut: 300 });
                 }
@@ -303,17 +301,14 @@
     }
 
     //Xóa HDCT
-    function deleteHDCT(idcthd,idhd,idbt,soluong){
-        var request = {Id:idcthd,IdBienThe: idbt, SoLuong :soluong}
+    function deleteHDCT(idcthd,idhd){
         $.ajax({
-            url: "/BanHangTaiQuay/deleteHdct",
+            url: "/BanHangTaiQuay/deleteHdct/"+idcthd,
             async: false,
             type: 'DELETE',
             dataType: 'json',
-            data:request,
             success: function(response) {
                 gethdct(idhd)
-                loadsp();
             },
             error: function(response) {
                 alert("Xóa thất bại");
@@ -339,34 +334,20 @@
             },
         })
     }}
-    //Lưu ghi chú
-    //var inputElement = document.getElementById("ghichu");
-    //    inputElement.addEventListener("blur", function(event) {
-    //    var inputValue = event.target.value;
-    //    var activeTab = $(".tabs-box .tab").filter(".active");
-    //    var elementValue = activeTab.find("span").attr("value");
-    //});
     //Mở chi tiết sản phẩm
     function showSPDetail(idsp){
         $("#sanphambody").load("/BanHangTaiQuay/ShowSPDetail/"+idsp);
          $("#sanpham").modal("show");
     }
 
-    // Mở modal thanh toán
-    $("#btnThanhToan").on("click", function() {
-        var activeTab = $(".tabs-box .tab").filter(".active");
-        var elementValue = activeTab.find("span").attr("value");
-        $("#thanhtoanbody").load("/BanHangTaiQuay/ViewThanhToan/"+elementValue);
-         $("#thanhtoan").modal("show");
-    });
     //Thanh toán chuyển trạng thái
     function thanhToan(id){
-        var idPTTT = $('input[name="pttt"]:checked').val();
+        var pttt = $('input[name="pttt"]:checked').val();
         var ttien = $("#khachCanTra").text();
         var thuevat =$("#thueVAT").val();
         var tichdiemhd = $("#diemtichhd").text();
         var tichdiemsd = parseInt($('#diemKHSD').val());
-        var request={Id: id, IdPTTT: idPTTT,IdNhanVien:'@loginInfor.Id', IdVoucher: null,TongTien: ttien, ThueVAT: thuevat, DiemTichHD: tichdiemhd, DiemSD: tichdiemsd};
+        var request={Id: id, PTTT: pttt,IdNhanVien:'@loginInfor.Id', IdVoucher: null,TongTien: ttien, ThueVAT: thuevat, DiemTichHD: tichdiemhd, DiemSD: tichdiemsd};
         $.ajax({
               url: "/BanHangTaiQuay/ThanhToan",
               async: false,

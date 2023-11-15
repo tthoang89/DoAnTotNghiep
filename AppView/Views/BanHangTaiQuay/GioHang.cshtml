@@ -18,11 +18,11 @@
         }
     </style>
 }
-<div class="d-flex flex-column" >
+<div class="d-flex flex-column">
     <div class="d-flex flex-row align-items-center" style="background:#e8eaed">
         <div class="flex-fill ms-2 me-0">
             <input value="@Model.Id" id="IDHD" hidden />
-            <span>Mã HD: <b>@Model.MaHD</b> </span>
+            <span>Mã HD: <span style="font-weight:600">@Model.MaHD</span> </span>
         </div>
         <div class="search-product d-flex align-items-center">
             <div class="search-bar">
@@ -87,8 +87,8 @@
                             </fieldset>
                         </div>
                         <div class="text-center">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bỏ qua</button>
-                            <button id="btn-saveKH" type="button" class="btn btn-primary">Lưu</button>
+                            <button type="button" class="btn btn-secondary w-50 btn-block" data-bs-dismiss="modal">Bỏ qua</button>
+                            <button id="btn-saveKH" type="button" class="btn btn-primary w-50 btn-block">Lưu</button>
                         </div>
                     </form>
                 </div>
@@ -108,7 +108,7 @@
                 <div class="cart-item p-2">
                     <div class="cell-order">@index</div>
                     <div class="cell-active">
-                        <button class="btn" onclick="deleteHDCT('@item.Id','@item.IdHoaDon','@item.IDChiTietSanPham','@item.SoLuong')">
+                        <button class="btn" onclick="deleteHDCT('@item.Id','@item.IdHoaDon')">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
@@ -118,17 +118,28 @@
                             <div class="cell-name">@item.Ten <span class="badge bg-warning" style="color:#fff; font-weight:600">@item.PhanLoai</span></div>
                         </div>
                         <div class="cell-content-bottom">
-                            <div class="number">
-                                <span class="minus" data-value="@item.Id"><i class="fa-solid fa-chevron-left"></i></span>
-                                <input type="number" class="changesl" value="@item.SoLuong" />
-                                <span class="plus" data-value="@item.Id"><i class="fa-solid fa-chevron-right"></i></span>
+                            <div style="width:30%">
+                                <div class="number">
+                                    <span class="minus" data-value="@item.Id"><i class="fa-solid fa-chevron-left"></i></span>
+                                    <input type="number" class="changesl" value="@item.SoLuong" />
+                                    <span class="plus" data-value="@item.Id"><i class="fa-solid fa-chevron-right"></i></span>
+                                </div>
                             </div>
-                            <div class="cell-changeprice">@item.GiaKM.ToString("n0") <span><del style="color:#808080; font-size:14px; margin-left:20px">@item.GiaGoc.ToString("n0")</del></span></div>
-                            <div class="cell-changeprice">@((item.GiaKM*item.SoLuong).ToString("n0"))</div>
+                            @if (item.GiaGoc != item.GiaKM)
+                            {
+                                <div class="cell-changeprice1">@item.GiaKM.ToString("n0") <span><del style="color:#808080; font-size:14px; margin-left:20px">@item.GiaGoc?.ToString("n0")</del></span></div>
+                                <div class="cell-changeprice2">@((item.GiaKM*item.SoLuong).ToString("n0"))</div>
+                            }
+                            else
+                            {
+                                <div class="cell-changeprice1">@item.GiaKM.ToString("n0") </div>
+                                <div class="cell-changeprice2">@((item.GiaKM*item.SoLuong).ToString("n0"))</div>
+                            }
+
                         </div>
                     </div>
                     <div class="cell-add">
-                        <button class="btn">
+                        <button class="btn" onclick="showSPDetail('@item.IdSP')">
                             <i class="fa-solid fa-circle-plus"></i>
                         </button>
                     </div>
@@ -158,10 +169,10 @@
             <div class="flex-fill pe-2">
                 <div class="input-group">
                     <span class="input-group-text border border-secondary">Ghi chú</span>
-                    <textarea class="form-control border border-secondary" aria-label="With textarea"></textarea>
+                    <textarea class="form-control border border-secondary" aria-label="With textarea" id="ghichu"></textarea>
                 </div>
             </div>
-            <button type="button" id="btnThanhToan" class="btn btn-primary fw-bold btn-block" style="font-size:20px;width:400px" data-bs-toggle="modal" data-bs-target="#thanhtoan">
+            <button type="button" id="btnThanhToan" class="btn btn-primary fw-bold btn-block" style="font-size:20px; width:400px">
                 THANH TOÁN
             </button>
         </div>
@@ -193,6 +204,14 @@
              $("#result").html('');
          });
      });
+        // Mở modal thanh toán
+    $("#btnThanhToan").on("click", function() {
+        var activeTab = $(".tabs-box .tab").filter(".active");
+        var elementValue = activeTab.find("span").attr("value");
+        console.log(elementValue);
+        $("#thanhtoanbody").load("/BanHangTaiQuay/ViewThanhToan/"+elementValue);
+            $("#thanhtoan").modal("show");
+    });
 
      //Thêm nhanh khách hàng
          $("#btn-saveKH").on("click",function(){
@@ -233,7 +252,6 @@
              },
              success: function(response) {
                  gethdct('@Model.Id');
-                 loadsp();
              },
              error: function(response) {
                  toastr.error('Thêm sản phẩm thất bại', 'Error Alert', { timeOut: 300 });
@@ -266,5 +284,13 @@
        let count = $(this).val();
        UpdateSL(idcthd, count);
      });
+
+      //Lưu ghi chú
+    var inputElement = document.getElementById("ghichu");
+        inputElement.addEventListener("blur", function(event) {
+        var inputValue = event.target.value;
+        var activeTab = $(".tabs-box .tab").filter(".active");
+        var elementValue = activeTab.find("span").attr("value");
+    });
 </script>
 

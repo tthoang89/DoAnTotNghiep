@@ -815,6 +815,8 @@ namespace AppAPI.Services
                               Id = ctsp.ID,
                               Ten = sp.Ten,
                               ChiTiet = ms.Ten + " - " + kc.Ten,
+                              idMauSac = ctsp.IDMauSac,
+                              idKichCo = ctsp.IDKichCo,
                               SoLuong = ctsp.SoLuong,
                               Anh = (from ms in _context.MauSacs
                                      join a in _context.Anhs on ms.ID equals a.IDMauSac
