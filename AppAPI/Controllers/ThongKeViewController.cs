@@ -30,7 +30,7 @@ namespace AppAPI.Controllers
                 .Select(group => new ThongKeMSSanPhamTheoSoLuong
                 {
                     idSanPham = group.FirstOrDefault().ChiTietHoaDon_ChiTietSanPham_SanPham_MauSac.ChiTietHoaDon_ChiTietSanPham_SanPham.SanPham.ID,
-                    TenSP = group.FirstOrDefault().ChiTietHoaDon_ChiTietSanPham_SanPham_MauSac.ChiTietHoaDon_ChiTietSanPham_SanPham.SanPham.Ten,
+                    TenSP = group.FirstOrDefault().ChiTietHoaDon_ChiTietSanPham_SanPham_MauSac.ChiTietHoaDon_ChiTietSanPham_SanPham.SanPham.Ten.Trim().ToString(),
                     
                     SoLuong = group.Sum(cthd_cts_sp_ms_hd => cthd_cts_sp_ms_hd.ChiTietHoaDon_ChiTietSanPham_SanPham_MauSac.ChiTietHoaDon_ChiTietSanPham_SanPham.ChiTietHoaDon_ChiTietSanPham.ChiTietHoaDon.SoLuong),
                     Gia= group.FirstOrDefault().ChiTietHoaDon_ChiTietSanPham_SanPham_MauSac.ChiTietHoaDon_ChiTietSanPham_SanPham.ChiTietHoaDon_ChiTietSanPham.ChiTietSanPham.GiaBan,

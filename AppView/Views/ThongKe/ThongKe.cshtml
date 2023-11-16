@@ -391,7 +391,8 @@
         }]
     });
 </script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 <script>
     let labels = [];
     let data = [];
@@ -487,51 +488,35 @@
 
     @foreach (var result in thongkesp)
     {
-        <text>labels2.push('@result.TenSP-@result.DoanhThu');</text>
+        <text>labels2.push('@result.TenSP.Trim()-@result.DoanhThu');</text>
         <text>data2.push('@result.SoLuong');</text>
     }
-    var ctx2 = document.getElementById('SanPhamBanChay').getContext('2d');
-    var columnChart2 = new Chart(ctx2, {
-        type: 'pie',
-        data: {
-            labels: labels2,
-            datasets: [{
-                label: 'Số Lượng',
-                data: data2,
-                backgroundColor: barColors2
-               
-            }]
-        },
-        options: {
-            scales: {
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Tên Sản Phẩm - Doanh Thu'
-                    }
-                },
-                y: {
-                    title: {
-                        display: true,
-                        text: 'Số Lượng'
-                    },
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }
-            },
-            plugins: {
+    new Chart("SanPhamBanChay", {
+  type: "pie",
+  data: {
+    labels: labels2,
+    datasets: [{
+      backgroundColor: barColors2,
+      data: data2
+    }]
+  },
+  options: {
+    title: {
+      display: true,
+      text: "Tốp 7 Sản Phẩm Bán Chạy Trong Tháng"
+    },
+    plugins: {
             legend: {
                 labels: {
                     font: {
-                        family: 'sans-serif', // Thay đổi font thành 'Arial', 'Times New Roman', 'Segoe UI', hoặc font hỗ trợ tiếng Việt khác
+                        family: 'Arial', // Thay đổi font thành 'Arial', 'Times New Roman', 'Segoe UI', hoặc font hỗ trợ tiếng Việt khác
                         size: 14
                     }
                 }
             }
         }
-        }      
-    });
+  }
+});
 </script>
 
 
