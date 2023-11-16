@@ -8,9 +8,9 @@
 <h2>Quản Lý Voucher </h2>
 
 
-<p>
-    <a asp-area="Admin" asp-controller="Vouchers" asp-action="Create">Thêm Voucher</a>
-</p>
+<button class="btn btn-dark">
+    <strong style="color:white">@Html.ActionLink("Thêm Voucher", "Create")</strong>
+</button>
 <form asp-action="TimKiemTenVC" asp-controller="Vouchers" method="get" enctype="multipart/form-data">
     <div class="input-group">
         <input type="text" name="Ten" class="form-control" placeholder="Search for Vouchers">
@@ -69,13 +69,26 @@
                     <strong style="color:red">@item.Ten</strong>
                 </td>
                 <td>
-                    <strong style="color:green">@item.HinhThucGiamGia</strong>
+                    @if(item.HinhThucGiamGia==0){
+                        <strong style="color:red">Giảm Theo Tiền Mặt</strong>
+                    }
+                    else{
+                        <strong style="color:green">Giảm Theo Phần Trăm</strong>
+                    }
+                   
                 </td>
                 <td>
-                    <strong style="color:green">$@item.SoTienCan.ToString("n0") VND</strong>
+                    <strong style="color:green">@item.SoTienCan.ToString("n0") VND</strong>
                 </td>
                 <td>
-                    <strong style="color:green">@item.GiaTri</strong>
+                    @if (item.HinhThucGiamGia == 0)
+                    {
+                        <strong style="color:red">@item.GiaTri.ToString("n0") VND</strong>
+                    }
+                    else
+                    {
+                        <strong style="color:green">@item.GiaTri %</strong>
+                    }
                 </td>
                 <td>
                     <strong style="color:green">@item.NgayApDung</strong>
