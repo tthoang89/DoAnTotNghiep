@@ -82,11 +82,11 @@
                             <th scope="row">@item.Id</th>
                             <td>@item.Ten</td>
                             <td class="text-end">@item.SoLuong</td>
-                            <td class="text-end">@item.DonGia.ToString("n0")</td>
-                            <td class="text-end">@item.DonGia.ToString("n0")</td>
+                            <td class="text-end">@item.GiaKM.ToString("n0")</td>
+                            <td class="text-end">@item.GiaLuu?.ToString("n0")</td>
                             @{
-                                var tt = item.SoLuong * item.DonGia;
-                                <td class="text-end"><b>@tt.ToString("n0")</b></td>
+                                var tt = item.SoLuong * item.GiaLuu;
+                                <td class="text-end"><b>@tt?.ToString("n0")</b></td>
                             }
                         </tr>
                     }
@@ -105,7 +105,7 @@
                 <div class="row  text-end">
                     <label class="col-sm-6 col-form-label">Tổng tiền hàng:</label>
                     <div class="col-sm-6">
-                        <label class="col-sm-5 col-form-label">@Model.listsp.Sum(c=>c.SoLuong * c.DonGia).ToString("n0")</label>
+                        <label class="col-sm-5 col-form-label">@Model.listsp.Sum(c=>c.SoLuong * c.GiaLuu)?.ToString("n0")</label>
                     </div>
                 </div>
                 <div class="row  text-end">

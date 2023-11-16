@@ -19,5 +19,6 @@ namespace AppData.ViewModels.SanPham
         public string MoTa { get; set; }
         public List<DanhGiaViewModel> LSTDanhGia { get; set;}
 
+        public List<SanPhamTuongTuViewModel> LSTSPTuongTu { get; set; }
     }
 }

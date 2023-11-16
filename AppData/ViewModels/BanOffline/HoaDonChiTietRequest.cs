@@ -12,7 +12,7 @@ namespace AppData.ViewModels.BanOffline
         public Guid IdHoaDon { get; set; }
         public Guid IdChiTietSanPham { get; set; }
         public int SoLuong { get; set; }
-        public int DonGia { get; set; }
+        //public int DonGia { get; set; } thanh toán r mới lưu
         public int TrangThai { get; set; }
     }
 }

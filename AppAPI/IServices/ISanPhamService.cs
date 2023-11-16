@@ -1,5 +1,6 @@
 ﻿using AppData.Models;
 using AppData.ViewModels;
+using AppData.ViewModels.BanOffline;
 using AppData.ViewModels.SanPham;
 
 namespace AppAPI.IServices
@@ -43,5 +44,11 @@ namespace AppAPI.IServices
         Task<List<MauSac>> GetAllMauSac();
         Task<List<KichCo>> GetAllKichCo();
         Task<List<ChatLieu>> GetAllChatLieu();
+        //Nhinh thêm
+        #region SanPhamBanHang
+        Task<List<SanPhamBanHang>> GetAllSanPhamTaiQuay();
+        Task<ChiTietSanPhamBanHang> GetChiTietSPBHById(Guid idsp); // Sản phẩm và list màu, list size
+        Task<List<ChiTietCTSPBanHang>> GetChiTietCTSPBanHang(Guid idsp); // Chitet sp 
+        #endregion
     }
 }
