@@ -26,28 +26,41 @@
             <div class="form-group">
                 <label class="control-label">Loại Giảm Giá</label>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="flexRadioDefault" value="0" asp-for="HinhThucGiamGia">
+                    <input class="form-check-input" type="radio" name="hinhthucgiamgia" value="1" @(Model.HinhThucGiamGia== 1 ? "checked" : "")>
                     <label class="form-check-label" for="flexRadioDefault1">
-                        Tiền mặt
+                        Phần Trăm
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="flexRadioDefault" value="1" asp-for="HinhThucGiamGia" checked>
+                    <input class="form-check-input" type="radio" name="hinhthucgiamgia" value="0" @(Model.HinhThucGiamGia == 0 ? "checked" : "")>
                     <label class="form-check-label" for="flexRadioDefault2">
-                        phần Trăm
+                        Tiền Mặt
                     </label>
                 </div>
             </div>
+            
+
             <div class="form-group">
                 <label class="control-label"> So Tiền Cần</label>
                 <input asp-for="SoTienCan" class="form-control" />
                 <span asp-validation-for="SoTienCan" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label class="control-label"> Giá Trị</label>
-                <input asp-for="GiaTri" class="form-control" />
-                <span asp-validation-for="GiaTri" class="text-danger"></span>
-            </div>
+            @if (Model.HinhThucGiamGia == 0)
+            {
+                <div class="form-group">
+                    <label class="control-label"> Giảm Theo Tiền Mặt</label>
+                    <input asp-for="GiaTri" class="form-control" />
+                    <span asp-validation-for="GiaTri" class="text-danger"></span>
+                </div>
+            }
+            else
+            {
+                <div class="form-group">
+                    <label class="control-label"> Giảm Theo Phần Trăm</label>
+                    <input asp-for="GiaTri" class="form-control" />
+                    <span asp-validation-for="GiaTri" class="text-danger"></span>
+                </div>
+            }
             <div class="form-group">
                 <label class="control-label">Ngày Áp Dụng</label>
                 <input asp-for="NgayApDung" class="form-control" />
@@ -87,3 +100,11 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+     <script>
+            // JavaScript để quản lý trạng thái của radio buttons
+            document.addEventListener("DOMContentLoaded", function () {
+            var hinhthucgiamgia = @Model.HinhThucGiamGia;
+
+            document.querySelector('input[name="hinhthucgiamgia"][value="' + hinhthucgiamgia + '"]').checked = true;
+            });
+        </script>

@@ -28,16 +28,17 @@
                 <input asp-for="Password" class="form-control" />
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
+           
             <div class="form-group">
                 <label class="control-label">Giới Tính</label>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="flexRadioDefault" value="1" asp-for="GioiTinh">
+                    <input class="form-check-input" type="radio" name="gioiTinh" value="1" @(Model.GioiTinh == 1 ? "checked" : "")>
                     <label class="form-check-label" for="flexRadioDefault1">
                         Nam
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="flexRadioDefault" value="0" asp-for="GioiTinh" checked>
+                    <input class="form-check-input" type="radio" name="gioiTinh" value="0" @(Model.GioiTinh == 0 ? "checked" : "")>
                     <label class="form-check-label" for="flexRadioDefault2">
                         Nữ
                     </label>
@@ -87,3 +88,13 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
+    <script>
+        // JavaScript để quản lý trạng thái của radio buttons
+        document.addEventListener("DOMContentLoaded", function () {
+            var gioiTinh = @Model.GioiTinh;
+
+            document.querySelector('input[name="gioiTinh"][value="' + gioiTinh + '"]').checked = true;
+        });
+    </script>
+
