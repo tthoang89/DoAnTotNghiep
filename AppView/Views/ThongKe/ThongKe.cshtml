@@ -1,12 +1,13 @@
 ﻿@using AppData.ViewModels.ThongKe
-
+@model dynamic
 @{
     ViewData["Title"] = "ThongKe";
     Layout = "~/Views/Shared/_LayoutForAdmin.cshtml";
     ThongKeSLSPDaBan thongkeslspdaban = ViewBag.ThongKeSLSPDaBan;
-    ThongKeDTTrongThang thongkedttrongthang = ViewBag.ThongKeDTTrongThang;
+   ThongKeDTTrongThang thongkedttrongthang = ViewBag.ThongKeDTTrongThang;
     int thongkeslctsp = ViewBag.ThongKeSLCTSP;
     ThongKeSDonTrongThang thongkesodontrongthang = ViewBag.ThongKeSDonTrongThang;
+   
     List<ThongKeKHMuaNhieu> thongkekhmuanhieu = ViewBag.ThongKeKHMuaNhieu;
     List<ThongKeDoanhThu> thongkedoanhthutheongay = ViewBag.ThongKeDoanhThuTheoNgay;
     List<ThongKeDoanhThu> thongkedoanhthutheothang = ViewBag.ThongKeDoanhThuTheoThang;
@@ -15,7 +16,13 @@
     int stt = 1;
 
 }
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation-vn"></script>
 <!-- Favicon icon -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <link rel="shortcut icon" href="~/ThongKe/assets/images/favicon.png" type="image/x-icon">
 <link rel="icon" href="~/ThongKe/assets/images/favicon.ico" type="image/x-icon">
 
@@ -73,10 +80,10 @@
     <div class="col-lg-3 col-md-6">
         <div class="card dashboard-product">
             <span>Số Đơn Tháng Này</span>
-            @if(thongkedoanhthutheothang!=null){
+            @if(thongkesodontrongthang!=null){
                  <h2 class="dashboard-total-products">@thongkesodontrongthang.SoDon</h2>
             }
-            else{
+             else if(thongkesodontrongthang== null) {
                 <h2 class="dashboard-total-products">0</h2>
             }
            
@@ -92,7 +99,7 @@
             @if(thongkeslspdaban!=null){
                 <h2 class="dashboard-total-products"><span>@thongkeslspdaban.SoLuong</span></h2>
             }
-            else{
+            else if(thongkeslspdaban==null){
                  <h2 class="dashboard-total-products"><span>0</span></h2>
             }
             <span class="label label-success">Sales</span>Reviews
@@ -107,7 +114,7 @@
             @if(thongkedttrongthang!=null){
                  <h2 class="dashboard-total-products"><span>@thongkedttrongthang.TongTien.ToString("n0") VND</span></h2>
             }
-            else{
+            else if(thongkedttrongthang==null){
                  <h2 class="dashboard-total-products"><span> 0 VND</span></h2>
             }
            
@@ -392,9 +399,7 @@
         }]
     });
 </script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation-vn"></script>
+
 <script>
     let labels = [];
     let data = [];
@@ -484,46 +489,45 @@
         
     });
 
+    
      let labels2 = [];
+     
     let data2 = [];
     const barColors2 = ["red", "green","blue","orange","brown","black","gray"];
 
-    @foreach (var result in thongkesp)
+     @foreach (var result in thongkesp)
     {
-        <text>labels2.push('@result.TenSP.Trim()-@result.DoanhThu.ToString("n0") VND');</text>
+        <text>labels2.push('@result.TenSP.ToLower()-@result.DoanhThu');</text>
         <text>data2.push('@result.SoLuong');</text>
+        
     }
-    new Chart("SanPhamBanChay", {
-  type: "pie",
-  data: {
-    labels: labels2,
-    datasets: [{
-      backgroundColor: barColors2,
-      data: data2
-    }]
-  },
-  options: {
-    title: {
-      display: true,
-      text: "Tốp 7 Sản Phẩm Bán Chạy Trong Tháng"
-    },
-    scales: {
-                    y: {
-                        beginAtZero: true
-                    }
+    var ctx = document.getElementById('SanPhamBanChay').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: labels2,
+                datasets: [{
+                    label: 'Số Lượng',
+                    data: data2,
+                    backgroundColor: barColors2,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+             options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: {
+                    position: 'top',
                 },
-    plugins: {
-                    annotation: {
-                        annotationFn: (context, options) => {
-                            // Tùy chọn thêm chú thích tiếng Việt ở đây
-                            context.fillStyle = 'red';
-                            context.font = 'bold 16px Arial';
-                            context.fillText('Chú thích tiếng Việt', options.x, options.y);
-                        }
-                    }
+                title: {
+                    display: true,
+                    text: 'Biểu đồ thống kê sản phẩm theo số lượng',
+                    fontColor: '#333', // Màu chữ
+                    fontFamily: 'Roboto, sans-serif' // Font chữ
                 }
-  }
-});
+            }
+        });
 </script>
 
 
