@@ -20,7 +20,6 @@ namespace AppView.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly HttpClient _httpClient;
-        private readonly string KeyCart = "GioHang";
 
         public HomeController(ILogger<HomeController> logger)
         {
@@ -291,9 +290,9 @@ namespace AppView.Controllers
         public IActionResult ShoppingCart()
         {
             List<ChiTietSanPhamViewModel> bienThes = new List<ChiTietSanPhamViewModel>();
-            if (HttpContext.Session.GetString(KeyCart) != null)
+            if (Request.Cookies["Cart"] != null)
             {
-                bienThes = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModel>>(HttpContext.Session.GetString(KeyCart));
+                bienThes = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModel>>(Request.Cookies["Cart"]);
             }
             // laam them
             int cout = 0;
@@ -320,7 +319,7 @@ namespace AppView.Controllers
             {
                 List<ChiTietSanPhamViewModel> chiTietSanPhams;
                 ChiTietSanPhamViewModel chiTietSanPham = JsonConvert.DeserializeObject<ChiTietSanPhamViewModel>(response.Content.ReadAsStringAsync().Result);
-                string? result = HttpContext.Session.GetString(KeyCart);
+                string? result = Request.Cookies["Cart"];
                 if (string.IsNullOrEmpty(result))
                 {
                     chiTietSanPham.SoLuong = 1;
@@ -331,8 +330,7 @@ namespace AppView.Controllers
                     chiTietSanPhams = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModel>>(result);
                     var tempBienThe = chiTietSanPhams.FirstOrDefault(x => x.ID == chiTietSanPham.ID);
                     if (tempBienThe != null)
-                    {
-                        //Sua 
+                    { 
                         tempBienThe.SoLuong++;
                     }
                     else
@@ -341,7 +339,9 @@ namespace AppView.Controllers
                         chiTietSanPhams.Add(chiTietSanPham);
                     }
                 }
-                HttpContext.Session.SetString(KeyCart, JsonConvert.SerializeObject(chiTietSanPhams));
+                CookieOptions cookie = new CookieOptions();
+                cookie.Expires = DateTime.Now.AddDays(30);
+                Response.Cookies.Append("Cart", JsonConvert.SerializeObject(chiTietSanPhams), cookie);
                 return Json(new { success = true, message = "Add to cart successfully" });
             }
             else return Json(new { success = false, message = "Add to cart fail" });
@@ -622,6 +622,7 @@ namespace AppView.Controllers
         }
 
         #endregion
+
         #region CheckOut
         [HttpGet]
         public IActionResult CheckOut()

@@ -10,6 +10,7 @@ namespace AppData.Configurations
             builder.ToTable("SanPham");
             builder.HasKey(x => x.ID);
             builder.Property(x => x.Ten).HasColumnType("nvarchar(50)");
+            builder.Property(x => x.Ma).HasColumnType("nvarchar(10)");
             builder.Property(x => x.MoTa).HasColumnType("nvarchar(50)");
             builder.Property(x => x.TongSoSao).HasColumnType("int");
             builder.Property(x => x.TongDanhGia).HasColumnType("int");

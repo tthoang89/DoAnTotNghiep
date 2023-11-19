@@ -7,9 +7,9 @@ namespace AppData.Models
         public Guid ID { get; set; }
         [StringLength(40, ErrorMessage = "Ten san pham khong duoc dai qua 40 tu.")]
         public string Ten { get; set; }
+        public string? Ma { get; set; }
         [Required]
         public string MoTa { get; set; }
-
         public int TrangThai { get; set; }
         public int TongSoSao { get; set; }
         public int TongDanhGia { get; set; }

@@ -9,6 +9,7 @@ namespace AppData.Models
     public class ChiTietSanPham
     {
         public Guid ID { get; set; }
+        public string? Ma { get; set; }
         public int SoLuong { get; set; }
         public int GiaBan { get; set; }
         public DateTime NgayTao { get; set; }
