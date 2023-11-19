@@ -246,14 +246,21 @@ namespace AppAPI.Services
             {
                 HoaDon hoaDon = reposHoaDon.GetAll().FirstOrDefault(p => p.ID == id);
                 var lsthdct = reposChiTietHoaDon.GetAll().Where(c => c.IDHoaDon == hoaDon.ID).ToList();
+                
+                var deletedg = context.DanhGias.Where(c => lsthdct.Select(x => x.ID).Contains(c.ID)).ToList();
                 foreach (var item in lsthdct)
                 {
                     var ctsp = repsCTSanPham.GetAll().FirstOrDefault(c => c.ID == item.IDCTSP);
                     ctsp.SoLuong += item.SoLuong;
                     repsCTSanPham.Update(ctsp);
                 }
+                //Xóa chiTietHD
                 context.ChiTietHoaDons.RemoveRange(lsthdct);
                 context.SaveChanges();
+                //Xóa đánh giá
+                context.DanhGias.RemoveRange(deletedg);
+                context.SaveChanges();
+                //Xóa hóa đơn
                 context.HoaDons.Remove(hoaDon);
                 context.SaveChanges();
                 return true;
@@ -405,6 +412,7 @@ namespace AppAPI.Services
                               IdKhachHang = kh?.IDKhachHang,
                               TenKhachHang = kh?.Ten,
                               lstHDCT = lsthdct,
+                              GhiChu = hd.GhiChu == null ? "":hd.GhiChu,
                           }).FirstOrDefault();
             return result;
         }
@@ -446,6 +454,28 @@ namespace AppAPI.Services
             return timkiem;
         }
 
+        public bool UpdateGhiChuHD(Guid idhd, string ghichu)
+        {
+            try
+            {
+                var hd = reposHoaDon.GetAll().FirstOrDefault(c=>c.ID == idhd);
+                if(ghichu == "null")
+                {
+                    hd.GhiChu = null;
+                }
+                else
+                {
+                    hd.GhiChu = ghichu;
+                }
+                reposHoaDon.Update(hd);
+                return true;
+
+            }catch(Exception ex)
+            {
+                return false;
+            }
+        }
+
         public bool UpdateHoaDon(HoaDonThanhToanRequest hoaDon)
         {
             var update = reposHoaDon.GetAll().FirstOrDefault(p => p.ID == hoaDon.Id);
@@ -459,7 +489,13 @@ namespace AppAPI.Services
             //};
             //reposChiTietPTTT.Add(ctPTTT);
 
+            //Lưu tiền vào HDCT
             var lsthdct = context.ChiTietHoaDons.Where(c => c.IDHoaDon == hoaDon.Id).ToList();
+            //Xóa lsthdct có số lượng = 0
+            var delete = lsthdct.Where(c => c.SoLuong == 0).ToList();
+            context.ChiTietHoaDons.RemoveRange(delete);
+            context.SaveChanges();
+            lsthdct = context.ChiTietHoaDons.Where(c => c.IDHoaDon == hoaDon.Id).ToList();
             foreach (var item in lsthdct)
             {
                 var GiaBan = from ctsp in context.ChiTietSanPhams
@@ -474,7 +510,10 @@ namespace AppAPI.Services
                 context.ChiTietHoaDons.Update(item);
                 context.SaveChanges();
             }
-            //Lưu tiền vào HDCT
+            //Xóa đánh giá
+            var deletedg = context.DanhGias.Where(c => lsthdct.Select(x => x.ID).Contains(c.ID)).ToList();
+            context.DanhGias.RemoveRange(deletedg);
+            context.SaveChanges();
             //Update LSTD tích
             var lstd = reposLichSuTichDiem.GetAll().FirstOrDefault(c => c.IDHoaDon == hoaDon.Id);
             if (lstd != null)
@@ -495,15 +534,12 @@ namespace AppAPI.Services
                     };
                     reposLichSuTichDiem.Add(lstieudiem);
                 }
-
                 // Thêm điểm cho Khách hàng và trừ
                 var kh = reposKhachHang.GetAll().FirstOrDefault(c => c.IDKhachHang == lstd.IDKhachHang);
                 kh.DiemTich += hoaDon.DiemTichHD;
                 kh.DiemTich -= hoaDon.DiemSD;
                 reposKhachHang.Update(kh);
-
             }
-
             // UpdateHD
             update.IDNhanVien = hoaDon.IdNhanVien;
             update.NgayThanhToan = hoaDon.NgayThanhToan;

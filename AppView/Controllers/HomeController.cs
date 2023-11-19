@@ -81,10 +81,15 @@ namespace AppView.Controllers
             return View(lst);
         }
         [HttpGet]
-        public async Task<IActionResult> ProductDetail(string idSanPham)
+        public async Task<IActionResult> ProductDetail(string idSanPham,int? pages)
         {
             HttpResponseMessage response = await _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllChiTietSanPhamHome?idSanPham="+ idSanPham);
             var chiTietSanPham = JsonConvert.DeserializeObject<ChiTietSanPhamViewModelHome>(response.Content.ReadAsStringAsync().Result);
+            var lstDanhGia = chiTietSanPham.LSTDanhGia;
+            int pageSize = 20;
+            int pageNumber = pages == null || pages < 0 ? 1 : pages.Value;
+            PagedList<DanhGiaViewModel> lst = new PagedList<DanhGiaViewModel>(lstDanhGia, pageNumber, pageSize);
+            ViewData["ListDanhGia"] = lst;
             return View(chiTietSanPham);
         }
         #endregion
@@ -316,6 +321,40 @@ namespace AppView.Controllers
         public ActionResult AddToCart(string id)
         {
             HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + $"SanPham/GetChiTietSanPhamByID?id="+id).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                List<ChiTietSanPhamViewModel> chiTietSanPhams;
+                ChiTietSanPhamViewModel chiTietSanPham = JsonConvert.DeserializeObject<ChiTietSanPhamViewModel>(response.Content.ReadAsStringAsync().Result);
+                string? result = HttpContext.Session.GetString(KeyCart);
+                if (string.IsNullOrEmpty(result))
+                {
+                    chiTietSanPham.SoLuong = 1;
+                    chiTietSanPhams = new List<ChiTietSanPhamViewModel>() { chiTietSanPham };
+                }
+                else
+                {
+                    chiTietSanPhams = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModel>>(result);
+                    var tempBienThe = chiTietSanPhams.FirstOrDefault(x => x.ID == chiTietSanPham.ID);
+                    if (tempBienThe != null)
+                    {
+                        //Sua 
+                        tempBienThe.SoLuong++;
+                    }
+                    else
+                    {
+                        chiTietSanPham.SoLuong = 1;
+                        chiTietSanPhams.Add(chiTietSanPham);
+                    }
+                }
+                HttpContext.Session.SetString(KeyCart, JsonConvert.SerializeObject(chiTietSanPhams));
+                return Json(new { success = true, message = "Add to cart successfully" });
+            }
+            else return Json(new { success = false, message = "Add to cart fail" });
+        }
+        [HttpPost]
+        public ActionResult BuyNow(string id)
+        {
+            HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + $"SanPham/GetChiTietSanPhamByID?id=" + id).Result;
             if (response.IsSuccessStatusCode)
             {
                 List<ChiTietSanPhamViewModel> chiTietSanPhams;

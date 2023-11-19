@@ -236,6 +236,7 @@ namespace AppView.Controllers
                 return Json(new { success = false });
             }
         }
+
         //Sửa khách hàng
         public async Task<IActionResult> UpdateKHinHD(string idkh, string idhd)
         {
@@ -270,7 +271,25 @@ namespace AppView.Controllers
             {
                 return Json(new { success = false });
             }
-
+        }
+        //Xóa khách hàng
+        [HttpGet("/BanHangTaiQuay/DeleteKHinHD/{idhd}")]
+        public async Task<IActionResult> DeleteKHinHD(string idhd)
+        {
+            try
+            {
+                var checkexist = await _httpClient.GetFromJsonAsync<bool>($"HoaDon/CheckLSGDHD/{idhd}");
+                if (checkexist == true) // Tồn tại-> xóa
+                {
+                    var lstd = await _httpClient.GetFromJsonAsync<LichSuTichDiem>($"HoaDon/LichSuGiaoDich/{idhd}");
+                    var response = await _httpClient.DeleteAsync($"LichSuTichDiem/{lstd.ID}");
+                }
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false });
+            }
         }
         //Check voucher
 

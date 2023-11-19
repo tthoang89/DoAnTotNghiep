@@ -86,9 +86,9 @@
                                 </div>
                             </fieldset>
                         </div>
-                        <div class="text-center">
-                            <button type="button" class="btn btn-secondary w-50 btn-block" data-bs-dismiss="modal">Bỏ qua</button>
-                            <button id="btn-saveKH" type="button" class="btn btn-primary w-50 btn-block">Lưu</button>
+                        <div class="d-flex flex-row text-center">
+                            <button type="button" class="btn btn-secondary w-50 btn-block m-2" data-bs-dismiss="modal">Bỏ qua</button>
+                            <button id="btn-saveKH" type="button" class="btn btn-primary w-50 btn-block m-2">Lưu</button>
                         </div>
                     </form>
                 </div>
@@ -168,8 +168,10 @@
         <div class="d-flex flex-row mt-2 p-2">
             <div class="flex-fill pe-2">
                 <div class="input-group">
-                    <span class="input-group-text border border-secondary">Ghi chú</span>
-                    <textarea class="form-control border border-secondary" aria-label="With textarea" id="ghichu"></textarea>
+                    <span class="input-group-text border border-secondary">
+                        Ghi chú
+                    </span>
+                    <textarea class="form-control border border-secondary" aria-label="With textarea" id="ghichu">@Model.GhiChu</textarea>
                 </div>
             </div>
             <button type="button" id="btnThanhToan" class="btn btn-primary fw-bold btn-block" style="font-size:20px; width:400px">
@@ -239,6 +241,44 @@
              }
          });
      })
+     //Sửa khách hàng
+    function suaKhachHang(IDKH){{
+        var IDHD = $("#IDHD").val();
+        $.ajax({
+            url: "/BanHangTaiQuay/UpdateKHinHD",
+            type: 'GET',
+            data:{
+                idkh:IDKH,
+                idhd:IDHD,
+            },
+            dataType: "json",
+            success: function(response) {
+                gethdct(IDHD);
+            },
+            error:function(response){
+                toastr.error('Sửa thất bại', "Error Alert", { timeOut: 300 });
+            },
+        })
+    }}
+    //Xóa khách hàng
+    var khinput = document.getElementById("search");
+    khinput.addEventListener("blur", function(event) {
+        var inputValue = event.target.value;
+        var idhd = $("#IDHD").val();
+        if (inputValue === '') {
+            $.ajax({
+                url: "/BanHangTaiQuay/DeleteKHinHD/" + idhd,
+                async: false,
+                type: 'GET',
+                success: function(response) {
+                    gethdct('@Model.Id');
+                },
+                error: function(response) {
+                    toastr.error('Xóa khách hàng thất bại', 'Error Alert', { timeOut: 300 });
+                }
+            });
+        }
+    });
      //Update số lượng
      function UpdateSL(IDHDCT,SL){
          $.ajax({
@@ -287,10 +327,22 @@
 
       //Lưu ghi chú
     var inputElement = document.getElementById("ghichu");
-        inputElement.addEventListener("blur", function(event) {
+    inputElement.addEventListener("blur", function(event) {
         var inputValue = event.target.value;
-        var activeTab = $(".tabs-box .tab").filter(".active");
-        var elementValue = activeTab.find("span").attr("value");
+        if(inputValue === ''){
+            inputValue = null;
+        }
+        $.ajax({
+            url: "https://localhost:7095/api/HoaDon/UpdateGhichu?idhd=@Model.Id&ghichu=" + inputValue,
+            type: "PUT",
+            dataType: "json",
+            success: function() {
+                gethdct('@Model.Id');
+            },
+            error: function(response) {
+                toastr.error('Lưu ghi chú thất bại', 'Error Alert', { timeOut: 300 });
+            }
+        });
     });
 </script>
 

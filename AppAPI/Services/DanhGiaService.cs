@@ -147,6 +147,7 @@ namespace AppAPI.Services
                 DanhGia danhGia = reposDanhGia.GetAll().FirstOrDefault(p=>p.ID == idCTHD);
                 danhGia.BinhLuan = binhLuan;
                 danhGia.Sao = soSao;
+                danhGia.NgayDanhGia = DateTime.Now;
                 danhGia.TrangThai = 1;
                 reposDanhGia.Update(danhGia);
                 return true;

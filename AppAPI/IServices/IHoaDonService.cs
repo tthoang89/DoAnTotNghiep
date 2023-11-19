@@ -18,6 +18,7 @@ namespace AppAPI.IServices
         public bool CreateHoaDonOffline(Guid idnhanvien);
         public bool DeleteHoaDon(Guid id);
         public bool UpdateHoaDon(HoaDonThanhToanRequest hoaDon);
+        public bool UpdateGhiChuHD(Guid idhd, string ghichu);
         public bool CheckHDHasLSGD( Guid idHoaDon);
         public LichSuTichDiem GetLichSuGiaoDichByIdHD(Guid idHoaDon);
         public List<HoaDon> GetAllHDCho();
