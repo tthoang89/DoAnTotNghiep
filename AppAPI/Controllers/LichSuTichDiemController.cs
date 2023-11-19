@@ -38,6 +38,11 @@ namespace AppAPI.Controllers
             var listDonMuaCT = await _lichsu.getAllDonMuaChiTiet(idHoaDon);
             return listDonMuaCT;
         }
+        [HttpGet("GetCTHDDANHGIA")]
+        public Task<ChiTietHoaDonDanhGiaViewModel> getCTHDDanhGia(Guid idhdct)
+        {
+            return _lichsu.getCTHDDanhGia(idhdct);
+        }
         // laam Strat
         [Route("GetLSTDByIdKH")]
         [HttpGet]

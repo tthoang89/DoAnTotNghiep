@@ -208,7 +208,7 @@ namespace AppAPI.Services
             var sptt = await (from sp in _context.SanPhams.Where(p => p.IDLoaiSP == sanPham.IDLoaiSP)
                                join ctsp in _context.ChiTietSanPhams.Where(p=>p.TrangThai == 1) on sp.ID equals ctsp.IDSanPham
                                join ms in _context.MauSacs on ctsp.IDMauSac equals ms.ID
-                               join anh in _context.Anhs on ms.ID equals anh.IDMauSac
+                               join anh in _context.Anhs on sp.ID equals anh.IDSanPham
                                select new SanPhamTuongTuViewModel()
                                {
                                    IDSP = sp.ID,
