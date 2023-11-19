@@ -45,30 +45,37 @@
     </div>
 </div>
 <script>
-    function register(e)
-    {
+    function register(e) {
         e.preventDefault();
+        var name = $("#name").val();
+        var email = $("#email").val();
         var password = $("#password").val();
-        console.log(password);
         var confirm = $("#confirm").val();
-        console.log(confirm);
-        if (password == confirm) {
+
+        if (name.trim() === "" || email.trim() === "" || password.trim() === "" || confirm.trim() === "") {
+            Swal.fire({
+                title: "Vui lòng điền đầy đủ thông tin",
+                icon: "warning",
+                confirmButtonText: "OK"
+            });
+        } else if (password !== confirm) {
+            Swal.fire({
+                title: "Password và Confirm Password không khớp!",
+                icon: "error",
+                confirmButtonText: "OK"
+            });
+        } else {
             Swal.fire({
                 title: "Đăng ký thành công",
                 icon: "success",
                 confirmButtonText: "Đến trang Login"
             }).then(result => {
-                if(result.isConfirmed){
+                if (result.isConfirmed) {
                     const registerForm = document.getElementById('registerForm');
                     registerForm.submit();
                 }
             });
         }
-        else{
-            Swal.fire({
-                title: "Đăng ký thất bại",
-                icon: "error"
-            });
-        }
     }
+
 </script>

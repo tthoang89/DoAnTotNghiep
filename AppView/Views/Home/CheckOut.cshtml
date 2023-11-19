@@ -282,12 +282,43 @@
             });
         });
     });
-    function createhoadon() {
+    function createhoadon() 
+    {
         var ten = $("#name").val();
         var email = $("#email").val();
         var sdt = $("#phone").val();
         var diaChi = $("#address").val();
         var objHoaDon = { Ten: ten, Email: email, SDT: sdt, DiaChi: diaChi + ", " + xa + ", " + huyen + ", " + tinh, TienShip: tienShip };
+        $('.invalid-feedback').text('');
+        $('.is-invalid').removeClass('is-invalid');
+        if (ten.trim().length == 0) {
+            $('#name').addClass('is-invalid');
+            $('#name').next('.invalid-feedback').text('Không để trống tên');
+            hasError = true;
+        }
+        var phoneNumberRegex = /^\d{10}$/;
+        if (sdt.trim().length == 0) {
+            $('#phone').addClass('is-invalid');
+            $('#phone').next('.invalid-feedback').text('Không để trống sdt');
+            hasError = true;
+        }
+        else if (!phoneNumberRegex.test(sdt)) {
+            $('#phone').addClass('is-invalid');
+            $('#phone').next('.invalid-feedback').text('Số điện thoại không hợp lệ');
+            hasError = true;
+        }
+        var emailRegex = /^[a-zA-Z0-9._%+-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (email.trim().length == 0) {
+            $('#email').addClass('is-invalid');
+            $('#email').next('.invalid-feedback').text('Không để trống email');
+            hasError = true;
+        }
+        else if (!emailRegex.test(email)) {
+            $('#email').addClass('is-invalid');
+            $('#email').next('.invalid-feedback').text('Email không hợp lệ');
+            hasError = true;
+        }
+       
         $.ajax({
             async: false,
             type: 'POST',
@@ -312,6 +343,7 @@
                 )
             }
         });
+        
     }
 </script>
 

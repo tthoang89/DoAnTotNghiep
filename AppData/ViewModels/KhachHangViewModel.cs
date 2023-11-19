@@ -11,10 +11,14 @@ namespace AppData.ViewModels
     public class KhachHangViewModel
     {
         public Guid Id { get; set; }
-        public string? Name { get; set; }
-        public string Password { get; set; }
+        
+        [Required]
         [EmailAddress]
         public string? Email { get; set; }
+        [Required, StringLength(30)]
+        public string? Name { get; set; }
+        [Required, StringLength(8)]
+        public string Password { get; set; }
 
     }
 }

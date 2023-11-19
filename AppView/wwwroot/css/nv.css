@@ -1,7 +1,7 @@
 ﻿
 .btn-create {
     margin-bottom: 20px;
-    margin-right: 850px;
+    margin-right: 700px;
     padding: 5px 25px;
     border-radius: 50px;
     outline: 0;
@@ -15,12 +15,10 @@
     background-color: darkslategray;
     color: white;
 }
-
-}
 h1 {
-    
+    text-align:center;
     animation: blink 1s linear infinite;
-    margin-top: 100px;
+    margin-top: 50px;
     margin-bottom: 50px
 }
    /* h1:hover {
