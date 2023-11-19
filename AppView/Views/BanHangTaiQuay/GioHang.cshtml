@@ -206,16 +206,7 @@
              $("#result").html('');
          });
      });
-        // Mở modal thanh toán
-    $("#btnThanhToan").on("click", function() {
-        var activeTab = $(".tabs-box .tab").filter(".active");
-        var elementValue = activeTab.find("span").attr("value");
-        console.log(elementValue);
-        $("#thanhtoanbody").load("/BanHangTaiQuay/ViewThanhToan/"+elementValue);
-            $("#thanhtoan").modal("show");
-    });
-
-     //Thêm nhanh khách hàng
+       //Thêm nhanh khách hàng
          $("#btn-saveKH").on("click",function(){
          var tenkh = $("#inputTenKhachHang").val();
          var sdt = $("#inputSDT").val();
@@ -241,6 +232,16 @@
              }
          });
      })
+        // Mở modal thanh toán
+    $("#btnThanhToan").on("click", function() {
+        var activeTab = $(".tabs-box .tab").filter(".active");
+        var elementValue = activeTab.find("span").attr("value");
+        console.log(elementValue);
+        $("#thanhtoanbody").load("/BanHangTaiQuay/ViewThanhToan/"+elementValue);
+            $("#thanhtoan").modal("show");
+    });
+
+   
      //Sửa khách hàng
     function suaKhachHang(IDKH){{
         var IDHD = $("#IDHD").val();

@@ -9,9 +9,6 @@
         <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#thongtin" type="button" role="tab" aria-controls="home" aria-selected="true">Thông tin</button>
     </li>
     <li class="nav-item" role="presentation">
-        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#lstt" type="button" role="tab" aria-selected="false" tabindex="-1">Lịch sử thanh toán</button>
-    </li>
-    <li class="nav-item" role="presentation">
         <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#lstd" type="button" role="tab" aria-selected="false" tabindex="-1">Lịch sử tích điểm</button>
     </li>
 </ul>
@@ -43,13 +40,28 @@
                 <div class="row">
                     <label class="col-sm-5 col-form-label">Trạng thái:</label>
                     <div class="col-sm-7">
-                        <label class="col-form-label">@Model.TrangThai</label>
+                       <label class="col-form-label">
+                            @{
+                                @(Model.TrangThai == 2 ? "Chờ bàn giao" :
+                                (Model.TrangThai == 3 ? "Đang giao" :
+                                (Model.TrangThai == 4 ? "Hoàn hàng" :
+                                (Model.TrangThai == 5 ? "Hoàn hàng thành công" :
+                                (Model.TrangThai == 6 ? "Thành công" :
+                                (Model.TrangThai == 7 ? "Đơn hủy" : "Hàng thất lạc"))))))
+                            }
+                        </label>
                     </div>
                 </div>
                 <div class="row">
                     <label class="col-sm-5 col-form-label">Người bán:</label>
                     <div class="col-sm-7">
                         <label class="col-form-label">@Model.NhanVien</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-5 col-form-label">Phương thức thanh toán:</label>
+                    <div class="col-sm-7">
+                        <label class="col-form-label">@Model.PTTT</label>
                     </div>
                 </div>
             </div>
@@ -80,9 +92,9 @@
                     {
                         <tr>
                             <th scope="row">@item.Id</th>
-                            <td>@item.Ten</td>
+                            <td>@item.Ten  /<span style="color:#f28322; font-size:14px">@item.PhanLoai</span></td>
                             <td class="text-end">@item.SoLuong</td>
-                            <td class="text-end">@item.GiaKM.ToString("n0")</td>
+                            <td class="text-end">@item.GiaGoc?.ToString("n0")</td>
                             <td class="text-end">@item.GiaLuu?.ToString("n0")</td>
                             @{
                                 var tt = item.SoLuong * item.GiaLuu;
@@ -109,7 +121,7 @@
                     </div>
                 </div>
                 <div class="row  text-end">
-                    <label class="col-sm-6 col-form-label">Giảm giá hóa đơn:</label>
+                    <label class="col-sm-6 col-form-label">Voucher hóa đơn:</label>
                     <div class="col-sm-6">
                         <label class="col-sm-5 col-form-label"></label>
                     </div>
@@ -130,18 +142,17 @@
         </div>
     </div>
 
-    <!--Lịch sử giao dịch-->
-    <div class="tab-pane fade" id="lstt" role="tabpanel" aria-labelledby="profile-tab">
+    <!--Lịch sử tích điểm-->
+    <div class="tab-pane fade" id="lstd" role="tabpanel" aria-labelledby="profile-tab">
         <div class="d-flex mt-2">
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th scope="col">Mã giao dịch</th>
-                        <th scope="col">Thời gian</th>
+                        <th scope="col">Mã tích điểm</th>
+                        <th scope="col">Điểm</th>
                         <th scope="col">Giá trị</th>
-                        <th scope="col">Phương thức</th>
-                        <th scope="col">Trạng thái</th>
-                        <th scope="col">Đã thu/chi</th>
+                        <th scope="col">Loại</th>
+                        <th scope="col">Tăng/Giảm</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -151,10 +162,11 @@
                         <td>Dynamic Division Officer</td>
                         <td>47</td>
                         <td>2011-04-19</td>
-                        <td><b>2011-04-19</b></td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
 </div>
+<script>
+</script>

@@ -370,7 +370,7 @@ namespace AppData.Migrations
                     b.Property<Guid?>("IDKhachHang")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("IDQuyDoiDiem")
+                    b.Property<Guid?>("IDQuyDoiDiem")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("TrangThai")
@@ -729,9 +729,7 @@ namespace AppData.Migrations
 
                     b.HasOne("AppData.Models.QuyDoiDiem", "QuyDoiDiem")
                         .WithMany("LichSuTichDiems")
-                        .HasForeignKey("IDQuyDoiDiem")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("IDQuyDoiDiem");
 
                     b.Navigation("HoaDon");
 
