@@ -90,6 +90,7 @@ namespace AppView.Controllers
             var response = await httpClients.GetAsync(apiUrl);
             string apiData = await response.Content.ReadAsStringAsync();
             var kh = JsonConvert.DeserializeObject<KhachHangView>(apiData);
+
             return View(kh);
         }
         [HttpPost]

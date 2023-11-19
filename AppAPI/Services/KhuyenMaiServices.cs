@@ -121,6 +121,7 @@ namespace AppAPI.Services
             var khuyenmai = _repos.GetAll().FirstOrDefault(x => x.ID == kmv.ID);
             if (khuyenmai != null)
             {
+                khuyenmai.TrangThai = kmv.TrangThai;
                 khuyenmai.Ten = kmv.Ten;
                 khuyenmai.GiaTri = kmv.GiaTri;
                 khuyenmai.MoTa = kmv.MoTa;
@@ -130,7 +131,7 @@ namespace AppAPI.Services
                 {
                     return false;
                 }
-                khuyenmai.TrangThai = kmv.TrangThai;
+             
                 return _repos.Update(khuyenmai);
             }
             else

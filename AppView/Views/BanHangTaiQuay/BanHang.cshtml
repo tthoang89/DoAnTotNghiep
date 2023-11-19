@@ -315,25 +315,7 @@
             }
         });
     }
-    //Sửa khách hàng
-    function suaKhachHang(IDKH){{
-        var IDHD = $("#IDHD").val();
-        $.ajax({
-            url: "/BanHangTaiQuay/UpdateKHinHD",
-            type: 'GET',
-            data:{
-                idkh:IDKH,
-                idhd:IDHD,
-            },
-            dataType: "json",
-            success: function(response) {
-                gethdct(IDHD);
-            },
-            error:function(response){
-                toastr.error('Sửa thất bại', "Error Alert", { timeOut: 300 });
-            },
-        })
-    }}
+    
     //Mở chi tiết sản phẩm
     function showSPDetail(idsp){
         $("#sanphambody").load("/BanHangTaiQuay/ShowSPDetail/"+idsp);
