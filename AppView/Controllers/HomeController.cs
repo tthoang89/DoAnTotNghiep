@@ -317,8 +317,20 @@ namespace AppView.Controllers
             TempData["ListBienThe"] = JsonConvert.SerializeObject(bienThes);
             return View(bienThes);
         }
+        [HttpGet]
+        public IActionResult DeleteFromCart(Guid id)
+        {
+            List<ChiTietSanPhamViewModel> bienThes = new List<ChiTietSanPhamViewModel>();
+            if (HttpContext.Session.GetString(KeyCart) != null)
+            {
+                bienThes = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModel>>(HttpContext.Session.GetString(KeyCart));
+            }
+            bienThes.Remove(bienThes.Find(p => p.ID == id));
+            HttpContext.Session.SetString(KeyCart, JsonConvert.SerializeObject(bienThes));
+            return RedirectToAction("ShoppingCart");
+        }
         [HttpPost]
-        public ActionResult AddToCart(string id)
+        public ActionResult AddToCart(string id, int? sl)
         {
             HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + $"SanPham/GetChiTietSanPhamByID?id="+id).Result;
             if (response.IsSuccessStatusCode)
@@ -328,7 +340,7 @@ namespace AppView.Controllers
                 string? result = HttpContext.Session.GetString(KeyCart);
                 if (string.IsNullOrEmpty(result))
                 {
-                    chiTietSanPham.SoLuong = 1;
+                    chiTietSanPham.SoLuong = (sl != null)?Convert.ToInt32(sl):1;
                     chiTietSanPhams = new List<ChiTietSanPhamViewModel>() { chiTietSanPham };
                 }
                 else
@@ -338,11 +350,19 @@ namespace AppView.Controllers
                     if (tempBienThe != null)
                     {
                         //Sua 
-                        tempBienThe.SoLuong++;
+                        if (sl == null)
+                        {
+                            tempBienThe.SoLuong++;
+                        }
+                        else
+                        {
+                            tempBienThe.SoLuong = tempBienThe.SoLuong + Convert.ToInt32(sl);
+                        }
+                        
                     }
                     else
                     {
-                        chiTietSanPham.SoLuong = 1;
+                        chiTietSanPham.SoLuong = (sl != null) ? Convert.ToInt32(sl) : 1;
                         chiTietSanPhams.Add(chiTietSanPham);
                     }
                 }
@@ -351,8 +371,14 @@ namespace AppView.Controllers
             }
             else return Json(new { success = false, message = "Add to cart fail" });
         }
+        [HttpGet]
+        public IActionResult UpdateCart()
+        {
+
+            return RedirectToAction("ShoppingCart");
+        }
         [HttpPost]
-        public ActionResult BuyNow(string id)
+        public ActionResult BuyNow(string id,int soLuong)
         {
             HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + $"SanPham/GetChiTietSanPhamByID?id=" + id).Result;
             if (response.IsSuccessStatusCode)
@@ -362,7 +388,7 @@ namespace AppView.Controllers
                 string? result = HttpContext.Session.GetString(KeyCart);
                 if (string.IsNullOrEmpty(result))
                 {
-                    chiTietSanPham.SoLuong = 1;
+                    chiTietSanPham.SoLuong = soLuong;
                     chiTietSanPhams = new List<ChiTietSanPhamViewModel>() { chiTietSanPham };
                 }
                 else
@@ -372,11 +398,18 @@ namespace AppView.Controllers
                     if (tempBienThe != null)
                     {
                         //Sua 
-                        tempBienThe.SoLuong++;
+                        if (soLuong == null)
+                        {
+                            tempBienThe.SoLuong++;
+                        }
+                        else
+                        {
+                            tempBienThe.SoLuong = tempBienThe.SoLuong + soLuong;
+                        }
                     }
                     else
                     {
-                        chiTietSanPham.SoLuong = 1;
+                        chiTietSanPham.SoLuong = soLuong;
                         chiTietSanPhams.Add(chiTietSanPham);
                     }
                 }

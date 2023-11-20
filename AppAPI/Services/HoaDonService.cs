@@ -112,6 +112,8 @@ namespace AppAPI.Services
                     hoaDon1.TienShip = hoaDon.TienShip;
                     hoaDon1.PhuongThucThanhToan = hoaDon.PhuongThucThanhToan;
                     hoaDon1.TrangThaiGiaoHang = 2;
+                    hoaDon1.ThueVAT = 10;
+                    hoaDon1.TongTien = hoaDon.TongTien;
                     if (reposHoaDon.Add(hoaDon1))
                     {
                         foreach (var x in chiTietHoaDons)
@@ -140,7 +142,7 @@ namespace AppAPI.Services
                         {
                             QuyDoiDiem quyDoiDiem = reposQuyDoiDiem.GetAll().First();
                             KhachHang khachHang = reposKhachHang.GetAll().FirstOrDefault(p => p.IDKhachHang == hoaDon.IDNguoiDung);
-                            if (hoaDon.Diem == 0)
+                            if (hoaDon.Diem == 0 || hoaDon.Diem == null)
                             {
                                 khachHang.DiemTich += hoaDon.TongTien / quyDoiDiem.TiLeTichDiem;
                                 reposKhachHang.Update(khachHang);

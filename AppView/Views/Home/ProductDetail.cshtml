@@ -132,6 +132,20 @@
                             </ul>
                         </div>
                     </div>
+                    <div class="mt-5">
+                        <span class="fw-bold">Số lượng</span>
+                        <div class="colors">
+                            <ul id="sizes" style="height:35px">
+                                <td class="quantity__item">
+                                    <div class="quantity">
+                                        <div class="pro-qty-2">
+                                            <input id="sl" style="width: 50px; border: none; text-align: center;" type="text" value="1">
+                                        </div>
+                                    </div>
+                                </td>
+                            </ul>
+                        </div>
+                    </div>
                     <div class="buttons d-flex flex-row mt-5 gap-3">
                         <button onclick="buyNow()" class="btn btn-outline-dark">Buy Now</button>
                         <button onclick="addCart()" class="btn btn-dark">Add to Basket</button>
@@ -362,7 +376,7 @@
             async: true,
             type: 'POST',
             dataType: "json",
-            data: { id: document.getElementById("maSP").innerHTML },
+            data: { id: document.getElementById("maSP").innerHTML, sl: document.getElementById("sl").value },
             url: '/Home/AddToCart',
             success: function (response) {
                 if (response.success == true) {
@@ -382,7 +396,7 @@
             async: true,
             type: 'POST',
             dataType: "json",
-            data: { id: document.getElementById("maSP").innerHTML },
+            data: { id: document.getElementById("maSP").innerHTML, soLuong: document.getElementById("sl").value },
             url: '/Home/BuyNow',
             success: function (response) {
                 if (response.success == true) {
