@@ -426,6 +426,53 @@ namespace AppView.Controllers
             }
             else return Json(new { success = false, message = "Add to cart fail" });
         }
+        [HttpGet]
+        public IActionResult UpdateCart()
+        {
+
+            return RedirectToAction("ShoppingCart");
+        }
+        [HttpPost]
+        public ActionResult BuyNow(string id,int soLuong)
+        {
+            HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + $"SanPham/GetChiTietSanPhamByID?id=" + id).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                List<ChiTietSanPhamViewModel> chiTietSanPhams;
+                ChiTietSanPhamViewModel chiTietSanPham = JsonConvert.DeserializeObject<ChiTietSanPhamViewModel>(response.Content.ReadAsStringAsync().Result);
+                string? result = HttpContext.Session.GetString(KeyCart);
+                if (string.IsNullOrEmpty(result))
+                {
+                    chiTietSanPham.SoLuong = soLuong;
+                    chiTietSanPhams = new List<ChiTietSanPhamViewModel>() { chiTietSanPham };
+                }
+                else
+                {
+                    chiTietSanPhams = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModel>>(result);
+                    var tempBienThe = chiTietSanPhams.FirstOrDefault(x => x.ID == chiTietSanPham.ID);
+                    if (tempBienThe != null)
+                    {
+                        //Sua 
+                        if (soLuong == null)
+                        {
+                            tempBienThe.SoLuong++;
+                        }
+                        else
+                        {
+                            tempBienThe.SoLuong = tempBienThe.SoLuong + soLuong;
+                        }
+                    }
+                    else
+                    {
+                        chiTietSanPham.SoLuong = soLuong;
+                        chiTietSanPhams.Add(chiTietSanPham);
+                    }
+                }
+                HttpContext.Session.SetString(KeyCart, JsonConvert.SerializeObject(chiTietSanPhams));
+                return Json(new { success = true, message = "Add to cart successfully" });
+            }
+            else return Json(new { success = false, message = "Add to cart fail" });
+        }
         #endregion
 
         #region Login
