@@ -322,12 +322,6 @@ namespace AppAPI.Services
         {
             return reposHoaDon.GetAll();
         }
-
-        //public List<PhuongThucThanhToan> GetAllPTTT()
-        //{
-        //    return reposPTTT.GetAll();
-        //}
-
         public ChiTietHoaDonQL GetCTHDByID(Guid idhd)
         {
             var result = (from hd in context.HoaDons
@@ -350,6 +344,10 @@ namespace AppAPI.Services
                               ThueVAT = hd.ThueVAT,
                               TienKhachTra = hd.TongTien,
                               GhiChu = hd.GhiChu,
+                              TruTieuDiem = (from lstd in context.LichSuTichDiems
+                                             join qdd in context.QuyDoiDiems on lstd.IDQuyDoiDiem equals qdd.ID
+                                             where lstd.IDHoaDon == hd.ID && lstd.TrangThai == 0
+                                             select lstd.Diem * qdd.TiLeTieuDiem).FirstOrDefault(),
                               voucher = (from vc in context.Vouchers
                                          where vc.ID == hd.IDVoucher
                                          select new Voucher
@@ -378,12 +376,15 @@ namespace AppAPI.Services
                                             GiaGoc = ctsp.GiaBan,
                                             GiaLuu = cthd.DonGia,
                                             GiaKM = km == null ? ctsp.GiaBan : (km.TrangThai == 1 ? ctsp.GiaBan - km.GiaTri : (ctsp.GiaBan * (100 - km.GiaTri) / 100))
-                                        }).ToList()
+                                        }).ToList(),
+                              lstlstd = (from lstd in context.LichSuTichDiems
+                                         where lstd.IDHoaDon == hd.ID
+                                         select lstd).ToList()
                           }).FirstOrDefault();
 
             return result;
-            return result;
         }
+
 
         public HoaDonViewModelBanHang GetHDBanHang(Guid id)
         {

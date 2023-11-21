@@ -236,7 +236,6 @@
     $("#btnThanhToan").on("click", function() {
         var activeTab = $(".tabs-box .tab").filter(".active");
         var elementValue = activeTab.find("span").attr("value");
-        console.log(elementValue);
         $("#thanhtoanbody").load("/BanHangTaiQuay/ViewThanhToan/"+elementValue);
             $("#thanhtoan").modal("show");
     });

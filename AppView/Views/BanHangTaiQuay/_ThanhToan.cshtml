@@ -58,7 +58,7 @@
         </div>
         <div class="d-flex flex-row lh-1">
             <div class="flex-fill"><label for="inputEmail5" class="form-label">Tổng tiền hàng</label></div>
-            <div class="flex-fill text-end"> <input id="tongTienHang" value="@Model.TongTien" hidden /><span>@Model.TongTien?.ToString("n0")</span></div>
+            <div class="flex-fill text-end"><span id="tongTienHang"></span></div>
         </div>
 
         @if (@Model.KhachHang != "Khách lẻ")
@@ -97,7 +97,7 @@
 
         <div class="d-flex flex-row lh-1">
             <div class="flex-fill"><label for="inputEmail5" class="form-label">Thuế VAT( 10%)</label></div>
-            <div class="flex-fill text-end"><span id="thueVAT">@Model.ThueVAT.ToString("n0")</span></div>
+            <div class="flex-fill text-end"><span id="thueVAT"></span></div>
         </div>
         <div class="d-flex flex-row lh-1">
             <div class="flex-fill"><label for="inputEmail5" class="form-label">Khách cần trả</label></div>
@@ -154,10 +154,12 @@
        function TinhTien() {
             var tt = @Model.TongTien;
             var vat = @Model.ThueVAT;
+            $("#tongTienHang").text(tt.toLocaleString());
+            $("#thueVAT").text(vat.toLocaleString());
             var trutd = $("#tientrutichdiem").text() === '' ? 0 : parseInt($("#tientrutichdiem").text().replace(/,/g, ""));
             var voucher = $("#giatrivoucher").text() === '' ? 0 : parseInt($("#giatrivoucher").text().replace(/,/g, ""));
             var tienkhachtra = tt + vat - trutd - voucher;
-            $("#khachCanTra").text(tienkhachtra.toLocaleString());
+            $("#khachCanTra").text(tienkhachtra.toLocaleString().replace('.', ','));
         }
         //Áp dụng tích điểm
         $('#diemKHSD').on("input",function(){
@@ -183,15 +185,14 @@
           if (voucherInput.css('display') === 'none') {
             voucherInput.css('display', 'block');
             $(this).text('Hủy áp dụng');
-            console.log($("#idvoucher").text());
           } else {
             voucherInput.css('display', 'none');
+            $("#idvoucher").text('');
             $("#tienkhuyenmai").css('display', 'none');
             $("#giatrivoucher").text('');
             $("#valuevoucher").val('');
             $("#vldvoucher").text('');
             $(this).text('Nhập voucher');
-            $("#idvoucher").text("");
           }
           TinhTien();
         });

@@ -234,7 +234,6 @@
             dataType: 'json',
             contentType: 'application/json',
             success: function(response) {
-                console.log(response);
                 toastr.success('Thêm thành công', "Success Alert", { timeOut: 300 });
                 loadHDCHO(function(){
                      activeTab(1);
@@ -334,7 +333,6 @@
             var tichdiemhd = $("#diemtichhd").text();
             var tichdiemsd = parseInt($('#diemKHSD').val());
             var request= {Id: id, PTTT: pttt,IdNhanVien:'@loginInfor.Id', IdVoucher: idvoucher,TongTien: ttien, ThueVAT: thuevat, DiemTichHD: tichdiemhd, DiemSD: tichdiemsd};
-            console.log(request);
             $.ajax({
                     url: "/BanHangTaiQuay/ThanhToan",
                     async: false,

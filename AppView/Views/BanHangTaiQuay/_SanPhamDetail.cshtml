@@ -96,7 +96,6 @@
           let kc = document.querySelectorAll(".btnkc");
           let lstkc = getSelectedValues(kc);
           let request = {IdSanPham: '@Model.Id', lstIdMS:lstms , lstIdKC: lstkc };
-          console.log(request);
               $.ajax({
                  url: "/BanHangTaiQuay/FilterCTSP",
                  type: "POST",
