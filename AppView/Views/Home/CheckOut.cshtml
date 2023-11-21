@@ -286,7 +286,6 @@
             $('#email').next('.invalid-feedback').text('Email không hợp lệ');
             hasError = true;
         }
-       
         var pttt = $('input[name="pttt"]:checked').val();
         var objHoaDon = { Ten: ten, Email: email, SDT: sdt, DiaChi: diaChi + ", " + xa + ", " + huyen + ", " + tinh, TienShip: tienShip, PhuongThucThanhToan: pttt };
         $.ajax({
