@@ -17,5 +17,7 @@ namespace AppData.ViewModels
         public int GiaGoc { get; set; }
         public int TrangThai { get; set; }
         public string Anh { get; set; }
+        public string MauSac { get; set; }
+        public string KichCo { get; set; }
     }
 }

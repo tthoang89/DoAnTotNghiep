@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Net;
 using System.Text;
 using System.Web.Helpers;
 using X.PagedList;
@@ -80,10 +82,15 @@ namespace AppView.Controllers
             return View(lst);
         }
         [HttpGet]
-        public async Task<IActionResult> ProductDetail(string idSanPham)
+        public async Task<IActionResult> ProductDetail(string idSanPham,int? pages)
         {
             HttpResponseMessage response = await _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllChiTietSanPhamHome?idSanPham="+ idSanPham);
             var chiTietSanPham = JsonConvert.DeserializeObject<ChiTietSanPhamViewModelHome>(response.Content.ReadAsStringAsync().Result);
+            var lstDanhGia = chiTietSanPham.LSTDanhGia;
+            int pageSize = 20;
+            int pageNumber = pages == null || pages < 0 ? 1 : pages.Value;
+            PagedList<DanhGiaViewModel> lst = new PagedList<DanhGiaViewModel>(lstDanhGia, pageNumber, pageSize);
+            ViewData["ListDanhGia"] = lst;
             return View(chiTietSanPham);
         }
         #endregion
@@ -311,8 +318,23 @@ namespace AppView.Controllers
             TempData["ListBienThe"] = JsonConvert.SerializeObject(bienThes);
             return View(bienThes);
         }
+        [HttpGet]
+        public IActionResult DeleteFromCart(Guid id)
+        {
+            List<ChiTietSanPhamViewModel> bienThes = new List<ChiTietSanPhamViewModel>();
+            string? result = Request.Cookies["Cart"];
+            if (result != null)
+            {
+                bienThes = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModel>>(result);
+            }
+            bienThes.Remove(bienThes.Find(p => p.ID == id));
+            CookieOptions cookie = new CookieOptions();
+            cookie.Expires = DateTime.Now.AddDays(30);
+            Response.Cookies.Append("Cart", JsonConvert.SerializeObject(bienThes), cookie);
+            return RedirectToAction("ShoppingCart");
+        }
         [HttpPost]
-        public ActionResult AddToCart(string id)
+        public ActionResult AddToCart(string id, int? sl)
         {
             HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + $"SanPham/GetChiTietSanPhamByID?id="+id).Result;
             if (response.IsSuccessStatusCode)
@@ -322,7 +344,7 @@ namespace AppView.Controllers
                 string? result = Request.Cookies["Cart"];
                 if (string.IsNullOrEmpty(result))
                 {
-                    chiTietSanPham.SoLuong = 1;
+                    chiTietSanPham.SoLuong = (sl != null)?Convert.ToInt32(sl):1;
                     chiTietSanPhams = new List<ChiTietSanPhamViewModel>() { chiTietSanPham };
                 }
                 else
@@ -330,12 +352,70 @@ namespace AppView.Controllers
                     chiTietSanPhams = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModel>>(result);
                     var tempBienThe = chiTietSanPhams.FirstOrDefault(x => x.ID == chiTietSanPham.ID);
                     if (tempBienThe != null)
-                    { 
-                        tempBienThe.SoLuong++;
+                    {
+                        //Sua 
+                        if (sl == null)
+                        {
+                            tempBienThe.SoLuong++;
+                        }
+                        else
+                        {
+                            tempBienThe.SoLuong = tempBienThe.SoLuong + Convert.ToInt32(sl);
+                        }
+                        
                     }
                     else
                     {
-                        chiTietSanPham.SoLuong = 1;
+                        chiTietSanPham.SoLuong = (sl != null) ? Convert.ToInt32(sl) : 1;
+                        chiTietSanPhams.Add(chiTietSanPham);
+                    }
+                }
+                CookieOptions cookie = new CookieOptions();
+                cookie.Expires = DateTime.Now.AddDays(30);
+                Response.Cookies.Append("Cart", JsonConvert.SerializeObject(chiTietSanPhams), cookie);
+                return Json(new { success = true, message = "Add to cart successfully" });
+            }
+            else return Json(new { success = false, message = "Add to cart fail" });
+        }
+        [HttpGet]
+        public IActionResult UpdateCart()
+        {
+
+            return RedirectToAction("ShoppingCart");
+        }
+        [HttpPost]
+        public ActionResult BuyNow(string id,int soLuong)
+        {
+            HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + $"SanPham/GetChiTietSanPhamByID?id=" + id).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                List<ChiTietSanPhamViewModel> chiTietSanPhams;
+                ChiTietSanPhamViewModel chiTietSanPham = JsonConvert.DeserializeObject<ChiTietSanPhamViewModel>(response.Content.ReadAsStringAsync().Result);
+                string? result = Request.Cookies["Cart"];
+                if (string.IsNullOrEmpty(result))
+                {
+                    chiTietSanPham.SoLuong = soLuong;
+                    chiTietSanPhams = new List<ChiTietSanPhamViewModel>() { chiTietSanPham };
+                }
+                else
+                {
+                    chiTietSanPhams = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModel>>(result);
+                    var tempBienThe = chiTietSanPhams.FirstOrDefault(x => x.ID == chiTietSanPham.ID);
+                    if (tempBienThe != null)
+                    {
+                        //Sua 
+                        if (soLuong == null)
+                        {
+                            tempBienThe.SoLuong++;
+                        }
+                        else
+                        {
+                            tempBienThe.SoLuong = tempBienThe.SoLuong + soLuong;
+                        }
+                    }
+                    else
+                    {
+                        chiTietSanPham.SoLuong = soLuong;
                         chiTietSanPhams.Add(chiTietSanPham);
                     }
                 }
@@ -358,6 +438,10 @@ namespace AppView.Controllers
         public IActionResult Login(string login, string password)
         {
             //https://localhost:7095/api/QuanLyNguoiDung/DangNhap?email=tam%40gmail.com&password=chungtam200396
+             if(string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password)){
+        ViewBag.ErrorMessage = "Vui lòng nhập đầy đủ thông tin đăng nhập.";
+        return View();
+    }
             if (login.Contains('@'))
             {
                 login = login.Replace("@", "%40");
@@ -368,7 +452,8 @@ namespace AppView.Controllers
                 HttpContext.Session.SetString("LoginInfor", response.Content.ReadAsStringAsync().Result);
                 return RedirectToAction("Index");
             }
-            else return BadRequest();
+            ViewBag.ErrorMessage = "Email hoặc password không chính xác.";
+            return View();
         }
         public IActionResult Register()
         {
@@ -477,47 +562,47 @@ namespace AppView.Controllers
             return View();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest request)
-        {
-            try
-            {
-                string apiUrl = $"https://localhost:7095/api/QuanLyNguoiDung/ForgotPassword?request={request.Email}";
-                var response = await _httpClient.PostAsync(apiUrl, new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json"));
-                if (response.IsSuccessStatusCode)
-                {
-                    // Xử lý phản hồi từ controller
-                    var result = await response.Content.ReadAsStringAsync();
-                    if (result == "EmailExists")
-                    {
-                        TempData["Message"] = "Vui lòng kiểm tra email của bạn .";
-                        return RedirectToAction("Login"); 
-                    }
-                    else if (result == "Email này không tồn tại")
-                    {
-                        TempData["Message"] = "Email này không tồn tại.";
-                    }
-                    else
-                    {
-                        TempData["Message"] = "Không thể gửi lại email. Vui lòng thử lại sau..";
-                    }
-                }
-                else
-                {
-                    // Xử lý khi controller trả về lỗi
-                    var errorResponse = await response.Content.ReadAsStringAsync();
-                    ModelState.AddModelError("", errorResponse);
-                }
-            }
-            catch (Exception ex)
-            {
-                // Xử lý khi có lỗi trong quá trình gửi yêu cầu đến controller
-                Console.WriteLine(ex.Message);
-                ModelState.AddModelError("", "Không thể gửi lại email. Vui lòng thử lại sau.");
-            }
-            return View();
-        }
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest request)
+        //{
+        //    try
+        //    {
+        //        string apiUrl = $"https://localhost:7095/api/QuanLyNguoiDung/ForgotPassword?request={request.Email}";
+        //        var response = await _httpClient.PostAsync(apiUrl, new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json"));
+        //        if (response.IsSuccessStatusCode)
+        //        {
+        //            // Xử lý phản hồi từ controller
+        //            var result = await response.Content.ReadAsStringAsync();
+        //            if (result == "EmailExists")
+        //            {
+        //                TempData["Message"] = "Vui lòng kiểm tra email của bạn .";
+        //                return RedirectToAction("Login"); 
+        //            }
+        //            else if (result == "Email này không tồn tại")
+        //            {
+        //                TempData["Message"] = "Email này không tồn tại.";
+        //            }
+        //            else
+        //            {
+        //                TempData["Message"] = "Không thể gửi lại email. Vui lòng thử lại sau..";
+        //            }
+        //        }
+        //        else
+        //        {
+        //            // Xử lý khi controller trả về lỗi
+        //            var errorResponse = await response.Content.ReadAsStringAsync();
+        //            ModelState.AddModelError("", errorResponse);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Xử lý khi có lỗi trong quá trình gửi yêu cầu đến controller
+        //        Console.WriteLine(ex.Message);
+        //        ModelState.AddModelError("", "Không thể gửi lại email. Vui lòng thử lại sau.");
+        //    }
+        //    return View();
+        //}
         [HttpPost]
         public IActionResult ForgotPassword(string email)
         {
@@ -630,87 +715,162 @@ namespace AppView.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult Order(HoaDonViewModel hoaDon)
+        public string Order(HoaDonViewModel hoaDon)
         {
-            List<ChiTietHoaDonViewModel> lstChiTietHoaDon = new List<ChiTietHoaDonViewModel>();
-            string temp = TempData["ListBienThe"] as string;
-            foreach (var item in JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModel>>(temp))
+            if (hoaDon.PhuongThucThanhToan == "dathang")
             {
-                ChiTietHoaDonViewModel chiTietHoaDon = new ChiTietHoaDonViewModel();
-                chiTietHoaDon.IDChiTietSanPham = item.ID;
-                chiTietHoaDon.SoLuong = item.SoLuong;
-                chiTietHoaDon.DonGia = item.GiaBan;
-                lstChiTietHoaDon.Add(chiTietHoaDon);
+                List<ChiTietHoaDonViewModel> lstChiTietHoaDon = new List<ChiTietHoaDonViewModel>();
+                string temp = TempData["ListBienThe"] as string;
+                foreach (var item in JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModel>>(temp))
+                {
+                    ChiTietHoaDonViewModel chiTietHoaDon = new ChiTietHoaDonViewModel();
+                    chiTietHoaDon.IDChiTietSanPham = item.ID;
+                    chiTietHoaDon.SoLuong = item.SoLuong;
+                    chiTietHoaDon.DonGia = item.GiaBan;
+                    lstChiTietHoaDon.Add(chiTietHoaDon);
+                }
+                hoaDon.ChiTietHoaDons = lstChiTietHoaDon;
+                hoaDon.Diem = 0;
+                string tongTien = TempData["TongTien"] as string;
+                hoaDon.TongTien = Convert.ToInt32(tongTien.Replace(",", ""));
+                HttpResponseMessage response = _httpClient.PostAsJsonAsync("HoaDon", hoaDon).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    Response.Cookies.Delete("Cart");
+                    return "https://localhost:5001/Home/CheckOutSuccess";
+                }
+                else return "";
             }
-            hoaDon.ChiTietHoaDons = lstChiTietHoaDon;
-            hoaDon.PhuongThucThanhToan = "Mac dinh";
-            hoaDon.Diem = 0;
-            string tongTien = TempData["TongTien"] as string;
-            hoaDon.TongTien = Convert.ToInt32(tongTien.Replace(",", ""));
-            HttpResponseMessage response = _httpClient.PostAsJsonAsync("HoaDon", hoaDon).Result;
-            if (response.IsSuccessStatusCode) return Json(new { success = true, message = "Pay successfully" });
-            else return Json(new { success = false, message = "Pay fail" }); ;
+            else if (hoaDon.PhuongThucThanhToan == "thanhtoan")
+            {
+                TempData["HoaDon"] = JsonConvert.SerializeObject(hoaDon);
+                string vnp_Returnurl = "https://localhost:5001/Home/PaymentCallBack"; //URL nhan ket qua tra ve 
+                string vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"; //URL thanh toan cua VNPAY 
+                string vnp_TmnCode = "OFZ9Q6W4"; //Ma định danh merchant kết nối (Terminal Id)
+                string vnp_HashSecret = "IKQOFVXJPGYEIDNVNICTIIFPXNTXRYCX"; //Secret Key
+                string ipAddr = HttpContext.Connection.RemoteIpAddress?.ToString();
+                //Get payment input
+                OrderInfo order = new OrderInfo();
+                order.OrderId = DateTime.Now.Ticks; // Giả lập mã giao dịch hệ thống merchant gửi sang VNPAY
+                order.Amount = 100000; // Giả lập số tiền thanh toán hệ thống merchant gửi sang VNPAY 100,000 VND
+                order.Status = "0"; //0: Trạng thái thanh toán "chờ thanh toán" hoặc "Pending" khởi tạo giao dịch chưa có IPN
+                order.CreatedDate = DateTime.Now;
+                //Save order to db
+
+                //Build URL for VNPAY
+                VnPayLibrary vnpay = new VnPayLibrary();
+
+                vnpay.AddRequestData("vnp_Version", VnPayLibrary.VERSION);
+                vnpay.AddRequestData("vnp_Command", "pay");
+                vnpay.AddRequestData("vnp_TmnCode", "OFZ9Q6W4");
+                vnpay.AddRequestData("vnp_Amount", (order.Amount * 100).ToString());
+                vnpay.AddRequestData("vnp_CreateDate", order.CreatedDate.ToString("yyyyMMddHHmmss"));
+                vnpay.AddRequestData("vnp_CurrCode", "VND");
+                vnpay.AddRequestData("vnp_IpAddr", ipAddr);
+                vnpay.AddRequestData("vnp_Locale", "vn");
+                vnpay.AddRequestData("vnp_OrderInfo", "Thanh toan don hang:" + order.OrderId);
+                vnpay.AddRequestData("vnp_OrderType", "other"); //default value: other
+
+                vnpay.AddRequestData("vnp_ReturnUrl", vnp_Returnurl);
+                vnpay.AddRequestData("vnp_TxnRef", order.OrderId.ToString()); // Mã tham chiếu của giao dịch tại hệ thống của merchant. Mã này là duy nhất dùng để phân biệt các đơn hàng gửi sang VNPAY. Không được trùng lặp trong ngày
+
+                //Add Params of 2.1.0 Version
+                //Billing
+
+                string paymentUrl = vnpay.CreateRequestUrl(vnp_Url, "IKQOFVXJPGYEIDNVNICTIIFPXNTXRYCX");
+                //log.InfoFormat("VNPAY URL: {0}", paymentUrl);
+                return paymentUrl;
+            }
+            else return "";
         }
         [HttpGet]
-        public IActionResult Pay()
+        public IActionResult PaymentCallBack()
         {
-            string vnp_Returnurl = "http%3A%2F%2Flocalhost%3A16262%2Fvnpay_return.aspx"; //URL nhan ket qua tra ve 
-            string vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"; //URL thanh toan cua VNPAY 
-            string vnp_TmnCode = "OFZ9Q6W4"; //Ma định danh merchant kết nối (Terminal Id)
-            string vnp_HashSecret = "IKQOFVXJPGYEIDNVNICTIIFPXNTXRYCX"; //Secret Key
-            string ipAddr = HttpContext.Connection.RemoteIpAddress?.ToString();
-            //Get payment input
-            OrderInfo order = new OrderInfo();
-            order.OrderId = DateTime.Now.Ticks; // Giả lập mã giao dịch hệ thống merchant gửi sang VNPAY
-            order.Amount = 100000; // Giả lập số tiền thanh toán hệ thống merchant gửi sang VNPAY 100,000 VND
-            order.Status = "0"; //0: Trạng thái thanh toán "chờ thanh toán" hoặc "Pending" khởi tạo giao dịch chưa có IPN
-            order.CreatedDate = DateTime.Now;
-            //Save order to db
+            if (Request.Query.Count > 0)
+            {
+                string vnp_HashSecret = "IKQOFVXJPGYEIDNVNICTIIFPXNTXRYCX"; //Chuoi bi mat
+                var vnpayData = Request.Query;
+                VnPayLibrary vnpay = new VnPayLibrary();
 
-            //Build URL for VNPAY
-            VnPayLibrary vnpay = new VnPayLibrary();
+                foreach (var s in vnpayData)
+                {
+                    //get all querystring data
+                    if (!string.IsNullOrEmpty(s.Key) && s.Key.StartsWith("vnp_"))
+                    {
+                        vnpay.AddResponseData(s.Key, vnpayData[s.Key]);
+                    }
+                }
+                //vnp_TxnRef: Ma don hang merchant gui VNPAY tai command=pay    
+                //vnp_TransactionNo: Ma GD tai he thong VNPAY
+                //vnp_ResponseCode:Response code from VNPAY: 00: Thanh cong, Khac 00: Xem tai lieu
+                //vnp_SecureHash: HmacSHA512 cua du lieu tra ve
 
-            vnpay.AddRequestData("vnp_Version", VnPayLibrary.VERSION);
-            vnpay.AddRequestData("vnp_Command", "pay");
-            vnpay.AddRequestData("vnp_TmnCode", "OFZ9Q6W4");
-            vnpay.AddRequestData("vnp_Amount", (order.Amount * 100).ToString()); //Số tiền thanh toán. Số tiền không mang các ký tự phân tách thập phân, phần nghìn, ký tự tiền tệ. Để gửi số tiền thanh toán là 100,000 VND (một trăm nghìn VNĐ) thì merchant cần nhân thêm 100 lần (khử phần thập phân), sau đó gửi sang VNPAY là: 10000000
-            //if (bankcode_Vnpayqr.Checked == true)
-            //{
-            //    vnpay.AddRequestData("vnp_BankCode", "VNPAYQR");
-            //}
-            //else if (bankcode_Vnbank.Checked == true)
-            //{
-            //    vnpay.AddRequestData("vnp_BankCode", "VNBANK");
-            //}
-            //else if (bankcode_Intcard.Checked == true)
-            //{
-            //    vnpay.AddRequestData("vnp_BankCode", "INTCARD");
-            //}
+                long orderId = Convert.ToInt64(vnpay.GetResponseData("vnp_TxnRef"));
+                long vnpayTranId = Convert.ToInt64(vnpay.GetResponseData("vnp_TransactionNo"));
+                string vnp_ResponseCode = vnpay.GetResponseData("vnp_ResponseCode");
+                string vnp_TransactionStatus = vnpay.GetResponseData("vnp_TransactionStatus");
+                String vnp_SecureHash = Request.Query["vnp_SecureHash"];
+                String TerminalID = Request.Query["vnp_TmnCode"];
+                long vnp_Amount = Convert.ToInt64(vnpay.GetResponseData("vnp_Amount")) / 100;
+                String bankCode = Request.Query["vnp_BankCode"];
 
-            vnpay.AddRequestData("vnp_CreateDate", order.CreatedDate.ToString("yyyyMMddHHmmss"));
-            vnpay.AddRequestData("vnp_CurrCode", "VND");
-            vnpay.AddRequestData("vnp_IpAddr", ipAddr);
-            vnpay.AddRequestData("vnp_Locale", "vn");
-            //if (locale_Vn.Checked == true)
-            //{
-            //    vnpay.AddRequestData("vnp_Locale", "vn");
-            //}
-            //else if (locale_En.Checked == true)
-            //{
-            //    vnpay.AddRequestData("vnp_Locale", "en");
-            //}
-            vnpay.AddRequestData("vnp_OrderInfo", "Thanh toan don hang:" + order.OrderId);
-            vnpay.AddRequestData("vnp_OrderType", "other"); //default value: other
-
-            vnpay.AddRequestData("vnp_ReturnUrl", vnp_Returnurl);
-            vnpay.AddRequestData("vnp_TxnRef", order.OrderId.ToString()); // Mã tham chiếu của giao dịch tại hệ thống của merchant. Mã này là duy nhất dùng để phân biệt các đơn hàng gửi sang VNPAY. Không được trùng lặp trong ngày
-
-            //Add Params of 2.1.0 Version
-            //Billing
-
-            string paymentUrl = vnpay.CreateRequestUrl(vnp_Url, "IKQOFVXJPGYEIDNVNICTIIFPXNTXRYCX");
-            //log.InfoFormat("VNPAY URL: {0}", paymentUrl);
-            return Redirect(paymentUrl);
+                bool checkSignature = vnpay.ValidateSignature(vnp_SecureHash, vnp_HashSecret);
+                if (checkSignature)
+                {
+                    if (vnp_ResponseCode == "00" && vnp_TransactionStatus == "00")
+                    {
+                        //Thanh toan thanh cong
+                        var hoaDon = JsonConvert.DeserializeObject<HoaDonViewModel>(TempData["HoaDon"].ToString());
+                        List<ChiTietHoaDonViewModel> lstChiTietHoaDon = new List<ChiTietHoaDonViewModel>();
+                        string temp = TempData["ListBienThe"] as string;
+                        foreach (var item in JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModel>>(temp))
+                        {
+                            ChiTietHoaDonViewModel chiTietHoaDon = new ChiTietHoaDonViewModel();
+                            chiTietHoaDon.IDChiTietSanPham = item.ID;
+                            chiTietHoaDon.SoLuong = item.SoLuong;
+                            chiTietHoaDon.DonGia = item.GiaBan;
+                            lstChiTietHoaDon.Add(chiTietHoaDon);
+                        }
+                        hoaDon.ChiTietHoaDons = lstChiTietHoaDon;
+                        hoaDon.Diem = 0;
+                        string tongTien = TempData["TongTien"] as string;
+                        hoaDon.TongTien = Convert.ToInt32(tongTien.Replace(",", ""));
+                        HttpResponseMessage response = _httpClient.PostAsJsonAsync("HoaDon", hoaDon).Result;
+                        if (response.IsSuccessStatusCode)
+                        {
+                            Response.Cookies.Delete("Cart");
+                            return RedirectToAction("CheckOutSuccess");
+                        }
+                        else return BadRequest();
+                    }
+                    else
+                    {
+                        //Thanh toan khong thanh cong. Ma loi: vnp_ResponseCode
+                        return BadRequest();
+                    }
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            else return BadRequest();
+        }
+        [HttpGet]
+        public IActionResult CheckOutSuccess()
+        {
+            return View();
+        }
+        [HttpGet]
+        public async Task<JsonResult> UseVoucher(string ma)
+        {
+            HttpResponseMessage response = await _httpClient.GetAsync(_httpClient.BaseAddress + "Voucher/GetVoucherByMa?ma=" + ma);
+            if (response.IsSuccessStatusCode)
+            {
+                var voucher = JsonConvert.DeserializeObject<Voucher>(await response.Content.ReadAsStringAsync());
+                return Json(new {HinhThuc=voucher.HinhThucGiamGia,GiaTri=voucher.GiaTri});
+            }
+            else return Json(response);
         }
         #endregion
 
@@ -727,8 +887,6 @@ namespace AppView.Controllers
         {
             return View();
         }
-        //https://localhost:5001/
-        //https://localhost:7095/api
         #endregion
     }
 }

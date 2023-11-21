@@ -15,12 +15,16 @@ namespace AppData.ViewModels.BanOffline
         public DateTime? NgayThanhToan { get; set; }
         public string NhanVien { get; set; }
         public string KhachHang { get; set; }
-        public string TrangThai { get; set; }
-        public int TichDiemSD { get; set; }
-        public int TichDIemHD { get; set; }
+        public int TrangThai { get; set; }
+        public string PTTT { get; set; }
+        //public int TichDiemSD { get; set; }
+        //public int TichDiemHD { get; set; }
+        public int? TruTieuDiem { get; set; }
         public int? ThueVAT { get; set; }
+        public string GhiChu { get; set; }
         public int? TienKhachTra { get; set; }
         public List<HoaDonChiTietViewModel> listsp { get; set; }
+        public List<LichSuTichDiem> lstlstd { get; set; }
         public Voucher voucher { get; set; }
     }
 }

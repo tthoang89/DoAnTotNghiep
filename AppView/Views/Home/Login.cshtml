@@ -9,6 +9,12 @@
         <h3 style="text-align:center;margin-bottom:10px"><strong>LOGIN</strong></h3>
         <div class="tab-content">
             <div>
+                @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+                {
+                    <div class="alert alert-danger" role="alert">
+                        @ViewBag.ErrorMessage
+                    </div>
+                }
                 <form method="post">
                     <!-- Email input -->
                     <div class="form-outline mb-4">

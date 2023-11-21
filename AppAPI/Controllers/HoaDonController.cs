@@ -94,11 +94,19 @@ namespace AppAPI.Controllers
         {
             return _iHoaDonService.UpdateTrangThaiGiaoHang(idhoadon, trangthai, idnhanvien);
         }
+
         [HttpPut("UpdateHoaDon")]
         public bool UpDateHoaDon(HoaDonThanhToanRequest hoaDon)
         {
             return _iHoaDonService.UpdateHoaDon(hoaDon);
         }
+
+        [HttpPut("UpdateGhichu")]
+        public bool UpdateGhiChuHD(Guid idhd, string ghichu)
+        {
+            return _iHoaDonService.UpdateGhiChuHD(idhd, ghichu);
+        }
+
         [HttpDelete("deleteHoaDon/{id}")]
         public bool Delete(Guid id)
         {

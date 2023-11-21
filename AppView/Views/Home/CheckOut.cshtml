@@ -28,10 +28,10 @@
         <div class="checkout__form">
             <div class="row">
                 <div class="col-lg-8 col-md-6">
-@*                     <h6 class="coupon__code">
-                        <span class="icon_tag_alt"></span>Có phiếu giảm giá?<a href="#">
-                            Bấm vào đây
-                        </a> ể nhập mã của bạn
+                    @*                     <h6 class="coupon__code">
+                    <span class="icon_tag_alt"></span>Có phiếu giảm giá?<a href="#">
+                    Bấm vào đây
+                    </a> ể nhập mã của bạn
                     </h6> *@
                     <h6 class="checkout__title">Chi tiết thanh toán</h6>
                     <div class="row">
@@ -74,7 +74,7 @@
                                 <label for="huyen">Huyện</label>
                                 <select class="custom-select d-block w-100" id="district" required="">
                                 </select>
-                                <div class="invalid-feedback"> VTên hợp lệ là bắt buộc. </div>
+                                <div class="invalid-feedback"> Tên hợp lệ là bắt buộc. </div>
                             </div>
                         </div>
                     </div>
@@ -101,43 +101,58 @@
                                 <label for="pttt">Phương thức thanh toán</label>
                                 <div style="box-shadow:0 0 0 1px #d9d9d9;border-radius:0.25rem">
                                     <div style="display:flex!important;align-items:center;padding:0.8rem">
-                                        <input type="radio" name="pttt" value="thanhtoan" style="margin-bottom: 0px;width:20px;" />
+                                        <input type="radio" name="pttt" value="dathang" style="margin-bottom: 0px;width:20px;" />
                                         <img style="padding-left:0.75rem" src="https://hstatic.net/0/0/global/design/seller/image/payment/cod.svg?v=6">
                                         <p style="margin-bottom: 0px;padding-left: 10px;">Thanh toán khi giao hàng (COD)</p>
                                     </div>
                                     <div style="border-top: 1px solid #d9d9d9;display:flex!important;align-items:center;padding:0.8rem">
-                                        <input type="radio" name="pttt" value="dathang" style="margin-bottom: 0px;width:20px" />
+                                        <input type="radio" name="pttt" value="thanhtoan" style="margin-bottom: 0px;width:20px" />
                                         <div style="width:40px;height:40px;margin-left:0.75rem;border:1px solid #d9d9d9;border-radius:0.25rem">
-                                            <img style="width:30px;height:30px;margin:5px"src="/img/icon/vnpay.png">
-                                        </div>                                      
+                                            <img style="width:30px;height:30px;margin:5px" src="/img/icon/vnpay.png">
+                                        </div>
                                         <p style="margin-bottom: 0px;padding-left: 10px;">Chuyển khoản qua VNPay</p>
                                     </div>
                                 </div>
                             </div>
-                        </div>                                            
+                        </div>
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-6">
+                    <div class="cart__discount" style="margin-bottom:20px!important">
+                        <h6>Hình thức giảm giá</h6>
+                        <div style="position:relative;margin-bottom:5px">
+                            <input type="text" id="voucher" placeholder="Nhập mã giảm giá" style="font-size:14px;color:#b7b7b7;height: 50px;width: 100%;border: 1px solid #e1e1e1;padding-left: 20px;">
+                            <button onclick="usevoucher()" style="font-size: 14px;color: #ffffff;font-weight: 700;letter-spacing: 2px;text-transform: uppercase;background: #111111;padding: 0 30px;border: none;position: absolute;right: 0;top: 0;height: 100%;">
+                                Áp dụng
+                            </button>
+                        </div>
+                        <div style="position:relative">
+                            <input type="text" placeholder="Nhập số điểm" style="font-size:14px;color:#b7b7b7;height: 50px;width: 100%;border: 1px solid #e1e1e1;padding-left: 20px;">
+                            <button type="submit" style="font-size: 14px;color: #ffffff;font-weight: 700;letter-spacing: 2px;text-transform: uppercase;background: #111111;padding: 0 30px;border: none;position: absolute;right: 0;top: 0;height: 100%;">Áp dụng</button>
+                        </div>
+                        <p>Bạn hiện tại có: 12 điểm</p>
+                    </div>
                     <div class="checkout__order">
                         <h4 class="order__title">Đơn hàng của bạn</h4>
                         @* <div class="checkout__order__products">Product <span>Total</span></div>
                         <ul class="checkout__total__products">
-                            <li>01. Vanilla salted caramel <span>$ 300.0</span></li>
-                            <li>02. German chocolate <span>$ 170.0</span></li>
-                            <li>03. Sweet autumn <span>$ 170.0</span></li>
-                            <li>04. Cluten free mini dozen <span>$ 110.0</span></li>
+                        <li>01. Vanilla salted caramel <span>$ 300.0</span></li>
+                        <li>02. German chocolate <span>$ 170.0</span></li>
+                        <li>03. Sweet autumn <span>$ 170.0</span></li>
+                        <li>04. Cluten free mini dozen <span>$ 110.0</span></li>
                         </ul> *@
                         <ul class="checkout__order__products">
                             <li>Subtotal <span>@tongtien VNĐ</span></li>
-                            <li>Fee <span id="fee">@tienship.ToString("n0") VNĐ</span></li>
+                            <li id="moneyvoucher" hidden></li>
+                            <li>Fee <span id="fee">@tienship VNĐ</span></li>
                             <li>Total <span id="total">@tongtien VNĐ</span></li>
                         </ul>
                         <button onclick="createhoadon()" class="site-btn">
-                            ĐẶT HÀNG
+                            XÁC NHẬN
                         </button>
-                        <a class="site-btn" asp-action="Pay" asp-controller="Home" style="text-align:center">
-                            THANH TOÁN
-                        </a>
+                        @*                         <a class="site-btn" asp-action="Pay" asp-controller="Home" style="text-align:center">
+                        THANH TOÁN
+                        </a> *@
                     </div>
                 </div>
             </div>
@@ -147,6 +162,7 @@
 <script src="~/js/jquery-3.3.1.min.js"></script>
 <script type="text/javascript">
     var tienShip = 0;
+    var tienHang = '@tongtien';
     var tinh = "";
     var huyen = "";
     var xa = "";
@@ -227,8 +243,6 @@
                     $('#dfward').remove();
                     tienShip = data.data.total;
                     document.getElementById("fee").innerHTML = data.data.total + " VNĐ";
-                    //document.getElementById("total").innerHTML = data.data.total + tongtien + " VNĐ";
-                    // document.getElementById("diachi").value = strProvince + ", " + strDistrict + ", " + strProvince;
                 },
                 error: function (reponse) {
                     alert(reponse.responseText);
@@ -236,36 +250,79 @@
             });
         });
     });
-    function createhoadon() {
+    function createhoadon() 
+    {
         var ten = $("#name").val();
         var email = $("#email").val();
         var sdt = $("#phone").val();
         var diaChi = $("#address").val();
         var objHoaDon = { Ten: ten, Email: email, SDT: sdt, DiaChi: diaChi + ", " + xa + ", " + huyen + ", " + tinh, TienShip: tienShip };
+        $('.invalid-feedback').text('');
+        $('.is-invalid').removeClass('is-invalid');
+        if (ten.trim().length == 0) {
+            $('#name').addClass('is-invalid');
+            $('#name').next('.invalid-feedback').text('Không để trống tên');
+            hasError = true;
+        }
+        var phoneNumberRegex = /^\d{10}$/;
+        if (sdt.trim().length == 0) {
+            $('#phone').addClass('is-invalid');
+            $('#phone').next('.invalid-feedback').text('Không để trống sdt');
+            hasError = true;
+        }
+        else if (!phoneNumberRegex.test(sdt)) {
+            $('#phone').addClass('is-invalid');
+            $('#phone').next('.invalid-feedback').text('Số điện thoại không hợp lệ');
+            hasError = true;
+        }
+        var emailRegex = /^[a-zA-Z0-9._%+-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (email.trim().length == 0) {
+            $('#email').addClass('is-invalid');
+            $('#email').next('.invalid-feedback').text('Không để trống email');
+            hasError = true;
+        }
+        else if (!emailRegex.test(email)) {
+            $('#email').addClass('is-invalid');
+            $('#email').next('.invalid-feedback').text('Email không hợp lệ');
+            hasError = true;
+        }
+       
+        var pttt = $('input[name="pttt"]:checked').val();
+        var objHoaDon = { Ten: ten, Email: email, SDT: sdt, DiaChi: diaChi + ", " + xa + ", " + huyen + ", " + tinh, TienShip: tienShip, PhuongThucThanhToan: pttt };
         $.ajax({
             async: false,
             type: 'POST',
-            dataType: 'json',
+            dataType: 'text',
             url: '/Home/Order',
             data: objHoaDon,
             success: function (response) {
-                debugger;
-                Swal.fire(
-                    {
-                        title: response.message,
-                        icon: "success"
-                    }
-                );
+                location.href = response;
             },
-            error: function () {
-                Swal.fire(
-                    {
-                        title: "Error",
-                        icon: "error"
-                    }
-                )
+            error: function (response) {
+                alert("Error");
             }
         });
+    }
+    function usevoucher() {
+        var giamGia = $("#voucher").val();
+        $.ajax({
+            async: true,
+            type: 'GET',
+            dataType: 'json',
+            url: '/Home/UseVoucher',
+            data: {ma:giamGia},
+            success: function (response) {
+                console.log(response);
+                console.log(tienHang);
+                var ipVoucher = document.getElementById("moneyvoucher");
+                ipVoucher.hidden = false;
+                ipVoucher.innerHTML = response.giaTri;
+            },
+            error: function (response) {
+                alert("Error");
+            }
+        });
+        
     }
 </script>
 

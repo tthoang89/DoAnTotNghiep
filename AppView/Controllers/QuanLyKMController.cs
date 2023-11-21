@@ -234,7 +234,7 @@ namespace AppView.Controllers
         {
             
 
-            var response = await _httpClient.PutAsJsonAsync($"https://localhost:7095/api/KhuyenMai/UpdateKM", kmv);
+            var response = await _httpClient.PutAsJsonAsync($"https://localhost:7095/api/KhuyenMai/{kmv.ID}", kmv);
             if (response.IsSuccessStatusCode) return RedirectToAction("GetAllKM");
             return View();
         }

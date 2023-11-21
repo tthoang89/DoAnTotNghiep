@@ -92,10 +92,10 @@
 <div class="modal border-0 rounded-0" id="thanhtoan" tabindex="-1">
     <div class="modal-dialog" id="modalthanhtoan">
         <div class="modal-content" id="modalthanhtoan-content">
-            <div class="modal-header bg-primary">
+           @* <div class="modal-header bg-primary">
                 <h5 class="modal-title fw-700 text-white align-center">THANH TOÁN </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
+            </div>*@
             <div class="modal-body" id="thanhtoanbody">
             </div>
         </div>
@@ -234,7 +234,6 @@
             dataType: 'json',
             contentType: 'application/json',
             success: function(response) {
-                console.log(response);
                 toastr.success('Thêm thành công', "Success Alert", { timeOut: 300 });
                 loadHDCHO(function(){
                      activeTab(1);
@@ -283,7 +282,7 @@
                 if(response.success == true){
                     toastr.success('Thêm thành công', "Success Alert", {timeOut : 300});
                     gethdct(request.IdHoaDon);
-                    loadCTSPByID();
+                    FilterPL();
                 }else{
                     toastr.error('Thêm thất bại', 'Error Alert', { timeOut: 300 });
                 }
@@ -315,25 +314,7 @@
             }
         });
     }
-    //Sửa khách hàng
-    function suaKhachHang(IDKH){{
-        var IDHD = $("#IDHD").val();
-        $.ajax({
-            url: "/BanHangTaiQuay/UpdateKHinHD",
-            type: 'GET',
-            data:{
-                idkh:IDKH,
-                idhd:IDHD,
-            },
-            dataType: "json",
-            success: function(response) {
-                gethdct(IDHD);
-            },
-            error:function(response){
-                toastr.error('Sửa thất bại', "Error Alert", { timeOut: 300 });
-            },
-        })
-    }}
+    
     //Mở chi tiết sản phẩm
     function showSPDetail(idsp){
         $("#sanphambody").load("/BanHangTaiQuay/ShowSPDetail/"+idsp);
@@ -342,30 +323,35 @@
 
     //Thanh toán chuyển trạng thái
     function thanhToan(id){
-        var pttt = $('input[name="pttt"]:checked').val();
-        var ttien = $("#khachCanTra").text();
-        var thuevat =$("#thueVAT").val();
-        var tichdiemhd = $("#diemtichhd").text();
-        var tichdiemsd = parseInt($('#diemKHSD').val());
-        var request={Id: id, PTTT: pttt,IdNhanVien:'@loginInfor.Id', IdVoucher: null,TongTien: ttien, ThueVAT: thuevat, DiemTichHD: tichdiemhd, DiemSD: tichdiemsd};
-        $.ajax({
-              url: "/BanHangTaiQuay/ThanhToan",
-              async: false,
-              type: 'POST',
-              dataType: 'json',
-              data:request,
-              success: function(response) {
-                  $("#thanhtoan").modal("hide");
-                  $("#partialGioHang").empty();
-                  toastr.success('Thanh toán thành công', "Success Alert", {timeOut : 300});
-                  loadHDCHO(function(){
-                     activeTab(0);
-                  });
-              },
-              error: function(response) {
-                  toastr.error('Thanh toán thất bại', 'Error Alert', { timeOut: 300 });
-              }
-        });
+        var ttien = parseInt($("#khachCanTra").text().replace(/,/g, ""));
+        if(ttien ===0){
+            $("#notification").text('Chưa có sản phẩm để thanh toán');
+        }else{
+            var pttt = $('input[name="pttt"]:checked').val();
+            var thuevat = parseInt($("#thueVAT").text().replace(/,/g, ""));
+            var idvoucher = $("#idvoucher").text();
+            var tichdiemhd = $("#diemtichhd").text();
+            var tichdiemsd = parseInt($('#diemKHSD').val());
+            var request= {Id: id, PTTT: pttt,IdNhanVien:'@loginInfor.Id', IdVoucher: idvoucher,TongTien: ttien, ThueVAT: thuevat, DiemTichHD: tichdiemhd, DiemSD: tichdiemsd};
+            $.ajax({
+                    url: "/BanHangTaiQuay/ThanhToan",
+                    async: false,
+                    type: 'POST',
+                    dataType: 'json',
+                    data:request,
+                    success: function(response) {
+                        $("#thanhtoan").modal("hide");
+                        $("#partialGioHang").empty();
+                        toastr.success('Thanh toán thành công', "Success Alert", {timeOut : 300});
+                        loadHDCHO(function(){
+                            activeTab(0);
+                        });
+                    },
+                    error: function(response) {
+                        toastr.error('Thanh toán thất bại', 'Error Alert', { timeOut: 300 });
+                    }
+            });
+        }
     }
     //Chuyển trang quản lý hóa đơn
     $("#hoadon-tab").on("click", function() {
@@ -377,5 +363,5 @@
            },
         })
     });
-
+    
 </script>

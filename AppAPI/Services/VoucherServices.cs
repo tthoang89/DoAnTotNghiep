@@ -64,7 +64,7 @@ namespace AppAPI.Services
             var voucher= _allRepository.GetAll().FirstOrDefault(x => x.ID == id);
             if (voucher != null)
             {
-                voucher.ID = voucherview.Id;
+              
                 voucher.Ten = voucherview.Ten;
                 voucher.HinhThucGiamGia = voucherview.HinhThucGiamGia;
                 voucher.SoTienCan = voucherview.SoTienCan;
@@ -84,6 +84,10 @@ namespace AppAPI.Services
             {
                 return false;
             }
+        }
+        public Voucher GetVoucherByMa(string ma)
+        {
+            return _allRepository.GetAll().FirstOrDefault(x => x.Ten == ma);
         }
     }
 }

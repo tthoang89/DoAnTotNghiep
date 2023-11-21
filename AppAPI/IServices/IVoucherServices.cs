@@ -10,5 +10,7 @@ namespace AppAPI.IServices
         public bool Delete(Guid Id);
         public Voucher GetById(Guid Id);
         public List<Voucher> GetAll();
+        public Voucher GetVoucherByMa(string ma);
+
     }
 }

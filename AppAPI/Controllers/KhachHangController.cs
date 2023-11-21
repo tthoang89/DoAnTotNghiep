@@ -137,7 +137,7 @@ namespace AppAPI.Controllers
                 kh.DiaChi = khv.DiaChi;
                 kh.SDT = khv.SDT;
                 kh.TrangThai = khv.TrangThai;
-                kh.DiemTich = 0;
+                
                 _dbcontext.KhachHangs.Update(kh);
                 _dbcontext.SaveChanges();
                 return true;

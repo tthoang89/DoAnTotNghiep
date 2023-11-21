@@ -156,7 +156,7 @@ namespace AppAPI.Services
         public async Task<ChiTietSanPhamViewModel> GetChiTietSanPhamByID(Guid id)
         {
             var temp = _context.ChiTietSanPhams.First(x => x.ID == id);
-            ChiTietSanPhamViewModel chiTietSanPham = new ChiTietSanPhamViewModel() { ID = temp.ID, Ten = _context.SanPhams.First(x => x.ID == temp.IDSanPham).Ten, SoLuong = temp.SoLuong, GiaBan = temp.IDKhuyenMai == null ? temp.GiaBan : ((100 - _context.KhuyenMais.First(x => x.ID == temp.IDKhuyenMai).GiaTri) * temp.GiaBan) / 100, GiaGoc = temp.GiaBan, TrangThai = temp.TrangThai, Anh = _context.Anhs.First(x => x.IDMauSac == temp.IDMauSac && x.IDSanPham == temp.IDSanPham).DuongDan };
+            ChiTietSanPhamViewModel chiTietSanPham = new ChiTietSanPhamViewModel() { ID = temp.ID, Ten = _context.SanPhams.First(x => x.ID == temp.IDSanPham).Ten, SoLuong = temp.SoLuong, GiaBan = temp.IDKhuyenMai == null ? temp.GiaBan : ((100 - _context.KhuyenMais.First(x => x.ID == temp.IDKhuyenMai).GiaTri) * temp.GiaBan) / 100, GiaGoc = temp.GiaBan, TrangThai = temp.TrangThai, Anh = _context.Anhs.First(x => x.IDMauSac == temp.IDMauSac && x.IDSanPham == temp.IDSanPham).DuongDan, MauSac = _context.MauSacs.First(x => x.ID == temp.IDMauSac).Ten, KichCo = _context.KichCos.First(x => x.ID == temp.IDKichCo).Ten };
             return chiTietSanPham;
         }
         public async Task<ChiTietSanPhamViewModelHome> GetAllChiTietSanPhamHome(Guid idSanPham)
@@ -208,7 +208,7 @@ namespace AppAPI.Services
             var sptt = await (from sp in _context.SanPhams.Where(p => p.IDLoaiSP == sanPham.IDLoaiSP)
                                join ctsp in _context.ChiTietSanPhams.Where(p=>p.TrangThai == 1) on sp.ID equals ctsp.IDSanPham
                                join ms in _context.MauSacs on ctsp.IDMauSac equals ms.ID
-                               join anh in _context.Anhs on ms.ID equals anh.IDMauSac
+                               join anh in _context.Anhs on sp.ID equals anh.IDSanPham
                                select new SanPhamTuongTuViewModel()
                                {
                                    IDSP = sp.ID,

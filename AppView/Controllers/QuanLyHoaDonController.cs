@@ -42,13 +42,6 @@ namespace AppView.Controllers
         //Lọc HD 
         public async Task<IActionResult> LocHD(FilterHD filter)
         {
-            //(hd.TrangThaiGiaoHang == 2 ? "Chờ bàn giao" :
-            //                            (hd.TrangThaiGiaoHang == 3 ? "Đang giao" :
-            //                            (hd.TrangThaiGiaoHang == 4 ? "Đang hoàn hàng" :
-            //                            (hd.TrangThaiGiaoHang == 5 ? "Hoàn hàng thành công" :
-            //                            (hd.TrangThaiGiaoHang == 6 ? "Thành công" :
-            //                            (hd.TrangThaiGiaoHang == 7 ? "Đơn hủy" :
-            //                            (hd.TrangThaiGiaoHang == 8 ? "Đơn hàng thất lạc" : "Khác"))))))),
             var listhdql = await _httpClient.GetFromJsonAsync<List<HoaDonQL>>("HoaDon/GetAllHDQly");
             listhdql = listhdql.OrderByDescending(c => c.ThoiGian).ToList();
             //Lọc loại hd

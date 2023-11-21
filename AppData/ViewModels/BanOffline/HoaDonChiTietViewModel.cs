@@ -9,8 +9,8 @@ namespace AppData.ViewModels.BanOffline
     public class HoaDonChiTietViewModel
     {
         public Guid Id { get; set; }
-        public Guid IdHoaDon { get; set; }
-        public Guid IDChiTietSanPham { get; set; }
+        public Guid? IdHoaDon { get; set; }
+        public Guid? IDChiTietSanPham { get; set; }
         public Guid? IdSP { get; set; }
         public string? Ten { get; set; }
         public string? PhanLoai { get; set; }

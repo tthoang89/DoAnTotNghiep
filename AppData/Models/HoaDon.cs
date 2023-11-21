@@ -20,13 +20,16 @@
         //Các trạng thái của đơn hàng
         /*
          * 1-đơn nháp
-         * 2-Chờ bàn giao 
-         * 3-Đã bàn giao-Đang giao
+         * 2-Chờ xác nhận
+         * 3-Đang giao hàng//ko đc hủy
+         * 6-thành công //nhận hàng thành công// đc đánh giá // đc hủy nếu ngày thanh toán < 3
+         --Đổi trả
+         * 9-chờ xác nhận đổi trả/hoàn hàng
          * 4-Đã bàn giao-Đang hoàn hàng
          * 5-Hoàn hàng thành công
-         * 6-Giao hàng thành công
+         --Hủy khi chưa giao
          * 7-Đơn hủy
-         * 8-Hàng thất lạc- hư hỏng
+         * 8-Chờ xác nhận hủy
          */
         public Guid? IDNhanVien { get; set; }
         public Guid? IDVoucher { get; set; }
