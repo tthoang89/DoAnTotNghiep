@@ -173,10 +173,6 @@ namespace AppAPI.Services
                                          TiLeTieuDiem = l.TiLeTieuDiem,
                                          TrangThaiDanhGia = d.TrangThai
                                       }).ToListAsync();
-                
-                
-               
-                
                 return lstDonMuaCT.Where(p=>p.ID == idHoaDon).ToList();
             }
             catch

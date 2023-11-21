@@ -3,14 +3,23 @@
 @{
     ViewData["Title"] = "ThongKe";
     Layout = "~/Views/Shared/_LayoutForAdmin.cshtml";
+    // ban online
     ThongKeSLSPDaBan thongkeslspdaban = ViewBag.ThongKeSLSPDaBan;
    ThongKeDTTrongThang thongkedttrongthang = ViewBag.ThongKeDTTrongThang;
     int thongkeslctsp = ViewBag.ThongKeSLCTSP;
     ThongKeSDonTrongThang thongkesodontrongthang = ViewBag.ThongKeSDonTrongThang;
-   
-    List<ThongKeKHMuaNhieu> thongkekhmuanhieu = ViewBag.ThongKeKHMuaNhieu;
-    List<ThongKeDoanhThu> thongkedoanhthutheongay = ViewBag.ThongKeDoanhThuTheoNgay;
+     List<ThongKeDoanhThu> thongkedoanhthutheongay = ViewBag.ThongKeDoanhThuTheoNgay;
     List<ThongKeDoanhThu> thongkedoanhthutheothang = ViewBag.ThongKeDoanhThuTheoThang;
+    // ban offline
+
+    ThongKeSLSPDaBan thongkeslspdabanOffline = ViewBag.ThongKeSLSPDaBanOffline;
+   ThongKeDTTrongThang thongkedttrongthangOffline = ViewBag.ThongKeDTTrongThangOffline;
+    ThongKeSDonTrongThang thongkesodontrongthangOffline = ViewBag.ThongKeSDonTrongThangOffline;
+    List<ThongKeDoanhThu> thongkedoanhthutheongayOffline = ViewBag.ThongKeDoanhThuTheoNgayOffline;
+    List<ThongKeDoanhThu> thongkedoanhthutheothangOffline = ViewBag.ThongKeDoanhThuTheoThangOffline;
+
+    // ca online va offline 
+    List<ThongKeKHMuaNhieu> thongkekhmuanhieu = ViewBag.ThongKeKHMuaNhieu;
     List<ThongKeMSSanPhamTheoSoLuong> thongkesp = ViewBag.ThongKeMSSanPhamTheoSoLuong;
 
     int stt = 1;
@@ -56,7 +65,7 @@
  
 <div class="row">
     <div class="main-header">
-        <h4>Dashboard</h4>
+        <h4>Thống Kê</h4>
     </div>
 </div>
 <!-- 4-blocks row start -->
@@ -79,7 +88,7 @@
     </div>
     <div class="col-lg-3 col-md-6">
         <div class="card dashboard-product">
-            <span>Số Đơn Tháng Này</span>
+            <span>Số Đơn Bán Online  Tháng Này</span>
             @if(thongkesodontrongthang!=null){
                  <h2 class="dashboard-total-products">@thongkesodontrongthang.SoDon</h2>
             }
@@ -95,7 +104,7 @@
     </div>
     <div class="col-lg-3 col-md-6">
         <div class="card dashboard-product">
-            <span>Số Lượng Sản Phẩm Đã Bán</span>
+            <span>Số Lượng Sản Phẩm Đã Bán Online</span>
             @if(thongkeslspdaban!=null){
                 <h2 class="dashboard-total-products"><span>@thongkeslspdaban.SoLuong</span></h2>
             }
@@ -110,11 +119,78 @@
     </div>
     <div class="col-lg-3 col-md-6">
         <div class="card dashboard-product">
-            <span>Doanh Thu Tháng Này</span>
+            <span>Doanh Thu Online Tháng Này</span>
             @if(thongkedttrongthang!=null){
                  <h2 class="dashboard-total-products"><span>@thongkedttrongthang.TongTien.ToString("n0") VND</span></h2>
             }
             else if(thongkedttrongthang==null){
+                 <h2 class="dashboard-total-products"><span> 0 VND</span></h2>
+            }
+           
+            <span class="label label-danger">Sales</span>Reviews
+            <div class="side-box">
+                <i class="ti-rocket text-danger-color"></i>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 4-blocks row end -->
+<!-- 4-blocks row start -->
+<div class="row dashboard-header">
+    <div class="col-lg-3 col-md-6">
+        <div class="card dashboard-product">
+            <span>Số Lượng Sản Phẩm Trong Kho</span>
+            @if(thongkeslctsp!=null){
+                <h2 class="dashboard-total-products">@thongkeslctsp</h2>
+            }
+            else{
+                <h2 class="dashboard-total-products">0</h2>
+            }
+            
+            <span class="label label-warning">Sales</span>Arriving Today
+            <div class="side-box">
+                <i class="ti-signal text-warning-color"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="card dashboard-product">
+            <span>Số Đơn Bán Offline Tháng Này</span>
+            @if(thongkesodontrongthangOffline!=null){
+                 <h2 class="dashboard-total-products">@thongkesodontrongthangOffline.SoDon</h2>
+            }
+             else if(thongkesodontrongthangOffline== null) {
+                <h2 class="dashboard-total-products">0</h2>
+            }
+           
+            <span class="label label-primary">Views</span>View Today
+            <div class="side-box ">
+                <i class="ti-gift text-primary-color"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="card dashboard-product">
+            <span>Số Lượng Sản Phẩm Đã Bán Offline</span>
+            @if(thongkeslspdabanOffline!=null){
+                <h2 class="dashboard-total-products"><span>@thongkeslspdabanOffline.SoLuong</span></h2>
+            }
+            else if(thongkeslspdabanOffline==null){
+                 <h2 class="dashboard-total-products"><span>0</span></h2>
+            }
+            <span class="label label-success">Sales</span>Reviews
+            <div class="side-box">
+                <i class="ti-direction-alt text-success-color"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="card dashboard-product">
+            <span>Doanh Thu Offline Tháng Này</span>
+            @if(thongkedttrongthangOffline!=null){
+                 <h2 class="dashboard-total-products"><span>@thongkedttrongthangOffline.TongTien.ToString("n0") VND</span></h2>
+            }
+            else if(thongkedttrongthangOffline==null){
                  <h2 class="dashboard-total-products"><span> 0 VND</span></h2>
             }
            
@@ -131,7 +207,7 @@
     <div class="col-lg-6">
         <div class="card">
             <div class="card-header">
-                <h5 class="card-header-text">Doanh Thu Theo Ngày</h5>
+                <h5 class="card-header-text">Doanh Thu Theo Ngày Bán Online</h5>
             </div>
             <div class="card-block">
                 <canvas id="columnChart" class="ct-chart-line " style="min-width: 250px; height: 330px; margin: 0 auto"></canvas>
@@ -141,10 +217,35 @@
     <div class="col-lg-6">
          <div class="card">
             <div class="card-header">
-                <h5 class="card-header-text">Doanh Thu Trong Các Tháng Gần Đây</h5>
+                <h5 class="card-header-text">Doanh Thu Online Trong Các Tháng Gần Đây</h5>
             </div>
             <div class="card-block">
                 <canvas id="piechart111" class="ct-chart-line "  style="min-width: 250px; height: 330px; margin: 0 auto"></canvas>
+            </div>
+        </div>
+    </div>
+   
+</div>
+<!-- 1-3-block row end -->
+<!-- 1-3-block row start -->
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-header-text">Doanh Thu Theo Ngày Bán Offline</h5>
+            </div>
+            <div class="card-block">
+                <canvas id="columnChartOffline" class="ct-chart-line " style="min-width: 250px; height: 330px; margin: 0 auto"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+         <div class="card">
+            <div class="card-header">
+                <h5 class="card-header-text">Doanh Thu Offline Trong Các Tháng Gần Đây</h5>
+            </div>
+            <div class="card-block">
+                <canvas id="piechart111Offline" class="ct-chart-line "  style="min-width: 250px; height: 330px; margin: 0 auto"></canvas>
             </div>
         </div>
     </div>
@@ -464,6 +565,95 @@
                 label: 'Doanh Thu',
                 data: data1,
                 backgroundColor: barColors1
+               
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Tháng - Tổng Số Đơn'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Doanh Thu'
+                    },
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        }
+        
+    });
+
+
+     let labels3 = [];
+    let data3 = [];
+    const barColors3 = ["red", "green","blue","orange","brown","black","gray"];
+
+    @foreach (var result in thongkedoanhthutheongayOffline)
+    {
+        <text>labels3.push('@result.Ngay-@result.SoHoaDon ');</text>
+        <text>data3.push('@result.DoanhThu');</text>
+    }
+
+    var ctx = document.getElementById('columnChartOffline').getContext('2d');
+    var columnChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels3,
+            datasets: [{
+                label: 'Doanh Thu',
+                data: data3,
+                backgroundColor: barColors3
+               
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Ngày -Tổng Số Đơn'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Doanh Thu'
+                    },
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        }
+    });
+
+
+    let labels4 = [];
+    let data4 = [];
+    const barColors4 = ["red", "green","blue","orange","brown","black","gray"];
+
+    @foreach (var result in thongkedoanhthutheothangOffline)
+    {
+        <text>labels4.push('@result.Ngay-@result.SoHoaDon');</text>
+        <text>data4.push('@result.DoanhThu');</text>
+    }
+
+    var ctx1 = document.getElementById('piechart111Offline').getContext('2d');
+    var columnChart1 = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+            labels: labels4,
+            datasets: [{
+                label: 'Doanh Thu',
+                data: data4,
+                backgroundColor: barColors4
                
             }]
         },
