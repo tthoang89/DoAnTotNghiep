@@ -301,25 +301,25 @@ namespace AppAPI.Services
         //Nhinh
         public List<HoaDonQL> GetAllHDQly()
         {
-            var result = (from hd in reposHoaDon.GetAll()
-                          join lstd in reposLichSuTichDiem.GetAll() on hd.ID equals lstd?.IDHoaDon into lstdGroup
+            var result = (from hd in context.HoaDons
+                          join lstd in context.LichSuTichDiems on hd.ID equals lstd.IDHoaDon into lstdGroup
                           from lstd in lstdGroup.DefaultIfEmpty()
-                          join kh in reposKhachHang.GetAll() on lstd?.IDKhachHang equals kh?.IDKhachHang into khGroup
+                          join kh in context.KhachHangs on lstd.IDKhachHang equals kh.IDKhachHang into khGroup
                           from kh in khGroup.DefaultIfEmpty()
                           where hd.TrangThaiGiaoHang != 1
                           select new HoaDonQL()
                           {
                               Id = hd.ID,
                               MaHD = hd.MaHD,
-                              KhachHang = kh?.Ten == null ? "Khách lẻ" : kh.Ten,
-                              ThoiGian = hd.NgayThanhToan,
+                              KhachHang = kh != null ? kh.Ten : "Khách lẻ",
+                              ThoiGian = hd.NgayTao,
                               KhachTra = hd.TongTien,
                               LoaiHD = hd.LoaiHD,
                               TrangThai = hd.TrangThaiGiaoHang,
-                          }).ToList();
+                          }).Distinct().ToList();
+
             return result;
         }
-
         public List<HoaDon> GetAllHoaDon()
         {
             return reposHoaDon.GetAll();
@@ -328,6 +328,7 @@ namespace AppAPI.Services
         {
             var result = (from hd in context.HoaDons
                           join nv in context.NhanViens on hd.IDNhanVien equals nv.ID
+                          into nvGroup from nv in nvGroup.DefaultIfEmpty()
                           join lstd in context.LichSuTichDiems on hd.ID equals lstd.IDHoaDon into lstdGroup
                           from lstd in lstdGroup.DefaultIfEmpty()
                           join kh in context.KhachHangs on lstd.IDKhachHang equals kh.IDKhachHang into khGroup
@@ -338,10 +339,16 @@ namespace AppAPI.Services
                               Id = hd.ID,
                               MaHD = hd.MaHD,
                               NgayTao = hd.NgayTao,
-                              NgayThanhToan = hd.NgayThanhToan,
+                              NgayThanhToan = hd.NgayThanhToan != null ? hd.NgayThanhToan : null,
                               PTTT = hd.PhuongThucThanhToan,
-                              NhanVien = nv.Ten,
+                              NhanVien = nv != null ? nv.Ten : null,
+                              LoaiHD = hd.LoaiHD,
                               KhachHang = kh == null ? "Khách lẻ" : kh.Ten,
+                              NguoiNhan = hd.TenNguoiNhan != null ? hd.TenNguoiNhan : null,
+                              DiaChi = hd.DiaChi != null ? hd.DiaChi : null,
+                              SĐT = hd.SDT != null ? hd.SDT : null,
+                              Email = hd.Email != null ? hd.Email : null,
+                              TienShip = hd.TienShip != null ? hd.TienShip : null,
                               TrangThai = hd.TrangThaiGiaoHang,
                               ThueVAT = hd.ThueVAT,
                               TienKhachTra = hd.TongTien,

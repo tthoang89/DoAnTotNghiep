@@ -65,15 +65,13 @@ namespace AppView.Controllers
                 .Where(c => c.Ten.ToLower().Contains(keyword.ToLower()))
                 .Distinct()
                 .ToList();
-
-            var result = distinctResult.Take(3).ToList();
-
-            if (result.Count < 3)
+           var result = new List<SanPhamBanHang>();
+            if (distinctResult.Count < 3)
             {
                 var additionalItems = distinctResult.Take(result.Count).ToList();
                 result.AddRange(additionalItems);
             }
-
+            result = distinctResult.Take(3).ToList();
             return Json(new { data = result });
         }
         // Lấy Load CTSP trong SP
@@ -306,7 +304,17 @@ namespace AppView.Controllers
         public async Task<IActionResult> SearchKH(string keyword)
         {
             var lstkh = await _httpClient.GetFromJsonAsync<List<KhachHang>>("KhachHang");
-            var result = lstkh.Where(c => c.Ten.ToLower().Contains(keyword.ToLower()) || c.SDT.Contains(keyword)).ToList().Take(4);
+            var distinctResult = lstkh
+                                .Where(c => c.Ten.ToLower().Contains(keyword.ToLower()) || c.SDT.Contains(keyword))
+                                .Distinct()
+                                .ToList();
+            var result = new List<KhachHang>();
+            if (distinctResult.Count < 3)
+            {
+                var additionalItems = distinctResult.Take(result.Count).ToList();
+                result.AddRange(additionalItems);
+            }
+            result = distinctResult.Take(3).ToList();
             return Json(new { data = result });
         }
         //Check voucher
@@ -322,7 +330,7 @@ namespace AppView.Controllers
                 return Json(new { success = false, message = "Voucher không hợp lệ" });
             }else if(vc.SoTienCan > ttien)
             {
-                return Json(new { success = false, message = "Hóa đơn của bạn chưa đạt giá trị tối thiểu để áp dụng" });
+                return Json(new { success = false, message = "Đặt đơn "+vc.SoTienCan.ToString("no")+" để áp dụng" });
             }else if( vc.HinhThucGiamGia == 0)
             {
                 return Json(new { success = true, idvoucher = vc.ID, giatri = vc.GiaTri, message="Bạn được giảm "+ vc.GiaTri.ToString("n0") +" VND" });
