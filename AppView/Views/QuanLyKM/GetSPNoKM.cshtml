@@ -52,6 +52,9 @@
                 STT
             </th>
             <th>
+                Mã Sản Phẩm
+            </th>
+            <th>
                 Tên Sản Phẩm
             </th>
             <th>
@@ -94,6 +97,9 @@
                     <strong style="color:black">@stt</strong>
                 </td>
                 <td>
+                    <strong style="color:black">@item.MaSP</strong>
+                </td>
+                <td>
                     <strong style="color:black">@item.Ten</strong>
                 </td>
                 <td>
@@ -107,7 +113,7 @@
                             string extension = System.IO.Path.GetExtension(item.TenAnh);
                             if (imageExtensions.Contains(extension.Trim()))
                             {
-                                <img class="img-fluid w-100" src="/img/product/@item.TenAnh" />
+                                <img class="img-fluid w-100" src="/img/product/@item.TenAnh" style="width:100px;height:250px" />
                             }
                             else
                             {

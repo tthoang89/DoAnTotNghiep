@@ -22,6 +22,9 @@
                 STT
             </th>
             <th>
+                Mã CTSP
+            </th>
+            <th>
                 Ảnh
             </th>
             <th>
@@ -61,7 +64,9 @@
                 <td>
                     @stt
                 </td>
-
+                <td>
+                    <strong style="color:black">@item.MaCTSP</strong>
+                </td>
                 
                 <td>
                     @{
@@ -71,7 +76,7 @@
                             string extension = System.IO.Path.GetExtension(item.TenAnh);
                             if (imageExtensions.Contains(extension.Trim()))
                             {
-                                <img class="img-fluid w-100" src="/img/product/@item.TenAnh" />
+                                <img class="img-fluid w-100" src="/img/product/@item.TenAnh" style="width:100px;height:250px" />
                             }
                             else
                             {

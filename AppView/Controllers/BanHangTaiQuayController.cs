@@ -49,6 +49,31 @@ namespace AppView.Controllers
             var sP = await _httpClient.GetFromJsonAsync<ChiTietSanPhamBanHang>($"SanPham/getChiTietSPBHById/{idsp}");
             return PartialView("_SanPhamDetail", sP);
         }
+        //Hiển thị lọc
+        public async Task<IActionResult> ShowFilterSP()
+        {
+            var lsp = await _httpClient.GetFromJsonAsync<List<LoaiSP>>($"LoaiSP/getAll");
+            ViewData["lstLSP"] = lsp;
+            return PartialView("_LocSP");
+        }
+        //Tìm kiếm sản phẩm
+        [HttpGet("/BanHangTaiQuay/Search/{keyword}")]
+        public async Task<IActionResult> Search(string keyword)
+        {
+            var listsanPham = await _httpClient.GetFromJsonAsync<List<SanPhamBanHang>>("SanPham/getAllSPBanHang");
+            var distinctResult = listsanPham
+                .Where(c => c.Ten.ToLower().Contains(keyword.ToLower()))
+                .Distinct()
+                .ToList();
+           var result = new List<SanPhamBanHang>();
+            if (distinctResult.Count < 3)
+            {
+                var additionalItems = distinctResult.Take(result.Count).ToList();
+                result.AddRange(additionalItems);
+            }
+            result = distinctResult.Take(3).ToList();
+            return Json(new { data = result });
+        }
         // Lấy Load CTSP trong SP
         [HttpGet("/BanHangTaiQuay/ShowListCTSP/{idsp}")]
         public async Task<IActionResult> ShowListCTSP(string idsp)
@@ -129,7 +154,7 @@ namespace AppView.Controllers
                 return Json(new { success = false, message = "Thêm số lượng thất bại" });
             }
         }
-        //Load Modal Thanh Toan
+        //Load Modal Thanh Tóan
         [HttpGet("/BanHangTaiQuay/ViewThanhToan/{id}")]
         public async Task<IActionResult> ViewThanhToan(string id)
         {
@@ -274,6 +299,24 @@ namespace AppView.Controllers
                 return Json(new { success = false });
             }
         }
+        //Tìm kiếm khách hàng
+        [HttpGet("/BanHangTaiQuay/SearchKH/{keyword}")]
+        public async Task<IActionResult> SearchKH(string keyword)
+        {
+            var lstkh = await _httpClient.GetFromJsonAsync<List<KhachHang>>("KhachHang");
+            var distinctResult = lstkh
+                                .Where(c => c.Ten.ToLower().Contains(keyword.ToLower()) || c.SDT.Contains(keyword))
+                                .Distinct()
+                                .ToList();
+            var result = new List<KhachHang>();
+            if (distinctResult.Count < 3)
+            {
+                var additionalItems = distinctResult.Take(result.Count).ToList();
+                result.AddRange(additionalItems);
+            }
+            result = distinctResult.Take(3).ToList();
+            return Json(new { data = result });
+        }
         //Check voucher
 
         [HttpGet]
@@ -287,7 +330,7 @@ namespace AppView.Controllers
                 return Json(new { success = false, message = "Voucher không hợp lệ" });
             }else if(vc.SoTienCan > ttien)
             {
-                return Json(new { success = false, message = "Hóa đơn của bạn chưa đạt giá trị tối thiểu để áp dụng" });
+                return Json(new { success = false, message = "Đặt đơn "+vc.SoTienCan.ToString("no")+" để áp dụng" });
             }else if( vc.HinhThucGiamGia == 0)
             {
                 return Json(new { success = true, idvoucher = vc.ID, giatri = vc.GiaTri, message="Bạn được giảm "+ vc.GiaTri.ToString("n0") +" VND" });

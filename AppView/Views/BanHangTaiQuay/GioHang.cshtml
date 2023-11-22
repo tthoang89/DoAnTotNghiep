@@ -28,7 +28,7 @@
             <div class="search-bar">
 
                 <form class="search-form d-flex align-items-center">
-                    <input type="text" name="search" style="outline: none;" id="search" value="@Model.TenKhachHang" placeholder="Tìm kiếm khách hàng theo tên, SĐT">
+                    <input type="text" name="search" style="outline: none;" id="searchkh" value="@Model.TenKhachHang" placeholder="Tìm kiếm khách hàng theo tên, SĐT">
                     <button type="button" title="Thêm mới khách hàng" data-bs-toggle="modal" data-bs-target="#themkhachhang"><i class="fa-regular fa-plus" style="color: #a6a8ab;"></i></button>
                 </form>
                 <div>
@@ -183,29 +183,34 @@
 </div>
 <script>
      $(document).ready(function(){
-         $.ajaxSetup({ cache: false });
-         $('#search').keyup(function(){
-             $('#result').html('');
-             $('#state').val('');
-             var searchField = $('#search').val();
-             var expression = new RegExp(searchField, "i");
-             $.getJSON(`https://localhost:7095/api/KhachHang`, function(data) {
-                 $.each(data, function(key, value){
-                     if (value.sdt.search(expression) != -1 || value.ten.search(expression) != -1)
-                     {
-                         $('#result').append('<li class="list-group-item link-class"><input value="'+value.idKhachHang+'" hidden />'+value.ten+' | <span class="text-muted">'+value.sdt+'</span></li>');
-                     }
-                 });
-             });
-         });
-         $('#result').on('click', 'li', function() {
-             var click_text = $(this).text().split('|');
-             var id = $(this).find("input").val();
-             suaKhachHang(id);
-             $('#search').val($.trim(click_text[0]));
-             $("#result").html('');
-         });
      });
+     //Tìm kiếm khách hàng
+            $("#searchkh").keyup(function() {
+            var keyword = $("#searchkh").val();
+            if (keyword !== '') {
+                $("#result").empty();
+                $.ajax({
+                    type: "GET",
+                    url: "/BanHangTaiQuay/SearchKH/" + keyword,
+                    dataType: 'json',
+                    success: function(response) {
+                        for (let i = 0; i < response.data.length; i++) {
+                            const item = response.data[i];
+                            $("#result").append(`
+                               <li class="list-group-item link-class" onclick="suaKhachHang('${item.idKhachHang}')">
+                                    <input value="${item.idKhachHang}" hidden />${item.ten} | <span class="text-muted">${item.sdt}</span>
+                               </li>
+                            `);
+                        }
+                    },
+                    error: function(response) {
+
+                    }
+                });
+            }else{
+                 $("#result").empty();
+            }
+        });
        //Thêm nhanh khách hàng
          $("#btn-saveKH").on("click",function(){
          var tenkh = $("#inputTenKhachHang").val();
@@ -261,7 +266,7 @@
         })
     }}
     //Xóa khách hàng
-    var khinput = document.getElementById("search");
+    var khinput = document.getElementById("searchkh");
     khinput.addEventListener("blur", function(event) {
         var inputValue = event.target.value;
         var idhd = $("#IDHD").val();
