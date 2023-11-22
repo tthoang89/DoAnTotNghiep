@@ -319,7 +319,16 @@ namespace AppView.Controllers
 
             return View();
         }
-       
+
         #endregion
+
+        //Tam
+        [HttpGet]
+        public async Task<IActionResult> ThongKeAdmin()
+        {
+            var response = await _httpClient.GetAsync("https://localhost:7095/api/ThongKe/ThongKe");
+            return View(JsonConvert.DeserializeObject<ThongKeViewModel>(response.Content.ReadAsStringAsync().Result));
+        }  
+        //End
     }
 }

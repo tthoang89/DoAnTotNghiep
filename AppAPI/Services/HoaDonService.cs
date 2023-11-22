@@ -108,6 +108,12 @@ namespace AppAPI.Services
                     hoaDon1.SDT = hoaDon.SDT;
                     hoaDon1.Email = hoaDon.Email;
                     hoaDon1.NgayTao = DateTime.Now;
+                    //Tam
+                    if(hoaDon.NgayThanhToan != null)
+                    {
+                        hoaDon1.NgayThanhToan = hoaDon.NgayThanhToan;
+                    }
+                    //End
                     hoaDon1.DiaChi = hoaDon.DiaChi;
                     hoaDon1.TienShip = hoaDon.TienShip;
                     hoaDon1.PhuongThucThanhToan = hoaDon.PhuongThucThanhToan;

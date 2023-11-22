@@ -1,4 +1,5 @@
 ﻿using AppData.Models;
+using AppData.ViewModels.ThongKe;
 
 namespace AppAPI.IServices
 {
@@ -8,5 +9,6 @@ namespace AppAPI.IServices
         decimal DoanhThuNgay(DateTime date);
         decimal DoanhThuThang(int month, int year);
         decimal DoanhThuNam(int year);
+        ThongKeViewModel ThongKe();
     }
 }
