@@ -4,6 +4,7 @@ using AppData.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppData.Migrations
 {
     [DbContext(typeof(AssignmentDBContext))]
-    partial class AssignmentDBContextModelSnapshot : ModelSnapshot
+    [Migration("20231117013517_ThemMaSanPham")]
+    partial class ThemMaSanPham
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -373,7 +375,7 @@ namespace AppData.Migrations
                     b.Property<Guid?>("IDKhachHang")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("IDQuyDoiDiem")
+                    b.Property<Guid>("IDQuyDoiDiem")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("TrangThai")
@@ -735,7 +737,9 @@ namespace AppData.Migrations
 
                     b.HasOne("AppData.Models.QuyDoiDiem", "QuyDoiDiem")
                         .WithMany("LichSuTichDiems")
-                        .HasForeignKey("IDQuyDoiDiem");
+                        .HasForeignKey("IDQuyDoiDiem")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("HoaDon");
 

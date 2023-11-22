@@ -67,5 +67,10 @@ namespace AppAPI.Controllers
                 return false;
             }
         }
+        [HttpGet("GetVoucherByMa")]
+        public Voucher GetVoucherByMa(string ma)
+        {
+            return _services.GetVoucherByMa(ma);
+        }
     }
 }

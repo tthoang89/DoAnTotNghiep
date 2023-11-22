@@ -85,5 +85,9 @@ namespace AppAPI.Services
                 return false;
             }
         }
+        public Voucher GetVoucherByMa(string ma)
+        {
+            return _allRepository.GetAll().FirstOrDefault(x => x.Ten == ma);
+        }
     }
 }

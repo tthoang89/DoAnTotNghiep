@@ -2422,11 +2422,11 @@ ol {
 	margin-bottom: 35px;
 }
 
-.cart__discount form {
+.cart__discount{
 	position: relative;
 }
 
-.cart__discount form input {
+.cart__discount input {
 	font-size: 14px;
 	color: #b7b7b7;
 	height: 50px;
@@ -2435,23 +2435,23 @@ ol {
 	padding-left: 20px;
 }
 
-.cart__discount form input::-webkit-input-placeholder {
+.cart__discount  input::-webkit-input-placeholder {
 	color: #b7b7b7;
 }
 
-.cart__discount form input::-moz-placeholder {
+.cart__discount  input::-moz-placeholder {
 	color: #b7b7b7;
 }
 
-.cart__discount form input:-ms-input-placeholder {
+.cart__discount  input:-ms-input-placeholder {
 	color: #b7b7b7;
 }
 
-.cart__discount form input::placeholder {
+.cart__discount  input::placeholder {
 	color: #b7b7b7;
 }
 
-.cart__discount form button {
+.cart__discount button {
 	font-size: 14px;
 	color: #ffffff;
 	font-weight: 700;

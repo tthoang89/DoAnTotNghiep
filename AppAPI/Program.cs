@@ -1,6 +1,8 @@
 using AppAPI.IServices;
 using AppAPI.Services;
+using AppData.Models;
 using AppData.ViewModels.Mail;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,6 +37,7 @@ builder.Services.AddSwaggerGen(c =>
         },
     });
 });
+builder.Services.AddDbContext<AssignmentDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DBContext")));
 //builder.Services.AddScoped<IChiTietKhuyenMaiServices,ChiTietKhuyenMaiServices>();
 builder.Services.AddScoped<IChiTietGioHangServices, ChiTietGioHangServices>();
 builder.Services.AddScoped<IGioHangServices, GioHangServices>();

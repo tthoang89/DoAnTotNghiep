@@ -12,9 +12,9 @@ namespace AppAPI.Services
     public class SanPhamService : ISanPhamService
     {
         private readonly AssignmentDBContext _context;
-        public SanPhamService()
+        public SanPhamService(AssignmentDBContext dBContext)
         {
-            this._context = new AssignmentDBContext();
+            this._context = dBContext;
         }
 
         #region SanPham
@@ -156,7 +156,7 @@ namespace AppAPI.Services
         public async Task<ChiTietSanPhamViewModel> GetChiTietSanPhamByID(Guid id)
         {
             var temp = _context.ChiTietSanPhams.First(x => x.ID == id);
-            ChiTietSanPhamViewModel chiTietSanPham = new ChiTietSanPhamViewModel() { ID = temp.ID, Ten = _context.SanPhams.First(x => x.ID == temp.IDSanPham).Ten, SoLuong = temp.SoLuong, GiaBan = temp.IDKhuyenMai == null ? temp.GiaBan : (100 - _context.KhuyenMais.First(x => x.ID == temp.IDKhuyenMai).GiaTri) / 100 * temp.GiaBan, GiaGoc = temp.GiaBan, TrangThai = temp.TrangThai, Anh = _context.Anhs.First(x => x.IDMauSac == temp.IDMauSac && x.IDSanPham == temp.IDSanPham).DuongDan, MauSac = _context.MauSacs.First(x => x.ID == temp.IDMauSac).Ten, KichCo = _context.KichCos.First(x => x.ID == temp.IDKichCo).Ten };
+            ChiTietSanPhamViewModel chiTietSanPham = new ChiTietSanPhamViewModel() { ID = temp.ID, Ten = _context.SanPhams.First(x => x.ID == temp.IDSanPham).Ten, SoLuong = temp.SoLuong, GiaBan = temp.IDKhuyenMai == null ? temp.GiaBan : ((100 - _context.KhuyenMais.First(x => x.ID == temp.IDKhuyenMai).GiaTri) * temp.GiaBan) / 100, GiaGoc = temp.GiaBan, TrangThai = temp.TrangThai, Anh = _context.Anhs.First(x => x.IDMauSac == temp.IDMauSac && x.IDSanPham == temp.IDSanPham).DuongDan, MauSac = _context.MauSacs.First(x => x.ID == temp.IDMauSac).Ten, KichCo = _context.KichCos.First(x => x.ID == temp.IDKichCo).Ten };
             return chiTietSanPham;
         }
         public async Task<ChiTietSanPhamViewModelHome> GetAllChiTietSanPhamHome(Guid idSanPham)
