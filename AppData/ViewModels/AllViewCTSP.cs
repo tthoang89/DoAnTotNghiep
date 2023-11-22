@@ -10,6 +10,7 @@ namespace AppData.ViewModels
     public class AllViewCTSP
     {
         public Guid ID { get; set; }
+        public string? MaCTSP { get; set; }
         public string TenSanPham { get; set; }
         public string TenAnh { get; set; }
         public Guid? IdKhuyenMai { get; set; }
