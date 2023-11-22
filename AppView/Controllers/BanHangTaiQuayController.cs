@@ -49,6 +49,33 @@ namespace AppView.Controllers
             var sP = await _httpClient.GetFromJsonAsync<ChiTietSanPhamBanHang>($"SanPham/getChiTietSPBHById/{idsp}");
             return PartialView("_SanPhamDetail", sP);
         }
+        //Hiển thị lọc
+        public async Task<IActionResult> ShowFilterSP()
+        {
+            var lsp = await _httpClient.GetFromJsonAsync<List<LoaiSP>>($"LoaiSP/getAll");
+            ViewData["lstLSP"] = lsp;
+            return PartialView("_LocSP");
+        }
+        //Tìm kiếm sản phẩm
+        [HttpGet("/BanHangTaiQuay/Search/{keyword}")]
+        public async Task<IActionResult> Search(string keyword)
+        {
+            var listsanPham = await _httpClient.GetFromJsonAsync<List<SanPhamBanHang>>("SanPham/getAllSPBanHang");
+            var distinctResult = listsanPham
+                .Where(c => c.Ten.ToLower().Contains(keyword.ToLower()))
+                .Distinct()
+                .ToList();
+
+            var result = distinctResult.Take(3).ToList();
+
+            if (result.Count < 3)
+            {
+                var additionalItems = distinctResult.Take(result.Count).ToList();
+                result.AddRange(additionalItems);
+            }
+
+            return Json(new { data = result });
+        }
         // Lấy Load CTSP trong SP
         [HttpGet("/BanHangTaiQuay/ShowListCTSP/{idsp}")]
         public async Task<IActionResult> ShowListCTSP(string idsp)
@@ -129,7 +156,7 @@ namespace AppView.Controllers
                 return Json(new { success = false, message = "Thêm số lượng thất bại" });
             }
         }
-        //Load Modal Thanh Toan
+        //Load Modal Thanh Tóan
         [HttpGet("/BanHangTaiQuay/ViewThanhToan/{id}")]
         public async Task<IActionResult> ViewThanhToan(string id)
         {
@@ -273,6 +300,14 @@ namespace AppView.Controllers
             {
                 return Json(new { success = false });
             }
+        }
+        //Tìm kiếm khách hàng
+        [HttpGet("/BanHangTaiQuay/SearchKH/{keyword}")]
+        public async Task<IActionResult> SearchKH(string keyword)
+        {
+            var lstkh = await _httpClient.GetFromJsonAsync<List<KhachHang>>("KhachHang");
+            var result = lstkh.Where(c => c.Ten.ToLower().Contains(keyword.ToLower()) || c.SDT.Contains(keyword)).ToList().Take(4);
+            return Json(new { data = result });
         }
         //Check voucher
 

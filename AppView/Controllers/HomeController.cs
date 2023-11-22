@@ -722,7 +722,7 @@ namespace AppView.Controllers
             hoaDon.PhuongThucThanhToan = "Mac dinh";
             hoaDon.Diem = 0;
             string tongTien = TempData["TongTien"] as string;
-            hoaDon.TongTien = Convert.ToInt32(tongTien.Replace(".", ""));
+            hoaDon.TongTien = Convert.ToInt32(tongTien.Replace(",", ""));
             HttpResponseMessage response = _httpClient.PostAsJsonAsync("HoaDon", hoaDon).Result;
             if (response.IsSuccessStatusCode) return Json(new { success = true, message = "Pay successfully" });
             else return Json(new { success = false, message = "Pay fail" }); ;

@@ -357,7 +357,8 @@ namespace AppAPI.Services
                                              ID = vc.ID,
                                              Ten = vc.Ten,
                                              GiaTri = vc.GiaTri,
-                                             TrangThai = vc.TrangThai
+                                             TrangThai = vc.TrangThai,
+                                             HinhThucGiamGia = vc.HinhThucGiamGia,
                                          }).FirstOrDefault(),
                               listsp = (from cthd in context.ChiTietHoaDons
                                         join ctsp in context.ChiTietSanPhams on cthd.IDCTSP equals ctsp.ID

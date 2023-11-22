@@ -120,35 +120,34 @@
                         <label class="col-sm-5 col-form-label">@Model.listsp.Sum(c=>c.SoLuong * c.GiaLuu)?.ToString("n0")</label>
                     </div>
                 </div>
-                @if(@Model.TruTieuDiem != null)
+                @if (@Model.TruTieuDiem != null)
                 {
                     <div class="row  text-end">
-                    <label class="col-sm-6 col-form-label">Trừ tiêu điểm:</label>
-                    <div class="col-sm-6">
-                        <label class="col-sm-5 col-form-label">@Model.TruTieuDiem?.ToString("n0")</label>
-                    </div>
-                </div>
-                }
-                @if(@Model.voucher != null){
-                    if(@Model.voucher.HinhThucGiamGia == 0){
-                    <div class="row  text-end">
-                    <label class="col-sm-6 col-form-label">Voucher hóa đơn:</label>
+                        <label class="col-sm-6 col-form-label">Trừ tiêu điểm:</label>
                         <div class="col-sm-6">
-                            <label class="col-sm-5 col-form-label">
-                                @Model.voucher.GiaTri.ToString("n0")
-                            </label>
-                        </div>
-                    </div>
-                }else{
-                    <div class="row  text-end">
-                    <label class="col-sm-6 col-form-label">Voucher hóa đơn:</label>
-                        <div class="col-sm-6">
-                            <label class="col-sm-5 col-form-label">
-                                (((@Model.voucher.GiaTri)/100) * (@Model.listsp.Sum(c=>c.SoLuong * c.GiaLuu)))ToString("n0")
-                            </label>
+                            <label class="col-sm-5 col-form-label">@Model.TruTieuDiem?.ToString("n0")</label>
                         </div>
                     </div>
                 }
+                @if (@Model.voucher != null)
+                {
+                    <div class="row  text-end">
+                        <label class="col-sm-6 col-form-label">Voucher hóa đơn:</label>
+                        <div class="col-sm-6">
+                            @if(Model.voucher.HinhThucGiamGia == 0){
+                                <label class="col-sm-5 col-form-label">
+                                    @Model.voucher.GiaTri.ToString("n0")
+                                </label>
+                            }else{
+                                var vc = Model.listsp.Sum(c => c.SoLuong * c.GiaLuu) * Model.voucher.GiaTri / 100;                 
+                                 <label class="col-sm-5 col-form-label">
+                                    @vc?.ToString("n0")
+                                </label>
+                                
+                            }
+
+                        </div>
+                    </div>
                 }
                 <div class="row text-end">
                     <label class="col-sm-6 col-form-label">Thuế VAT:</label>
@@ -157,7 +156,7 @@
                     </div>
                 </div>
                 <div class="row text-end">
-                    <label class="col-sm-6 col-form-label">Khách cần trả:</label>
+                    <label class="col-sm-6 col-form-label">Tiền khách đưa:</label>
                     <div class="col-sm-6 ">
                         <label class="col-sm-5 col-form-label"><b>@Model.TienKhachTra?.ToString("n0")</b></label>
                     </div>
@@ -194,9 +193,9 @@
                         {
                             <tr>
                                 <th scope="row">@item.ID</th>
-                                <td class ="text-danger">@item.Diem</td>
-                                <td class ="text-danger">
-                                   Tiêu điểm
+                                <td class="text-danger">@item.Diem</td>
+                                <td class="text-danger">
+                                    Tiêu điểm
                                 </td>
                             </tr>
                         }
