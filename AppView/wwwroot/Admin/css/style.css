@@ -1807,6 +1807,7 @@ h6 {
 }
 /*Thanh toán */
 #modalthanhtoan {
+    color:#000;
     position: fixed;
     margin: auto;
     min-width: 600px;
@@ -1821,6 +1822,7 @@ h6 {
 }
 /*Thanh toán */
 #modallocsp {
+    color: #000;
     position: fixed;
     margin: auto;
     min-width: 400px;
@@ -1835,6 +1837,7 @@ h6 {
 }
 /*Model SanPham*/
 #modalsanpham {
+    color: #000;
     position: fixed;
     margin: auto;
     min-width: 700px;
@@ -1847,11 +1850,16 @@ h6 {
 #modalsanpham-content {
     height: 100%;
 }
+#chitiethd {
+    color: #000;
+    font-family: inherit, sans-serif;
+    font-weight:500;
+}
 /*Model SanPham*/
 /*Modal thanh toán*/
 .formthanhtoan .form-label {
     font-weight: 600;
-    color:#000;
+    color: #000;
 }
 .formthanhtoan span{
    color:#000;

@@ -94,11 +94,6 @@
                 <div class="flex-fill text-end"><span id="giatrivoucher"></span></div>
             </div>
         </div>
-
-        <div class="d-flex flex-row lh-1">
-            <div class="flex-fill"><label for="inputEmail5" class="form-label">Thuế VAT( 10%)</label></div>
-            <div class="flex-fill text-end"><span id="thueVAT"></span></div>
-        </div>
         <div class="d-flex flex-row lh-1">
             <div class="flex-fill"><label for="inputEmail5" class="form-label">Khách cần trả</label></div>
             <div class="flex-fill text-end">
@@ -153,17 +148,16 @@
         //Tính tiền
        function TinhTien() {
             var tt = @Model.TongTien;
-            var vat = @Model.ThueVAT;
             $("#tongTienHang").text(tt.toLocaleString());
-            $("#thueVAT").text(vat.toLocaleString());
             var trutd = $("#tientrutichdiem").text() === '' ? 0 : parseInt($("#tientrutichdiem").text().replace(/,/g, ""));
             var voucher = $("#giatrivoucher").text() === '' ? 0 : parseInt($("#giatrivoucher").text().replace(/,/g, ""));
-            var tienkhachtra = tt + vat - trutd - voucher;
+            var tienkhachtra = tt - trutd - voucher;
             $("#khachCanTra").text(tienkhachtra.toLocaleString().replace('.', ','));
         }
         //Áp dụng tích điểm
         $('#diemKHSD').on("input",function(){
             var diemkh = parseInt('@Model.DiemKH');
+            var tienhang = parseInt('@Model.TongTien');
             if($(this).val() ===''){
                 $("#tientrutichdiem").text('');
                 $("#notification").text('');
@@ -171,11 +165,16 @@
                 $("#notification").text('Điểm dùng không đủ');
             }
             else{
-               var diem = $(this).val();
-               var tltieu = @(ViewBag.tileTieu);
-               var tien = diem * tltieu;
-               $('#tientrutichdiem').text(tien.toLocaleString());
-               $("#notification").text('');
+               if(tienhang !== 0){
+                   var diem = $(this).val();
+                   var tltieu = @(ViewBag.tileTieu);
+                   var tien = diem * tltieu;
+                   $('#tientrutichdiem').text(tien.toLocaleString());
+                   $("#notification").text('');
+               }else{
+                   $("#notification").text('Chưa chọn sản phẩm mua hàng');
+                   $(this).val('');
+               }
             }
             TinhTien();
         })

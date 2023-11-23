@@ -195,7 +195,6 @@ namespace AppView.Controllers
                 DiemKH = dtkh,
                 DiemTichHD = qddActive != null ? Convert.ToInt32(ttien / qddActive?.TiLeTichDiem) : 0,
                 NhanVien = loginInfor.Ten,
-                ThueVAT = (ttien * 10 / 100), // 10%
             };
             ViewBag.tileTieu = qddActive != null ? (qddActive.TiLeTieuDiem) : 0;
             return PartialView("_ThanhToan", hdtt);
@@ -213,7 +212,6 @@ namespace AppView.Controllers
                 //IdPTTT = request.IdPTTT,
                 PTTT = request.PTTT,
                 TongTien = request.TongTien,
-                ThueVAT = request.ThueVAT,
                 DiemTichHD = request.DiemTichHD,
                 DiemSD = request.DiemSD,
                 TrangThai = 6,
@@ -330,7 +328,7 @@ namespace AppView.Controllers
                 return Json(new { success = false, message = "Voucher không hợp lệ" });
             }else if(vc.SoTienCan > ttien)
             {
-                return Json(new { success = false, message = "Đặt đơn "+vc.SoTienCan.ToString("no")+" để áp dụng" });
+                return Json(new { success = false, message = "Đặt đơn "+vc.SoTienCan.ToString("n0")+" để áp dụng" });
             }else if( vc.HinhThucGiamGia == 0)
             {
                 return Json(new { success = true, idvoucher = vc.ID, giatri = vc.GiaTri, message="Bạn được giảm "+ vc.GiaTri.ToString("n0") +" VND" });
