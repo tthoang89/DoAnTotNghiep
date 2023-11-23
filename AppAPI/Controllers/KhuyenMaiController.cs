@@ -43,6 +43,7 @@ namespace AppAPI.Controllers
                                  select new AllViewCTSP()
                                  {
                                      ID = CTSP.ID,
+                                     MaCTSP=CTSP.Ma,
                                      TenSanPham = sp.Ten,
                                      TenAnh = (from anh in _dbcontext.Anhs where sp.ID == anh.IDSanPham && mausac.ID == anh.IDMauSac select anh.DuongDan).FirstOrDefault(),
                                      IdKhuyenMai = (from km in _dbcontext.KhuyenMais where CTSP.IDKhuyenMai == km.ID select CTSP.IDKhuyenMai).FirstOrDefault(),
@@ -128,6 +129,7 @@ namespace AppAPI.Controllers
                            .Select(group => new AllViewSp
                            {
                                ID = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.ID,
+                               MaSP=group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.Ma,
                                SoLuongCTSP = group.Sum(x => x.chitietsps.ID != null ? 1 : 0),
                                Ten = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.Ten,
                                MoTa = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.MoTa,
@@ -202,6 +204,7 @@ namespace AppAPI.Controllers
                            .Select(group => new AllViewSp
                            {
                                ID = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.ID,
+                               MaSP = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.Ma,
                                SoLuongCTSP = group.Sum(x => x.chitietsps.ID != null ? 1 : 0),
                                Ten = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.Ten,
                                MoTa = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.MoTa,

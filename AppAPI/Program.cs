@@ -51,6 +51,7 @@ builder.Services.AddScoped<INhanVienService, NhanVienService>();
 builder.Services.AddScoped<IQuanLyNguoiDungService, QuanLyNguoiDungService>();
 builder.Services.AddScoped<ISanPhamService, SanPhamService>();
 builder.Services.AddScoped<IVoucherServices, VoucherServices>();
+builder.Services.AddScoped<IThongKeService, ThongKeService>();
 builder.Services.AddScoped<IVaiTroService, VaiTroSevice>();
 
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
