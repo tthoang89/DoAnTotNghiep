@@ -1,5 +1,6 @@
 ﻿using AppAPI.IServices;
 using AppAPI.Services;
+using AppData.ViewModels.ThongKe;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -12,7 +13,7 @@ namespace AppAPI.Controllers
     {
         private readonly IThongKeService thongKeService;
 
-        public ThongKeController(ThongKeService thongKeService)
+        public ThongKeController(IThongKeService thongKeService)
         {
             this.thongKeService = thongKeService;
         }
@@ -41,7 +42,10 @@ namespace AppAPI.Controllers
             decimal total = thongKeService.DoanhThuNam(year);
             return Ok(total);
         }
-
-
+        [HttpGet("ThongKe")]
+        public ThongKeViewModel ThongKe()
+        {
+            return thongKeService.ThongKe();
+        }
     }
 }

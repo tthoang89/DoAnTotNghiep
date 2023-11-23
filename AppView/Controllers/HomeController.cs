@@ -312,7 +312,7 @@ namespace AppView.Controllers
             {
                 tongtien += x.GiaBan * x.SoLuong;
             }
-            TempData["TongTien"] = tongtien.ToString("n0");
+            TempData["TongTien"] = tongtien.ToString();
             ViewData["cout"] = cout;
             // lam end
             TempData["ListBienThe"] = JsonConvert.SerializeObject(bienThes);
@@ -717,7 +717,7 @@ namespace AppView.Controllers
         [HttpPost]
         public string Order(HoaDonViewModel hoaDon)
         {
-            if (hoaDon.PhuongThucThanhToan == "dathang")
+            if (hoaDon.PhuongThucThanhToan == "COD")
             {
                 List<ChiTietHoaDonViewModel> lstChiTietHoaDon = new List<ChiTietHoaDonViewModel>();
                 string temp = TempData["ListBienThe"] as string;
@@ -731,8 +731,8 @@ namespace AppView.Controllers
                 }
                 hoaDon.ChiTietHoaDons = lstChiTietHoaDon;
                 hoaDon.Diem = 0;
-                string tongTien = TempData["TongTien"] as string;
-                hoaDon.TongTien = Convert.ToInt32(tongTien.Replace(",", ""));
+                TempData.Remove("TongTien");
+                //hoaDon.TongTien = Convert.ToInt32(tongTien.Replace(",", ""));
                 HttpResponseMessage response = _httpClient.PostAsJsonAsync("HoaDon", hoaDon).Result;
                 if (response.IsSuccessStatusCode)
                 {
@@ -741,7 +741,7 @@ namespace AppView.Controllers
                 }
                 else return "";
             }
-            else if (hoaDon.PhuongThucThanhToan == "thanhtoan")
+            else if (hoaDon.PhuongThucThanhToan == "VNPay")
             {
                 TempData["HoaDon"] = JsonConvert.SerializeObject(hoaDon);
                 string vnp_Returnurl = "https://localhost:5001/Home/PaymentCallBack"; //URL nhan ket qua tra ve 
@@ -752,7 +752,7 @@ namespace AppView.Controllers
                 //Get payment input
                 OrderInfo order = new OrderInfo();
                 order.OrderId = DateTime.Now.Ticks; // Giả lập mã giao dịch hệ thống merchant gửi sang VNPAY
-                order.Amount = 100000; // Giả lập số tiền thanh toán hệ thống merchant gửi sang VNPAY 100,000 VND
+                order.Amount = hoaDon.TongTien;
                 order.Status = "0"; //0: Trạng thái thanh toán "chờ thanh toán" hoặc "Pending" khởi tạo giao dịch chưa có IPN
                 order.CreatedDate = DateTime.Now;
                 //Save order to db
@@ -833,8 +833,7 @@ namespace AppView.Controllers
                         }
                         hoaDon.ChiTietHoaDons = lstChiTietHoaDon;
                         hoaDon.Diem = 0;
-                        string tongTien = TempData["TongTien"] as string;
-                        hoaDon.TongTien = Convert.ToInt32(tongTien.Replace(",", ""));
+                        hoaDon.NgayThanhToan = DateTime.Now;
                         HttpResponseMessage response = _httpClient.PostAsJsonAsync("HoaDon", hoaDon).Result;
                         if (response.IsSuccessStatusCode)
                         {
@@ -868,9 +867,16 @@ namespace AppView.Controllers
             if (response.IsSuccessStatusCode)
             {
                 var voucher = JsonConvert.DeserializeObject<Voucher>(await response.Content.ReadAsStringAsync());
-                return Json(new {HinhThuc=voucher.HinhThucGiamGia,GiaTri=voucher.GiaTri});
+                if (voucher != null)
+                {
+                    return Json(new { HinhThuc = voucher.HinhThucGiamGia, GiaTri = voucher.GiaTri });
+                }
+                else
+                {
+                    return Json(new { HinhThuc = "Ko tim thay voucher", GiaTri = 0 });
+                }
             }
-            else return Json(response);
+            else return Json(new { HinhThuc = false, GiaTri = 0 });
         }
         #endregion
 

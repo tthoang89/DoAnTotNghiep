@@ -84,7 +84,8 @@ namespace AppAPI.Controllers
                 {
                     Ngay = group.Key,
                     SoHoaDon = group.Count(),
-                    DoanhThu = group.Sum(ch => ch.DonGia * ch.SoLuong + ch.HoaDon.TienShip-ch.HoaDon.ThueVAT.Value)
+                    //DoanhThu = group.Sum(ch => ch.DonGia * ch.SoLuong + ch.HoaDon.TienShip - ch.HoaDon.ThueVAT.Value)
+                    DoanhThu = group.Sum(ch => ch.DonGia * ch.SoLuong + ch.HoaDon.TienShip)
                 })
                 .OrderByDescending(t => t.Ngay.Date).
                 Where(x=>x.Ngay.Date<=DateTime.Today.Date).Take(7)
@@ -103,7 +104,8 @@ namespace AppAPI.Controllers
                 {
                     Ngay = group.Key,
                     SoHoaDon = group.Count(),
-                    DoanhThu = group.Sum(ch => ch.DonGia * ch.SoLuong + ch.HoaDon.TienShip - ch.HoaDon.ThueVAT.Value)
+                    //DoanhThu = group.Sum(ch => ch.DonGia * ch.SoLuong + ch.HoaDon.TienShip - ch.HoaDon.ThueVAT.Value)
+                    DoanhThu = group.Sum(ch => ch.DonGia * ch.SoLuong + ch.HoaDon.TienShip)
                 })
                 .OrderByDescending(t => t.Ngay.Date).
                 Where(x => x.Ngay.Date <= DateTime.Today.Date).Take(7)
@@ -147,7 +149,8 @@ namespace AppAPI.Controllers
                 {
                    
                     SoHoaDon = group.Sum(x => x.HoaDon.ID != null ? 1 : 0),
-                    DoanhThu = group.Sum(x => x.ChiTietHoaDon_ChiTietSanPham_SanPham_MauSac.ChiTietHoaDon_ChiTietSanPham.ChiTietHoaDon.DonGia * x.ChiTietHoaDon_ChiTietSanPham_SanPham_MauSac.ChiTietHoaDon_ChiTietSanPham.ChiTietHoaDon.SoLuong + x.HoaDon.TienShip-x.HoaDon.ThueVAT.Value),
+                    //DoanhThu = group.Sum(x => x.ChiTietHoaDon_ChiTietSanPham_SanPham_MauSac.ChiTietHoaDon_ChiTietSanPham.ChiTietHoaDon.DonGia * x.ChiTietHoaDon_ChiTietSanPham_SanPham_MauSac.ChiTietHoaDon_ChiTietSanPham.ChiTietHoaDon.SoLuong + x.HoaDon.TienShip-x.HoaDon.ThueVAT.Value),
+                    DoanhThu = group.Sum(x => x.ChiTietHoaDon_ChiTietSanPham_SanPham_MauSac.ChiTietHoaDon_ChiTietSanPham.ChiTietHoaDon.DonGia * x.ChiTietHoaDon_ChiTietSanPham_SanPham_MauSac.ChiTietHoaDon_ChiTietSanPham.ChiTietHoaDon.SoLuong + x.HoaDon.TienShip),
                     Ngay = group.FirstOrDefault().HoaDon.NgayThanhToan.Value
                 })
 
@@ -169,7 +172,8 @@ namespace AppAPI.Controllers
                 {
 
                     SoHoaDon = group.Sum(x => x.HoaDon.ID != null ? 1 : 0),
-                    DoanhThu = group.Sum(x => x.ChiTietHoaDon_ChiTietSanPham_SanPham_MauSac.ChiTietHoaDon_ChiTietSanPham.ChiTietHoaDon.DonGia * x.ChiTietHoaDon_ChiTietSanPham_SanPham_MauSac.ChiTietHoaDon_ChiTietSanPham.ChiTietHoaDon.SoLuong + x.HoaDon.TienShip - x.HoaDon.ThueVAT.Value),
+                    //DoanhThu = group.Sum(x => x.ChiTietHoaDon_ChiTietSanPham_SanPham_MauSac.ChiTietHoaDon_ChiTietSanPham.ChiTietHoaDon.DonGia * x.ChiTietHoaDon_ChiTietSanPham_SanPham_MauSac.ChiTietHoaDon_ChiTietSanPham.ChiTietHoaDon.SoLuong + x.HoaDon.TienShip - x.HoaDon.ThueVAT.Value),
+                    DoanhThu = group.Sum(x => x.ChiTietHoaDon_ChiTietSanPham_SanPham_MauSac.ChiTietHoaDon_ChiTietSanPham.ChiTietHoaDon.DonGia * x.ChiTietHoaDon_ChiTietSanPham_SanPham_MauSac.ChiTietHoaDon_ChiTietSanPham.ChiTietHoaDon.SoLuong + x.HoaDon.TienShip),
                     Ngay = group.FirstOrDefault().HoaDon.NgayThanhToan.Value
                 })
 
@@ -302,7 +306,8 @@ namespace AppAPI.Controllers
                 .GroupBy(x => x.HoaDon.NgayThanhToan.Value.Month).
                 Select(group => new ThongKeDTTrongThang
                 {
-                    TongTien = group.Sum(x => (x.ChiTietHoaDon.SoLuong * x.ChiTietHoaDon.DonGia + x.HoaDon.TienShip-x.HoaDon.ThueVAT.Value)),
+                    //TongTien = group.Sum(x => (x.ChiTietHoaDon.SoLuong * x.ChiTietHoaDon.DonGia + x.HoaDon.TienShip-x.HoaDon.ThueVAT.Value)),
+                    TongTien = group.Sum(x => (x.ChiTietHoaDon.SoLuong * x.ChiTietHoaDon.DonGia + x.HoaDon.TienShip)),
                     Ngay = group.FirstOrDefault().HoaDon.NgayThanhToan.Value
                 }).Where(x => x.Ngay.Month == DateTime.Now.Month).FirstOrDefault();
             return tim;
@@ -316,7 +321,8 @@ namespace AppAPI.Controllers
                 .GroupBy(x => x.HoaDon.NgayThanhToan.Value.Month).
                 Select(group => new ThongKeDTTrongThang
                 {
-                    TongTien = group.Sum(x => (x.ChiTietHoaDon.SoLuong * x.ChiTietHoaDon.DonGia + x.HoaDon.TienShip - x.HoaDon.ThueVAT.Value)),
+                    //TongTien = group.Sum(x => (x.ChiTietHoaDon.SoLuong * x.ChiTietHoaDon.DonGia + x.HoaDon.TienShip - x.HoaDon.ThueVAT.Value)),
+                    TongTien = group.Sum(x => (x.ChiTietHoaDon.SoLuong * x.ChiTietHoaDon.DonGia + x.HoaDon.TienShip)),
                     Ngay = group.FirstOrDefault().HoaDon.NgayThanhToan.Value
                 }).Where(x => x.Ngay.Month == DateTime.Now.Month).FirstOrDefault();
             return tim;
@@ -349,6 +355,7 @@ namespace AppAPI.Controllers
                 }).Where(x => x.Ngay.Month == DateTime.Now.Month).FirstOrDefault();
             return tim;
         }
+        
     }
 
 

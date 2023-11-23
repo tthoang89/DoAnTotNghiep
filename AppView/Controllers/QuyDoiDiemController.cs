@@ -50,7 +50,8 @@ namespace AppView.Controllers
         {
 
 
-            var response = await _httpClient.PostAsync($"https://localhost:7095/api/QuyDoiDiem?sodiem={qdd.SoDiem}&TiLeTichDiem={qdd.TiLeTichDiem}&TiLeTieuDiem={qdd.TiLeTieuDiem}&TrangThai={qdd.TrangThai}", null);
+            //var response = await _httpClient.PostAsync($"https://localhost:7095/api/QuyDoiDiem?sodiem={qdd.SoDiem}&TiLeTichDiem={qdd.TiLeTichDiem}&TiLeTieuDiem={qdd.TiLeTieuDiem}&TrangThai={qdd.TrangThai}", null);
+            var response = await _httpClient.PostAsync($"https://localhost:7095/api/QuyDoiDiem?TiLeTichDiem={qdd.TiLeTichDiem}&TiLeTieuDiem={qdd.TiLeTieuDiem}&TrangThai={qdd.TrangThai}", null);
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToAction("GetAllQuyDoiDiem");
@@ -75,7 +76,8 @@ namespace AppView.Controllers
         {
 
 
-            var response = await _httpClient.PutAsync($"https://localhost:7095/api/QuyDoiDiem/{qdd.ID}?sodiem={qdd.SoDiem}&TiLeTichDiem={qdd.TiLeTichDiem}&TiLeTieuDiem={qdd.TiLeTieuDiem}&TrangThai={qdd.TrangThai}", null);
+            //var response = await _httpClient.PutAsync($"https://localhost:7095/api/QuyDoiDiem/{qdd.ID}?sodiem={qdd.SoDiem}&TiLeTichDiem={qdd.TiLeTichDiem}&TiLeTieuDiem={qdd.TiLeTieuDiem}&TrangThai={qdd.TrangThai}", null);
+            var response = await _httpClient.PutAsync($"https://localhost:7095/api/QuyDoiDiem/{qdd.ID}?TiLeTichDiem={qdd.TiLeTichDiem}&TiLeTieuDiem={qdd.TiLeTieuDiem}&TrangThai={qdd.TrangThai}", null);
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToAction("GetAllQuyDoiDiem");

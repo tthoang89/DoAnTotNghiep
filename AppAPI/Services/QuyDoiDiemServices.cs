@@ -17,7 +17,7 @@ namespace AppAPI.Services
         {
             var quydoidiem = new QuyDoiDiem();
             quydoidiem.ID=Guid.NewGuid();
-            quydoidiem.SoDiem = sodiem;
+            //quydoidiem.SoDiem = sodiem;
             quydoidiem.TiLeTichDiem = TiLeTichDiem;
             quydoidiem.TiLeTieuDiem = TiLeTieuDiem;
             quydoidiem.TrangThai = TrangThai;
@@ -53,7 +53,7 @@ namespace AppAPI.Services
             var quydoidiem= _allRepository.GetAll().FirstOrDefault(x => x.ID == Id);
             if(quydoidiem != null)
             {
-                quydoidiem.SoDiem = sodiem;
+                //quydoidiem.SoDiem = sodiem;
                 quydoidiem.TiLeTichDiem = TiLeTichDiem;
                 quydoidiem.TiLeTieuDiem = TiLeTieuDiem;
                 quydoidiem.TrangThai = TrangThai;

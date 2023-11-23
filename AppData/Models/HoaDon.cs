@@ -11,7 +11,6 @@
         public string? Email { get; set; }
         public string? DiaChi { get; set; }
         public int TienShip { get; set; }
-        public int? ThueVAT { get; set; }
         public int? TongTien { get; set; }
         public int LoaiHD { get; set; } // Off-1 // On-0
         public string? PhuongThucThanhToan { get; set; }
