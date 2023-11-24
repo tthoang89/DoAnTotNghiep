@@ -16,6 +16,7 @@ using System.Text;
 using System.Web.Helpers;
 using X.PagedList;
 
+
 namespace AppView.Controllers
 {
     public class HomeController : Controller
@@ -48,7 +49,25 @@ namespace AppView.Controllers
         }
         #region SanPham
         [HttpGet]
-        public IActionResult Shop(int? pages)
+        public JsonResult ShowProduct(int page, int pageSize)
+        {
+            HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/getAll").Result;
+            List<SanPhamViewModel> lstSanpham = new List<SanPhamViewModel>();
+            if (response.IsSuccessStatusCode)
+            {
+                lstSanpham = JsonConvert.DeserializeObject<List<SanPhamViewModel>>(response.Content.ReadAsStringAsync().Result);
+                var model = lstSanpham.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+                return Json(new
+                {
+                    data = model,
+                    total = lstSanpham.Count,
+                    status = true
+                });
+            }
+            else return Json(new { status = false });
+        }
+        [HttpGet]
+        public IActionResult Shop()
         {
             HttpResponseMessage responseLoaiSP = _httpClient.GetAsync(_httpClient.BaseAddress + "LoaiSP/getAll").Result;
             if (responseLoaiSP.IsSuccessStatusCode)
@@ -70,16 +89,11 @@ namespace AppView.Controllers
             {
                 ViewData["listChatLieu"] = JsonConvert.DeserializeObject<List<ChatLieu>>(responseChatLieu.Content.ReadAsStringAsync().Result);
             }
-            HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/getAll").Result;
-            List<SanPhamViewModel> lstSanpham = new List<SanPhamViewModel>();
-            if (response.IsSuccessStatusCode)
-            {
-                lstSanpham = JsonConvert.DeserializeObject<List<SanPhamViewModel>>(response.Content.ReadAsStringAsync().Result);
-            }
-            int pageSize = 20;
-            int pageNumber = pages == null || pages < 0 ? 1 : pages.Value;
-            PagedList<SanPhamViewModel> lst = new PagedList<SanPhamViewModel>(lstSanpham, pageNumber, pageSize);
-            return View(lst);
+            return View();
+
+            //int pageNumber = page == null || page < 0 ? 1 : page.Value;
+            //PagedList<SanPhamViewModel> lst = new PagedList<SanPhamViewModel>(lstSanpham, pageNumber, pageSize);
+            //return View(lst);
         }
         [HttpGet]
         public async Task<IActionResult> ProductDetail(string idSanPham,int? pages)
