@@ -312,10 +312,9 @@
             },
             dataType: "json",
             success: function (response) {
-                console.log(response.data);
                 $("#filtered-products").empty();
                 $.each(response.data, function (i, item) {
-                    $("#filtered-products").append(`<div class='col-lg-4 col-md-6 col-sm-6'><div class='product__item'><div class='product__item__pic set-bg'><a href='/Home/ProductDetail?idSanPham=${item.id}' > <img style='width:260px;height:265px;' src='/img/product/${item.image}'></a></div><div class='product__item__text'><h6>${item.ten}</h6><a onclick='addCart('${ item.idChiTietSanPham }')' class='add-cart' style='cursor:pointer'> + Thêm vào giỏ hàng </a><h5 style='color:red'> ${item.giaBan} </h5></div></div></div>`);
+                    $("#filtered-products").append("<div class='col-lg-4 col-md-6 col-sm-6'><div class='product__item'><div class='product__item__pic set-bg'><a href='/Home/ProductDetail?idSanPham=" + item.id + "' > <img style='width:260px;height:265px;' src='/img/product/" + item.image + "'></a></div><div class='product__item__text'><h6>"+item.ten+"</h6><a onclick=\"addCart('"+item.idChiTietSanPham+"')\" class='add-cart' style='cursor:pointer'> + Thêm vào giỏ hàng </a><h5 style='color:red'> "+item.giaBan+" </h5></div></div></div>");
                 });
                 pagingsp(response.total, function () {
 
