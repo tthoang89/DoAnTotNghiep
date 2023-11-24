@@ -3,7 +3,6 @@
     public class QuyDoiDiem
     {
         public Guid ID { get; set; }
-        public int SoDiem { get; set; }
         public int TiLeTichDiem { get; set; }
         public int TiLeTieuDiem { get; set; }
         public int TrangThai { get; set; }

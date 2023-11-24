@@ -248,9 +248,6 @@ namespace AppData.Migrations
                     b.Property<string>("TenNguoiNhan")
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int?>("ThueVAT")
-                        .HasColumnType("int");
-
                     b.Property<int>("TienShip")
                         .HasColumnType("int");
 
@@ -282,7 +279,7 @@ namespace AppData.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("varchar(250)");
 
                     b.Property<int?>("GioiTinh")
                         .HasColumnType("int");
@@ -481,9 +478,6 @@ namespace AppData.Migrations
                     b.Property<Guid>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("SoDiem")
-                        .HasColumnType("int");
 
                     b.Property<int>("TiLeTichDiem")
                         .HasColumnType("int");

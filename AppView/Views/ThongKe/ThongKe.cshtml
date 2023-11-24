@@ -70,7 +70,7 @@
 </div>
 <!-- 4-blocks row start -->
 <div class="row dashboard-header">
-    <div class="col-lg-3 col-md-6">
+    <div class="col-lg-4 col-md-6">
         <div class="card dashboard-product">
             <span>Số Lượng Sản Phẩm Trong Kho</span>
             @if(thongkeslctsp!=null){
@@ -86,7 +86,7 @@
             </div>
         </div>
     </div>
-    <div class="col-lg-3 col-md-6">
+    <div class="col-lg-4 col-md-6">
         <div class="card dashboard-product">
             <span>Số Đơn Bán Online  Tháng Này</span>
             @if(thongkesodontrongthang!=null){
@@ -102,7 +102,7 @@
             </div>
         </div>
     </div>
-    <div class="col-lg-3 col-md-6">
+    <div class="col-lg-4 col-md-6">
         <div class="card dashboard-product">
             <span>Số Lượng Sản Phẩm Đã Bán Online</span>
             @if(thongkeslspdaban!=null){
@@ -117,7 +117,7 @@
             </div>
         </div>
     </div>
-    <div class="col-lg-3 col-md-6">
+@*     <div class="col-lg-3 col-md-6">
         <div class="card dashboard-product">
             <span>Doanh Thu Online Tháng Này</span>
             @if(thongkedttrongthang!=null){
@@ -132,125 +132,22 @@
                 <i class="ti-rocket text-danger-color"></i>
             </div>
         </div>
-    </div>
+    </div> *@
 </div>
-<!-- 4-blocks row end -->
-<!-- 4-blocks row start -->
-<div class="row dashboard-header">
-    <div class="col-lg-3 col-md-6">
-        <div class="card dashboard-product">
-            <span>Số Lượng Sản Phẩm Trong Kho</span>
-            @if(thongkeslctsp!=null){
-                <h2 class="dashboard-total-products">@thongkeslctsp</h2>
-            }
-            else{
-                <h2 class="dashboard-total-products">0</h2>
-            }
-            
-            <span class="label label-warning">Sales</span>Arriving Today
-            <div class="side-box">
-                <i class="ti-signal text-warning-color"></i>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-3 col-md-6">
-        <div class="card dashboard-product">
-            <span>Số Đơn Bán Offline Tháng Này</span>
-            @if(thongkesodontrongthangOffline!=null){
-                 <h2 class="dashboard-total-products">@thongkesodontrongthangOffline.SoDon</h2>
-            }
-             else if(thongkesodontrongthangOffline== null) {
-                <h2 class="dashboard-total-products">0</h2>
-            }
-           
-            <span class="label label-primary">Views</span>View Today
-            <div class="side-box ">
-                <i class="ti-gift text-primary-color"></i>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-3 col-md-6">
-        <div class="card dashboard-product">
-            <span>Số Lượng Sản Phẩm Đã Bán Offline</span>
-            @if(thongkeslspdabanOffline!=null){
-                <h2 class="dashboard-total-products"><span>@thongkeslspdabanOffline.SoLuong</span></h2>
-            }
-            else if(thongkeslspdabanOffline==null){
-                 <h2 class="dashboard-total-products"><span>0</span></h2>
-            }
-            <span class="label label-success">Sales</span>Reviews
-            <div class="side-box">
-                <i class="ti-direction-alt text-success-color"></i>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-3 col-md-6">
-        <div class="card dashboard-product">
-            <span>Doanh Thu Offline Tháng Này</span>
-            @if(thongkedttrongthangOffline!=null){
-                 <h2 class="dashboard-total-products"><span>@thongkedttrongthangOffline.TongTien.ToString("n0") VND</span></h2>
-            }
-            else if(thongkedttrongthangOffline==null){
-                 <h2 class="dashboard-total-products"><span> 0 VND</span></h2>
-            }
-           
-            <span class="label label-danger">Sales</span>Reviews
-            <div class="side-box">
-                <i class="ti-rocket text-danger-color"></i>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- 4-blocks row end -->
-<!-- 1-3-block row start -->
 <div class="row">
-    <div class="col-lg-6">
+    <div class="col-lg-12">
         <div class="card">
             <div class="card-header">
                 <h5 class="card-header-text">Doanh Thu Theo Ngày Bán Online</h5>
             </div>
             <div class="card-block">
-                <canvas id="columnChart" class="ct-chart-line " style="min-width: 250px; height: 330px; margin: 0 auto"></canvas>
+                <canvas id="columnChart" class="ct-chart-line " style="width: 100%!important; height: 330px; margin: 0 auto"></canvas>
             </div>
         </div>
-    </div>
-    <div class="col-lg-6">
-         <div class="card">
-            <div class="card-header">
-                <h5 class="card-header-text">Doanh Thu Online Trong Các Tháng Gần Đây</h5>
-            </div>
-            <div class="card-block">
-                <canvas id="piechart111" class="ct-chart-line "  style="min-width: 250px; height: 330px; margin: 0 auto"></canvas>
-            </div>
-        </div>
-    </div>
-   
+    </div>   
 </div>
 <!-- 1-3-block row end -->
 <!-- 1-3-block row start -->
-<div class="row">
-    <div class="col-lg-6">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="card-header-text">Doanh Thu Theo Ngày Bán Offline</h5>
-            </div>
-            <div class="card-block">
-                <canvas id="columnChartOffline" class="ct-chart-line " style="min-width: 250px; height: 330px; margin: 0 auto"></canvas>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-6">
-         <div class="card">
-            <div class="card-header">
-                <h5 class="card-header-text">Doanh Thu Offline Trong Các Tháng Gần Đây</h5>
-            </div>
-            <div class="card-block">
-                <canvas id="piechart111Offline" class="ct-chart-line "  style="min-width: 250px; height: 330px; margin: 0 auto"></canvas>
-            </div>
-        </div>
-    </div>
-   
-</div>
 <!-- 1-3-block row end -->
 <!-- 2-1 block start -->
 <div class="row">
@@ -687,7 +584,7 @@
 
      @foreach (var result in thongkesp)
     {
-        <text>labels2.push('@result.TenSP.ToLower()-@result.DoanhThu');</text>
+        <text>labels2.push('@Html.Raw(@result.TenSP.ToLower())-@result.DoanhThu');</text>
         <text>data2.push('@result.SoLuong');</text>
         
     }

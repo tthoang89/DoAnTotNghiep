@@ -9,7 +9,7 @@ namespace AppData.Configurations
         {
             builder.ToTable("QuyDoiDiem");
             builder.HasKey(x => x.ID);
-            builder.Property(x => x.SoDiem).HasColumnType("int");
+            //builder.Property(x => x.SoDiem).HasColumnType("int");
             builder.Property(x => x.TiLeTichDiem).HasColumnType("int");
             builder.Property(x => x.TiLeTieuDiem).HasColumnType("int");
             builder.Property(x => x.TrangThai).HasColumnType("int");

@@ -1,0 +1,59 @@
+﻿@using AppData.Models
+@{
+    var lstLSP = ViewData["lstLSP"] as List<LoaiSP>;
+}
+<div class="container mt-2 fixed">
+    <div class="select-btn" id="select-danhmuc">
+        <span class="btn-text">Danh mục</span>
+        <span class="arrow-dwn">
+            <i class="fa-solid fa-chevron-down"></i>
+        </span>
+    </div>
+    <ul class="list-items tt">
+        @foreach (var item in lstLSP.Where(c => c.IDLoaiSPCha == null))
+        {
+            <ul class="list-items tt">
+                <li class="item">
+                    <span class="checkbox">
+                        <i class="fa-solid fa-check check-icon" data-value="@item.ID"></i>
+                    </span>
+                    <span class="item-text">@item.Ten</span>
+                </li>
+            </ul>
+        }
+    </ul>
+    <ul class="list-items tt" id="sidebar-nav">
+        @foreach (var item in lstLSP.Where(c => c.IDLoaiSPCha == null))
+        {
+            <li class="item">
+                <a class="nav-link collapsed">
+                    <i class="bi bi-journal-text"></i><span>@item.Ten</span>
+                </a>
+                <ul id="list-items tt" class="list-items tt" data-bs-parent="#sidebar-nav">
+                    @foreach (var lspc in lstLSP.Where(c => c.IDLoaiSPCha == @item.ID))
+                    {
+                        <li>
+                            <a asp-action="Show">
+                                <i class="bi bi-circle"></i><span>@lspc.Ten</span>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </li>
+        }
+    </ul>
+</div>
+
+<script>
+    $(document).ready(function(){
+
+    })
+    var selectDM = $("#select-danhmuc");
+
+     // Drop down trạng thái
+     selectDM.toggleClass("open");
+     selectDM.on("click", function() {
+         $(this).toggleClass("open");
+     });
+
+</script>

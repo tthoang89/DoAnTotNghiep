@@ -101,12 +101,12 @@
                                 <label for="pttt">Phương thức thanh toán</label>
                                 <div style="box-shadow:0 0 0 1px #d9d9d9;border-radius:0.25rem">
                                     <div style="display:flex!important;align-items:center;padding:0.8rem">
-                                        <input type="radio" name="pttt" value="dathang" style="margin-bottom: 0px;width:20px;" />
+                                        <input type="radio" name="pttt" value="COD" style="margin-bottom: 0px;width:20px;" />
                                         <img style="padding-left:0.75rem" src="https://hstatic.net/0/0/global/design/seller/image/payment/cod.svg?v=6">
                                         <p style="margin-bottom: 0px;padding-left: 10px;">Thanh toán khi giao hàng (COD)</p>
                                     </div>
                                     <div style="border-top: 1px solid #d9d9d9;display:flex!important;align-items:center;padding:0.8rem">
-                                        <input type="radio" name="pttt" value="thanhtoan" style="margin-bottom: 0px;width:20px" />
+                                        <input type="radio" name="pttt" value="VNPay" style="margin-bottom: 0px;width:20px" />
                                         <div style="width:40px;height:40px;margin-left:0.75rem;border:1px solid #d9d9d9;border-radius:0.25rem">
                                             <img style="width:30px;height:30px;margin:5px" src="/img/icon/vnpay.png">
                                         </div>
@@ -144,8 +144,8 @@
                         <ul class="checkout__order__products">
                             <li>Subtotal <span>@tongtien VNĐ</span></li>
                             <li id="moneyvoucher" hidden></li>
-                            <li>Fee <span id="fee">@tienship VNĐ</span></li>
-                            <li>Total <span id="total">@tongtien VNĐ</span></li>
+                            <li>Tiền ship <span id="fee">@tienship VNĐ</span></li>
+                            <li>Tổng tiền <span id="total">@tongtien VNĐ</span></li>
                         </ul>
                         <button onclick="createhoadon()" class="site-btn">
                             XÁC NHẬN
@@ -162,7 +162,7 @@
 <script src="~/js/jquery-3.3.1.min.js"></script>
 <script type="text/javascript">
     var tienShip = 0;
-    var tienHang = '@tongtien';
+    var tienVoucher = 0;
     var tinh = "";
     var huyen = "";
     var xa = "";
@@ -243,6 +243,7 @@
                     $('#dfward').remove();
                     tienShip = data.data.total;
                     document.getElementById("fee").innerHTML = data.data.total + " VNĐ";
+                    document.getElementById("total").innerHTML = (tienShip + @tongtien-tienVoucher) + "VNĐ";
                 },
                 error: function (reponse) {
                     alert(reponse.responseText);
@@ -250,13 +251,12 @@
             });
         });
     });
-    function createhoadon() 
-    {
+    function createhoadon() {
         var ten = $("#name").val();
         var email = $("#email").val();
         var sdt = $("#phone").val();
         var diaChi = $("#address").val();
-        var objHoaDon = { Ten: ten, Email: email, SDT: sdt, DiaChi: diaChi + ", " + xa + ", " + huyen + ", " + tinh, TienShip: tienShip };
+        var voucher = $("#voucher").val();
         $('.invalid-feedback').text('');
         $('.is-invalid').removeClass('is-invalid');
         if (ten.trim().length == 0) {
@@ -287,7 +287,7 @@
             hasError = true;
         }
         var pttt = $('input[name="pttt"]:checked').val();
-        var objHoaDon = { Ten: ten, Email: email, SDT: sdt, DiaChi: diaChi + ", " + xa + ", " + huyen + ", " + tinh, TienShip: tienShip, PhuongThucThanhToan: pttt };
+        var objHoaDon = { Ten: ten, Email: email, SDT: sdt, DiaChi: diaChi + ", " + xa + ", " + huyen + ", " + tinh, TienShip: tienShip, PhuongThucThanhToan: pttt, TongTien: tienShip + @tongtien-tienVoucher, TenVoucher: voucher };
         $.ajax({
             async: false,
             type: 'POST',
@@ -295,6 +295,7 @@
             url: '/Home/Order',
             data: objHoaDon,
             success: function (response) {
+                console.log(response);
                 location.href = response;
             },
             error: function (response) {
@@ -309,19 +310,19 @@
             type: 'GET',
             dataType: 'json',
             url: '/Home/UseVoucher',
-            data: {ma:giamGia},
+            data: { ma: giamGia },
             success: function (response) {
                 console.log(response);
-                console.log(tienHang);
                 var ipVoucher = document.getElementById("moneyvoucher");
                 ipVoucher.hidden = false;
-                ipVoucher.innerHTML = response.giaTri;
+                tienVoucher = (@tongtien * response.giaTri) / 100;
+                ipVoucher.innerHTML = "Số tiền được giảm (Voucher)<span>" + tienVoucher + " VNĐ</span>";
+                document.getElementById("total").innerHTML = (tienShip + @tongtien-tienVoucher) + "VNĐ";
             },
             error: function (response) {
                 alert("Error");
             }
         });
-        
     }
 </script>
 

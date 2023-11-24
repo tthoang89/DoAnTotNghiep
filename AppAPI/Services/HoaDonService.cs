@@ -108,11 +108,17 @@ namespace AppAPI.Services
                     hoaDon1.SDT = hoaDon.SDT;
                     hoaDon1.Email = hoaDon.Email;
                     hoaDon1.NgayTao = DateTime.Now;
+                    //Tam
+                    if(hoaDon.NgayThanhToan != null)
+                    {
+                        hoaDon1.NgayThanhToan = hoaDon.NgayThanhToan;
+                    }
+                    //End
                     hoaDon1.DiaChi = hoaDon.DiaChi;
                     hoaDon1.TienShip = hoaDon.TienShip;
                     hoaDon1.PhuongThucThanhToan = hoaDon.PhuongThucThanhToan;
                     hoaDon1.TrangThaiGiaoHang = 2;
-                    hoaDon1.ThueVAT = 10;
+                    //hoaDon1.ThueVAT = 10;
                     hoaDon1.TongTien = hoaDon.TongTien;
                     if (reposHoaDon.Add(hoaDon1))
                     {
@@ -301,25 +307,25 @@ namespace AppAPI.Services
         //Nhinh
         public List<HoaDonQL> GetAllHDQly()
         {
-            var result = (from hd in reposHoaDon.GetAll()
-                          join lstd in reposLichSuTichDiem.GetAll() on hd.ID equals lstd?.IDHoaDon into lstdGroup
+            var result = (from hd in context.HoaDons
+                          join lstd in context.LichSuTichDiems on hd.ID equals lstd.IDHoaDon into lstdGroup
                           from lstd in lstdGroup.DefaultIfEmpty()
-                          join kh in reposKhachHang.GetAll() on lstd?.IDKhachHang equals kh?.IDKhachHang into khGroup
+                          join kh in context.KhachHangs on lstd.IDKhachHang equals kh.IDKhachHang into khGroup
                           from kh in khGroup.DefaultIfEmpty()
                           where hd.TrangThaiGiaoHang != 1
                           select new HoaDonQL()
                           {
                               Id = hd.ID,
                               MaHD = hd.MaHD,
-                              KhachHang = kh?.Ten == null ? "Khách lẻ" : kh.Ten,
-                              ThoiGian = hd.NgayThanhToan,
+                              KhachHang = kh != null ? kh.Ten : "Khách lẻ",
+                              ThoiGian = hd.NgayTao,
                               KhachTra = hd.TongTien,
                               LoaiHD = hd.LoaiHD,
                               TrangThai = hd.TrangThaiGiaoHang,
-                          }).ToList();
+                          }).Distinct().ToList();
+
             return result;
         }
-
         public List<HoaDon> GetAllHoaDon()
         {
             return reposHoaDon.GetAll();
@@ -328,6 +334,7 @@ namespace AppAPI.Services
         {
             var result = (from hd in context.HoaDons
                           join nv in context.NhanViens on hd.IDNhanVien equals nv.ID
+                          into nvGroup from nv in nvGroup.DefaultIfEmpty()
                           join lstd in context.LichSuTichDiems on hd.ID equals lstd.IDHoaDon into lstdGroup
                           from lstd in lstdGroup.DefaultIfEmpty()
                           join kh in context.KhachHangs on lstd.IDKhachHang equals kh.IDKhachHang into khGroup
@@ -338,12 +345,18 @@ namespace AppAPI.Services
                               Id = hd.ID,
                               MaHD = hd.MaHD,
                               NgayTao = hd.NgayTao,
-                              NgayThanhToan = hd.NgayThanhToan,
+                              NgayThanhToan = hd.NgayThanhToan != null ? hd.NgayThanhToan : null,
                               PTTT = hd.PhuongThucThanhToan,
-                              NhanVien = nv.Ten,
+                              NhanVien = nv != null ? nv.Ten : null,
+                              LoaiHD = hd.LoaiHD,
                               KhachHang = kh == null ? "Khách lẻ" : kh.Ten,
+                              NguoiNhan = hd.TenNguoiNhan != null ? hd.TenNguoiNhan : null,
+                              DiaChi = hd.DiaChi != null ? hd.DiaChi : null,
+                              SĐT = hd.SDT != null ? hd.SDT : null,
+                              Email = hd.Email != null ? hd.Email : null,
+                              TienShip = hd.TienShip != null ? hd.TienShip : null,
                               TrangThai = hd.TrangThaiGiaoHang,
-                              ThueVAT = hd.ThueVAT,
+                              //ThueVAT = hd.ThueVAT,
                               TienKhachTra = hd.TongTien,
                               GhiChu = hd.GhiChu,
                               TruTieuDiem = (from lstd in context.LichSuTichDiems
@@ -357,7 +370,8 @@ namespace AppAPI.Services
                                              ID = vc.ID,
                                              Ten = vc.Ten,
                                              GiaTri = vc.GiaTri,
-                                             TrangThai = vc.TrangThai
+                                             TrangThai = vc.TrangThai,
+                                             HinhThucGiamGia = vc.HinhThucGiamGia,
                                          }).FirstOrDefault(),
                               listsp = (from cthd in context.ChiTietHoaDons
                                         join ctsp in context.ChiTietSanPhams on cthd.IDCTSP equals ctsp.ID
@@ -491,16 +505,7 @@ namespace AppAPI.Services
         public bool UpdateHoaDon(HoaDonThanhToanRequest hoaDon)
         {
             var update = reposHoaDon.GetAll().FirstOrDefault(p => p.ID == hoaDon.Id);
-            //ChiTietPTTT ctPTTT = new ChiTietPTTT()
-            //{
-            //    ID = new Guid(),
-            //    SoTien = hoaDon.TongTien,
-            //    TrangThai = 0,
-            //    IDHoaDon = update.ID,
-            //    IDPTTT = hoaDon.IdPTTT,
-            //};
-            //reposChiTietPTTT.Add(ctPTTT);
-
+            
             //Lưu tiền vào HDCT
             var lsthdct = context.ChiTietHoaDons.Where(c => c.IDHoaDon == hoaDon.Id).ToList();
             //Xóa lsthdct có số lượng = 0
@@ -526,6 +531,7 @@ namespace AppAPI.Services
             //var deletedg = context.DanhGias.Where(c => lsthdct.Select(x => x.ID).Contains(c.ID)).ToList();
             //context.DanhGias.RemoveRange(deletedg);
             //context.SaveChanges();
+
             //Update LSTD tích
             var lstd = reposLichSuTichDiem.GetAll().FirstOrDefault(c => c.IDHoaDon == hoaDon.Id);
             if (lstd != null)
@@ -566,7 +572,7 @@ namespace AppAPI.Services
             update.NgayThanhToan = hoaDon.NgayThanhToan;
             update.TrangThaiGiaoHang = hoaDon.TrangThai;
             update.TongTien = hoaDon.TongTien;
-            update.ThueVAT = hoaDon.ThueVAT;
+            //update.ThueVAT = hoaDon.ThueVAT;
             update.PhuongThucThanhToan = hoaDon.PTTT;
             update.IDVoucher = hoaDon.IdVoucher == Guid.Empty ? null : hoaDon.IdVoucher;
             return reposHoaDon.Update(update);
