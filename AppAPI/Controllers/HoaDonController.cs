@@ -90,7 +90,7 @@ namespace AppAPI.Controllers
             return Ok(result);
         }
         [HttpPut]
-        public bool UpdateTrangThai(Guid idhoadon, int trangthai, Guid idnhanvien)
+        public bool UpdateTrangThai(Guid idhoadon, int trangthai, Guid? idnhanvien)
         {
             return _iHoaDonService.UpdateTrangThaiGiaoHang(idhoadon, trangthai, idnhanvien);
         }

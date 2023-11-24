@@ -55,8 +55,8 @@
                                     <td class="cart__price">@item.GiaBan.ToString("n0") </td>
                                     <td class="quantity__item">
                                         <div class="quantity">
-                                            <div class="pro-qty-2">
-                                                <input type="text" value="@item.SoLuong">
+                                            <div class="pro-qty-2" oninput="Getvalue(@item.ID,1)">
+                                                <input class="soLuong" name="@item.ID" type="text" value="@item.SoLuong">
                                             </div>
                                         </div>
                                     </td>
@@ -75,7 +75,7 @@
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-6">
                             <div class="continue__btn update__btn">
-                            <a href="UpdateCart"><i class="fa fa-spinner"></i> Cập nhật giỏ hàng</a>
+                            <a onclick="UpdateCart()"><i class="fa fa-spinner"></i> Cập nhật giỏ hàng</a>
                             </div>
                         </div>
                     </div>
@@ -92,4 +92,35 @@
             </div>
         </div>
     </section>
+    <script>
+        function UpdateCart(){
+            var dl = document.getElementsByClassName("soLuong");
+            var lst = [];
+            for(var i = 0;i<dl.length;i++){
+                lst.push(dl[i].name + dl[i].value)
+            }
+            var postData = { dssl: lst };
+            console.log(postData);
+            $.ajax({
+                async: true,
+                type: 'POST',
+                dataType: "json",
+                data: postData,
+                url: '/Home/UpdateCart',
+                success: function (response) {
+                    if (response.success == true) {
+                        window.location = 'https://localhost:5001/Home/ShoppingCart';
+                    } else {
+                        toastr.error(response.message, 'Error Alert', { timeOut: 300 });
+                    }
+                },
+                error: function (response) {
+                    console.log(response);
+                    toastr.error(response.message, 'Error Alert', { timeOut: 300 });
+                }
+            });
+            }
+        
+
+    </script>
     <!-- Shopping Cart Section End -->

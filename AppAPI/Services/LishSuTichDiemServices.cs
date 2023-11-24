@@ -77,7 +77,6 @@ namespace AppAPI.Services
             {
                 var lstDonMua = await(from a in context.LichSuTichDiems
                                        join b in context.HoaDons on a.IDHoaDon equals b.ID
-                                       join c in context.Vouchers on b.IDVoucher equals c.ID
                                        join d in context.KhachHangs on a.IDKhachHang equals d.IDKhachHang
                                        join e in context.QuyDoiDiems on a.IDQuyDoiDiem equals e.ID
                                       select new DonMuaViewModel()
@@ -94,34 +93,13 @@ namespace AppAPI.Services
                                            DiaChi = b.DiaChi,   
                                            TienShip = b.TienShip,
                                            TrangThaiGiaoHang = b.TrangThaiGiaoHang,
-                                           IDVoucher = c.ID,
-                                           HinhThucGiamGia = c.HinhThucGiamGia,
-                                           GiaTri= c.GiaTri,
                                            IdNguoiDung = d.IDKhachHang,
                                            TiLeTichDiem = e.TiLeTichDiem,
                                            TiLeTieuDiem = e.TiLeTieuDiem,
-                                           TongTien =0
+                                           MaHD = b.MaHD,
+                                           TongTien = b.TongTien
                                        }).ToListAsync();
-                foreach (var item in lstDonMua)
-                {
-                    List<ChiTietHoaDon> cthd = context.ChiTietHoaDons.Where(p => p.IDHoaDon == item.IDHoaDon).ToList();
-                    foreach (var x in cthd)
-                    {
-                        item.TongTien += x.DonGia * x.SoLuong;
-                    }
-                    if (item.HinhThucGiamGia == 0)
-                    {
-                        item.TongTien = (item.TongTien * (100 - item.GiaTri / 100))+item.TienShip;
-                    }
-                    else if (item.HinhThucGiamGia == 1)
-                    {
-                        item.TongTien = (item.TongTien - item.GiaTri) + item.TienShip;
-                    }
-                    if (item.TrangThaiLSTD == 0)
-                    {
-                        item.TongTien = item.TongTien - (item.TiLeTieuDiem*item.Diem);
-                    }
-                }
+                
                 lstDonMua = lstDonMua.Where(P => P.IdNguoiDung == idKhachHang).ToList();
                 return lstDonMua;
             }
@@ -144,8 +122,6 @@ namespace AppAPI.Services
                                       join f in context.KichCos on e.IDKichCo equals f.ID
                                       join g in context.MauSacs on e.IDMauSac equals g.ID
                                       join i in context.SanPhams on e.IDSanPham equals i.ID
-                                      join h in context.Anhs on i.ID equals h.IDSanPham
-                                      join k in context.Vouchers on a.IDVoucher equals k.ID
                                       join l in context.QuyDoiDiems on b.IDQuyDoiDiem equals l.ID
                                       select new DonMuaChiTietViewModel()
                                       {
@@ -167,9 +143,9 @@ namespace AppAPI.Services
                                          TenKichCo = f.Ten,
                                          TenMau = g.Ten,
                                          TenSanPham = i.Ten,
-                                         DuongDan = h.DuongDan,
-                                         HinhThucGiamGia = k.HinhThucGiamGia,
-                                         GiaTri = k.GiaTri,
+                                         DuongDan = context.Anhs.First(x => x.IDMauSac == e.IDMauSac && x.IDSanPham == i.ID).DuongDan,
+                                         HinhThucGiamGia = a.IDVoucher == null ? null : (context.Vouchers.First(x=>x.ID == a.IDVoucher)).HinhThucGiamGia,
+                                         GiaTri = a.IDVoucher == null ? null : (context.Vouchers.First(x => x.ID == a.IDVoucher)).GiaTri,
                                          TiLeTieuDiem = l.TiLeTieuDiem,
                                          TrangThaiDanhGia = d.TrangThai
                                       }).ToListAsync();
@@ -190,7 +166,6 @@ namespace AppAPI.Services
                                         join c in context.KichCos on b.IDKichCo equals c.ID
                                         join d in context.MauSacs on b.IDMauSac equals d.ID
                                         join e in context.SanPhams on b.IDSanPham equals e.ID
-                                        join f in context.Anhs on e.ID equals f.IDSanPham
                                         join g in context.HoaDons on a.IDHoaDon equals g.ID
                                        
                                         select new ChiTietHoaDonDanhGiaViewModel()
@@ -199,14 +174,10 @@ namespace AppAPI.Services
                                             TenSanPham = e.Ten,
                                             TenMau = d.Ten,
                                             TenKichThuoc = c.Ten,
-                                            DuongDan = f.DuongDan,
+                                            DuongDan = context.Anhs.First(x => x.IDMauSac == b.IDMauSac && x.IDSanPham == e.ID).DuongDan,
                                             IDHoaDon = g.ID
                                             
                                         }).FirstOrDefault();
-
-
-
-
                 return getCTHDDanhGia;
             }
             catch
