@@ -35,16 +35,17 @@
                         <label class="col-form-label">@Model.NgayTao</label>
                     </div>
                 </div>
+
                 <div class="row">
-                    <label class="col-sm-5 col-form-label">Ngày thanh toán:</label>
+                    <label class="col-sm-5 col-form-label">Khách hàng:</label>
                     <div class="col-sm-7">
-                        @if(@Model.NgayThanhToan == null)
-                        {
-                            <label class="col-form-label">Chưa thanh toán</label>
-                        }
-                        else{
-                             <label class="col-form-label">@Model.NgayThanhToan</label>
-                        }
+                        <label class="col-form-label">@Model.KhachHang</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-5 col-form-label">Thanh toán:</label>
+                    <div class="col-sm-7">
+                        <label class="col-form-label">@Model.PTTT</label>
                     </div>
                 </div>
             </div>
@@ -59,10 +60,23 @@
                             (Model.TrangThai == 4 ? "Đang hoàn hàng" :
                             (Model.TrangThai == 5 ? "Hoàn hàng thành công" :
                             (Model.TrangThai == 6 ? "Thành công" :
-                            (Model.TrangThai == 7 ? "Đơn hủy" : 
+                            (Model.TrangThai == 7 ? "Đơn hủy" :
                             (Model.TrangThai == 8 ? "Chờ xác nhận hủy" : "Chờ xác nhận đổi trả hàng")))))))
                             }
                         </label>
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-5 col-form-label">Ngày thanh toán:</label>
+                    <div class="col-sm-7">
+                        @if (@Model.NgayThanhToan == null)
+                        {
+                            <label class="col-form-label">Chưa thanh toán</label>
+                        }
+                        else
+                        {
+                            <label class="col-form-label">@Model.NgayThanhToan</label>
+                        }
                     </div>
                 </div>
                 <div class="row">
@@ -72,9 +86,16 @@
                     </div>
                 </div>
                 <div class="row">
-                    <label class="col-sm-5 col-form-label">Thanh toán:</label>
+                    <label class="col-sm-5 col-form-label">Kênh bán:</label>
                     <div class="col-sm-7">
-                        <label class="col-form-label">@Model.PTTT</label>
+                        @if (@Model.LoaiHD == 1)
+                        {
+                            <label class="col-form-label">Bán tại quầy</label>
+                        }
+                        else
+                        {
+                            <label class="col-form-label">Website</label>
+                        }
                     </div>
                 </div>
             </div>
@@ -133,7 +154,7 @@
                         <label class="col-sm-5 col-form-label">@Model.listsp.Sum(c=>c.SoLuong * c.GiaLuu)?.ToString("n0")</label>
                     </div>
                 </div>
-                @if (@Model.lstlstd.Count !=0)
+                @if (@Model.lstlstd.Count != 0)
                 {
                     <div class="row  text-end">
                         <label class="col-sm-6 col-form-label">Trừ tiêu điểm:</label>
@@ -165,20 +186,14 @@
                         </div>
                     </div>
                 }
-                <div class="row text-end">
-                    <label class="col-sm-6 col-form-label">Thuế VAT:</label>
-                    <div class="col-sm-6">
-                        <label class="col-sm-5 col-form-label">@Model.ThueVAT?.ToString("n0")</label>
-                    </div>
-                </div>
-                @if(@Model.LoaiHD == 0)
+                @if (@Model.LoaiHD == 0)
                 {
                     <div class="row text-end">
-                    <label class="col-sm-6 col-form-label">Tiền ship</label>
-                    <div class="col-sm-6">
-                        <label class="col-sm-5 col-form-label">@Model.TienShip?.ToString("n0")</label>
+                        <label class="col-sm-6 col-form-label">Tiền ship</label>
+                        <div class="col-sm-6">
+                            <label class="col-sm-5 col-form-label">@Model.TienShip?.ToString("n0")</label>
+                        </div>
                     </div>
-                </div>
                 }
                 <div class="row text-end">
                     <label class="col-sm-6 col-form-label">Tiền khách đưa:</label>
@@ -227,13 +242,16 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @if(@Model.lstlstd.Count == 0){
-                    <tr>
-                        <th colspan=3>
-                            <p style="text-align:center">Không có lịch sử tích điểm nào</p>
-                        </th>
-                    </tr>
-                    }else{
+                    @if (@Model.lstlstd.Count == 0)
+                    {
+                        <tr>
+                            <th colspan=3>
+                                <p style="text-align:center">Không có lịch sử tích điểm nào</p>
+                            </th>
+                        </tr>
+                    }
+                    else
+                    {
                         @foreach (var item in @Model.lstlstd)
                         {
                             if (item.TrangThai == 1)

@@ -15,7 +15,6 @@ namespace AppData.ViewModels.BanOffline
         public DateTime NgayThanhToan { get; set; }
         public Guid IdVoucher { get; set; }
         public int TongTien { get; set; } // Khách phải trả
-        public int ThueVAT { get; set; }
         public int DiemTichHD { get; set; }
         public int DiemSD { get; set; }
         public int TrangThai { get; set; }

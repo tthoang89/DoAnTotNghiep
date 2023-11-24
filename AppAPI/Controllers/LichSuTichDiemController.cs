@@ -63,7 +63,7 @@ namespace AppAPI.Controllers
                                      NgayTichOrTieuDiem = hd.NgayThanhToan,
                                      TenKhachHang = kh.Ten,
                                      SDT = kh.SDT,
-                                    SoDiemTichOrTieu = qdd.SoDiem,
+                                    //SoDiemTichOrTieu = qdd.SoDiem,
                                      DiemTichKH = kh.DiemTich,
                                     
                                      TrangThai = LSTD.TrangThai

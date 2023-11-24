@@ -18,7 +18,7 @@
                 <tr>
                     <th scope="row"><a asp-controller="Home" asp-action="PurchaseOrderDetail" asp-route-idHoaDon="@item.IDHoaDon">@item.IDHoaDon.ToString().Substring(0,8)</a></th>
                     <td>@item.NgayTao</td>
-                    <td>@item.TongTien.ToString("n0") VNĐ</td>
+                    <td>@Convert.ToInt32(item.TongTien).ToString("n0") VNĐ</td>
                     @if (item.TrangThaiGiaoHang == 2)
                     {
                         <td>Chờ xác nhận</td>

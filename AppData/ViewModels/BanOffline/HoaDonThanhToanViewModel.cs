@@ -17,6 +17,5 @@ namespace AppData.ViewModels.BanOffline
         public int? TongTien { get; set; }
         public int? DiemTichHD { get; set; }
         public int? DiemKH { get; set; }
-        public int ThueVAT { get; set; }
     }
 }
