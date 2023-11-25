@@ -100,11 +100,17 @@ namespace AppAPI.Controllers
         {
             return _iHoaDonService.UpdateHoaDon(hoaDon);
         }
+        [HttpPut("HuyHD")]
+        public IActionResult HuyHD(Guid idhd, Guid idnv, string Ghichu)
+        {
+            var result = _iHoaDonService.HuyHD(idhd,idnv,Ghichu);
+            return Ok(result);
+        }
 
         [HttpPut("UpdateGhichu")]
-        public bool UpdateGhiChuHD(Guid idhd, string ghichu)
+        public bool UpdateGhiChuHD(Guid idhd, Guid idnv, string ghichu)
         {
-            return _iHoaDonService.UpdateGhiChuHD(idhd, ghichu);
+            return _iHoaDonService.UpdateGhiChuHD(idhd, idnv, ghichu);
         }
 
         [HttpDelete("deleteHoaDon/{id}")]

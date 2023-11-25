@@ -96,6 +96,24 @@ namespace AppView.Controllers
             }
             return Json(new { data = lstctsP });
         }
+        //Update ghi chú
+        public async Task<IActionResult>UpdateGhichu(Guid idhd, string ghichu)
+        {
+            var loginInfor = new LoginViewModel();
+            string? session = HttpContext.Session.GetString("LoginInfor");
+            if (session != null)
+            {
+                loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
+            }
+            var stringURL = $"https://localhost:7095/api/HoaDon/UpdateGhichu?idhd={idhd}&idnv={loginInfor.Id}&ghichu={ghichu}";
+            var response = await _httpClient.PutAsync(stringURL,null);
+            if (response.IsSuccessStatusCode)
+            {
+                return Json(new { success = true, });
+            }
+            else
+                return Json(new { success = false,});
+        }
         //Lấy Hóa đơn chi tiết
         [HttpGet("/BanHangTaiQuay/getCTHD/{id}")]
         public async Task<IActionResult> getCTHD(string id)

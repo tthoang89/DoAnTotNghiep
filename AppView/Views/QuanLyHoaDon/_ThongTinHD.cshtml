@@ -39,7 +39,7 @@
                 <div class="row">
                     <label class="col-sm-5 col-form-label">Khách hàng:</label>
                     <div class="col-sm-7">
-                        <label class="col-form-label">@Model.KhachHang</label>
+                        <label class="col-form-label text-primary">@Model.KhachHang</label>
                     </div>
                 </div>
                 <div class="row">
@@ -103,7 +103,7 @@
                 <div class="form-group">
                     <label class="form-label control-label">Ghi chú:</label>
                     <div class="col-sm-12">
-                        <textarea class="form-control" style="height: 80px">@Model.GhiChu</textarea>
+                        <textarea class="form-control" style="height: 130px" id="ghiChuinTTHD">@Model.GhiChu</textarea>
                     </div>
                 </div>
             </div>
@@ -112,7 +112,7 @@
         <div class="d-flex mt-2">
             <table class="table table-bordered">
                 <thead>
-                    <tr>
+                    <tr style="background:#d9eafd">
                         <th scope="col">Mã hàng</th>
                         <th scope="col">Mặt hàng</th>
                         <th scope="col">Số lượng</th>
@@ -125,7 +125,7 @@
                     @foreach (var item in Model.listsp)
                     {
                         <tr>
-                            <th scope="row">@item.Id</th>
+                            <td class="text-primary">@item.Id</td>
                             <td>@item.Ten  /<span style="color:#f28322; font-size:14px">@item.PhanLoai</span></td>
                             <td class="text-end">@item.SoLuong</td>
                             <td class="text-end">@item.GiaGoc?.ToString("n0")</td>
@@ -189,7 +189,7 @@
                 @if (@Model.LoaiHD == 0)
                 {
                     <div class="row text-end">
-                        <label class="col-sm-6 col-form-label">Tiền ship</label>
+                        <label class="col-sm-6 col-form-label">Phí vận chuyển</label>
                         <div class="col-sm-6">
                             <label class="col-sm-5 col-form-label">@Model.TienShip?.ToString("n0")</label>
                         </div>
@@ -201,6 +201,30 @@
                         <label class="col-sm-5 col-form-label"><b>@Model.TienKhachTra?.ToString("n0")</b></label>
                     </div>
                 </div>
+            </div>
+        </div>
+        <hr />
+        <div class="d-flex flex-row justify-content-end">
+            @if (@Model.TrangThai == 2)
+            {
+                <div class="d-flex p-2">
+                    <button type="button" id="confirmHDMua" class="btn btn-success fw-normal text-white"><i class="fa-solid fa-check fa-xs me-2" style="color: #ffffff;"></i> Xác nhận hóa đơn</button>
+                </div>
+            }
+            <div class="d-flex p-2">
+                <button type="button" id="save" class="btn btn-success fw-normal text-white"><i class="fa-solid fa-floppy-disk fa-xs me-2" style="color: #ffffff;"></i> Lưu ghi chú</button>
+            </div>
+            <div class="d-flex p-2">
+                <button type="button" id="exportPDF" class="btn btn-secondary fw-normal text-white" data-bs-dismiss="modal"><i class="fa-solid fa-file-export fa-xs me-2" style="color: #ffffff;"></i> Xuất PDF</button>
+            </div>
+            @if (@Model.TrangThai != 7)
+            {
+                <div class="d-flex p-2">
+                    <button type="button" class="btn btn-danger fw-normal text-white" onclick="huyDon('@Model.Id')"><i class="fa-solid fa-trash fa-xs me-2" style="color: #ffffff;"></i>Hủy bỏ</button>
+                </div>
+            }
+            <div class="d-flex p-2">
+                <button type="button" class="btn btn-secondary fw-normal text-white" data-bs-dismiss="modal"><i class="fa-solid fa-x fa-xs me-2" style="color: #ffffff;"></i> Đóng</button>
             </div>
         </div>
     </div>
@@ -245,9 +269,9 @@
                     @if (@Model.lstlstd.Count == 0)
                     {
                         <tr>
-                            <th colspan=3>
+                            <td colspan=3>
                                 <p style="text-align:center">Không có lịch sử tích điểm nào</p>
-                            </th>
+                            </td>
                         </tr>
                     }
                     else
@@ -257,7 +281,7 @@
                             if (item.TrangThai == 1)
                             {
                                 <tr>
-                                    <th scope="row">@item.ID</th>
+                                    <td>@item.ID</td>
                                     <td class="text-success">@item.Diem</td>
                                     <td class="text-success">
                                         Tích điểm
@@ -282,4 +306,88 @@
     </div>
 </div>
 <script>
+    $("#save").click(function(){
+        var inputValue = $("#ghiChuinTTHD").val();
+        if(inputValue === ''){
+            inputValue = null;
+        }
+        $.ajax({
+            url: "/BanHangTaiQuay/UpdateGhichu",
+            type: "PUT",
+            dataType: "json",
+            data:{
+                idhd: '@Model.Id',
+                ghichu: inputValue,
+            },
+            success: function() {
+                toastr.success(response.message, "Lưu ghi chú thành công", { timeOut: 300 });
+                    billDetail(id);
+                    loadBill();
+            },
+            error: function(response) {
+                toastr.error('Lưu ghi chú thất bại', 'Error Alert', { timeOut: 300 });
+            }
+        });
+    })
+
+    function huyDon(IDHD){
+        var ans = confirm("Bạn có chắc chắn hủy Hóa đơn này?");
+        if(ans){
+            var gc = $("#ghiChuinTTHD").val();
+            if(gc ==='' || gc == '@Model.GhiChu'){
+                toastr.error('Chưa nhập ghi chú hóa đơn', "Error Alert", { timeOut: 300 });
+            }else{
+                $.ajax({
+                    url: "/QuanLyHoaDon/HuyHD",
+                    type: "GET",
+                    dataType: 'json',
+                    data:{
+                        idhd: IDHD,
+                        ghichu: gc,
+                    },
+                    contentType: 'application/json',
+                    success: function(response) {
+                        toastr.success(response.message, "Success Alert", { timeOut: 300 });
+                        billDetail(IDHD);
+                        loadBill();
+                    },
+                    error: function(err) {
+                        toastr.error('Thay đổi trạng thái thất bại', "Error Alert", { timeOut: 300 });
+                    }
+                });
+            }
+        }
+    }
+    $("#exportPDF").click(function(){
+        var id = "@Model.Id"
+         $.ajax({
+            url: "/QuanLyHoaDon/ExportPDF/" + id,
+            type: "GET",
+            success: function(response) {
+               var fileUrl = response.fileUrl;
+                window.open(fileUrl,'_blank');
+            },
+            error: function(err) {
+                toastr.error('Thay đổi trạng thái thất bại', "Error Alert", { timeOut: 300 });
+            }
+        });
+    });
+     $("#confirmHDMua").click(function(){
+        var ans = confirm("Xác nhận hóa đơn này?");
+        var id = "@Model.Id";
+        if(ans){
+             $.ajax({
+                url: "/QuanLyHoaDon/XacNhanDonDat/" + id,
+                type: "GET",
+                success: function(response) {
+                   toastr.success(response.message, "Success Alert", { timeOut: 300 });
+                    billDetail(id);
+                    loadBill();
+                },
+                error: function(err) {
+                   toastr.error('Thay đổi trạng thái thất bại', "Error Alert", { timeOut: 300 });
+                }
+            });
+        }
+    })
 </script>

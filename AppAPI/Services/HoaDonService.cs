@@ -109,7 +109,7 @@ namespace AppAPI.Services
                     hoaDon1.Email = hoaDon.Email;
                     hoaDon1.NgayTao = DateTime.Now;
                     //Tam
-                    if(hoaDon.NgayThanhToan != null)
+                    if (hoaDon.NgayThanhToan != null)
                     {
                         hoaDon1.NgayThanhToan = hoaDon.NgayThanhToan;
                     }
@@ -334,7 +334,8 @@ namespace AppAPI.Services
         {
             var result = (from hd in context.HoaDons
                           join nv in context.NhanViens on hd.IDNhanVien equals nv.ID
-                          into nvGroup from nv in nvGroup.DefaultIfEmpty()
+                          into nvGroup
+                          from nv in nvGroup.DefaultIfEmpty()
                           join lstd in context.LichSuTichDiems on hd.ID equals lstd.IDHoaDon into lstdGroup
                           from lstd in lstdGroup.DefaultIfEmpty()
                           join kh in context.KhachHangs on lstd.IDKhachHang equals kh.IDKhachHang into khGroup
@@ -391,7 +392,7 @@ namespace AppAPI.Services
                                             SoLuong = cthd.SoLuong,
                                             GiaGoc = ctsp.GiaBan,
                                             GiaLuu = cthd.DonGia,
-                                            GiaKM = km == null ? ctsp.GiaBan : (km.TrangThai == 1 ? ctsp.GiaBan - km.GiaTri : (ctsp.GiaBan * (100 - km.GiaTri) / 100))
+                                            GiaKM = km == null ? ctsp.GiaBan : (km.TrangThai == 0 ? ctsp.GiaBan - km.GiaTri : (ctsp.GiaBan * (100 - km.GiaTri) / 100))
                                         }).ToList(),
                               lstlstd = (from lstd in context.LichSuTichDiems
                                          where lstd.IDHoaDon == hd.ID
@@ -422,7 +423,7 @@ namespace AppAPI.Services
                                                         PhanLoai = ms.Ten + " - " + kc.Ten,
                                                         SoLuong = cthd.SoLuong,
                                                         GiaGoc = ctsp.GiaBan,
-                                                        GiaKM = km.TrangThai == null ? ctsp.GiaBan : (km.TrangThai == 1 ? ctsp.GiaBan - km.GiaTri : (ctsp.GiaBan * (100 - km.GiaTri) / 100)),
+                                                        GiaKM = km.TrangThai == null ? ctsp.GiaBan : (km.TrangThai == 0 ? ctsp.GiaBan - km.GiaTri : (ctsp.GiaBan * (100 - km.GiaTri) / 100)),
                                                     }).AsEnumerable().Reverse().ToList();
             var result = (from hd in reposHoaDon.GetAll()
                           join lstd in reposLichSuTichDiem.GetAll() on hd.ID equals lstd.IDHoaDon into lstdGroup
@@ -452,6 +453,72 @@ namespace AppAPI.Services
             return reposLichSuTichDiem.GetAll().FirstOrDefault(c => c.IDHoaDon == idHoaDon);
         }
 
+        public bool HuyHD(Guid idhd, Guid idnv, string Ghichu)
+        {
+            try
+            {
+                var hd = context.HoaDons.Where(c => c.ID == idhd).FirstOrDefault();
+                //Update hd
+                hd.GhiChu = Ghichu;
+                hd.IDNhanVien = idnv;
+                hd.TrangThaiGiaoHang = 7;
+                hd.TongTien = 0;
+                // Cộng lại số lượng hàng
+                var lsthdct = context.ChiTietHoaDons.Where(c => c.IDHoaDon == idhd).ToList();
+                foreach (var hdct in lsthdct)
+                {
+                    var ctsp = context.ChiTietSanPhams.FirstOrDefault(c => c.ID == hdct.IDCTSP);
+                    ctsp.SoLuong += ctsp.SoLuong;
+                    context.ChiTietSanPhams.Update(ctsp);
+                    context.SaveChanges();
+                }
+                // Cộng lại số lượng voucher nếu áp dụng
+                if (hd.IDVoucher != null)
+                {
+                    var vc = context.Vouchers.FirstOrDefault(c => c.ID == hd.IDVoucher);
+                    vc.SoLuong += 1;
+                    context.Vouchers.Update(vc);
+                    context.SaveChanges();
+                }
+                // Hủy các quy đổi điểm khách hàng
+                var lstlstd = context.LichSuTichDiems.Where(c => c.IDHoaDon == idhd).ToList();
+                if (lstlstd != null)
+                {
+                    var soDiem = 0;
+                    foreach (var lstd in lstlstd)
+                    {
+                        soDiem = lstd.TrangThai == 1 ? soDiem -= lstd.Diem : soDiem += lstd.Diem;
+                    }
+                    //xóa  lstieu diem 
+                    var delelstd = lstlstd.FirstOrDefault(c => c.TrangThai == 0);
+                    if (delelstd != null)
+                    {
+                        context.LichSuTichDiems.Remove(delelstd);
+                        context.SaveChanges();
+                    }
+                    // Update lstich diem = 0
+                    var updatelstd = lstlstd.FirstOrDefault(c => c.TrangThai == 1);
+                    if (updatelstd != null)
+                    {
+                        updatelstd.Diem = 0;
+                        context.LichSuTichDiems.Update(updatelstd);
+                        context.SaveChanges();
+                    }
+                    //Sửa lại điểm của khách hàng
+                    var kh = context.KhachHangs.FirstOrDefault(c => c.IDKhachHang == lstlstd.First().IDKhachHang);
+                    kh.DiemTich += soDiem;
+                    context.KhachHangs.Update(kh);
+                }
+                context.HoaDons.Update(hd);
+                context.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         public List<HoaDon> LichSuGiaoDich(Guid idNguoiDung)
         {
             var idhoadon = reposLichSuTichDiem.GetAll().Where(p => p.IDKhachHang == idNguoiDung).ToList();
@@ -479,7 +546,7 @@ namespace AppAPI.Services
             return timkiem;
         }
 
-        public bool UpdateGhiChuHD(Guid idhd, string ghichu)
+        public bool UpdateGhiChuHD(Guid idhd,Guid idnv, string ghichu)
         {
             try
             {
@@ -487,6 +554,7 @@ namespace AppAPI.Services
                 if (ghichu == "null")
                 {
                     hd.GhiChu = null;
+                    hd.IDNhanVien = idnv;
                 }
                 else
                 {
@@ -505,7 +573,7 @@ namespace AppAPI.Services
         public bool UpdateHoaDon(HoaDonThanhToanRequest hoaDon)
         {
             var update = reposHoaDon.GetAll().FirstOrDefault(p => p.ID == hoaDon.Id);
-            
+
             //Lưu tiền vào HDCT
             var lsthdct = context.ChiTietHoaDons.Where(c => c.IDHoaDon == hoaDon.Id).ToList();
             //Xóa lsthdct có số lượng = 0
@@ -520,7 +588,7 @@ namespace AppAPI.Services
                              on ctsp.IDKhuyenMai equals km.ID into joinResult
                              from km in joinResult.DefaultIfEmpty()
                              where ctsp.ID == item.IDCTSP
-                             select ctsp.IDKhuyenMai == null ? ctsp.GiaBan : (km.TrangThai == 0 ? (ctsp.GiaBan * (100 - km.GiaTri) / 100) : (ctsp.GiaBan - km.GiaTri));
+                             select ctsp.IDKhuyenMai == null ? ctsp.GiaBan : (km.TrangThai == 1 ? (ctsp.GiaBan * (100 - km.GiaTri) / 100) : (ctsp.GiaBan - km.GiaTri));
                 int DonGia = GiaBan.FirstOrDefault();
                 item.DonGia = DonGia;
 
@@ -561,7 +629,7 @@ namespace AppAPI.Services
 
             // Trừ số lượng voucher nếu có
             var vc = context.Vouchers.Find(hoaDon.IdVoucher);
-            if(vc != null)
+            if (vc != null)
             {
                 vc.SoLuong -= 1;
                 context.Vouchers.Update(vc);

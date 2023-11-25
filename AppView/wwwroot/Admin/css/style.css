@@ -1855,6 +1855,9 @@ h6 {
     font-family: inherit, sans-serif;
     font-weight:500;
 }
+.cthdcontent {
+    border: 3px solid #28a745;
+}
 /*Model SanPham*/
 /*Modal thanh toán*/
 .formthanhtoan .form-label {

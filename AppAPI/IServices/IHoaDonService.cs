@@ -15,10 +15,11 @@ namespace AppAPI.IServices
         public List<HoaDon> TimKiemVaLocHoaDon(string ten,int? loc);
         public List<HoaDon> LichSuGiaoDich(Guid idNguoiDung);
         //Nhinh sửa
+        public bool HuyHD(Guid idhd, Guid idnv, string Ghichu);
         public bool CreateHoaDonOffline(Guid idnhanvien);
         public bool DeleteHoaDon(Guid id);
         public bool UpdateHoaDon(HoaDonThanhToanRequest hoaDon);
-        public bool UpdateGhiChuHD(Guid idhd, string ghichu);
+        public bool UpdateGhiChuHD(Guid idhd,Guid idnv, string ghichu);
         public bool CheckHDHasLSGD( Guid idHoaDon);
         public LichSuTichDiem GetLichSuGiaoDichByIdHD(Guid idHoaDon);
         public List<HoaDon> GetAllHDCho();
