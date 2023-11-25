@@ -1,12 +1,16 @@
 ﻿@using Newtonsoft.Json;
 @using AppData.ViewModels;
 @{
+    AppData.Models.AssignmentDBContext context = new AppData.Models.AssignmentDBContext();
     var loginInfor = new LoginViewModel();
     string? session = Context.Session.GetString("LoginInfor");
     if (session != null)
     {
         loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(Context.Session.GetString("LoginInfor"));
-    }
+        
+            
+        }
+   
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -56,6 +60,7 @@
             </a>
             <i class="bi bi-list toggle-sidebar-btn"></i>
         </div><!-- End Logo -->
+        
         <nav class="header-nav ms-auto">
             <ul class="d-flex align-items-center">
                 <li class="nav-item dropdown pe-3">
@@ -84,7 +89,7 @@
                             <hr class="dropdown-divider">
                         </li>
                         <li>
-                            <a class="dropdown-item d-flex align-items-center" asp-controller="Admin" asp-action="SingOut">
+                            <a class="dropdown-item d-flex align-items-center" asp-controller="Home" asp-action="LogOut">
                                 <i class="bi bi-box-arrow-right"></i>
                                 <span>Đăng xuất</span>
                             </a>
@@ -99,161 +104,269 @@
     </header><!-- End Header -->
     <!-- ======= Sidebar ======= -->
     <aside id="sidebar" class="sidebar">
+      @{
+            var nhanvien = context.NhanViens.FirstOrDefault(x => x.ID == loginInfor.Id);
+            if (nhanvien != null)
+            {
+                var phanquyen = context.VaiTros.FirstOrDefault(x => x.ID == nhanvien.IDVaiTro);
+                if(phanquyen!=null){
+                    if(phanquyen.Ten=="Admin"){
+                        <ul class="sidebar-nav" id="sidebar-nav">
 
-        <ul class="sidebar-nav" id="sidebar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link " href="index.html">
+                                    <i class="bi bi-grid"></i>
+                                    <span>Trang chủ</span>
+                                </a>
+                            </li><!-- End Dashboard Nav -->
+                            <!--Lam thêm  start-->
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse">
+                                    <i class="bi bi-layout-text-window-reverse"></i><span>Thống Kê</span><i class="bi bi-chevron-down ms-auto"></i>
+                                </a>
+                                <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                                    <li>
+                                        <a asp-controller="ThongKe" asp-action="ThongKeAdmin">
+                                            <i class="bi bi-circle"></i><span>Thống kê </span>
+                                        </a>
+                                    </li>
 
-            <li class="nav-item">
-                <a class="nav-link " href="index.html">
-                    <i class="bi bi-grid"></i>
-                    <span>Trang chủ</span>
-                </a>
-            </li><!-- End Dashboard Nav -->
-            <!--Lam thêm  start-->
-            <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse">
-                    <i class="bi bi-layout-text-window-reverse"></i><span>Thống Kê</span><i class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a asp-controller="ThongKe" asp-action="ThongKeAdmin">
-                            <i class="bi bi-circle"></i><span>Thống kê </span>
-                        </a>
-                    </li>
+                                </ul>
+                            </li>
+                            <!--Lam thêm end-->
 
-                </ul>
-            </li>
-            <!--Lam thêm end-->
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" asp-controller="BanHangTaiQuay" asp-action="BanHang">
+                                    <i class="bi bi-menu-button-wide"></i><span>Bán hàng</span>
+                                </a>
+                                <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                                    <li>
+                                        <a asp-controller="LoaiSP" asp-action="Show">
+                                            <i class="bi bi-circle"></i><span>Loại Sản Phẩm</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" asp-controller="QuanLyHoaDon" asp-action="_QuanLyHoaDon">
+                                    <i class="bi bi-menu-button-wide"></i><span>Quản lý hóa đơn</span>
+                                </a>
+                                <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                                    <li>
+                                        <a asp-controller="LoaiSP" asp-action="Show">
+                                            <i class="bi bi-circle"></i><span>Loại Sản Phẩm</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" asp-controller="Admin" asp-action="ProductManager">
+                                    <i class="bi bi-journal-text"></i><span>Quản lý sản phẩm</span>
+                                </a>
+                                <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                                    <li>
+                                        <a asp-controller="LoaiSP" asp-action="Show">
+                                            <i class="bi bi-circle"></i><span>Loại Sản Phẩm</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="forms-layouts.html">
+                                            <i class="bi bi-circle"></i><span>Form Layouts</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li><!-- End Forms Nav -->
 
-            <li class="nav-item">
-                <a class="nav-link collapsed" asp-controller="BanHangTaiQuay" asp-action="BanHang">
-                    <i class="bi bi-menu-button-wide"></i><span>Bán hàng</span>
-                </a>
-                <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a asp-controller="LoaiSP" asp-action="Show">
-                            <i class="bi bi-circle"></i><span>Loại Sản Phẩm</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link collapsed" asp-controller="QuanLyHoaDon" asp-action="_QuanLyHoaDon">
-                    <i class="bi bi-menu-button-wide"></i><span>Quản lý hóa đơn</span>
-                </a>
-                <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a asp-controller="LoaiSP" asp-action="Show">
-                            <i class="bi bi-circle"></i><span>Loại Sản Phẩm</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link collapsed" asp-controller="Admin" asp-action="ProductManager">
-                    <i class="bi bi-journal-text"></i><span>Quản lý sản phẩm</span>
-                </a>
-                <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a asp-controller="LoaiSP" asp-action="Show">
-                            <i class="bi bi-circle"></i><span>Loại Sản Phẩm</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="forms-layouts.html">
-                            <i class="bi bi-circle"></i><span>Form Layouts</span>
-                        </a>
-                    </li>
-                </ul>
-            </li><!-- End Forms Nav -->
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse">
+                                    <i class="bi bi-layout-text-window-reverse"></i><span>Quản lý Các loại khuyến mãi</span><i class="bi bi-chevron-down ms-auto"></i>
+                                </a>
+                                <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                                    <li>
+                                        <a asp-controller="QuanLyKM" asp-action="GetAllKM">
+                                            <i class="bi bi-circle"></i><span>Khuyến Mãi Theo Sản Phẩm</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a asp-controller="Vouchers" asp-action="GetAllVoucher">
+                                            <i class="bi bi-circle"></i><span>Quản lý Voucher</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a asp-controller="QuyDoiDiem" asp-action="GetAllQuyDoiDiem">
+                                            <i class="bi bi-circle"></i><span>Quản lý Quy Đổi Điểm</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li><!-- End Tables Nav -->
 
-            <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse">
-                    <i class="bi bi-layout-text-window-reverse"></i><span>Quản lý Các loại khuyến mãi</span><i class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a asp-controller="QuanLyKM" asp-action="GetAllKM">
-                            <i class="bi bi-circle"></i><span>Khuyến Mãi Theo Sản Phẩm</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a asp-controller="Vouchers" asp-action="GetAllVoucher">
-                            <i class="bi bi-circle"></i><span>Quản lý Voucher</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a asp-controller="QuyDoiDiem" asp-action="GetAllQuyDoiDiem">
-                            <i class="bi bi-circle"></i><span>Quản lý Quy Đổi Điểm</span>
-                        </a>
-                    </li>
-                </ul>
-            </li><!-- End Tables Nav -->
+                            <li class="nav-item">
+                                @*<a class="nav-link collapsed" asp-controller="NhanVien" asp-action="Show">
+                <i class="bi bi-bar-chart"></i><span>Quản lý nhân viên</span></a>*@
+                                <ul id="charts-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                                    <li>
+                                        <a asp-controller="VaiTro" asp-action="GetAllVaiTro">
+                                            <i class="bi bi-circle"></i><span>Vai Trò</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li><!-- End Charts Nav -->
 
-            <li class="nav-item">
-                @*<a class="nav-link collapsed" asp-controller="NhanVien" asp-action="Show">
-                    <i class="bi bi-bar-chart"></i><span>Quản lý nhân viên</span></a>*@
-                <ul id="charts-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a asp-controller="VaiTro" asp-action="GetAllVaiTro">
-                            <i class="bi bi-circle"></i><span>Vai Trò</span>
-                        </a>
-                    </li>
-                </ul>
-            </li><!-- End Charts Nav -->
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
+                                    <i class="bi bi-gem"></i><span>Quản lý người dùng</span><i class="bi bi-chevron-down ms-auto"></i>
+                                </a>
+                                <ul id="icons-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                                    <li>
+                                        <a class="nav-link collapsed" asp-controller="NhanVien" asp-action="Show">
+                                            <i class="bi bi-bar-chart"></i><span>Quản lý nhân viên</span>
+                                        </a>
+                                        <a asp-controller="KhachHang" asp-action="GetAllKhachHang">
+                                            <i class="bi bi-circle"></i><span>Quản Lý Khách Hàng</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li><!-- End Icons Nav -->
 
-            <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-gem"></i><span>Quản lý người dùng</span><i class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="icons-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a class="nav-link collapsed" asp-controller="NhanVien" asp-action="Show">
-                            <i class="bi bi-bar-chart"></i><span>Quản lý nhân viên</span>
-                        </a>
-                        <a asp-controller="KhachHang" asp-action="GetAllKhachHang">
-                            <i class="bi bi-circle"></i><span>Quản Lý Khách Hàng</span>
-                        </a>
-                    </li>
-                </ul>
-            </li><!-- End Icons Nav -->
+                            <li class="nav-heading">Pages</li>
 
-            <li class="nav-heading">Pages</li>
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" href="users-profile.html">
+                                    <i class="bi bi-person"></i>
+                                    <span>Profile</span>
+                                </a>
+                            </li><!-- End Profile Page Nav -->
 
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="users-profile.html">
-                    <i class="bi bi-person"></i>
-                    <span>Profile</span>
-                </a>
-            </li><!-- End Profile Page Nav -->
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" href="pages-faq.html">
+                                    <i class="bi bi-question-circle"></i>
+                                    <span>F.A.Q</span>
+                                </a>
+                            </li><!-- End F.A.Q Page Nav -->
 
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="pages-faq.html">
-                    <i class="bi bi-question-circle"></i>
-                    <span>F.A.Q</span>
-                </a>
-            </li><!-- End F.A.Q Page Nav -->
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" href="pages-contact.html">
+                                    <i class="bi bi-envelope"></i>
+                                    <span>Contact</span>
+                                </a>
+                            </li><!-- End Contact Page Nav -->
 
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="pages-contact.html">
-                    <i class="bi bi-envelope"></i>
-                    <span>Contact</span>
-                </a>
-            </li><!-- End Contact Page Nav -->
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" href="pages-register.html">
+                                    <i class="bi bi-card-list"></i>
+                                    <span>Register</span>
+                                </a>
+                            </li><!-- End Register Page Nav -->
 
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="pages-register.html">
-                    <i class="bi bi-card-list"></i>
-                    <span>Register</span>
-                </a>
-            </li><!-- End Register Page Nav -->
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" href="pages-login.html">
+                                    <i class="bi bi-box-arrow-in-right"></i>
+                                    <span>Login</span>
+                                </a>
+                            </li><!-- End Login Page Nav -->
+                        </ul>
+                    }
+                    else{
+                        <ul class="sidebar-nav" id="sidebar-nav">
 
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="pages-login.html">
-                    <i class="bi bi-box-arrow-in-right"></i>
-                    <span>Login</span>
-                </a>
-            </li><!-- End Login Page Nav -->
-        </ul>
+                            <li class="nav-item">
+                                <a class="nav-link " href="index.html">
+                                    <i class="bi bi-grid"></i>
+                                    <span>Trang chủ</span>
+                                </a>
+                            </li><!-- End Dashboard Nav -->
+                            <!--Lam thêm  start-->
+                         
+                            <!--Lam thêm end-->
+
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" asp-controller="BanHangTaiQuay" asp-action="BanHang">
+                                    <i class="bi bi-menu-button-wide"></i><span>Bán hàng</span>
+                                </a>
+                                <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                                    <li>
+                                        <a asp-controller="LoaiSP" asp-action="Show">
+                                            <i class="bi bi-circle"></i><span>Loại Sản Phẩm</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" asp-controller="QuanLyHoaDon" asp-action="_QuanLyHoaDon">
+                                    <i class="bi bi-menu-button-wide"></i><span>Quản lý hóa đơn</span>
+                                </a>
+                                <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                                    <li>
+                                        <a asp-controller="LoaiSP" asp-action="Show">
+                                            <i class="bi bi-circle"></i><span>Loại Sản Phẩm</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                         
+
+                           <!-- End Tables Nav -->
+
+                            <!-- End Charts Nav -->
+
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
+                                    <i class="bi bi-gem"></i><span>Quản lý người dùng</span><i class="bi bi-chevron-down ms-auto"></i>
+                                </a>
+                                <ul id="icons-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                                    <li>
+                                        
+                                        <a asp-controller="KhachHang" asp-action="GetAllKhachHang">
+                                            <i class="bi bi-circle"></i><span>Quản Lý Khách Hàng</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li><!-- End Icons Nav -->
+
+                            <li class="nav-heading">Pages</li>
+
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" href="users-profile.html">
+                                    <i class="bi bi-person"></i>
+                                    <span>Profile</span>
+                                </a>
+                            </li><!-- End Profile Page Nav -->
+
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" href="pages-faq.html">
+                                    <i class="bi bi-question-circle"></i>
+                                    <span>F.A.Q</span>
+                                </a>
+                            </li><!-- End F.A.Q Page Nav -->
+
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" href="pages-contact.html">
+                                    <i class="bi bi-envelope"></i>
+                                    <span>Contact</span>
+                                </a>
+                            </li><!-- End Contact Page Nav -->
+
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" href="pages-register.html">
+                                    <i class="bi bi-card-list"></i>
+                                    <span>Register</span>
+                                </a>
+                            </li><!-- End Register Page Nav -->
+
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" href="pages-login.html">
+                                    <i class="bi bi-box-arrow-in-right"></i>
+                                    <span>Login</span>
+                                </a>
+                            </li><!-- End Login Page Nav -->
+                        </ul>
+                    }
+                }
+
+            }
+            
+      }
+      
 
     </aside><!-- End Sidebar-->
 

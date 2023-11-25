@@ -662,7 +662,7 @@ namespace AppAPI.Services
         //    }
         //}
 
-        public bool UpdateTrangThaiGiaoHang(Guid idHoaDon, int trangThai, Guid idNhanVien)
+        public bool UpdateTrangThaiGiaoHang(Guid idHoaDon, int trangThai, Guid? idNhanVien)
         {
             var update = reposHoaDon.GetAll().FirstOrDefault(p => p.ID == idHoaDon);
             List<ChiTietHoaDon> chitiethoadon = reposChiTietHoaDon.GetAll().Where(p => p.IDHoaDon == idHoaDon).ToList();

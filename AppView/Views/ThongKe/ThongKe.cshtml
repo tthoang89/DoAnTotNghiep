@@ -584,7 +584,7 @@
 
      @foreach (var result in thongkesp)
     {
-        <text>labels2.push('@result.TenSP.ToLower()-@result.DoanhThu');</text>
+        <text>labels2.push('@Html.Raw(@result.TenSP.ToLower())-@result.DoanhThu');</text>
         <text>data2.push('@result.SoLuong');</text>
         
     }

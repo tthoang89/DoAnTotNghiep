@@ -5,11 +5,14 @@
     int tongtien = 0;
     int giaSP = 0;
     int tienShip = 0;
-    int giaTri = 0;
-    int hinhThucGiamGia = 1;
+    int? giaTri = null;
+    int? hinhThucGiamGia = null;
     int diem = 0;
     int trangThaiLichSuTichDiem = 1;
     int tileTieuDiem = 0;
+    var trangthaiGiaoHang = 0;
+    var ngaythanhToan = DateTime.Now;
+    int trangthaiDanhGia = 0;
 }
 <style>
     #navbar {
@@ -118,7 +121,6 @@
                                     <div style="border: none; border-radius: 10px; color: white; background-color: black; text-align:center;">
                                         <a style="color:white;" asp-controller="Home" asp-action="ReviewProducts" asp-route-idCTHD="@item.IDCTHD" >Đánh giá sản phẩm</a>
                                     </div>
-                                    
                                 </td>
                             }
                             @{
@@ -127,8 +129,11 @@
                                 giaTri = item.GiaTri;
                                 diem = item.Diem;
                                 trangThaiLichSuTichDiem = item.TrangThaiLichSuTichDiem;
-                                hinhThucGiamGia = item.HinhThucGiamGia;
+                                hinhThucGiamGia =item.HinhThucGiamGia;
                                 tileTieuDiem = item.TiLeTieuDiem;
+                                trangthaiGiaoHang = item.TrangThaiGiaoHang;
+                                ngaythanhToan = Convert.ToDateTime(item.NgayThanhToan);
+                                trangthaiDanhGia += item.TrangThaiDanhGia;
                             }
                         </tr>
                     }
@@ -141,25 +146,32 @@
                                 {
                                     if (trangThaiLichSuTichDiem == 0)
                                     {
-                                        tongtien = giaSP * (100 - giaTri / 100) + tienShip - diem * tileTieuDiem;
+                                        tongtien = giaSP * (100 - Convert.ToInt32(giaTri) / 100) + tienShip - diem * tileTieuDiem;
                                     }else
                                     {
-                                        tongtien = giaSP * (100 - giaTri / 100) + tienShip;
+                                        tongtien = giaSP * (100 - Convert.ToInt32(giaTri) / 100) + tienShip;
                                     }
 
                                 }else if (hinhThucGiamGia == 1)
                                 {
                                     if (trangThaiLichSuTichDiem == 0)
                                     {
-                                        tongtien = giaSP - giaTri + tienShip - diem * tileTieuDiem;
+                                        tongtien = giaSP - Convert.ToInt32(giaTri) + tienShip - diem * tileTieuDiem;
                                     }
                                     else
                                     {
-                                        tongtien = giaSP - giaTri + tienShip;
+                                        tongtien = giaSP - Convert.ToInt32(giaTri) + tienShip;
                                     }
                                 }else
                                 {
-                                    tongtien = giaSP + tienShip;
+                                    if (trangThaiLichSuTichDiem == 0)
+                                    {
+                                        tongtien = giaSP - diem * tileTieuDiem;
+                                    }
+                                    else
+                                    {
+                                        tongtien = giaSP + tienShip;
+                                    }
                                 }
                                 int diemtich = diem * tileTieuDiem;
 
@@ -185,13 +197,13 @@
                                     <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: 130px;padding-right: 70px; text-align: right;">-@giaTri%</td>
                                 </tr>
                             }
-                            else
+                            else if (hinhThucGiamGia == 1)
                             {
                                 <tr>
                                     <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;">
                                         Voucher
                                     </td>
-                                    <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: 130px;padding-right: 70px; text-align: right;">- @giaTri.ToString("n0") VNĐ</td>
+                                    <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: 130px;padding-right: 70px; text-align: right;">- @Convert.ToInt32(giaTri).ToString("n0") VNĐ</td>
                                 </tr>
                             }
                             @if (trangThaiLichSuTichDiem == 0)
@@ -215,6 +227,23 @@
                 </tfoot>
             </table>
         </div>
+        @if (trangthaiGiaoHang == 2)
+        {
+        <div style="text-align:-webkit-right ;">
+                <div style="border: none; border-radius: 10px; color: white; background-color: black; text-align:center;width: 150px; height: 50px; display: grid; align-items: center;">
+                    <a style="color:white;" asp-controller="Home" asp-action="HuyDonHang" asp-route-idHoaDon="@Model.First().ID">Hủy đơn hàng</a>
+                </div>
+            </div>
+        }
+        else if (trangthaiGiaoHang == 6 && DateTime.Now.Subtract(ngaythanhToan).TotalDays < 3 && trangthaiDanhGia == 0)
+        {
+            <div style="text-align:-webkit-right ;">
+                <div style="border: none; border-radius: 10px; color: white; background-color: black; text-align:center;width: 150px; height: 50px; display: grid; align-items: center;">
+                    <a style="color:white;" asp-controller="Home" asp-action="DoiTraHang" asp-route-idHoaDon="@Model.First().ID">Đổi trả hàng/Hoàn hàng</a>
+                </div>
+            </div>
+        }
     </div>
+    
 </section>
 @*@Html.PartialAsync("ReviewProduct")*@

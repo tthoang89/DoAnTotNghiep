@@ -28,8 +28,8 @@ namespace AppData.ViewModels
         public string TenSanPham { get; set;}
         public string DuongDan { get; set; }
         public int TrangThaiDanhGia { get; set; }
-        public int GiaTri { get; set; }
-        public int HinhThucGiamGia { get; set; }
+        public int? GiaTri { get; set; }
+        public int? HinhThucGiamGia { get; set; }
         public int TiLeTieuDiem { get; set; }
     }
 }

@@ -71,6 +71,34 @@
         margin-top: 15px;
         padding:10px;
     }
+
+    .stars-outer {
+        position: relative;
+        display: inline-block;
+    }
+
+    .stars-inner {
+        position: absolute;
+        top: 0;
+        left: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        width: 0;
+    }
+
+    .stars-outer::before {
+        content: "\f005 \f005 \f005 \f005 \f005";
+        font-family: "Font Awesome 5 Free";
+        font-weight: 900;
+        color: #ccc;
+    }
+
+    .stars-inner::before {
+        content: "\f005 \f005 \f005 \f005 \f005";
+        font-family: "Font Awesome 5 Free";
+        font-weight: 900;
+        color: #f8ce0b;
+    }
 </style>
 <div class="container mt-5 mb-5">
     <div class="card">
@@ -97,16 +125,6 @@
                         Mã: <strong id="maSP">@Model.ChiTietSanPhams.First(x=>x.TrangThai==1).ID</strong>
                     </div>
                     <h3>@Model.ChiTietSanPhams.First(x=>x.TrangThai==1).GiaBan.ToString("n0") VNĐ</h3>
-                    <div class="ratings d-flex flex-row align-items-center">
-                        <div class="d-flex flex-row">
-                            <i class='bx bxs-star'></i>
-                            <i class='bx bxs-star'></i>
-                            <i class='bx bxs-star'></i>
-                            <i class='bx bxs-star'></i>
-                            <i class='bx bx-star'></i>
-                        </div>
-                        <span>441 reviews</span>
-                    </div>
                     <div class="mt-5">
                         <span class="fw-bold">Màu Sắc</span>
                         <div class="colors" id="filter-color">                            
@@ -193,28 +211,11 @@
                                                 
                                             </h3>
                                             <div class="mb-3">
-                                                @{
-
-                                                    for (int i = 0; i < Model.SoSao; i++)
-                                                    {
-                                                        <i class="fas fa-star text-warning"></i>
-                                                        
-                                                    }
-                                                    if (Model.SoSao < 5)
-                                                    {
-                                                        for (int i = 4; i > 5-Convert.ToInt32(Model.SoSao); i--)
-                                                        {
-                                                            <i class="fas fa-star star-light mr-1 main_star"></i>
-                                                        }
-                                                    }
-                                                    if (Model.SoSao.ToString() == "NaN")
-                                                    {
-                                                        for (int i = 0; i < 5; i++)
-                                                        {
-                                                            <i class="fas fa-star star-light mr-1 main_star"></i>
-                                                        }
-                                                    }
-                                                }
+                                                <div id="Sao">
+                                                    <div class="stars-outer">
+                                                        <div class="stars-inner"></div>
+                                                    </div>
+                                                </div>
                                                 
                                             </div>
                                             
@@ -224,9 +225,7 @@
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
-                            <div class="mt-5" id="review_content"></div>
                         </div>
                         @{
                             foreach (var item in Model.LSTDanhGia)
@@ -325,6 +324,7 @@
 <script>
     var anhs = @Html.Raw(Json.Serialize(Model.Anhs));
     var chiTietSanPhams = @Html.Raw(Json.Serialize(Model.ChiTietSanPhams));
+    console.log(chiTietSanPhams);
     var kichCos = @Html.Raw(Json.Serialize(Model.KichCos));
     var color = "";
     var size = "";
@@ -405,9 +405,37 @@
                 }
             },
             error: function (response) {
-                console.log(response);
                 toastr.error(response.message, 'Error Alert', { timeOut: 300 });
             }
         });
     }
+    //----
+    
+
+    // Total Stars
+    const starsTotal = 5;
+
+    // Run getRatings when DOM loads
+    document.addEventListener('DOMContentLoaded', getRatings);
+
+    // Init product
+    let product;
+
+    // Get ratings
+    function getRatings() {
+        
+            // Get percentage
+            var starPercentage = (@Model.SoSao / starsTotal) * 100;
+            console.log(starPercentage);
+            // Round to nearest 10
+            var starPercentageRounded = `${Math.round(starPercentage / 10) * 10}%`;
+            console.log(starPercentageRounded);
+            // Set width of stars-inner to percentage
+            document.querySelector(`#Sao .stars-inner`).style.width = starPercentageRounded;
+
+            // Add number rating
+            //document.querySelector(`.#review_content .number-rating`).innerHTML = ratings[rating];
+        
+    }
 </script>
+<script src="https://kit.fontawesome.com/a75b73df5d.js" crossorigin="anonymous"></script>

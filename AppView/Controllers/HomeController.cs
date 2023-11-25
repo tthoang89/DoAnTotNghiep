@@ -16,6 +16,7 @@ using System.Text;
 using System.Web.Helpers;
 using X.PagedList;
 
+
 namespace AppView.Controllers
 {
     public class HomeController : Controller
@@ -48,7 +49,25 @@ namespace AppView.Controllers
         }
         #region SanPham
         [HttpGet]
-        public IActionResult Shop(int? pages)
+        public JsonResult ShowProduct(int page, int pageSize)
+        {
+            HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/getAll").Result;
+            List<SanPhamViewModel> lstSanpham = new List<SanPhamViewModel>();
+            if (response.IsSuccessStatusCode)
+            {
+                lstSanpham = JsonConvert.DeserializeObject<List<SanPhamViewModel>>(response.Content.ReadAsStringAsync().Result);
+                var model = lstSanpham.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+                return Json(new
+                {
+                    data = model,
+                    total = lstSanpham.Count,
+                    status = true
+                });
+            }
+            else return Json(new { status = false });
+        }
+        [HttpGet]
+        public IActionResult Shop()
         {
             HttpResponseMessage responseLoaiSP = _httpClient.GetAsync(_httpClient.BaseAddress + "LoaiSP/getAll").Result;
             if (responseLoaiSP.IsSuccessStatusCode)
@@ -70,16 +89,11 @@ namespace AppView.Controllers
             {
                 ViewData["listChatLieu"] = JsonConvert.DeserializeObject<List<ChatLieu>>(responseChatLieu.Content.ReadAsStringAsync().Result);
             }
-            HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/getAll").Result;
-            List<SanPhamViewModel> lstSanpham = new List<SanPhamViewModel>();
-            if (response.IsSuccessStatusCode)
-            {
-                lstSanpham = JsonConvert.DeserializeObject<List<SanPhamViewModel>>(response.Content.ReadAsStringAsync().Result);
-            }
-            int pageSize = 20;
-            int pageNumber = pages == null || pages < 0 ? 1 : pages.Value;
-            PagedList<SanPhamViewModel> lst = new PagedList<SanPhamViewModel>(lstSanpham, pageNumber, pageSize);
-            return View(lst);
+            return View();
+
+            //int pageNumber = page == null || page < 0 ? 1 : page.Value;
+            //PagedList<SanPhamViewModel> lst = new PagedList<SanPhamViewModel>(lstSanpham, pageNumber, pageSize);
+            //return View(lst);
         }
         [HttpGet]
         public async Task<IActionResult> ProductDetail(string idSanPham,int? pages)
@@ -377,11 +391,37 @@ namespace AppView.Controllers
             }
             else return Json(new { success = false, message = "Add to cart fail" });
         }
-        [HttpGet]
-        public IActionResult UpdateCart()
+        [HttpPost]
+        public IActionResult UpdateCart(List<string> dssl)
         {
+            try
+            {
+                List<ChiTietSanPhamViewModel> chiTietSanPhams;
+                string? result = Request.Cookies["Cart"];
+                chiTietSanPhams = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModel>>(result);
+                foreach (var item in dssl)
+                {
+                    Guid id = Guid.Parse(item.Substring(0, 36));
+                    int sl = Convert.ToInt32(item.Substring(36, item.Length - 36));
+                    foreach (var x in chiTietSanPhams)
+                    {
+                        if (x.ID == id)
+                        {
+                            x.SoLuong = sl;
+                        }
+                    }
+                }
+                CookieOptions cookie = new CookieOptions();
+                cookie.Expires = DateTime.Now.AddDays(30);
+                Response.Cookies.Append("Cart", JsonConvert.SerializeObject(chiTietSanPhams), cookie);
+                return Json(new { success = true, message = "Cập nhật giỏ hàng thành công" });
+            }
+            catch (Exception)
+            {
 
-            return RedirectToAction("ShoppingCart");
+                return Json(new { success = true, message = "Cập nhật giỏ hàng thất bại" });
+            }
+            
         }
         [HttpPost]
         public ActionResult BuyNow(string id,int soLuong)
@@ -529,6 +569,24 @@ namespace AppView.Controllers
                 RedirectToAction("PurchaseOrderDetail", danhGiaCTHDView.idHD);
             }
             return RedirectToAction("PurchaseOrderDetail", danhGiaCTHDView.idHD);
+        }
+        public IActionResult HuyDonHang(Guid idHoaDon)
+        {
+            HttpResponseMessage responseDonMua = _httpClient.PutAsync(_httpClient.BaseAddress + $"HoaDon?idhoadon={idHoaDon}&trangthai=8",null).Result;
+            if (responseDonMua.IsSuccessStatusCode)
+            {
+                RedirectToAction("PurchaseOrder");
+            }
+            return RedirectToAction("PurchaseOrder");
+        }
+        public IActionResult DoiTraHang(Guid idHoaDon)
+        {
+            HttpResponseMessage responseDonMua = _httpClient.PutAsync(_httpClient.BaseAddress + $"HoaDon?idhoadon={idHoaDon}&trangthai=9", null).Result;
+            if (responseDonMua.IsSuccessStatusCode)
+            {
+                RedirectToAction("PurchaseOrder");
+            }
+            return RedirectToAction("PurchaseOrder");
         }
         public IActionResult GetHoaDonByTrangThai([FromBody] HoaDon danhGiaCTHDView)
         {
