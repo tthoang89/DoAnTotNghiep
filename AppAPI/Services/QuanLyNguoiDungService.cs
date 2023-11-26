@@ -247,16 +247,22 @@ namespace AppAPI.Services
             var kh = await context.KhachHangs.FirstOrDefaultAsync(h => h.IDKhachHang == request.ID);
             if (kh != null)
             {
-                kh.Password = request.NewPassword;
-                await context.SaveChangesAsync();
-                return true;
+                if (kh.Password == request.OldPassword)
+                {
+                    kh.Password = request.NewPassword;
+                    await context.SaveChangesAsync();
+                    return true;
+                }
             }
             var nv = await context.NhanViens.FirstOrDefaultAsync(h => h.ID == request.ID);
             if (nv != null)
             {
-                nv.PassWord = request.NewPassword;
-                await context.SaveChangesAsync();
-                return true;
+                if (nv.PassWord == request.OldPassword)
+                {
+                    nv.PassWord = request.NewPassword;
+                    await context.SaveChangesAsync();
+                    return true;
+                }
             }
             return false;
         }

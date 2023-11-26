@@ -21,6 +21,7 @@ namespace AppAPI.Services
                 Ten = nv.Name,
                 Email = nv.Email,
                 Password = nv.Password,
+                SDT = nv.SDT,
 
             };
             await _dbContext.KhachHangs.AddAsync(kh);

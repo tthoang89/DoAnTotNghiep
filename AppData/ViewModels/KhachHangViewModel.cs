@@ -18,6 +18,8 @@ namespace AppData.ViewModels
         [Required, StringLength(30)]
         public string? Name { get; set; }
         [Required, StringLength(8)]
+        public string? SDT { get; set; }
+        [Required, StringLength(8)]
         public string Password { get; set; }
 
     }

@@ -10,5 +10,6 @@ namespace AppData.ViewModels
     {
         public Guid ID { get; set; }
         public string NewPassword { get; set; }
+        public string OldPassword { get; set; }
     }
 }
