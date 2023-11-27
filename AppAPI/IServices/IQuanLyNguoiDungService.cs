@@ -14,5 +14,7 @@ namespace AppAPI.IServices
         Task<bool> ForgetPassword(string email);
 
         Task<bool> ResetPassword(ResetPasswordRequest model);
+        public Task<int> UseDiemTich(int diem, string id);
+
     }
 }

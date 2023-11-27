@@ -131,8 +131,8 @@
                                 @foreach (var item in Model.MauSacs)
                                 {
                                 <label id="tronMau">
-                                    <input type="radio" class="btn-check" id="btn-check-outlined_@item.Ma" autocomplete="off" value="@item.ID" name="color" onclick="getMauSac(this)"/>
-                                    <label for="btn-check-outlined_@item.Ma" style="background-color:@item.Ma;border:white 1px solid;cursor:pointer" id="label_@item.ID">
+                                    <input type="radio" class="btn-check" id="btn-check-outlined_@item.GiaTri" autocomplete="off" value="@item.ID" name="color" onclick="getMauSac(this)"/>
+                                    <label for="btn-check-outlined_@item.GiaTri" style="background-color:@item.GiaTri;border:white 1px solid;cursor:pointer" id="label_@item.ID">
                                     </label>
                                 </label>
                                 }
@@ -145,7 +145,7 @@
                             <ul id="sizes" style="height:35px">
                                 @foreach (var item in Model.KichCos)
                                 {
-                                    <li style="width:70px;height:100%"><input type="button" value="@item.Ten" class="btn btn-light" style="border:1px solid gray!important;width:100%;height:100%" id="@item.Ten" onclick="getKichCo(this)" /></li>
+                                    <li style="width:70px;height:100%"><input type="button" value="@item.GiaTri" class="btn btn-light" style="border:1px solid gray!important;width:100%;height:100%" id="@item.GiaTri" onclick="getKichCo(this)" /></li>
                                 }
                             </ul>
                         </div>
@@ -324,15 +324,14 @@
 <script>
     var anhs = @Html.Raw(Json.Serialize(Model.Anhs));
     var chiTietSanPhams = @Html.Raw(Json.Serialize(Model.ChiTietSanPhams));
-    console.log(chiTietSanPhams);
     var kichCos = @Html.Raw(Json.Serialize(Model.KichCos));
     var color = "";
     var size = "";
     $(document).ready(function () {
         var chiTietSanPham = chiTietSanPhams.find(x => x.trangThai == 1);
-        color = chiTietSanPham.idMauSac;
-        size = chiTietSanPham.idKichCo;
-        var anhMacDinh = anhs.find(x => x.idMauSac == color).duongDan;
+        color = chiTietSanPham.mauSac;
+        size = chiTietSanPham.kichCo;
+        var anhMacDinh = anhs.find(x => x.maMau == color).duongDan;
         document.getElementById("main_product_image").src = "/img/product/" + anhMacDinh;
     });
     function changeImage(element) {
@@ -342,9 +341,8 @@
     }
     function getMauSac(element) {
         color = element.value;
-        var chiTietSP = chiTietSanPhams.find(x => x.idMauSac == element.value && x.idKichCo == size);
-        console.log(chiTietSP);
-        var anh = anhs.find(x => x.idMauSac == element.value);
+        var chiTietSP = chiTietSanPhams.find(x => x.mauSac == element.value && x.kichCo == size);
+        var anh = anhs.find(x => x.maMau == element.value);
         var lstMauSacElement = document.getElementById("filter-color").children;
         for (let i = 0; i < lstMauSacElement.length;i++){
             if (lstMauSacElement[i].children[1].style.border = "1px black solid") {
@@ -359,7 +357,6 @@
     function getKichCo(element) {
         size = kichCos.find(x=>x.ten==element.value).id;
         var chiTietSP = chiTietSanPhams.find(x => x.idKichCo == size && x.idMauSac==color);
-        console.log(chiTietSP);
         var lstKichCoElement = document.getElementById("sizes").children;
         for (let i = 0; i < lstKichCoElement.length; i++) {
             if (lstKichCoElement[i].children[0].style.border = "2px black solid") {
@@ -385,7 +382,6 @@
                 }
             },
             error: function (response) {
-                console.log(response);
                 toastr.error(response.message, 'Error Alert', { timeOut: 300 });
             }
         });
@@ -426,10 +422,8 @@
         
             // Get percentage
             var starPercentage = (@Model.SoSao / starsTotal) * 100;
-            console.log(starPercentage);
             // Round to nearest 10
             var starPercentageRounded = `${Math.round(starPercentage / 10) * 10}%`;
-            console.log(starPercentageRounded);
             // Set width of stars-inner to percentage
             document.querySelector(`#Sao .stars-inner`).style.width = starPercentageRounded;
 

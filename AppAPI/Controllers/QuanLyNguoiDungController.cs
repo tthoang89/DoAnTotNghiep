@@ -215,6 +215,11 @@ namespace AppAPI.Controllers
                 return Ok("Đổi mật khẩu  thành công");
             }
         }
+        [HttpGet("UseDiemTich")]
+        public async Task<int> UseDiemTich(int diem, string id)
+        {
+            return await service.UseDiemTich(diem, id);
+        }
         //End
     }
 }

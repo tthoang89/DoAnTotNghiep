@@ -260,6 +260,24 @@ namespace AppAPI.Services
             }
             return false;
         }
+        public async Task<int> UseDiemTich(int diem,string id)
+        {
+            var khachHang= context.KhachHangs.First(x=>x.IDKhachHang==new Guid(id));
+            var quyDoiDiem = context.QuyDoiDiems.First(x => x.TrangThai == 1);
+
+            if(quyDoiDiem == null) 
+            {
+                return 0;
+            }
+            else if (diem > khachHang.DiemTich)
+            {
+                return 0;
+            }
+            else
+            {
+                return diem * quyDoiDiem.TiLeTieuDiem;
+            }
+        }
         //End
     }
 }

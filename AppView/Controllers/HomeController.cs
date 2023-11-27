@@ -310,27 +310,34 @@ namespace AppView.Controllers
         [HttpGet]
         public IActionResult ShoppingCart()
         {
-            List<ChiTietSanPhamViewModel> bienThes = new List<ChiTietSanPhamViewModel>();
+            
+            List<GioHangRequest> lstGioHang = new List<GioHangRequest>();
             if (Request.Cookies["Cart"] != null)
             {
-                bienThes = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModel>>(Request.Cookies["Cart"]);
+                lstGioHang = JsonConvert.DeserializeObject<List<GioHangRequest>>(Request.Cookies["Cart"]);
             }
             // laam them
             int cout = 0;
-            for (int i = 0; i < bienThes.Sum(c => c.SoLuong); i++)
+            for (int i = 0; i < lstGioHang.Sum(c => c.SoLuong); i++)
             {
                 cout++;
             }
-            long tongtien = 0;
-            foreach (var x in bienThes)
+            var response = _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCart?request="+ Request.Cookies["Cart"]).Result;
+            if (response.IsSuccessStatusCode)
             {
-                tongtien += x.GiaBan * x.SoLuong;
+                var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response.Content.ReadAsStringAsync().Result);
+                TempData["TongTien"] = temp.TongTien.ToString();
+                ViewData["cout"] = cout;
+                // lam end
+                TempData["ListBienThe"] = JsonConvert.SerializeObject(temp.GioHangs);
+                List<GioHangRequest> lst = temp.GioHangs;
+                return View(lst);
             }
-            TempData["TongTien"] = tongtien.ToString();
-            ViewData["cout"] = cout;
-            // lam end
-            TempData["ListBienThe"] = JsonConvert.SerializeObject(bienThes);
-            return View(bienThes);
+            else return BadRequest();
+            //foreach (var x in lstGioHang)
+            //{
+            //    tongtien += x.GiaBan * x.SoLuong;
+            //}
         }
         [HttpGet]
         public IActionResult DeleteFromCart(Guid id)
@@ -350,21 +357,21 @@ namespace AppView.Controllers
         [HttpPost]
         public ActionResult AddToCart(string id, int? sl)
         {
-            HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + $"SanPham/GetChiTietSanPhamByID?id="+id).Result;
-            if (response.IsSuccessStatusCode)
-            {
-                List<ChiTietSanPhamViewModel> chiTietSanPhams;
-                ChiTietSanPhamViewModel chiTietSanPham = JsonConvert.DeserializeObject<ChiTietSanPhamViewModel>(response.Content.ReadAsStringAsync().Result);
+            //HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + $"SanPham/GetChiTietSanPhamByID?id="+id).Result;
+            //if (response.IsSuccessStatusCode)
+            //{
+            List<GioHangRequest> lstGioHang;
+                //ChiTietSanPhamViewModel chiTietSanPham = JsonConvert.DeserializeObject<ChiTietSanPhamViewModel>(response.Content.ReadAsStringAsync().Result);
                 string? result = Request.Cookies["Cart"];
                 if (string.IsNullOrEmpty(result))
                 {
-                    chiTietSanPham.SoLuong = (sl != null)?Convert.ToInt32(sl):1;
-                    chiTietSanPhams = new List<ChiTietSanPhamViewModel>() { chiTietSanPham };
+                    //chiTietSanPham.SoLuong = (sl != null)?sl.Value:1;
+                    lstGioHang = new List<GioHangRequest>() { new GioHangRequest() {IDChiTietSanPham=new Guid(id),SoLuong= (sl != null) ? sl.Value : 1 } };
                 }
                 else
                 {
-                    chiTietSanPhams = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModel>>(result);
-                    var tempBienThe = chiTietSanPhams.FirstOrDefault(x => x.ID == chiTietSanPham.ID);
+                    lstGioHang = JsonConvert.DeserializeObject<List<GioHangRequest>>(result);
+                    var tempBienThe = lstGioHang.FirstOrDefault(x => x.IDChiTietSanPham == new Guid(id));
                     if (tempBienThe != null)
                     {
                         //Sua 
@@ -374,22 +381,22 @@ namespace AppView.Controllers
                         }
                         else
                         {
-                            tempBienThe.SoLuong = tempBienThe.SoLuong + Convert.ToInt32(sl);
+                            tempBienThe.SoLuong = tempBienThe.SoLuong + sl.Value;
                         }
                         
                     }
                     else
                     {
-                        chiTietSanPham.SoLuong = (sl != null) ? Convert.ToInt32(sl) : 1;
-                        chiTietSanPhams.Add(chiTietSanPham);
+                        //chiTietSanPham.SoLuong = (sl != null) ? sl.Value : 1;
+                        lstGioHang.Add(new GioHangRequest() { IDChiTietSanPham = new Guid(id), SoLuong = (sl != null) ? sl.Value : 1 });
                     }
                 }
                 CookieOptions cookie = new CookieOptions();
                 cookie.Expires = DateTime.Now.AddDays(30);
-                Response.Cookies.Append("Cart", JsonConvert.SerializeObject(chiTietSanPhams), cookie);
+                Response.Cookies.Append("Cart", JsonConvert.SerializeObject(lstGioHang), cookie);
                 return Json(new { success = true, message = "Add to cart successfully" });
-            }
-            else return Json(new { success = false, message = "Add to cart fail" });
+            //}
+            //else return Json(new { success = false, message = "Add to cart fail" });
         }
         [HttpPost]
         public IActionResult UpdateCart(List<string> dssl)
@@ -768,6 +775,17 @@ namespace AppView.Controllers
 
         #region CheckOut
         [HttpGet]
+        public JsonResult UseDiemTich(int diem,string id)
+        {
+            var response = _httpClient.GetAsync(_httpClient.BaseAddress + $"QuanLyNguoiDung/UseDiemTich?diem={diem}&id={id}").Result;
+            if (response.IsSuccessStatusCode)
+            {
+                var soTienGiam = response.Content.ReadAsStringAsync().Result;
+                return Json(soTienGiam);
+            }
+            else return Json(0);
+        }
+        [HttpGet]
         public IActionResult CheckOut()
         {
             return View();
@@ -779,18 +797,21 @@ namespace AppView.Controllers
             {
                 List<ChiTietHoaDonViewModel> lstChiTietHoaDon = new List<ChiTietHoaDonViewModel>();
                 string temp = TempData["ListBienThe"] as string;
-                foreach (var item in JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModel>>(temp))
+                foreach (var item in JsonConvert.DeserializeObject<List<GioHangRequest>>(temp))
                 {
                     ChiTietHoaDonViewModel chiTietHoaDon = new ChiTietHoaDonViewModel();
-                    chiTietHoaDon.IDChiTietSanPham = item.ID;
+                    chiTietHoaDon.IDChiTietSanPham = item.IDChiTietSanPham;
                     chiTietHoaDon.SoLuong = item.SoLuong;
-                    chiTietHoaDon.DonGia = item.GiaBan;
+                    chiTietHoaDon.DonGia = item.DonGia.Value;
                     lstChiTietHoaDon.Add(chiTietHoaDon);
                 }
                 hoaDon.ChiTietHoaDons = lstChiTietHoaDon;
-                hoaDon.Diem = 0;
+                var session = HttpContext.Session.GetString("LoginInfor");
+                if (session != null)
+                {
+                    hoaDon.IDNguoiDung = JsonConvert.DeserializeObject<LoginViewModel>(session).Id;
+                }
                 TempData.Remove("TongTien");
-                //hoaDon.TongTien = Convert.ToInt32(tongTien.Replace(",", ""));
                 HttpResponseMessage response = _httpClient.PostAsJsonAsync("HoaDon", hoaDon).Result;
                 if (response.IsSuccessStatusCode)
                 {

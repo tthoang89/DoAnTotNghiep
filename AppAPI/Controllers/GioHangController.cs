@@ -1,7 +1,9 @@
 ﻿using AppAPI.IServices;
 using AppAPI.Services;
 using AppData.Models;
+using AppData.ViewModels.SanPham;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -12,7 +14,7 @@ namespace AppAPI.Controllers
     public class GioHangController : ControllerBase
     {
         private readonly IGioHangServices gioHangServices;
-        public GioHangController(GioHangServices gioHangServices)
+        public GioHangController(IGioHangServices gioHangServices)
         {
             this.gioHangServices = gioHangServices;
         }
@@ -66,6 +68,12 @@ namespace AppAPI.Controllers
             {
                 return false;
             }
+        }
+        [HttpGet("GetCart")]
+        public GioHangViewModel GetCart(string request)
+        {
+            var lst = JsonConvert.DeserializeObject<List<GioHangRequest>>(request); 
+            return gioHangServices.GetCart(lst);
         }
     }
 }
