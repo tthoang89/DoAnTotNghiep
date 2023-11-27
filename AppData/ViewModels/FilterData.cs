@@ -15,5 +15,7 @@ namespace AppData.ViewModels
         public List<Guid> kichCo { get; set; }
         public List<Guid> chatLieu { get; set; }
         public string sortSP { get; set; }
+        public int page { get; set; }
+        public int pageSize { get; set; }
     }
 }

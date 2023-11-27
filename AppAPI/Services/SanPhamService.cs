@@ -171,9 +171,9 @@ namespace AppAPI.Services
                 kichCos.Add(_context.KichCos.FindAsync(x.IDKichCo).Result);
             }
             ChiTietSanPhamViewModelHome chiTietSanPham = new ChiTietSanPhamViewModelHome();
+            chiTietSanPham.IDSanPham = sanPham.ID;
             chiTietSanPham.Ten = sanPham.Ten;
-
-            chiTietSanPham.Anhs = _context.Anhs.Where(x => x.IDSanPham == idSanPham).ToList(); ;
+            chiTietSanPham.Anhs = _context.Anhs.Where(x => x.IDSanPham == idSanPham).ToList();
             chiTietSanPham.ChiTietSanPhams = lstChiTietSanPham;
             chiTietSanPham.MauSacs = mauSacs.Distinct().ToList();
             chiTietSanPham.KichCos = kichCos.Distinct().ToList();
@@ -185,22 +185,11 @@ namespace AppAPI.Services
                                join hd in _context.HoaDons on cthd.IDHoaDon equals hd.ID
                                join lstd in _context.LichSuTichDiems on hd.ID equals lstd.IDHoaDon
                                join kh in _context.KhachHangs on lstd.IDKhachHang equals kh.IDKhachHang
-                               join cl in _context.ChatLieus on sp.IDChatLieu equals cl.ID
-                               join ms in _context.MauSacs on ctsp.IDMauSac equals ms.ID
-                               join kc in _context.KichCos on ctsp.IDKichCo equals kc.ID
                                select new DanhGiaViewModel()
                                {
-                                   ID = dg.ID,
                                    Sao = dg.Sao,
-                                   BinhLuan = dg.BinhLuan,
-                                   TrangThai = dg.TrangThai,
-                                   TenKH = kh.Ten,
-                                   ChatLieu = cl.Ten,
-                                   MauSac = ms.Ten,
-                                   KichCo = kc.Ten,
-                                   NgayDanhGia = dg.NgayDanhGia
                                }).ToListAsync();
-            chiTietSanPham.LSTDanhGia = query;
+         
             foreach (var item in query)
             {
                 chiTietSanPham.SoSao += Convert.ToInt32(item.Sao);

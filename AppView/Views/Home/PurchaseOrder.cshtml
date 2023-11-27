@@ -101,7 +101,7 @@
                         <th scope="col">Điểm tích</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="DShoaDon">
                     @foreach (var item in Model)
                     {
                         <tr>
@@ -151,27 +151,62 @@
     </div>
 </section>
 <script>
+    var pageIndex = 1;
+    var pagesize = 10;
     function FilterHoaDon(){
         var x = document.querySelector('input[name="menu"]:checked').value;
-        var data = {
-            TrangThaiGiaoHang: x
-        }
-            fetch("/Home/GetHoaDonByTrangThai", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
+        var data = { TrangThaiGiaoHang: x, page: pageIndex, pageSize: pagesize}
+        $.ajax({
+            url: "/Home/GetHoaDonByTrangThai",
+            type: "GET",
+            data: data,
+            success: function (response) {
+                $("#DShoaDon").empty();
+                console.log(response.data);
+                for (let i = 0; i < response.data.length; i++) {
+                    $("#DShoaDon").append(`<tr>
+                            <th scope="row"><a asp-controller="Home" asp-action="PurchaseOrderDetail" asp-route-idHoaDon="${response.data[i].idHoaDon}">${response.data[i].maHD}</a></th>
+                            <td>${response.data[i].ngayTao}</td>
+                            <td>${response.data[i].tongTien} VNĐ</td>
+                                <td>
+                                   ${response.data[i].trangThai === 2 ? '<label>Chờ xác nhận</label>' :
+                            response.data[i].trangThai === 3 ? '<label>Đang giao hàng</label>' :
+                                response.data[i].trangThai === 4 ? '<label>Đang hoàn hàng</label>' :
+                                    response.data[i].trangThai === 5 ? '<label>Hoàn hàng thành công</label>' :
+                                        response.data[i].trangThai === 6 ? '<label>Hoàn thành</label>' :
+                                            response.data[i].trangThai === 7 ? '<label>Đơn hủy</label>' :
+                                                response.data[i].trangThai === 8 ? '<label>Chờ xác nhận hủy</label>' :
+                                                    '<label>Chờ xác nhận đổi trả hàng</label>'}
+                               </td>
+                            <td>
+                                    ${response.data[i].trangThaiLSTD === 0 ? '<label>Người dùng sử dụng điểm</label>' :
+                                    response.data[i].diem
+                                    }
+                            </td>
+                            
+                        </tr>`);
+                }
+                paginghd(response.total, function () {
+                    FilterHoaDon()
+                });
             },
-            body: JSON.stringify(data)
-        }).then(function (reponse) {
-            if (reponse.ok) {
-                return reponse.text();
-            } else {
-                throw new Error("Error sending data to controller");
+            error: function (err) {
+                console.log('Error:', err);
             }
-        }).then(function (result) {
-            $("#AllHoaDon").html(result);
-        }).catch(function (error) {
-            console.log("An error occured", error)
-        })
+        });
+    }
+    function paginghd(totalrow, callback) {
+        var totalpages = Math.ceil(totalrow / pageSize);
+        $("#paginghd").twbsPagination({
+            totalPages: totalpages,
+            visiblePages: 5,
+            onPageClick: function (event, page) {
+                pageIndexhd = page;
+                setTimeout(callback, 200);
+            }
+        });
+    }
+    function billDetail(id){
+        window.location = 'https://localhost:5001/Home/PurchaseOrderDetail?idHoaDon=';
     }
 </script>

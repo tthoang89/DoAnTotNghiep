@@ -76,7 +76,7 @@ namespace AppAPI.Services
             try
             {
                 var lstDonMua = await(from a in context.LichSuTichDiems
-                                       join b in context.HoaDons on a.IDHoaDon equals b.ID
+                                       join b in context.HoaDons.Where(p=>p.LoaiHD == 0) on a.IDHoaDon equals b.ID
                                        join d in context.KhachHangs on a.IDKhachHang equals d.IDKhachHang
                                        join e in context.QuyDoiDiems on a.IDQuyDoiDiem equals e.ID
                                       select new DonMuaViewModel()
