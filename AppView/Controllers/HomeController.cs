@@ -557,12 +557,13 @@ namespace AppView.Controllers
             return View("ReviewProducts",hdctDanhGia);
         }
         [HttpPost]
-        public IActionResult ChangePassword(string newPassword)
+        public IActionResult ChangePassword(string newPassword,string oldPassword)
         {
             var session = HttpContext.Session.GetString("LoginInfor");
             ChangePasswordRequest request = new ChangePasswordRequest();
             request.ID = JsonConvert.DeserializeObject<LoginViewModel>(session).Id;
             request.NewPassword = newPassword;
+            request.OldPassword = oldPassword;
             var response = _httpClient.PutAsJsonAsync(_httpClient.BaseAddress + "QuanLyNguoiDung/ChangePassword",request).Result;
             HttpContext.Session.Remove("LoginInfor");
             if(response.IsSuccessStatusCode) return RedirectToAction("Login");
@@ -706,16 +707,20 @@ namespace AppView.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult ChangeForgotPassword(string password)
+        public IActionResult ChangeForgotPassword(string password,string confirmPassword)
         {
-            string[] submit = HttpContext.Session.GetString("ForgotPassword").Split(":");
-            KhachHangViewModel khachHang = new KhachHangViewModel() { Id = new Guid(submit[0]),Password = password };
-            HttpResponseMessage response = _httpClient.PostAsJsonAsync(_httpClient.BaseAddress + "KhachHang/ChangeForgotPassword", khachHang).Result;
-            if (response.IsSuccessStatusCode)
+            if (password == confirmPassword)
             {
-                return RedirectToAction("Login");
-            }
-            else return BadRequest();
+                string[] submit = HttpContext.Session.GetString("ForgotPassword").Split(":");
+                KhachHangViewModel khachHang = new KhachHangViewModel() { Id = new Guid(submit[0]), Password = password };
+                HttpResponseMessage response = _httpClient.PostAsJsonAsync(_httpClient.BaseAddress + "KhachHang/ChangeForgotPassword", khachHang).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Login");
+                }
+                else return BadRequest();
+            }else return BadRequest();
+            
         }
 
 
