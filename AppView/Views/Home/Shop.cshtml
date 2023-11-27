@@ -83,7 +83,7 @@
                 <div class="shop__sidebar">
                     <div class="shop__sidebar__search">
                         <form id="search-filter">
-                            <input type="text" oninput="Filtered()" placeholder="Tìm kiếm theo tên..." name="ten" id="search">
+                            <input type="text" oninput="loadsp()" placeholder="Tìm kiếm theo tên..." name="ten" id="search">
                             <span class="icon_search"></span>
                         </form>
 
@@ -108,7 +108,7 @@
 
                                                         <div id="collapse_@item.Ten" class="collapse">
                                                             <div class="card-body">
-                                                                <div id="LoaiSpFilter" onchange="Filtered()">
+                                                                <div id="LoaiSpFilter" onchange="loadsp()">
                                                                     @foreach (var x in listLoaiSP.Where(p => p.IDLoaiSPCha == item.ID).ToList())
                                                                     {
                                                                         <label>
@@ -136,7 +136,7 @@
                                 <div id="collapseThree" class="collapse show" data-parent="#accordionExample">
                                     <div class="card-body">
                                         <div>
-                                            <ul id="filter-price" onchange="Filtered()">
+                                            <ul id="filter-price" onchange="loadsp()">
                                                 <li><input type="checkbox" style="cursor:pointer" id="price-1" val="1" /> Dưới 100.000 VNĐ</li>
                                                 <li><input type="checkbox" id="price-2" val="2" /> 100.000 - 200.000 VNĐ</li>
                                                 <li><input type="checkbox" id="price-3" val="3" /> 200.000 - 300.000 VNĐ</li>
@@ -154,7 +154,7 @@
                                 </div>
                                 <div id="collapseFour" class="collapse show" data-parent="#accordionExample">
                                     <div class="card-body">
-                                        <div @*class="shop__sidebar__size"*@ id="filter-size" onchange="Filtered()">
+                                        <div @*class="shop__sidebar__size"*@ id="filter-size" onchange="loadsp()">
                                             @foreach (var item in listKichCo)
                                             {
                                                 <label>
@@ -178,7 +178,7 @@
                                 </div>
                                 <div id="collapseFive" class="collapse show" data-parent="#accordionExample">
                                     <div class="card-body">
-                                        <div @*class="shop__sidebar__color"*@ id="filter-color" onchange="Filtered()">
+                                        <div @*class="shop__sidebar__color"*@ id="filter-color" onchange="loadsp()">
                                             @foreach (var item in listMauSac)
                                             {
                                                 <label id="tronMau">
@@ -216,7 +216,7 @@
                                 </div>
                                 <div id="collapseSix" class="collapse show" data-parent="#accordionExample">
                                     <div class="card-body">
-                                        <div class="shop__sidebar__tags" id="filter-material" onchange="Filtered()">
+                                        <div class="shop__sidebar__tags" id="filter-material" onchange="loadsp()">
                                             @foreach (var item in listChatLieu)
                                             {
                                                 <label>
@@ -251,7 +251,7 @@
                         <div class="col-lg-6 col-md-6 col-sm-6">
                             <div class="shop__product__option__right">
                                 <p>Sắp xếp theo:</p>
-                                <select id="Sort-product" class="form-select" aria-label="Default select example" onchange="Filtered()">
+                                <select id="Sort-product" class="form-select" aria-label="Default select example" onchange="loadsp()">
                                     <option value="1">Sản phẩm nổi bật</option>
                                     <option value="2">Giá: Tăng dần</option>
                                     <option value="3">Giá: Giảm dần</option>
@@ -303,21 +303,25 @@
         loadsp();
     });
     function loadsp() {
+        var PriceRange = Filter();
+        var searchfilter = Search();
+        var idloaiSp = filterLoaiSP();
+        var idMauSac = filterMauSac();
+        var idKichCo = filterKichCo();
+        var idChatLieu = filterChatLieu();
+        var idsortSP = Sort();
+        var request = { page: pageIndex, pageSize: pagesize, priceRange: PriceRange, search: searchfilter, loaiSP: idloaiSp, mauSac: idMauSac, kichCo: idKichCo, chatLieu: idChatLieu, sortSP: idsortSP };
         $.ajax({
             url: "/Home/ShowProduct",
-            type: "GET",
-            data: {
-                page: pageIndex,
-                pageSize: pagesize
-            },
-            dataType: "json",
+            type: "POST",
+            data: request,
             success: function (response) {
                 $("#filtered-products").empty();
                 $.each(response.data, function (i, item) {
                     $("#filtered-products").append("<div class='col-lg-4 col-md-6 col-sm-6'><div class='product__item'><div class='product__item__pic set-bg'><a href='/Home/ProductDetail?idSanPham=" + item.id + "' > <img style='width:260px;height:265px;' src='/img/product/" + item.image + "'></a></div><div class='product__item__text'><h6>"+item.ten+"</h6><a onclick=\"addCart('"+item.idChiTietSanPham+"')\" class='add-cart' style='cursor:pointer'> + Thêm vào giỏ hàng </a><h5 style='color:red'> "+item.giaBan+" </h5></div></div></div>");
                 });
                 pagingsp(response.total, function () {
-
+                    console.log(response);
                     loadsp();
                 });
             },
@@ -394,7 +398,7 @@
         })
         return value
     }
-    function Filter(formId) {
+    function Filter() {
         var checkboxes = $('#filter-price input[type="checkbox"]:checked')
         var value = []
         checkboxes.each(function () {
@@ -416,7 +420,7 @@
     function allowUncheck(e) {
         if (this.previous) {
             this.checked = false;
-            Filtered();
+            loadsp();
         }
         // need to update previous on all elements of this group
         // (either that or store the id of the checked element)
@@ -425,39 +429,39 @@
                 elem.previous = elem.checked;
             });
     }
-    function Filtered() {
-        var PriceRange = Filter("filter-price");
-        var searchfilter = Search();
-        var idloaiSp = filterLoaiSP();
-        var idMauSac = filterMauSac();
-        var idKichCo = filterKichCo();
-        var idChatLieu = filterChatLieu();
-        var idsortSP = Sort();
-        var data = {
-            priceRange: PriceRange,
-            search: searchfilter,
-            loaiSP: idloaiSp,
-            mauSac: idMauSac,
-            kichCo: idKichCo,
-            chatLieu: idChatLieu,
-            sortSP: idsortSP
-        }
-        fetch("/Home/GetFilteredProducts", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data)
-        }).then(function (reponse) {
-            if (reponse.ok) {
-                return reponse.text();
-            } else {
-                throw new Error("Error sending data to controller");
-            }
-        }).then(function (result) {
-            $("#filtered-products").html(result);
-        }).catch(function (error) {
-            console.log("An error occured", error)
-        })
-    }
+    //function Filtered() {
+    //    var PriceRange = Filter("filter-price");
+    //    var searchfilter = Search();
+    //    var idloaiSp = filterLoaiSP();
+    //    var idMauSac = filterMauSac();
+    //    var idKichCo = filterKichCo();
+    //    var idChatLieu = filterChatLieu();
+    //    var idsortSP = Sort();
+    //    var data = {
+    //        priceRange: PriceRange,
+    //        search: searchfilter,
+    //        loaiSP: idloaiSp,
+    //        mauSac: idMauSac,
+    //        kichCo: idKichCo,
+    //        chatLieu: idChatLieu,
+    //        sortSP: idsortSP
+    //    }
+    //    fetch("/Home/GetFilteredProducts", {
+    //        method: "POST",
+    //        headers: {
+    //            "Content-Type": "application/json"
+    //        },
+    //        body: JSON.stringify(data)
+    //    }).then(function (reponse) {
+    //        if (reponse.ok) {
+    //            return reponse.text();
+    //        } else {
+    //            throw new Error("Error sending data to controller");
+    //        }
+    //    }).then(function (result) {
+    //        $("#filtered-products").html(result);
+    //    }).catch(function (error) {
+    //        console.log("An error occured", error)
+    //    })
+    //}
 </script>

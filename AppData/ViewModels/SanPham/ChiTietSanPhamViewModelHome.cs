@@ -9,6 +9,7 @@ namespace AppData.ViewModels.SanPham
 {
     public class ChiTietSanPhamViewModelHome
     {
+        public Guid IDSanPham { get; set; }
         public string Ten { get; set; }
         public float SoSao { get; set; }
         public int SoDanhGia { get; set; }

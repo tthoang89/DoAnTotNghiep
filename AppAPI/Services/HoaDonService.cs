@@ -146,7 +146,7 @@ namespace AppAPI.Services
                         //tích điểm, dùng điểm
                         if (hoaDon.IDNguoiDung != null)
                         {
-                            QuyDoiDiem quyDoiDiem = reposQuyDoiDiem.GetAll().First();
+                            QuyDoiDiem quyDoiDiem = reposQuyDoiDiem.GetAll().First(p=>p.TrangThai > 0);
                             KhachHang khachHang = reposKhachHang.GetAll().FirstOrDefault(p => p.IDKhachHang == hoaDon.IDNguoiDung);
                             if (hoaDon.Diem == 0 || hoaDon.Diem == null)
                             {
