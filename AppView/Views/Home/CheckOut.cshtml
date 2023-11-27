@@ -1,5 +1,13 @@
 ﻿@using AppData.Models;
+@using AppData.ViewModels;
+@using Newtonsoft.Json;
 @{
+    var loginInfor = new LoginViewModel();
+    string? session = Context.Session.GetString("LoginInfor");
+    if (session != null)
+    {
+        loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(Context.Session.GetString("LoginInfor"));
+    }
     string tongtien = TempData.Peek("TongTien") as string;
     long tienship = 0;
     Layout = "_Layout";
@@ -126,11 +134,18 @@
                                 Áp dụng
                             </button>
                         </div>
-                        <div style="position:relative">
-                            <input type="text" placeholder="Nhập số điểm" style="font-size:14px;color:#b7b7b7;height: 50px;width: 100%;border: 1px solid #e1e1e1;padding-left: 20px;">
-                            <button type="submit" style="font-size: 14px;color: #ffffff;font-weight: 700;letter-spacing: 2px;text-transform: uppercase;background: #111111;padding: 0 30px;border: none;position: absolute;right: 0;top: 0;height: 100%;">Áp dụng</button>
-                        </div>
-                        <p>Bạn hiện tại có: 12 điểm</p>
+                        @if (session != null)
+                        {
+                            <div style="position:relative">
+                                <input type="text" placeholder="Nhập số điểm" style="font-size:14px;color:#b7b7b7;height: 50px;width: 100%;border: 1px solid #e1e1e1;padding-left: 20px;" id="diemTich">
+                                <button onclick="usediem()" type="submit" style="font-size: 14px;color: #ffffff;font-weight: 700;letter-spacing: 2px;text-transform: uppercase;background: #111111;padding: 0 30px;border: none;position: absolute;right: 0;top: 0;height: 100%;">Áp dụng</button>
+                            </div>
+                            <p>Bạn hiện tại có: @loginInfor.DiemTich điểm</p>
+                        }
+                        else
+                        {
+                            <a asp-action="Login">Đăng nhập để sử dụng tích điểm</a>
+                        }
                     </div>
                     <div class="checkout__order">
                         <h4 class="order__title">Đơn hàng của bạn</h4>
@@ -144,6 +159,7 @@
                         <ul class="checkout__order__products">
                             <li>Subtotal <span>@tongtien VNĐ</span></li>
                             <li id="moneyvoucher" hidden></li>
+                            <li id="moneyscore" hidden></li>
                             <li>Tiền ship <span id="fee">@tienship VNĐ</span></li>
                             <li>Tổng tiền <span id="total">@tongtien VNĐ</span></li>
                         </ul>
@@ -162,10 +178,13 @@
 <script src="~/js/jquery-3.3.1.min.js"></script>
 <script type="text/javascript">
     var tienShip = 0;
+    var tienDiem = 0;
     var tienVoucher = 0;
     var tinh = "";
     var huyen = "";
     var xa = "";
+    var voucher = "";
+    var diemTich = 0;
     $(document).ready(function () {
         $.ajax({
             type: "GET",
@@ -243,7 +262,7 @@
                     $('#dfward').remove();
                     tienShip = data.data.total;
                     document.getElementById("fee").innerHTML = data.data.total + " VNĐ";
-                    document.getElementById("total").innerHTML = (tienShip + @tongtien-tienVoucher) + "VNĐ";
+                    document.getElementById("total").innerHTML = (tienShip + @tongtien-tienVoucher - tienDiem) + "VNĐ";
                 },
                 error: function (reponse) {
                     alert(reponse.responseText);
@@ -256,7 +275,6 @@
         var email = $("#email").val();
         var sdt = $("#phone").val();
         var diaChi = $("#address").val();
-        var voucher = $("#voucher").val();
         $('.invalid-feedback').text('');
         $('.is-invalid').removeClass('is-invalid');
         if (ten.trim().length == 0) {
@@ -287,7 +305,7 @@
             hasError = true;
         }
         var pttt = $('input[name="pttt"]:checked').val();
-        var objHoaDon = { Ten: ten, Email: email, SDT: sdt, DiaChi: diaChi + ", " + xa + ", " + huyen + ", " + tinh, TienShip: tienShip, PhuongThucThanhToan: pttt, TongTien: tienShip + @tongtien-tienVoucher, TenVoucher: voucher };
+        var objHoaDon = { Ten: ten, Email: email, SDT: sdt, DiaChi: diaChi + ", " + xa + ", " + huyen + ", " + tinh, TienShip: tienShip, PhuongThucThanhToan: pttt, TongTien: tienShip + @tongtien-tienVoucher - tienDiem, TenVoucher: voucher, Diem: diemTich };
         $.ajax({
             async: false,
             type: 'POST',
@@ -304,20 +322,41 @@
         });
     }
     function usevoucher() {
-        var giamGia = $("#voucher").val();
+        voucher = $("#voucher").val();
         $.ajax({
             async: true,
             type: 'GET',
             dataType: 'json',
             url: '/Home/UseVoucher',
-            data: { ma: giamGia },
+            data: { ma: voucher },
             success: function (response) {
-                console.log(response);
                 var ipVoucher = document.getElementById("moneyvoucher");
                 ipVoucher.hidden = false;
                 tienVoucher = (@tongtien * response.giaTri) / 100;
                 ipVoucher.innerHTML = "Số tiền được giảm (Voucher)<span>" + tienVoucher + " VNĐ</span>";
-                document.getElementById("total").innerHTML = (tienShip + @tongtien-tienVoucher) + "VNĐ";
+                document.getElementById("total").innerHTML = (tienShip + @tongtien-tienVoucher - tienDiem) + "VNĐ";
+            },
+            error: function (response) {
+                alert("Error");
+            }
+        });
+    }
+    function usediem() {
+        diemTich = $("#diemTich").val();
+        console.log();
+        $.ajax({
+            async: true,
+            type: 'GET',
+            dataType: 'json',
+            url: '/Home/UseDiemTich',
+            data: { diem: diemTich,id:'@loginInfor.Id' },
+            success: function (response) {
+                console.log(response);
+                var ipDiem = document.getElementById("moneyscore");
+                ipDiem.hidden = false;
+                tienDiem = response;
+                ipDiem.innerHTML = "Số tiền được giảm (Voucher)<span>" + tienDiem + " VNĐ</span>";
+                document.getElementById("total").innerHTML = (tienShip + @tongtien-tienVoucher-tienDiem) + "VNĐ";
             },
             error: function (response) {
                 alert("Error");

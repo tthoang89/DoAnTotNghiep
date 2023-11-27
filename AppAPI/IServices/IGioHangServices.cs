@@ -1,4 +1,5 @@
 ﻿using AppData.Models;
+using AppData.ViewModels.SanPham;
 
 namespace AppAPI.IServices
 {
@@ -9,5 +10,7 @@ namespace AppAPI.IServices
         public bool Delete(Guid Id);
         public GioHang GetById(Guid Id);
         public List<GioHang> GetAll();
+        public GioHangViewModel GetCart(List<GioHangRequest> request);
+
     }
 }

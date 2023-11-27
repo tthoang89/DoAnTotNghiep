@@ -153,10 +153,11 @@ namespace AppAPI.Services
         #endregion
 
         #region ChiTietSanPham
-        public async Task<ChiTietSanPhamViewModel> GetChiTietSanPhamByID(Guid id)
+        public ChiTietSanPhamViewModel GetChiTietSanPhamByID(Guid id)
         {
             var temp = _context.ChiTietSanPhams.First(x => x.ID == id);
-            ChiTietSanPhamViewModel chiTietSanPham = new ChiTietSanPhamViewModel() { ID = temp.ID, Ten = _context.SanPhams.First(x => x.ID == temp.IDSanPham).Ten, SoLuong = temp.SoLuong, GiaBan = temp.IDKhuyenMai == null ? temp.GiaBan : ((100 - _context.KhuyenMais.First(x => x.ID == temp.IDKhuyenMai).GiaTri) * temp.GiaBan) / 100, GiaGoc = temp.GiaBan, TrangThai = temp.TrangThai, Anh = _context.Anhs.First(x => x.IDMauSac == temp.IDMauSac && x.IDSanPham == temp.IDSanPham).DuongDan, MauSac = _context.MauSacs.First(x => x.ID == temp.IDMauSac).Ten, KichCo = _context.KichCos.First(x => x.ID == temp.IDKichCo).Ten };
+            var anh = _context.Anhs.FirstOrDefault(x => x.IDMauSac == temp.IDMauSac && x.IDSanPham == temp.IDSanPham);
+            ChiTietSanPhamViewModel chiTietSanPham = new ChiTietSanPhamViewModel() { ID = temp.ID, Ten = _context.SanPhams.First(x => x.ID == temp.IDSanPham).Ten, SoLuong = temp.SoLuong, GiaBan = temp.IDKhuyenMai == null ? temp.GiaBan : ((100 - _context.KhuyenMais.First(x => x.ID == temp.IDKhuyenMai).GiaTri) * temp.GiaBan) / 100, GiaGoc = temp.GiaBan, TrangThai = temp.TrangThai, Anh = anh!=null?anh.DuongDan:null, MauSac = _context.MauSacs.First(x => x.ID == temp.IDMauSac).Ten, KichCo = _context.KichCos.First(x => x.ID == temp.IDKichCo).Ten };
             return chiTietSanPham;
         }
         public async Task<ChiTietSanPhamViewModelHome> GetAllChiTietSanPhamHome(Guid idSanPham)
@@ -171,12 +172,34 @@ namespace AppAPI.Services
                 kichCos.Add(_context.KichCos.FindAsync(x.IDKichCo).Result);
             }
             ChiTietSanPhamViewModelHome chiTietSanPham = new ChiTietSanPhamViewModelHome();
-            chiTietSanPham.IDSanPham = sanPham.ID;
             chiTietSanPham.Ten = sanPham.Ten;
             chiTietSanPham.Anhs = _context.Anhs.Where(x => x.IDSanPham == idSanPham).ToList();
             chiTietSanPham.ChiTietSanPhams = lstChiTietSanPham;
             chiTietSanPham.MauSacs = mauSacs.Distinct().ToList();
             chiTietSanPham.KichCos = kichCos.Distinct().ToList();
+            chiTietSanPham.Anhs = new List<AnhRequest>();
+            chiTietSanPham.MauSacs = new List<GiaTriViewModel>();
+            chiTietSanPham.KichCos = new List<GiaTriViewModel>();
+            chiTietSanPham.ChiTietSanPhams = new List<ChiTietSanPhamViewModel>();
+            foreach (var item in _context.Anhs.Where(x => x.IDSanPham == idSanPham).ToList())
+            {
+                chiTietSanPham.Anhs.Add(new AnhRequest() { DuongDan = item.DuongDan, MaMau = item.IDMauSac.ToString() });
+            }
+            foreach (var item in mauSacs.Distinct().ToList())
+            {
+                chiTietSanPham.MauSacs.Add(new GiaTriViewModel() { GiaTri=item.Ma,ID = item.ID.Value});
+            }
+            foreach (var item in kichCos.Distinct().ToList())
+            {
+                chiTietSanPham.KichCos.Add(new GiaTriViewModel() { GiaTri = item.Ten, ID = item.ID });
+            }
+            foreach (var item in lstChiTietSanPham)
+            {
+                chiTietSanPham.ChiTietSanPhams.Add(new ChiTietSanPhamViewModel() { ID = item.ID,Ten=sanPham.Ten,SoLuong = item.SoLuong,GiaBan=item.GiaBan,GiaGoc = item.GiaBan,MauSac=item.IDMauSac.ToString(),KichCo=item.IDKichCo.ToString(),TrangThai=item.TrangThai});
+            }
+            //chiTietSanPham.ChiTietSanPhams = lstChiTietSanPham;
+            //chiTietSanPham.MauSacs = mauSacs.Distinct().ToList();
+            //chiTietSanPham.KichCos = kichCos.Distinct().ToList();
             chiTietSanPham.MoTa = sanPham.MoTa;
             var query = await (from sp in _context.SanPhams.Where(p => p.ID == idSanPham)
                                join ctsp in _context.ChiTietSanPhams on sp.ID equals ctsp.IDSanPham

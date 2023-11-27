@@ -1,5 +1,5 @@
-﻿@using AppData.ViewModels;
-@model List<ChiTietSanPhamViewModel>
+﻿@using AppData.ViewModels.SanPham;
+@model List<GioHangRequest>
 @{
     Layout = "_Layout"; 
     string tongTien = TempData.Peek("TongTien") as string;
@@ -52,16 +52,16 @@
                                             <h5>@item.MauSac/@item.KichCo</h5>
                                         </div>
                                     </td>
-                                    <td class="cart__price">@item.GiaBan.ToString("n0") </td>
+                                    <td class="cart__price">@item.DonGia.Value.ToString("n0") </td>
                                     <td class="quantity__item">
                                         <div class="quantity">
-                                            <div class="pro-qty-2" oninput="Getvalue(@item.ID,1)">
-                                                <input class="soLuong" name="@item.ID" type="text" value="@item.SoLuong">
+                                            <div class="pro-qty-2" oninput="Getvalue(@item.IDChiTietSanPham,1)">
+                                                <input class="soLuong" name="@item.IDChiTietSanPham" type="text" value="@item.SoLuong">
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="cart__price">@((item.GiaBan*item.SoLuong).ToString("n0")) </td>
-                                    <td class="cart__close"><a asp-controller="Home" asp-action="DeleteFromCart" asp-route-id="@item.ID"><i class="fa fa-close"></i></a></td>
+                                    <td class="cart__price">@((item.DonGia.Value*item.SoLuong).ToString("n0")) </td>
+                                    <td class="cart__close"><a asp-controller="Home" asp-action="DeleteFromCart" asp-route-id="@item.IDChiTietSanPham"><i class="fa fa-close"></i></a></td>
                                 </tr>
                             }
                             </tbody>
@@ -124,3 +124,5 @@
 
     </script>
     <!-- Shopping Cart Section End -->
+
+ 

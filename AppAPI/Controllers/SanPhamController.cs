@@ -74,9 +74,9 @@ namespace AppAPI.Controllers
 
         #region ChiTietSanPham
         [HttpGet("GetChiTietSanPhamByID")]
-        public async Task<IActionResult> GetChiTietSanPhamByID(Guid id)
+        public IActionResult GetChiTietSanPhamByID(Guid id)
         {
-            var response = await _sanPhamServices.GetChiTietSanPhamByID(id);
+            var response = _sanPhamServices.GetChiTietSanPhamByID(id);
             return Ok(response);
         }
         [HttpGet("GetAllChiTietSanPhamHome")]

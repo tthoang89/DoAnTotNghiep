@@ -9,7 +9,7 @@ namespace AppData.Models
     public class Anh
     {
         public Guid ID { get; set; }
-        public string DuongDan { get; set; }
+        public string? DuongDan { get; set; }
         public int TrangThai { get; set; }
         public Guid? IDMauSac { get; set; }
         public Guid IDSanPham { get; set; }

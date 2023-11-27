@@ -2,6 +2,8 @@
 using AppData.IRepositories;
 using AppData.Models;
 using AppData.Repositories;
+using AppData.ViewModels;
+using AppData.ViewModels.SanPham;
 
 namespace AppAPI.Services
 {
@@ -9,9 +11,11 @@ namespace AppAPI.Services
     {
         private readonly IAllRepository<GioHang> repos;
         AssignmentDBContext context = new AssignmentDBContext();
+        private readonly ISanPhamService _iSanPhamService;
         public GioHangServices()
         {
             repos = new AllRepository<GioHang>(context, context.GioHangs);
+            _iSanPhamService = new SanPhamService(context);
         }
         public bool Add(Guid IdKhachHang, DateTime ngaytao)
         {
@@ -56,6 +60,25 @@ namespace AppAPI.Services
             {
                 return false;
             }
+        }
+        public GioHangViewModel GetCart(List<GioHangRequest> request)
+        {
+            var response = new GioHangViewModel();
+            long tongTien = 0;
+            ChiTietSanPhamViewModel chiTietSanPham;
+            foreach (var item in request)
+            {
+                chiTietSanPham = _iSanPhamService.GetChiTietSanPhamByID(item.IDChiTietSanPham);
+                item.DonGia = chiTietSanPham.GiaBan;
+                item.Ten = chiTietSanPham.Ten;
+                item.MauSac = chiTietSanPham.MauSac;
+                item.KichCo = chiTietSanPham.KichCo;
+                item.Anh = chiTietSanPham.Anh;
+                tongTien += item.DonGia.Value * item.SoLuong;
+            }
+            response.GioHangs = request;
+            response.TongTien = tongTien;
+            return response;
         }
     }
 }
