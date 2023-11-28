@@ -15,7 +15,7 @@
 <h1 style="text-align: center"><b>Thêm mới nhân viên</b></h1>
 
 <hr />
-<div class="row" style="margin-left:200px; margin-right: 200px">
+<div class="row" style="margin-left:150px; margin-right: 150px">
     <div class="col-md-12">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -23,7 +23,7 @@
                 <div class="col-6">
                     <div class=" p-3">
                         <div class="form-group">
-                            <label asp-for="Ten" class="control-label"></label>
+                            <label asp-for="Ten" class="control-label">Tên</label>
                             <input asp-for="Ten" class="form-control" />
                             <span asp-validation-for="Ten" class="text-danger"></span>
                         </div>
@@ -55,7 +55,7 @@
                             <input asp-for="TrangThai" class="form-control" />
                             <span asp-validation-for="TrangThai" class="text-danger"></span>
                         </div>
-                    </div>             
+                    </div>
                 </div>
                 <div class="col-6">
                     <div class="p-3">
@@ -93,7 +93,7 @@
                 </div>
                 <div class="col-6">
                     <div class="p-3">
-                        <div class="form-group" style="margin-left:400px; margin-top: 30px">
+                        <div class="form-group" style="margin-left:300px; margin-top: 30px">
                             <input type="submit" value="Create" class="btn btn-primary" />
 
                         </div>
@@ -103,10 +103,12 @@
         </form>
     </div>
 </div>
-<div style="margin-left: 200px;">
+@*<div style="margin-left: 200px;">
     <a asp-action="Show">Back to List</a>
-</div>
+</div>*@
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

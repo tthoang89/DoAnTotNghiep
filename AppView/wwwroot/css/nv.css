@@ -1,5 +1,5 @@
 ﻿
-.btn-create {
+/*.btn-create {
     margin-bottom: 20px;
     margin-right: 700px;
     padding: 5px 25px;
@@ -10,18 +10,19 @@
     font-weight: 400;
     color: #fff;
     height: 35px
-}
+}*/
 .table-header {
     background-color: darkslategray;
     color: white;
 }
+
 h1 {
-    text-align:center;
+    text-align: center;
     animation: blink 1s linear infinite;
     margin-top: 50px;
     margin-bottom: 50px
 }
-   /* h1:hover {
+/* h1:hover {
         animation: blink 1s linear infinite;
         color: brown;
     }
@@ -47,7 +48,7 @@ h1 {
     font-weight: 400;
     color: #fff;
 }
-.btn-details {
+    /*.btn-details {
     padding: 5px 15px;
     border-radius: 50px;
     outline: 0;
@@ -64,22 +65,22 @@ h1 {
     background:#3b3da1;
     font-weight: 400;
     color: #fff;
-}
-.btn-create:hover {
+}*/
+    /*.btn-create:hover {
     color:black;
     background: #06A9AE;
     background: -webkit-linear-gradient(to right, #ECAD8F, #AF6E4E);
     background: linear-gradient(to right, #ECAD8F, #AF6E4E);
     text-decoration: none;
-}
-.btn-edit:hover {
-    color:black;
-  background: #f12711; 
-  background: -webkit-linear-gradient(to right, #f12711, #f5af19); 
-  background: linear-gradient(to right, #f12711, #f5af19); 
-  text-decoration: none;
-}
-.btn-details:hover {
+}*/
+    .btn-edit:hover {
+        color: black;
+        background: #f12711;
+        background: -webkit-linear-gradient(to right, #f12711, #f5af19);
+        background: linear-gradient(to right, #f12711, #f5af19);
+        text-decoration: none;
+    }
+/*.btn-details:hover {
     color: black;
     background: #ffd8b9;
     background: -webkit-linear-gradient(to right, #ob2559, #615c84);
@@ -92,27 +93,15 @@ h1 {
     background: -webkit-linear-gradient(to right, #ECAD8F, #AF6E4E);
     background: linear-gradient(to right, #ECAD8F, #AF6E4E);
     text-decoration: none;
-}
-.tk1{
+}*/
+.tk1 {
     padding: 5px 15px;
-    border-radius: 50px;
     outline: 0;
-    border-color: darkgrey;
-    border: 1px solid;
-    border-style:double;
     background: #fff;
     font-weight: 400;
 }
-.tk {
-    padding: 5px 15px;
-    border-radius: 50px;
-    outline: 0;
-    border: 0;
-    background: #3b3da1;
-    font-weight: 400;
-    color: #fff;
-}
-.tk:hover {
+
+/*.tk:hover {
     color: black;
     background: #D2A3A9;
     background: -webkit-linear-gradient(to right, #ECAD8F, #AF6E4E);
@@ -138,4 +127,4 @@ h1 {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) !important;
-}
+}*/

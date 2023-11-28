@@ -113,6 +113,7 @@
                                         <p style="margin-bottom: 0px;padding-left: 10px;">Chuyển khoản qua VNPay</p>
                                     </div>
                                 </div>
+                                <div id="pttt-error" style="display:none;color:red">Vui lòng chọn phương thức thanh toán</div>
                             </div>
                         </div>
                     </div>
@@ -250,15 +251,31 @@
                 }
             });
         });
+        $('.checkout__input input').on('input', function () {
+            $(this).removeClass('is-invalid');
+            $(this).next('.invalid-feedback').text('');
+        });
+        $('.checkout__input select').change(function () {
+            $(this).removeClass('is-invalid');
+            $(this).next('.invalid-feedback').text('');
+        });
+        $('input[name="pttt"]').change(function () {
+            $('#pttt-error').hide();
+        });
     });
     function createhoadon() {
         var ten = $("#name").val();
         var email = $("#email").val();
         var sdt = $("#phone").val();
-        var diaChi = $("#address").val();
+        var tinh = $("#province option:selected").text().trim();
+        var huyen = $("#district option:selected").text().trim();
+        var xa = $("#ward option:selected").text().trim();
+        var diachi = $("#address").val();
+        var pttt = $('input[name="pttt"]:checked').val();
         var voucher = $("#voucher").val();
         $('.invalid-feedback').text('');
         $('.is-invalid').removeClass('is-invalid');
+        var hasError = false;
         if (ten.trim().length == 0) {
             $('#name').addClass('is-invalid');
             $('#name').next('.invalid-feedback').text('Không để trống tên');
@@ -286,22 +303,55 @@
             $('#email').next('.invalid-feedback').text('Email không hợp lệ');
             hasError = true;
         }
-        var pttt = $('input[name="pttt"]:checked').val();
-        var objHoaDon = { Ten: ten, Email: email, SDT: sdt, DiaChi: diaChi + ", " + xa + ", " + huyen + ", " + tinh, TienShip: tienShip, PhuongThucThanhToan: pttt, TongTien: tienShip + @tongtien-tienVoucher, TenVoucher: voucher };
-        $.ajax({
-            async: false,
-            type: 'POST',
-            dataType: 'text',
-            url: '/Home/Order',
-            data: objHoaDon,
-            success: function (response) {
-                console.log(response);
-                location.href = response;
-            },
-            error: function (response) {
-                alert("Error");
-            }
-        });
+        if (tinh == "--------------------Chọn tỉnh--------------------") {
+            $('#province').addClass('is-invalid');
+            $('#province').next('.invalid-feedback').text('Vui lòng chọn tỉnh');
+            hasError = true;
+        }
+
+        if (huyen.trim().length == 0 || huyen == "--------------------Chọn huyện--------------------") {
+            $('#district').addClass('is-invalid');
+            $('#district').next('.invalid-feedback').text('Vui lòng chọn huyện');
+            hasError = true;
+        }
+
+        if (xa.trim().length == 0 || xa == "--------------------Chọn xã--------------------") {
+            $('#ward').addClass('is-invalid');
+            $('#ward').next('.invalid-feedback').text('Vui lòng chọn xã');
+            hasError = true;
+        }
+        if (diachi.trim().length == 0) {
+            $('#address').addClass('is-invalid');
+            $('#address').next('.invalid-feedback').text('Không để trống địa chỉ');
+            hasError = true;
+        }
+        if (pttt == undefined) {
+            $('#pttt-error').show(); // Hiển thị thông báo lỗi
+            hasError = true;
+        } else {
+            $('#pttt-error').hide(); // Ẩn thông báo lỗi
+        }
+        if (hasError) {
+            alert("Vui long dien day du thong tin");
+        }
+        else{
+            var objHoaDon = { Ten: ten, Email: email, SDT: sdt, DiaChi: diachi + ", " + xa + ", " + huyen + ", " + tinh, TienShip: tienShip, PhuongThucThanhToan: pttt, TongTien: tienShip + @tongtien-tienVoucher, TenVoucher: voucher };
+            $.ajax({
+                async: false,
+                type: 'POST',
+                dataType: 'text',
+                url: '/Home/Order',
+                data: objHoaDon,
+                success: function (response) {
+                    console.log(response);
+                    location.href = response;
+                },
+                error: function (response) {
+                    alert("Error");
+                }
+            });
+        }
+        
     }
     function usevoucher() {
         var giamGia = $("#voucher").val();
