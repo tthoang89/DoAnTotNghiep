@@ -20,7 +20,7 @@ namespace AppView.Controllers
         }
         public int PageSize = 10;
 
-        public async Task<IActionResult> Show(int ProductPage= 1)
+        public async Task<IActionResult> Show(int ProductPage = 1)
         {
             string apiUrl = $"https://localhost:7095/api/NhanVien/GetAll";
             var response = await _httpClient.GetAsync(apiUrl);
@@ -40,13 +40,21 @@ namespace AppView.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> SearchTheoTen(string? Ten,int ProductPage = 1)
+        public async Task<IActionResult> SearchTheoTen(string? Ten, int ProductPage = 1)
         {
-            string apiUrl = $"https://localhost:7095/api/NhanVien/TimKiemNhanVien?Ten={Ten}";
+            if (string.IsNullOrWhiteSpace(Ten))
+            {
+                ViewData["SearchError"] = "Vui lòng nhập tên để tìm kiếm";
+                return RedirectToAction("Show");
+            }
+            string apiUrl = $"https://localhost:7095/api/NhanVien/TimKiemNhanVien?name={Ten}";
             var response = await _httpClient.GetAsync(apiUrl);
             string apiData = await response.Content.ReadAsStringAsync();
-            var users= JsonConvert.DeserializeObject<List<NhanVien>>(apiData);
-
+            var users = JsonConvert.DeserializeObject<List<NhanVien>>(apiData);
+            if (users.Count == 0)
+            {
+                ViewData["SearchError"] = "Không tìm thấy kết quả phù hợp";
+            }
             return View("Show", new PhanTrangNhanVien
             {
                 listNv = users

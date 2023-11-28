@@ -14,8 +14,8 @@
 <h1 style="text-align: center"><b>Thông tin nhân viên</b></h1>
 
 <hr />
-<div class="row" style="margin-left:200px; margin-right: 200px">
-    <div class="col-md-12" >
+<div class="row" style="margin-left:150px; margin-right: 150px">
+    <div class="col-md-12">
         <div class="row g-2">
             <div class="col-6">
                 <div class=" p-3">
@@ -42,7 +42,7 @@
             <div class="col-6">
                 <div class=" p-3">
                     <div class="form-group">
-                        <label asp-for="Ten" class="control-label"></label>
+                        <label asp-for="Ten" class="control-label">Tên</label>
                         <div class="form-control">
                             @Html.DisplayFor(model => model.Ten)
                         </div>
@@ -109,12 +109,12 @@
                 </div>
             </div>
         </div>
-       
+
     </div>
 </div>
-<div style="margin-left: 200px;">
+@*<div style="margin-left: 200px;">
     <a asp-action="Show">Back to List</a>
-</div>
+</div>*@
 @*<script>
     $(document).ready(function () {
         $('#detailsModal').on('shown.bs.modal', function () {
