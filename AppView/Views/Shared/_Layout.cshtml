@@ -7,6 +7,7 @@
     {
         loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(Context.Session.GetString("LoginInfor"));
     }
+    string? count = TempData.Peek("SoLuong") as string;
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -118,7 +119,7 @@
                             </li>
 
                             <li><a asp-controller="Home" asp-action="Blog">Blog</a></li>
-                            <li><a asp-controller="Home" asp-action="Contacts">Liên lạc</a></li>
+                            <li><a asp-controller="Home" asp-action="Contacts">Liên lạc @count</a></li>
 
                         </ul>
                     </nav>

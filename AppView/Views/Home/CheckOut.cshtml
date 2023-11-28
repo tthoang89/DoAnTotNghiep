@@ -330,9 +330,15 @@
             url: '/Home/UseVoucher',
             data: { ma: voucher },
             success: function (response) {
+                console.log(response);
+                if (response.hinhThuc == 1) {
+                    tienVoucher = (@tongtien * response.giaTri) / 100;
+                }
+                else if (response.hinhThuc == 0){
+                    tienVoucher = @tongtien - response.giaTri;
+                }
                 var ipVoucher = document.getElementById("moneyvoucher");
                 ipVoucher.hidden = false;
-                tienVoucher = (@tongtien * response.giaTri) / 100;
                 ipVoucher.innerHTML = "Số tiền được giảm (Voucher)<span>" + tienVoucher + " VNĐ</span>";
                 document.getElementById("total").innerHTML = (tienShip + @tongtien-tienVoucher - tienDiem) + "VNĐ";
             },

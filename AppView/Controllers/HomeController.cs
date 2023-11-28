@@ -523,6 +523,7 @@ namespace AppView.Controllers
             {
                 cout++;
             }
+            TempData["SoLuong"] = cout.ToString();
             var response = _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCart?request="+ Request.Cookies["Cart"]).Result;
             if (response.IsSuccessStatusCode)
             {
