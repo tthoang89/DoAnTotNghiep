@@ -511,7 +511,7 @@ namespace AppView.Controllers
         [HttpGet]
         public IActionResult ShoppingCart()
         {
-            
+
             List<GioHangRequest> lstGioHang = new List<GioHangRequest>();
             if (Request.Cookies["Cart"] != null)
             {
@@ -524,22 +524,23 @@ namespace AppView.Controllers
                 cout++;
             }
             TempData["SoLuong"] = cout.ToString();
-            var response = _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCart?request="+ Request.Cookies["Cart"]).Result;
-            if (response.IsSuccessStatusCode)
+
+            if (Request.Cookies["Cart"] != null)
             {
-                var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response.Content.ReadAsStringAsync().Result);
-                TempData["TongTien"] = temp.TongTien.ToString();
-                ViewData["cout"] = cout;
-                // lam end
-                TempData["ListBienThe"] = JsonConvert.SerializeObject(temp.GioHangs);
-                List<GioHangRequest> lst = temp.GioHangs;
-                return View(lst);
+                var response = _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCart?request=" + Request.Cookies["Cart"]).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response.Content.ReadAsStringAsync().Result);
+                    TempData["TongTien"] = temp.TongTien.ToString();
+                    ViewData["cout"] = cout;
+                    // lam end
+                    TempData["ListBienThe"] = JsonConvert.SerializeObject(temp.GioHangs);
+                    List<GioHangRequest> lst = temp.GioHangs;
+                    return View(lst);
+                }
+                else return BadRequest();
             }
-            else return BadRequest();
-            //foreach (var x in lstGioHang)
-            //{
-            //    tongtien += x.GiaBan * x.SoLuong;
-            //}
+            else return View(new List<GioHangRequest>());
         }
         [HttpGet]
         public IActionResult DeleteFromCart(Guid id)

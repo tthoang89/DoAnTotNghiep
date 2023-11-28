@@ -2,7 +2,8 @@
 @model List<GioHangRequest>
 @{
     Layout = "_Layout"; 
-    string tongTien = TempData.Peek("TongTien") as string;
+    string? temp = TempData.Peek("TongTien") as string;
+    string tongTien = temp == null ? "0" : temp;
 }
     <!-- Breadcrumb Section Begin -->
     <section class="breadcrumb-option">
