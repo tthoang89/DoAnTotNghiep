@@ -114,14 +114,14 @@ namespace AppAPI.Services
         {
             try
             {
-                var lstDonMuaCT = await(from a in context.HoaDons
+                var lstDonMuaCT = await(from c in context.ChiTietHoaDons.Where(p => p.IDHoaDon == idHoaDon)
+                                      join a in context.HoaDons on c.IDHoaDon equals a.ID
                                       join b in context.LichSuTichDiems on a.ID equals b.IDHoaDon
-                                      join c in context.ChiTietHoaDons on a.ID equals c.IDHoaDon
                                       join d in context.DanhGias on c.ID equals d.ID
                                       join e in context.ChiTietSanPhams on c.IDCTSP equals e.ID
                                       join f in context.KichCos on e.IDKichCo equals f.ID
                                       join g in context.MauSacs on e.IDMauSac equals g.ID
-                                      join i in context.SanPhams on e.IDSanPham equals i.ID
+                                      join i in context.SanPhams.Where(x => x.TrangThai == 1) on e.IDSanPham equals i.ID
                                       join l in context.QuyDoiDiems on b.IDQuyDoiDiem equals l.ID
                                       select new DonMuaChiTietViewModel()
                                       {
@@ -143,13 +143,13 @@ namespace AppAPI.Services
                                          TenKichCo = f.Ten,
                                          TenMau = g.Ten,
                                          TenSanPham = i.Ten,
-                                         DuongDan = context.Anhs.First(x => x.IDMauSac == e.IDMauSac && x.IDSanPham == i.ID).DuongDan,
+                                         DuongDan = context.Anhs.First(x => x.IDMauSac == g.ID && x.IDSanPham == i.ID).DuongDan,
                                          HinhThucGiamGia = a.IDVoucher == null ? null : (context.Vouchers.First(x=>x.ID == a.IDVoucher)).HinhThucGiamGia,
                                          GiaTri = a.IDVoucher == null ? null : (context.Vouchers.First(x => x.ID == a.IDVoucher)).GiaTri,
                                          TiLeTieuDiem = l.TiLeTieuDiem,
                                          TrangThaiDanhGia = d.TrangThai
                                       }).ToListAsync();
-                return lstDonMuaCT.Where(p=>p.ID == idHoaDon).ToList();
+                return lstDonMuaCT;
             }
             catch
             {

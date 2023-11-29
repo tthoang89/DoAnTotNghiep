@@ -64,7 +64,7 @@ namespace AppAPI.Services
                         Ten = item.Ten,
                         TrangThai = item.TrangThai,
                         TrangThaiCTSP = item.TrangThai,
-                        LoaiSP = item.Ten,
+                        LoaiSP = item.LoaiSP,
                         IdChiTietSanPham = item.IdChiTietSanPham,
                         Image = item.Image,
                         IDMauSac = item.IDMauSac,
@@ -176,6 +176,7 @@ namespace AppAPI.Services
                 kichCos.Add(_context.KichCos.FindAsync(x.IDKichCo).Result);
             }
             ChiTietSanPhamViewModelHome chiTietSanPham = new ChiTietSanPhamViewModelHome();
+            chiTietSanPham.IDSanPham = idSanPham;
             chiTietSanPham.Ten = sanPham.Ten;
             //chiTietSanPham.Anhs = _context.Anhs.Where(x => x.IDSanPham == idSanPham).ToList();
             //chiTietSanPham.ChiTietSanPhams = lstChiTietSanPham;

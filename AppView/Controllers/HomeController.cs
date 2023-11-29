@@ -569,13 +569,13 @@ namespace AppView.Controllers
         [HttpGet]
         public IActionResult DeleteFromCart(Guid id)
         {
-            List<ChiTietSanPhamViewModel> bienThes = new List<ChiTietSanPhamViewModel>();
+            List<GioHangRequest> bienThes = new List<GioHangRequest>();
             string? result = Request.Cookies["Cart"];
             if (result != null)
             {
-                bienThes = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModel>>(result);
+                bienThes = JsonConvert.DeserializeObject<List<GioHangRequest>>(result);
             }
-            bienThes.Remove(bienThes.Find(p => p.ID == id));
+            bienThes.Remove(bienThes.Find(p => p.IDChiTietSanPham == id));
             CookieOptions cookie = new CookieOptions();
             cookie.Expires = DateTime.Now.AddDays(30);
             Response.Cookies.Append("Cart", JsonConvert.SerializeObject(bienThes), cookie);
@@ -639,16 +639,16 @@ namespace AppView.Controllers
         {
             try
             {
-                List<ChiTietSanPhamViewModel> chiTietSanPhams;
+                List<GioHangRequest> chiTietSanPhams;
                 string? result = Request.Cookies["Cart"];
-                chiTietSanPhams = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModel>>(result);
+                chiTietSanPhams = JsonConvert.DeserializeObject<List<GioHangRequest>>(result);
                 foreach (var item in dssl)
                 {
                     Guid id = Guid.Parse(item.Substring(0, 36));
                     int sl = Convert.ToInt32(item.Substring(36, item.Length - 36));
                     foreach (var x in chiTietSanPhams)
                     {
-                        if (x.ID == id)
+                        if (x.IDChiTietSanPham == id)
                         {
                             x.SoLuong = sl;
                         }
@@ -672,18 +672,19 @@ namespace AppView.Controllers
             HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + $"SanPham/GetChiTietSanPhamByID?id=" + id).Result;
             if (response.IsSuccessStatusCode)
             {
-                List<ChiTietSanPhamViewModel> chiTietSanPhams;
-                ChiTietSanPhamViewModel chiTietSanPham = JsonConvert.DeserializeObject<ChiTietSanPhamViewModel>(response.Content.ReadAsStringAsync().Result);
+                //moiw
+                List<GioHangRequest> lstGioHang;
+                //ChiTietSanPhamViewModel chiTietSanPham = JsonConvert.DeserializeObject<ChiTietSanPhamViewModel>(response.Content.ReadAsStringAsync().Result);
                 string? result = Request.Cookies["Cart"];
                 if (string.IsNullOrEmpty(result))
                 {
-                    chiTietSanPham.SoLuong = soLuong;
-                    chiTietSanPhams = new List<ChiTietSanPhamViewModel>() { chiTietSanPham };
+                    //chiTietSanPham.SoLuong = (sl != null)?sl.Value:1;
+                    lstGioHang = new List<GioHangRequest>() { new GioHangRequest() { IDChiTietSanPham = new Guid(id), SoLuong = (soLuong != null) ? soLuong : 1 } };
                 }
                 else
                 {
-                    chiTietSanPhams = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModel>>(result);
-                    var tempBienThe = chiTietSanPhams.FirstOrDefault(x => x.ID == chiTietSanPham.ID);
+                    lstGioHang = JsonConvert.DeserializeObject<List<GioHangRequest>>(result);
+                    var tempBienThe = lstGioHang.FirstOrDefault(x => x.IDChiTietSanPham == new Guid(id));
                     if (tempBienThe != null)
                     {
                         //Sua 
@@ -695,17 +696,19 @@ namespace AppView.Controllers
                         {
                             tempBienThe.SoLuong = tempBienThe.SoLuong + soLuong;
                         }
+
                     }
                     else
                     {
-                        chiTietSanPham.SoLuong = soLuong;
-                        chiTietSanPhams.Add(chiTietSanPham);
+                        //chiTietSanPham.SoLuong = (sl != null) ? sl.Value : 1;
+                        lstGioHang.Add(new GioHangRequest() { IDChiTietSanPham = new Guid(id), SoLuong = (soLuong != null) ? soLuong : 1 });
                     }
                 }
                 CookieOptions cookie = new CookieOptions();
                 cookie.Expires = DateTime.Now.AddDays(30);
-                Response.Cookies.Append("Cart", JsonConvert.SerializeObject(chiTietSanPhams), cookie);
+                Response.Cookies.Append("Cart", JsonConvert.SerializeObject(lstGioHang), cookie);
                 return Json(new { success = true, message = "Add to cart successfully" });
+                
             }
             else return Json(new { success = false, message = "Add to cart fail" });
         }

@@ -102,10 +102,10 @@
                     </tr>
                 </thead>
                 <tbody id="DShoaDon">
-                    @foreach (var item in Model)
+                    @*@foreach (var item in Model)
                     {
                         <tr>
-                            <th scope="row"><a asp-controller="Home" asp-action="PurchaseOrderDetail" asp-route-idHoaDon="@item.IDHoaDon">@item.MaHD</a></th>
+                            <th scope="row"><a href="PurchaseOrderDetail?idHoaDon=@item.IDHoaDon">@item.MaHD</a></th>
                             <td>@item.NgayTao</td>
                             <td>@Convert.ToInt32(item.TongTien).ToString("n0") VNĐ</td>
                             @if (item.TrangThaiGiaoHang == 2)
@@ -144,15 +144,27 @@
                             }
                             
                         </tr>
-                    }
+                    }*@
                 </tbody>
+                
             </table>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="mx-2" id="paginghd">
+                    <ul id="pagination-demo" class="pagination-sm"></ul>
+                </div>
+            </div>
         </div>
     </div>
 </section>
+<script src="/js/jquery-3.3.1.min.js"></script>
 <script>
     var pageIndex = 1;
-    var pagesize = 10;
+    var pagesize = 5;
+    $(document).ready(function () {
+        FilterHoaDon();
+    });
     function FilterHoaDon(){
         var x = document.querySelector('input[name="menu"]:checked').value;
         var data = { TrangThaiGiaoHang: x, page: pageIndex, pageSize: pagesize}
@@ -165,18 +177,18 @@
                 console.log(response.data);
                 for (let i = 0; i < response.data.length; i++) {
                     $("#DShoaDon").append(`<tr>
-                            <th scope="row"><a asp-controller="Home" asp-action="PurchaseOrderDetail" asp-route-idHoaDon="${response.data[i].idHoaDon}">${response.data[i].maHD}</a></th>
+                            <th scope="row"><a href="PurchaseOrderDetail?idHoaDon=${response.data[i].idHoaDon}">${response.data[i].maHD}</a></th>
                             <td>${response.data[i].ngayTao}</td>
                             <td>${response.data[i].tongTien} VNĐ</td>
                                 <td>
-                                   ${response.data[i].trangThai === 2 ? '<label>Chờ xác nhận</label>' :
-                            response.data[i].trangThai === 3 ? '<label>Đang giao hàng</label>' :
-                                response.data[i].trangThai === 4 ? '<label>Đang hoàn hàng</label>' :
-                                    response.data[i].trangThai === 5 ? '<label>Hoàn hàng thành công</label>' :
-                                        response.data[i].trangThai === 6 ? '<label>Hoàn thành</label>' :
-                                            response.data[i].trangThai === 7 ? '<label>Đơn hủy</label>' :
-                                                response.data[i].trangThai === 8 ? '<label>Chờ xác nhận hủy</label>' :
-                                                    '<label>Chờ xác nhận đổi trả hàng</label>'}
+                                   ${response.data[i].trangThaiGiaoHang === 2 ? '<label>Chờ xác nhận</label>' :
+                                     response.data[i].trangThaiGiaoHang === 3 ? '<label>Đang giao hàng</label>' :
+                                     response.data[i].trangThaiGiaoHang === 4 ? '<label>Đang hoàn hàng</label>' :
+                                     response.data[i].trangThaiGiaoHang === 5 ? '<label>Hoàn hàng thành công</label>' :
+                                     response.data[i].trangThaiGiaoHang === 6 ? '<label>Hoàn thành</label>' :
+                                     response.data[i].trangThaiGiaoHang === 7 ? '<label>Đơn hủy</label>' :
+                                     response.data[i].trangThaiGiaoHang === 8 ? '<label>Chờ xác nhận hủy</label>' :
+                                     '<label>Chờ xác nhận đổi trả hàng</label>'}
                                </td>
                             <td>
                                     ${response.data[i].trangThaiLSTD === 0 ? '<label>Người dùng sử dụng điểm</label>' :
@@ -196,12 +208,12 @@
         });
     }
     function paginghd(totalrow, callback) {
-        var totalpages = Math.ceil(totalrow / pageSize);
+        var totalpages = Math.ceil(totalrow / pagesize);
         $("#paginghd").twbsPagination({
             totalPages: totalpages,
             visiblePages: 5,
             onPageClick: function (event, page) {
-                pageIndexhd = page;
+                pageIndex = page;
                 setTimeout(callback, 200);
             }
         });
