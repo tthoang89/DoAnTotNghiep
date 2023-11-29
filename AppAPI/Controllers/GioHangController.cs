@@ -75,5 +75,15 @@ namespace AppAPI.Controllers
             var lst = JsonConvert.DeserializeObject<List<GioHangRequest>>(request); 
             return gioHangServices.GetCart(lst);
         }
+        [HttpGet("GetCartLogin")]
+        public GioHangViewModel GetCartLogin(string idNguoiDung)
+        {
+            return gioHangServices.GetCartLogin(idNguoiDung);
+        }
+        [HttpPost("AddCart")]
+        public bool AddCart(ChiTietGioHang chiTietGioHang)
+        {
+            return gioHangServices.AddCart(chiTietGioHang).Result;
+        }
     }
 }

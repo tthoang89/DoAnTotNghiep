@@ -26,6 +26,8 @@ namespace AppAPI.Services
 
         AssignmentDBContext context = new AssignmentDBContext();
 
+        private readonly IGioHangServices _iGioHangServices;
+
         public HoaDonService()
         {
             reposHoaDon = new AllRepository<HoaDon>(context, context.HoaDons);
@@ -40,6 +42,7 @@ namespace AppAPI.Services
             reposDanhGia = new AllRepository<DanhGia>(context, context.DanhGias);
             //reposChiTietPTTT = new AllRepository<ChiTietPTTT>(context, context.ChiTietPTTTs);
             context = new AssignmentDBContext();
+            _iGioHangServices = new GioHangServices();
         }
 
         public bool CheckHDHasLSGD(Guid idHoaDon)
@@ -221,6 +224,10 @@ namespace AppAPI.Services
                             }
                             
 
+                        }
+                        if (hoaDon.TrangThai)
+                        {
+                            _iGioHangServices.DeleteCart(hoaDon.IDNguoiDung.Value);
                         }
                         return true;
                     }

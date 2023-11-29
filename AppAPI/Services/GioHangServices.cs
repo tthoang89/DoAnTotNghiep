@@ -80,5 +80,58 @@ namespace AppAPI.Services
             response.TongTien = tongTien;
             return response;
         }
+        public GioHangViewModel GetCartLogin(string idNguoiDung)
+        {
+            var lstChiTietGioHang = context.ChiTietGioHangs.Where(x => x.IDNguoiDung == new Guid(idNguoiDung)).ToList();
+            ChiTietSanPhamViewModel chiTietSanPham;
+            List<GioHangRequest> lst = new List<GioHangRequest>();
+            var response = new GioHangViewModel();
+            long tongTien = 0;
+            foreach (var item in lstChiTietGioHang)
+            {
+                chiTietSanPham = _iSanPhamService.GetChiTietSanPhamByID(item.IDCTSP);
+                lst.Add(new GioHangRequest() { IDChiTietSanPham = chiTietSanPham.ID, SoLuong = item.SoLuong, DonGia = chiTietSanPham.GiaBan, Ten = chiTietSanPham.Ten, MauSac = chiTietSanPham.MauSac, KichCo = chiTietSanPham.KichCo, Anh = chiTietSanPham.Anh });
+                tongTien += chiTietSanPham.GiaBan * item.SoLuong;
+            }
+            response.GioHangs = lst;
+            response.TongTien = tongTien;
+            return response;
+        }
+        public async Task<bool> AddCart(ChiTietGioHang chiTietGioHang)
+        {
+            try
+            {
+                var temp = context.ChiTietGioHangs.FirstOrDefault(x => x.IDNguoiDung == chiTietGioHang.IDNguoiDung && x.IDCTSP == chiTietGioHang.IDCTSP);
+                if (temp != null)
+                {
+                    temp.SoLuong += chiTietGioHang.SoLuong;
+                    context.ChiTietGioHangs.Update(temp);
+                }
+                else
+                {
+                    context.ChiTietGioHangs.Add(chiTietGioHang);
+                }
+                await context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+        public async Task<bool> DeleteCart(Guid idNguoiDung)
+        {
+            try
+            {
+                var lstChiTietGioHang = context.ChiTietGioHangs.Where(x => x.IDNguoiDung== idNguoiDung).ToList();
+                context.ChiTietGioHangs.RemoveRange(lstChiTietGioHang);
+                await context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
     }
 }

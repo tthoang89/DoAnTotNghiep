@@ -6,7 +6,7 @@
         public int SoLuong { get; set; }
         public Guid IDCTSP { get; set; }
         public Guid IDNguoiDung { get; set; }
-        public virtual ChiTietSanPham ChiTietSanPham { get; set; }
-        public virtual GioHang GioHang { get; set; }
+        public virtual ChiTietSanPham? ChiTietSanPham { get; set; }
+        public virtual GioHang? GioHang { get; set; }
     }
 }
