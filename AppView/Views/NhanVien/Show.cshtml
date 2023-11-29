@@ -16,15 +16,15 @@
 </h1>
 <div class="row" style=" margin: 5px">
     <div class="col-8">
-        <a class="btn-create" asp-action="Create">Thêm mới</a>
+        <a class="btn btn-primary" asp-action="Create">Thêm mới</a>
     </div>
     <div class="col-4">
-        <form asp-action="SearchTheoTen" asp-controller="NhanVien" method="get" enctype="multipart/form-data">
-                <input class="tk1" type="text" name="Ten" placeholder="Tìm kiếm theo tên" />
-                <input class="tk" type="submit" value="Tìm kiếm" />
-            </form>
+        <form asp-action="SearchTheoTen" asp-controller="NhanVien" method="get" enctype="multipart/form-data" style="margin-left: 30px;">
+            <input class="tk1" type="text" name="Ten" placeholder="Tìm kiếm theo tên" />
+            <input class="btn btn-primary" type="submit" value="Tìm kiếm" style="margin-bottom: 3px;" />
+        </form>
     </div>
-    <div id="searchErrorMessage" class="alert alert-warning" role="alert" style="display: none;"></div>
+    <div id="searchErrorMessage" class="alert alert-warning" role="alert" style="display: @(ViewData["SearchError"] != null ? "block" : "none") ; margin-top: 10px; margin-left: 11px">@ViewData["SearchError"]</div>
 </div>
 <table class="table" style="margin-left: 20px">
     <thead>
@@ -32,7 +32,7 @@
             <th style=" background-color: darkslategray;
     color: white;">STT</th>
             <th style=" background-color: darkslategray;
-    color: white;">Ten</th>
+    color: white;">Tên</th>
             <th style=" background-color: darkslategray;
     color: white;">Email</th>
             <th style=" background-color: darkslategray;
@@ -40,9 +40,9 @@
             <th style=" background-color: darkslategray;
     color: white;">SDT</th>
             <th style=" background-color: darkslategray;
-        color: white;">DiaChi</th>
+        color: white;">Địa chỉ</th>
             <th style=" background-color: darkslategray;
-    color: white;">TrangThai</th>
+    color: white;">Trạng Thái</th>
             <th style=" background-color: darkslategray;
     color: white;">Vai Trò</th>
             <th style=" background-color: darkslategray;
@@ -88,13 +88,13 @@
                     }
                 </td>
                 <td>
-                    <button type="button" class="btn-edit">
+                    @* <button type="button" class="btn-edit">
                 @Html.ActionLink("Edit", "Edit", new {  id=item.ID }, new { @style = "color:white;"})
-                </button>
-                    <button class="btn-details">
+                </button>*@
+                    <button class="btn btn-success">
                         @Html.ActionLink("Details", "Details", new { id= item.ID }, new { @style = "color:white;"})
                     </button>
-                    <button type="button" class="btn-delete">
+                    <button type="button" class="btn btn-danger">
                         @Html.ActionLink("Delete", "Delete", new { id=item.ID}, new { @style = "color:white;"})
                     </button>
                 </td>
@@ -108,7 +108,7 @@
 <div style="text-align: center;">
     @if (Model.PagingInfo.CurrentPage > 1)
     {
-        <a  href="@Url.Action("Show", new { ProductPage = Model.PagingInfo.CurrentPage - 1 })">Previous</a>
+        <a href="@Url.Action("Show", new { ProductPage = Model.PagingInfo.CurrentPage - 1 })">Previous</a>
     }
     @Model.PagingInfo.CurrentPage
     @if (Model.PagingInfo.CurrentPage < Model.PagingInfo.TotalPages)
@@ -116,17 +116,19 @@
         <a href="@Url.Action("Show", new { ProductPage = Model.PagingInfo.CurrentPage + 1 })">Next</a>
     }
 </div>
-<div style="margin-left: 200px;margin-bottom: 50px;">
-    <a asp-action="Show">Back to List</a>
-</div>
 <script>
     document.getElementById('searchForm').addEventListener('submit', function (event) {
         // Lấy dữ liệu tìm kiếm từ biến toàn cục
         var searchInput = document.querySelector('.tk1');
         searchData = sessionStorage.getItem('searchData');
         // Sử dụng dữ liệu tìm kiếm để thực hiện tìm kiếm
-        var url = '/NhanVien/SearchTheoTen?Ten=' + searchData;
-        window.location.href = url;
+        if (!searchInput.value.trim()) {
+            event.preventDefault(); // Prevent form submission if search input is empty
+            document.getElementById('searchErrorMessage').style.display = 'block';
+        } else {
+            var url = '/NhanVien/SearchTheoTen?Ten=' + searchData;
+            window.location.href = url;
+        }
     });
 
     window.addEventListener('load', function (event) {
@@ -146,6 +148,6 @@
             window.location.href = url;
         }
     });
-    
+
 </script>
 

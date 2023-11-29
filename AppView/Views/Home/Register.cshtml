@@ -15,26 +15,31 @@
                     <div class="form-outline mb-4">
                         <label class="form-label">Name</label>
                         <input asp-for="Name" type="text" id="name" class="form-control" />
+                        <div class="invalid-feedback"> Không để trống tên</div>
                     </div>
                     <!-- Email input -->
                     <div class="form-outline mb-4">
                         <label class="form-label">Email address</label>
                         <input asp-for="Email" type="email" id="email" class="form-control" />
+                        <div class="invalid-feedback"> Không để trống email </div>
                     </div>
                     <!-- PhoneNumber input -->
                     <div class="form-outline mb-4">
                         <label class="form-label">Phone number</label>
                         <input asp-for="SDT" type="text" id="sdt" class="form-control" />
+                        <div class="invalid-feedback"> Không để trống SDT </div>
                     </div>
                     <!-- Password input -->
                     <div class="form-outline mb-4">
                         <label class="form-label">Password</label>
                         <input asp-for="Password" type="password" id="password" class="form-control" />
+                        <div class="invalid-feedback"> Không để trống Password </div>
                     </div>
                     <!-- Password input -->
                     <div class="form-outline mb-4">
                         <label class="form-label">Confirm Password</label>
                         <input type="password" id="confirm" class="form-control" />
+                        <div class="invalid-feedback"> Không để trống ConfirmPassword </div>
                     </div>
                     <!-- Submit button -->
                     <button type="submit" class="btn btn-primary btn-block mb-4">Sign in</button>
@@ -49,6 +54,7 @@
     </div>
 </div>
 <script>
+    
     function register(e) {
         e.preventDefault();
         var name = $("#name").val();
@@ -56,19 +62,55 @@
         var password = $("#password").val();
         var confirm = $("#confirm").val();
         var sdt = $("#sdt").val();
-        if (name.trim() === "" || email.trim() === "" || password.trim() === "" || confirm.trim() === "" || sdt.trim() === "") {
-            Swal.fire({
-                title: "Vui lòng điền đầy đủ thông tin",
-                icon: "warning",
-                confirmButtonText: "OK"
-            });
+        $('.invalid-feedback').text('');
+        $('.is-invalid').removeClass('is-invalid');
+        var hasError = false;
+
+        if (name.trim().length === 0) {
+            $('#name').addClass('is-invalid');
+            $('#name').next('.invalid-feedback').text('Không để trống tên');
+            hasError = true;
+        }
+        var emailRegex = /^[a-zA-Z0-9._%+-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (email.trim().length === 0) {
+            $('#email').addClass('is-invalid');
+            $('#email').next('.invalid-feedback').text('Không để trống email');
+            hasError = true;
+        }
+        else if (!emailRegex.test(email)) {
+            $('#email').addClass('is-invalid');
+            $('#email').next('.invalid-feedback').text('Email không hợp lệ');
+            hasError = true;
+        }
+        var phoneNumberRegex = /^\d{10}$/;
+        if (sdt.trim().length === 0) {
+            $('#sdt').addClass('is-invalid');
+            $('#sdt').next('.invalid-feedback').text('Không để trống sdt');
+            hasError = true;
+        } else if (!phoneNumberRegex.test(sdt)) {
+            $('#sdt').addClass('is-invalid');
+            $('#sdt').next('.invalid-feedback').text('Số điện thoại không hợp lệ');
+            hasError = true;
+        }
+        if (password.trim().length === 0) {
+            $('#password').addClass('is-invalid');
+            $('#password').next('.invalid-feedback').text('Không để trống password');
+            hasError = true;
+        }
+
+        if (confirm.trim().length === 0) {
+            $('#confirm').addClass('is-invalid');
+            $('#confirm').next('.invalid-feedback').text('Không để trống ConfirmPassword');
+            hasError = true;
         } else if (password !== confirm) {
-            Swal.fire({
-                title: "Password và Confirm Password không khớp!",
-                icon: "error",
-                confirmButtonText: "OK"
-            });
-        } else {
+            $("#confirm").addClass('is-invalid');
+            $("#confirm").next('.invalid-feedback').text("Mật khẩu và xác nhận không khớp");
+            hasError = true;
+        }
+        if(hasError){
+            alert("Vui long dien day du thong tin");    
+        }
+        else{
             Swal.fire({
                 title: "Đăng ký thành công",
                 icon: "success",
@@ -80,6 +122,9 @@
                 }
             });
         }
+        $('#name,#email,#password,#confirm,#sdt').on('input', function () {
+            $(this).removeClass('is-invalid');
+            $(this).next('.invalid-feedback').text('');
+        });
     }
-
 </script>
