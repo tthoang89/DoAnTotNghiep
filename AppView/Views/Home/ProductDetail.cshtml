@@ -287,7 +287,7 @@
                                                 <a href="#" class="nav-link mb-1">
                                                     @item.TenSP <br />
                                                 </a>
-                                                <strong class="text-dark"> @item.GiaSPTT.ToString("n0") VNĐ</strong>
+                                                <strong style="padding-left: 16px;" class="text-dark"> @item.GiaSPTT.ToString("n0") VNĐ</strong>
                                             </div>
                                         </div>
                                     }
@@ -414,6 +414,7 @@
     var pageIndex = 1;
     var pagesize = 5;
     var idSP = '@Model.IDSanPham';
+    console.log(idSP);
     function loadDGsp() {
         var request = { id: idSP, page: pageIndex, pageSize: pagesize };
         $.ajax({
@@ -421,6 +422,7 @@
             type: "GET",
             data: request,
             success: function (response) {
+                console.log(response);
                 $("#danhgia").empty();
                 $.each(response.data, function (i, item) {
                     if(item.sao === 1){
@@ -440,7 +442,6 @@
                     
                 });
                 pagingsp(response.total, function () {
-                    
                     loadDGsp();
                 });
             },
