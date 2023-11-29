@@ -10,7 +10,9 @@ namespace AppAPI.IServices
         public bool Delete(Guid Id);
         public GioHang GetById(Guid Id);
         public List<GioHang> GetAll();
-        public GioHangViewModel GetCart(List<GioHangRequest> request);
-
+        GioHangViewModel GetCart(List<GioHangRequest> request);
+        GioHangViewModel GetCartLogin(string idNguoiDung);
+        Task<bool> DeleteCart(Guid idNguoiDung);
+        Task<bool> AddCart(ChiTietGioHang chiTietGioHang);
     }
 }
