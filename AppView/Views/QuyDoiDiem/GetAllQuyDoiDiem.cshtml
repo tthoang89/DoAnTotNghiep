@@ -45,22 +45,23 @@
             </td>
             <td>
                 @if(item.TrangThai==0){
-                        <strong style="color:red">Không hoạt động</strong>
+                        <strong style="color:red">Không sử dụng điểm</strong>
                 }
-                else{
-                        <strong style="color:green">Hoạt động</strong>
+                else if(item.TrangThai==1){
+                        <strong style="color:green">Chỉ tích điểm hoặc tiêu điểm</strong>
+                }
+                else if(item.TrangThai==2){
+                        <strong style="color:green">Vừa tiêu điểm, vừa tích điểm</strong>
                 }
             </td>
             <td>
                     <button class="btn btn-success">
                         @Html.ActionLink("Sửa", "Updates", new { id = item.ID }, new { @style = "color:white;" })
                     </button>
-                    <button class="btn btn-primary">
-                        @Html.ActionLink("Chi tiết", "Details", new { id = item.ID }, new { @style = "color:white;" })
-                    </button>
-                    <button class="btn btn-danger">
+                   
+                  @*  <button class="btn btn-danger">
                         @Html.ActionLink("Xóa", "Delete", new { id = item.ID }, new { @style = "color:white;" })
-                    </button>
+                    </button>*@
             </td>
             @{
                 stt++;

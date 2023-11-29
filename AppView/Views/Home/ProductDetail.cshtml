@@ -358,11 +358,31 @@
             success: function (response) {
                 if (response.success == true) {
                     toastr.success(response.message, 'Success Alert', { timeOut: 300 });
+                    
                 } else {
                     toastr.error(response.message, 'Error Alert', { timeOut: 300 });
                 }
             },
             error: function (response) {
+                toastr.error(response.message, 'Error Alert', { timeOut: 300 });
+            }
+        });
+        $.ajax({
+            async: true,
+            type: 'POST',
+            dataType: "json",
+            data: { sl: document.getElementById("sl").value },
+            url: '/Home/TongSoLuong',
+            success: function (response) {
+                if (response.success == true) {
+                    $('#tongsoluong').text(response.sl);
+
+                } else {
+
+                }
+            },
+            error: function (response) {
+                console.log(response);
                 toastr.error(response.message, 'Error Alert', { timeOut: 300 });
             }
         });
@@ -377,11 +397,31 @@
             success: function (response) {
                 if (response.success == true) {
                     window.location = 'https://localhost:5001/Home/ShoppingCart';
+                  
                 } else {
                     toastr.error(response.message, 'Error Alert', { timeOut: 300 });
                 }
             },
             error: function (response) {
+                toastr.error(response.message, 'Error Alert', { timeOut: 300 });
+            }
+        });
+        $.ajax({
+            async: true,
+            type: 'POST',
+            dataType: "json",
+            data: { sl: document.getElementById("sl").value },
+            url: '/Home/TongSoLuong',
+            success: function (response) {
+                if (response.success == true) {
+                    $('#tongsoluong').text(response.sl);
+
+                } else {
+
+                }
+            },
+            error: function (response) {
+                console.log(response);
                 toastr.error(response.message, 'Error Alert', { timeOut: 300 });
             }
         });

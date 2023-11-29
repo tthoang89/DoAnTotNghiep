@@ -353,6 +353,7 @@
             success: function (response) {
                 if (response.success == true) {
                     toastr.success(response.message, 'Success Alert', { timeOut: 300 });
+                    
                 } else {
                     toastr.error(response.message, 'Error Alert', { timeOut: 300 });
                 }
@@ -362,6 +363,26 @@
                 toastr.error(response.message, 'Error Alert', { timeOut: 300 });
             }
         });
+        $.ajax({
+            async: true,
+            type: 'POST',
+            dataType: "json",
+            data: { sl:1 },
+            url: '/Home/TongSoLuong',
+            success: function (response) {
+                if (response.success == true) {
+                    $('#tongsoluong').text(response.sl);
+                   
+                } else {
+                    
+                }
+            },
+            error: function (response) {
+                console.log(response);
+                toastr.error(response.message, 'Error Alert', { timeOut: 300 });
+            }
+        });
+
     }
     function Sort() {
         var sort = document.getElementById("Sort-product");
