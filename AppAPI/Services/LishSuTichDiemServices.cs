@@ -75,15 +75,10 @@ namespace AppAPI.Services
         {
             try
             {
-                var lstDonMua = await(from a in context.LichSuTichDiems
-                                       join b in context.HoaDons.Where(p=>p.LoaiHD == 0) on a.IDHoaDon equals b.ID
-                                       join d in context.KhachHangs on a.IDKhachHang equals d.IDKhachHang
-                                       join e in context.QuyDoiDiems on a.IDQuyDoiDiem equals e.ID
+                var lstDonMua = await(from b in context.HoaDons.Where(p=>p.LoaiHD == 0) 
+                                      
                                       select new DonMuaViewModel()
                                        {
-                                           IDLichSu = a.ID,
-                                           Diem = a.Diem,
-                                           TrangThaiLSTD = a.TrangThai,
                                            IDHoaDon = b.ID,
                                            NgayTao = b.NgayTao,
                                            NgayThanhToan = b.NgayThanhToan,
@@ -93,9 +88,7 @@ namespace AppAPI.Services
                                            DiaChi = b.DiaChi,   
                                            TienShip = b.TienShip,
                                            TrangThaiGiaoHang = b.TrangThaiGiaoHang,
-                                           IdNguoiDung = d.IDKhachHang,
-                                           TiLeTichDiem = e.TiLeTichDiem,
-                                           TiLeTieuDiem = e.TiLeTieuDiem,
+                                           IdNguoiDung = context.LichSuTichDiems.FirstOrDefault(p=>p.IDHoaDon == b.ID).IDKhachHang.Value,
                                            MaHD = b.MaHD,
                                            TongTien = b.TongTien
                                        }).ToListAsync();
@@ -116,13 +109,13 @@ namespace AppAPI.Services
             {
                 var lstDonMuaCT = await(from c in context.ChiTietHoaDons.Where(p => p.IDHoaDon == idHoaDon)
                                       join a in context.HoaDons on c.IDHoaDon equals a.ID
-                                      join b in context.LichSuTichDiems on a.ID equals b.IDHoaDon
+                                      //join b in context.LichSuTichDiems on a.ID equals b.IDHoaDon
                                       join d in context.DanhGias on c.ID equals d.ID
                                       join e in context.ChiTietSanPhams on c.IDCTSP equals e.ID
                                       join f in context.KichCos on e.IDKichCo equals f.ID
                                       join g in context.MauSacs on e.IDMauSac equals g.ID
                                       join i in context.SanPhams.Where(x => x.TrangThai == 1) on e.IDSanPham equals i.ID
-                                      join l in context.QuyDoiDiems on b.IDQuyDoiDiem equals l.ID
+                                      //join l in context.QuyDoiDiems on b.IDQuyDoiDiem equals l.ID
                                       select new DonMuaChiTietViewModel()
                                       {
                                          ID = a.ID,
@@ -135,8 +128,8 @@ namespace AppAPI.Services
                                          TienShip = a.TienShip,
                                          PhuongThucThanhToan = a.PhuongThucThanhToan,
                                          TrangThaiGiaoHang = a.TrangThaiGiaoHang,
-                                         Diem = b.Diem,
-                                         TrangThaiLichSuTichDiem = b.TrangThai,
+                                         //Diem = b.Diem,
+                                         //TrangThaiLichSuTichDiem = b.TrangThai,
                                          IDCTHD = c.ID,
                                          DonGia = c.DonGia,
                                          SoLuong = c.SoLuong,
@@ -146,8 +139,10 @@ namespace AppAPI.Services
                                          DuongDan = context.Anhs.First(x => x.IDMauSac == g.ID && x.IDSanPham == i.ID).DuongDan,
                                          HinhThucGiamGia = a.IDVoucher == null ? null : (context.Vouchers.First(x=>x.ID == a.IDVoucher)).HinhThucGiamGia,
                                          GiaTri = a.IDVoucher == null ? null : (context.Vouchers.First(x => x.ID == a.IDVoucher)).GiaTri,
-                                         TiLeTieuDiem = l.TiLeTieuDiem,
-                                         TrangThaiDanhGia = d.TrangThai
+                                         TrangThaiDanhGia = d.TrangThai,
+                                         lichSuTichDiems = context.LichSuTichDiems.Where(p=>p.IDHoaDon == a.ID).ToList(),
+                                         TiLeTieuDiem = context.QuyDoiDiems.FirstOrDefault(p=>p.ID == context.LichSuTichDiems.FirstOrDefault(p => p.IDHoaDon == a.ID).IDQuyDoiDiem).TiLeTieuDiem,
+                                         TiLeTichDiem = context.QuyDoiDiems.FirstOrDefault(p => p.ID == context.LichSuTichDiems.FirstOrDefault(p => p.IDHoaDon == a.ID).IDQuyDoiDiem).TiLeTichDiem,
                                       }).ToListAsync();
                 return lstDonMuaCT;
             }

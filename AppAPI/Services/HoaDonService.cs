@@ -90,6 +90,7 @@ namespace AppAPI.Services
         {
             try
             {
+                int subtotal = 0;
                 var voucher = reposVoucher.GetAll().FirstOrDefault(p => p.Ten == hoaDon.TenVoucher);
                 if (chiTietHoaDons != null)
                 {
@@ -143,6 +144,7 @@ namespace AppAPI.Services
                             reposChiTietHoaDon.Add(chiTietHoaDon);
                             var CTsanPham = repsCTSanPham.GetAll().FirstOrDefault(p => p.ID == x.IDChiTietSanPham);
                             CTsanPham.SoLuong -= chiTietHoaDon.SoLuong;
+                            subtotal += x.SoLuong * x.DonGia;
                             repsCTSanPham.Update(CTsanPham);
 
                         }
@@ -155,7 +157,7 @@ namespace AppAPI.Services
                             {
                                 if (hoaDon.Diem == 0 || hoaDon.Diem == null)
                                 {
-                                    khachHang.DiemTich += hoaDon.TongTien / quyDoiDiem.TiLeTichDiem;
+                                    khachHang.DiemTich += subtotal / quyDoiDiem.TiLeTichDiem;
                                     reposKhachHang.Update(khachHang);
                                     LichSuTichDiem lichSuTichDiem = new LichSuTichDiem()
                                     {
@@ -163,7 +165,7 @@ namespace AppAPI.Services
                                         IDKhachHang = hoaDon.IDNguoiDung,
                                         IDQuyDoiDiem = quyDoiDiem.ID,
                                         IDHoaDon = hoaDon1.ID,
-                                        Diem = hoaDon.TongTien / quyDoiDiem.TiLeTichDiem,
+                                        Diem = subtotal / quyDoiDiem.TiLeTichDiem,
                                         TrangThai = 1
                                     };
                                     reposLichSuTichDiem.Add(lichSuTichDiem);
@@ -192,7 +194,7 @@ namespace AppAPI.Services
                             else if (quyDoiDiem.TrangThai == 2)
                             {
                                 //tích điểm
-                                khachHang.DiemTich += hoaDon.TongTien / quyDoiDiem.TiLeTichDiem;
+                                khachHang.DiemTich += subtotal / quyDoiDiem.TiLeTichDiem;
                                 reposKhachHang.Update(khachHang);
                                 LichSuTichDiem lichSuTichDiem = new LichSuTichDiem()
                                 {
@@ -200,11 +202,12 @@ namespace AppAPI.Services
                                     IDKhachHang = hoaDon.IDNguoiDung,
                                     IDQuyDoiDiem = quyDoiDiem.ID,
                                     IDHoaDon = hoaDon1.ID,
-                                    Diem = hoaDon.TongTien / quyDoiDiem.TiLeTichDiem,
+                                    Diem = subtotal / quyDoiDiem.TiLeTichDiem,
                                     TrangThai = 1
                                 };
                                 reposLichSuTichDiem.Add(lichSuTichDiem);
                                 //tiều điểm
+                                khachHang.DiemTich = khachHang.DiemTich - hoaDon.Diem;
                                 if (khachHang.DiemTich >= hoaDon.Diem && hoaDon.Diem != 0 || hoaDon.Diem != null)
                                 {
                                     khachHang.DiemTich = khachHang.DiemTich - hoaDon.Diem;
@@ -222,9 +225,8 @@ namespace AppAPI.Services
                                 }
                                 
                             }
-                            
-
                         }
+                        
                         if (hoaDon.TrangThai)
                         {
                             _iGioHangServices.DeleteCart(hoaDon.IDNguoiDung.Value);
