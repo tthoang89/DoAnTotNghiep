@@ -22,12 +22,12 @@
             <div class="form-group">
                 <label  class="control-label">Tỉ Lệ Tích Điểm</label>
                 <input asp-for="TiLeTichDiem" class="form-control" />
-                <span asp-validation-for="TiLeTichDiem" class="text-danger"></span>
+                <span  class="text-danger">@ViewData["TiLeTichDiem"]</span>
             </div>
             <div class="form-group">
                 <label  class="control-label">Tỉ Lệ Tiêu Điểm</label>
                 <input asp-for="TiLeTieuDiem" class="form-control" />
-                <span asp-validation-for="TiLeTieuDiem" class="text-danger"></span>
+                <span class="text-danger">@ViewData["TiLeTieuDiem"]</span>
             </div>
             <div class="form-group">
                 <label class="control-label">Trạng Thái</label>
@@ -45,6 +45,7 @@
                     </label>
                 </div>
             </div>
+            <span  class="text-danger">@ViewData["TrangThai"]</span>
             <div class="form-group">
                 <input type="submit" value="Thêm Quy Đổi Điểm" class="btn btn-success" />
             </div>

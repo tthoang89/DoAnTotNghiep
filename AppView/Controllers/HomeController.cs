@@ -75,8 +75,8 @@ namespace AppView.Controllers
                     if (response.IsSuccessStatusCode)
                     {
                         var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response.Content.ReadAsStringAsync().Result);
-                      
-                       
+
+
                         // lam them
                         int cout = temp.GioHangs.Sum(c => c.SoLuong);
 
@@ -87,7 +87,11 @@ namespace AppView.Controllers
                     }
                     else return BadRequest();
                 }
-                else return View(new List<GioHangRequest>());
+                else {
+                    TempData["SoLuong"] = "0";
+                    return View(new List<GioHangRequest>());
+                }
+               
             }
         }
 
@@ -606,9 +610,9 @@ namespace AppView.Controllers
                     if (response.IsSuccessStatusCode)
                     {
                         var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response.Content.ReadAsStringAsync().Result);
-                        
+
                         // lam them
-                        int cout = temp.GioHangs.Sum(c => c.SoLuong)+sl.Value;
+                        int cout = temp.GioHangs.Sum(c => c.SoLuong) + sl.Value;
 
                         TempData["SoLuong"] = cout.ToString();
                         // lam end
@@ -617,7 +621,11 @@ namespace AppView.Controllers
                     }
                     else return BadRequest();
                 }
-                else return View(new List<GioHangRequest>());
+                else 
+                {
+                    TempData["SoLuong"] = "0";
+                    return View(new List<GioHangRequest>());
+                } 
             }
         }
         #region Cart
@@ -670,7 +678,7 @@ namespace AppView.Controllers
                         TempData["ListBienThe"] = JsonConvert.SerializeObject(temp.GioHangs);
                         // lam them
                         int cout = temp.GioHangs.Sum(c => c.SoLuong);
-                       
+
                         TempData["SoLuong"] = cout.ToString();
                         // lam end
                         TempData["TrangThai"] = "true";
@@ -678,9 +686,13 @@ namespace AppView.Controllers
                     }
                     else return BadRequest();
                 }
-                else return View(new List<GioHangRequest>());
+                else
+                {
+                    TempData["SoLuong"] = "0";
+                    return View(new List<GioHangRequest>());
+                }
+                }
             }
-        }
         [HttpGet]
         public IActionResult DeleteFromCart(Guid id)
         {
