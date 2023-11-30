@@ -66,12 +66,9 @@ namespace AppView.Controllers
 
         public async Task<IActionResult> Create(KhachHangView kh)
         {
-            string apiUrl1 = "https://localhost:7095/api/KhachHang";
-            var response1 = await httpClients.GetAsync(apiUrl1);
-            string apiData1 = await response1.Content.ReadAsStringAsync();
-            var kh1 = JsonConvert.DeserializeObject<List<KhachHangView>>(apiData1);
-           
-            if(kh.Password != null)
+
+
+            if (kh.Password != null)
             {
                 if (kh.Password.Length < 5)
                 {
@@ -84,30 +81,32 @@ namespace AppView.Controllers
                 {
                     ViewData["SDT"] = "Số Điện thoại không hợp lệ";
                 }
-                var timkiem = kh1.Where(x => x.SDT == kh.SDT).FirstOrDefault();
-                if (timkiem != null)
-                {
-                    ViewData["SDT"] = "Số Điện thoại này đã được đăng kí";
-                }
-            }           
-            if (kh.Email != null)
-            {
-                var email = kh1.Where(x => x.SDT == kh.Email).FirstOrDefault();
-                if (email != null)
-                {               
-                        ViewData["Email"] = "Email này đã được đăng kí";                   
-                }
-               
+                //var timkiem = kh1.Where(x => x.SDT == kh.SDT).FirstOrDefault();
+                //if (timkiem != null)
+                //{
+                //    ViewData["SDT"] = "Số Điện thoại này đã được đăng kí";
+                //}
             }
-            
-            else
-            {
-                var url = $"https://localhost:7095/api/KhachHang/PostKHView";
+            //if (kh.Email != null)
+            //{
+            //var email = kh1.Where(x => x.SDT == kh.Email).FirstOrDefault();
+            //if (email != null)
+            //{               
+            //        ViewData["Email"] = "Email này đã được đăng kí";                   
+            //}
+
+            //}
+
+            var url = $"https://localhost:7095/api/KhachHang/PostKHView";
                 var response = await httpClients.PostAsJsonAsync(url, kh);
                 if (response.IsSuccessStatusCode) return RedirectToAction("GetAllKhachHang");
                 return View();
-            }
-            return View();
+           
+
+
+           
+            
+            
             
         }
         [HttpGet]
