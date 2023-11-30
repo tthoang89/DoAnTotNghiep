@@ -226,7 +226,6 @@ namespace AppAPI.Services
                                 
                             }
                         }
-                        
                         if (hoaDon.TrangThai)
                         {
                             _iGioHangServices.DeleteCart(hoaDon.IDNguoiDung.Value);
