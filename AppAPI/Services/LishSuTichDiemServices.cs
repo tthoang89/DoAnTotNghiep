@@ -88,7 +88,7 @@ namespace AppAPI.Services
                                            DiaChi = b.DiaChi,   
                                            TienShip = b.TienShip,
                                            TrangThaiGiaoHang = b.TrangThaiGiaoHang,
-                                           IdNguoiDung = context.LichSuTichDiems.FirstOrDefault(p=>p.IDHoaDon == b.ID).IDKhachHang.Value,
+                                           IdNguoiDung = context.LichSuTichDiems.FirstOrDefault(p => p.IDHoaDon == b.ID) != null ? context.LichSuTichDiems.FirstOrDefault(p=>p.IDHoaDon == b.ID).IDKhachHang.Value : null,
                                            MaHD = b.MaHD,
                                            TongTien = b.TongTien
                                        }).ToListAsync();
