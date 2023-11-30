@@ -12,15 +12,22 @@ namespace AppData.ViewModels
     {
         [Key]
         public Guid IDKhachHang { get; set; }
-        [Required]
+        [Required(ErrorMessage = "mời bạn nhập tên")]
+        [StringLength(70, ErrorMessage = "Tên không được quá 70 kí tự")]
         public string Ten { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "mời bạn nhập mật khẩu")]
         public string Password { get; set; }
+        [Required(ErrorMessage = "mời bạn nhập giới tính")]
         public int? GioiTinh { get; set; }
+        [Required(ErrorMessage = "mời bạn nhập ngày sinh")]
         public DateTime? NgaySinh { get; set; }
         [EmailAddress]
+        [Required(ErrorMessage = "mời bạn nhập email")]
         public string Email { get; set; }
+        [Required(ErrorMessage = "mời bạn nhập địa chỉ")]
         public string? DiaChi { get; set; }
+        [Required(ErrorMessage = "mời bạn nhập SDT")]
         public string? SDT { get; set; }
         public int? DiemTich { get; set; }
         public int? TrangThai { get; set; }

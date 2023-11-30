@@ -30,9 +30,69 @@ namespace AppView.Controllers
             _httpClient = new HttpClient();
             _httpClient.BaseAddress = new Uri("https://localhost:7095/api/");
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            // lam start
+            var session = HttpContext.Session.GetString("LoginInfor");
+            if (String.IsNullOrEmpty(session))
+            {
+                List<GioHangRequest> lstGioHang = new List<GioHangRequest>();
+                if (Request.Cookies["Cart"] != null)
+                {
+                    lstGioHang = JsonConvert.DeserializeObject<List<GioHangRequest>>(Request.Cookies["Cart"]);
+                }
+                // laam them
+                int cout = lstGioHang.Sum(c => c.SoLuong);
+                TempData["SoLuong"] = cout.ToString();
+
+                if (Request.Cookies["Cart"] != null)
+                {
+                    var response = await _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCart?request=" + Request.Cookies["Cart"]);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response.Content.ReadAsStringAsync().Result);
+                       
+
+                        // lam end
+                       
+                        TempData["TrangThai"] = "false";
+                        return View(temp.GioHangs);
+                    }
+                    else return BadRequest();
+                }
+                else
+                {
+                    TempData["TongTien"] = "0";
+                    return View(new List<GioHangRequest>());
+                }
+            }
+            else
+            {
+                var loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
+                if (loginInfor.vaiTro == 1)
+                {
+                    var response = await _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCartLogin?idNguoiDung=" + loginInfor.Id);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response.Content.ReadAsStringAsync().Result);
+
+
+                        // lam them
+                        int cout = temp.GioHangs.Sum(c => c.SoLuong);
+
+                        TempData["SoLuong"] = cout.ToString();
+                        // lam end
+                        TempData["TrangThai"] = "true";
+                        return View(temp.GioHangs);
+                    }
+                    else return BadRequest();
+                }
+                else {
+                    TempData["SoLuong"] = "0";
+                    return View(new List<GioHangRequest>());
+                }
+               
+            }
         }
 
         public IActionResult Privacy()
@@ -44,7 +104,7 @@ namespace AppView.Controllers
             return View();
         }
         public IActionResult ProductDetail()
-        {
+        {  
             return View();
         }
         #region SanPham
@@ -506,7 +566,68 @@ namespace AppView.Controllers
         //    return PartialView("_ReturnProducts", lstSanPhamfnR);
         //}
         #endregion
+        [HttpPost]
+        public async Task<ActionResult> TongSoLuong(int? sl)
+        {
+            var session = HttpContext.Session.GetString("LoginInfor");
+            if (String.IsNullOrEmpty(session))
+            {
+                List<GioHangRequest> lstGioHang = new List<GioHangRequest>();
+                if (Request.Cookies["Cart"] != null)
+                {
+                    lstGioHang = JsonConvert.DeserializeObject<List<GioHangRequest>>(Request.Cookies["Cart"]);
+                }
+                // laam them
+                int cout = lstGioHang.Sum(c => c.SoLuong)+sl.Value;
+                TempData["SoLuong"] = cout.ToString();
 
+                if (Request.Cookies["Cart"] != null)
+                {
+                    var response = await _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCart?request=" + Request.Cookies["Cart"]);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response.Content.ReadAsStringAsync().Result); 
+                        cout = temp.GioHangs.Sum(c => c.SoLuong) + sl.Value;
+                        TempData["SoLuong"] = cout.ToString();
+                        // lam end
+
+                        return Json(new { success = true, message = "Add to cart successfully",sl=cout });
+                    }
+                    else return BadRequest();
+                }
+                else
+                {
+                    TempData["SoLuong"] = "0";
+                    return View(new List<GioHangRequest>());
+                }
+            }
+            else
+            {
+                var loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
+                if (loginInfor.vaiTro == 1)
+                {
+                    var response = await _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCartLogin?idNguoiDung=" + loginInfor.Id);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response.Content.ReadAsStringAsync().Result);
+
+                        // lam them
+                        int cout = temp.GioHangs.Sum(c => c.SoLuong) + sl.Value;
+
+                        TempData["SoLuong"] = cout.ToString();
+                        // lam end
+                        TempData["TrangThai"] = "true";
+                        return Json(new { success = true, message = "Add to cart successfully", sl = cout });
+                    }
+                    else return BadRequest();
+                }
+                else 
+                {
+                    TempData["SoLuong"] = "0";
+                    return View(new List<GioHangRequest>());
+                } 
+            }
+        }
         #region Cart
         [HttpGet]
         public async Task<IActionResult> ShoppingCart()
@@ -520,11 +641,7 @@ namespace AppView.Controllers
                     lstGioHang = JsonConvert.DeserializeObject<List<GioHangRequest>>(Request.Cookies["Cart"]);
                 }
                 // laam them
-                int cout = 0;
-                for (int i = 0; i < lstGioHang.Sum(c => c.SoLuong); i++)
-                {
-                    cout++;
-                }
+                int cout = lstGioHang.Sum(c => c.SoLuong);              
                 TempData["SoLuong"] = cout.ToString();
 
                 if (Request.Cookies["Cart"] != null)
@@ -534,9 +651,10 @@ namespace AppView.Controllers
                     {
                         var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response.Content.ReadAsStringAsync().Result);
                         TempData["TongTien"] = temp.TongTien.ToString();
-                        ViewData["cout"] = cout;
+                       
                         // lam end
                         TempData["ListBienThe"] = JsonConvert.SerializeObject(temp.GioHangs);
+                       
                         TempData["TrangThai"] = "false";
                         return View(temp.GioHangs);
                     }
@@ -558,14 +676,23 @@ namespace AppView.Controllers
                         var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response.Content.ReadAsStringAsync().Result);
                         TempData["TongTien"] = temp.TongTien.ToString();
                         TempData["ListBienThe"] = JsonConvert.SerializeObject(temp.GioHangs);
+                        // lam them
+                        int cout = temp.GioHangs.Sum(c => c.SoLuong);
+
+                        TempData["SoLuong"] = cout.ToString();
+                        // lam end
                         TempData["TrangThai"] = "true";
                         return View(temp.GioHangs);
                     }
                     else return BadRequest();
                 }
-                else return View(new List<GioHangRequest>());
+                else
+                {
+                    TempData["SoLuong"] = "0";
+                    return View(new List<GioHangRequest>());
+                }
+                }
             }
-        }
         [HttpGet]
         public ActionResult DeleteFromCart(Guid id)
         {
@@ -637,6 +764,7 @@ namespace AppView.Controllers
                 CookieOptions cookie = new CookieOptions();
                 cookie.Expires = DateTime.Now.AddDays(30);
                 Response.Cookies.Append("Cart", JsonConvert.SerializeObject(lstGioHang), cookie);
+               
                 return Json(new { success = true, message = "Add to cart successfully" });
             }
             else
@@ -646,6 +774,7 @@ namespace AppView.Controllers
                 {
                     var chiTietGioHang = new ChiTietGioHang() { ID = Guid.NewGuid(), SoLuong = (sl != null) ? sl.Value : 1, IDCTSP = new Guid(id), IDNguoiDung = loginInfor.Id };
                     var response = _httpClient.PostAsJsonAsync(_httpClient.BaseAddress + "GioHang/AddCart",chiTietGioHang).Result;
+                   
                     if (response.IsSuccessStatusCode) return Json(new { success = true, message = "Add to cart successfully" });
                     else return Json(new { success = false, message = "Add to cart fail" });
                 }
@@ -776,7 +905,7 @@ namespace AppView.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Login(string login, string password)
+        public async Task<ActionResult> Login(string login, string password)
         {
             //https://localhost:7095/api/QuanLyNguoiDung/DangNhap?email=tam%40gmail.com&password=chungtam200396
             if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password))
@@ -793,8 +922,13 @@ namespace AppView.Controllers
             {
                 HttpContext.Session.SetString("LoginInfor", response.Content.ReadAsStringAsync().Result);
                 string actionName = TempData["ActionName"].ToString();
+                // lam them
+
+                //lam end
+
                 return RedirectToAction(actionName);
             }
+           
             ViewBag.ErrorMessage = "Email hoặc password không chính xác.";
             return View();
         }

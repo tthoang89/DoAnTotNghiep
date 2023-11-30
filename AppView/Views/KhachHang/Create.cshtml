@@ -23,6 +23,7 @@
                 <label  class="control-label">Mật Khẩu</label>
                 <input asp-for="Password" class="form-control" />
                 <span asp-validation-for="Password" class="text-danger"></span>
+                <span class="text-danger">@ViewData["MK"]</span>
             </div>
             <div class="form-group">
                 <label class="control-label">Giới Tính</label>
@@ -48,6 +49,7 @@
                 <label  class="control-label">Email</label>
                 <input asp-for="Email" class="form-control" />
                 <span asp-validation-for="Email" class="text-danger"></span>
+                <span class="text-danger">@ViewData["Email"]</span>
             </div>
             <div class="form-group">
                 <label  class="control-label">Địa Chỉ</label>
@@ -58,12 +60,9 @@
                 <label  class="control-label">Số Điện Thoại</label>
                 <input asp-for="SDT" class="form-control" />
                 <span asp-validation-for="SDT" class="text-danger"></span>
+                <span class="text-danger">@ViewData["SDT"]</span>
             </div>
-            <div class="form-group">
-                <label  class="control-label">Điểm Tích</label>
-                <input asp-for="DiemTich" class="form-control" />
-                <span asp-validation-for="DiemTich" class="text-danger"></span>
-            </div>
+           
             <div class="form-group">
                 <input type="submit" value="Thêm Khách Hàng" class="btn btn-success" />
             </div>
