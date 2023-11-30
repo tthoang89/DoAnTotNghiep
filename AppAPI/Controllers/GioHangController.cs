@@ -69,6 +69,16 @@ namespace AppAPI.Controllers
                 return false;
             }
         }
+        [HttpDelete("Deletebyid")]
+        public bool Deletebyidctsp(Guid idctsp, Guid idNguoiDung)
+        {
+            return gioHangServices.DeleteCartbyIDCTSP(idctsp,idNguoiDung).Result;
+        }
+        [HttpPut("UpdateCart")]
+        public bool UpdateCart(Guid idctsp, int soluong, Guid idNguoiDung)
+        {
+            return gioHangServices.UpdateCart(idctsp,soluong, idNguoiDung).Result;
+        }
         [HttpGet("GetCart")]
         public GioHangViewModel GetCart(string request)
         {

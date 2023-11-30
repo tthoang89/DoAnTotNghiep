@@ -8,7 +8,7 @@ namespace AppData.ViewModels
 {
     public class DonMuaViewModel
     {
-        public Guid IdNguoiDung {  get; set; }
+        public Guid? IdNguoiDung {  get; set; }
         public string? MaHD { get; set; }
         public Guid IDLichSu { get; set; }
         public int Diem { get; set; }
