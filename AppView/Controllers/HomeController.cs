@@ -76,8 +76,8 @@ namespace AppView.Controllers
                     if (response.IsSuccessStatusCode)
                     {
                         var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response.Content.ReadAsStringAsync().Result);
-                      
-                       
+
+
                         // lam them
                         int cout = temp.GioHangs.Sum(c => c.SoLuong);
 
@@ -88,7 +88,11 @@ namespace AppView.Controllers
                     }
                     else return BadRequest();
                 }
-                else return View(new List<GioHangRequest>());
+                else {
+                    TempData["SoLuong"] = "0";
+                    return View(new List<GioHangRequest>());
+                }
+               
             }
         }
 
@@ -268,11 +272,11 @@ namespace AppView.Controllers
                     }
                     else if (filter.sortSP == "6")
                     {
-                        lstSanphamfn = lstSanphamfn.OrderBy(p => p.NgayTao).ToList();
+                        lstSanphamfn = lstSanphamfn.OrderBy(p => p.NgayTao.Value.Date).ThenBy(p => p.NgayTao.Value.TimeOfDay).ToList();
                     }
                     else if (filter.sortSP == "7")
                     {
-                        lstSanphamfn = lstSanphamfn.OrderByDescending(p => p.NgayTao).ToList();
+                        lstSanphamfn = lstSanphamfn.OrderByDescending(p => p.NgayTao.Value.Date).ThenBy(p => p.NgayTao.Value.TimeOfDay).ToList();
                     }
                     else if (filter.sortSP == "9")
                     {
@@ -564,7 +568,68 @@ namespace AppView.Controllers
         //    return PartialView("_ReturnProducts", lstSanPhamfnR);
         //}
         #endregion
-      
+        [HttpPost]
+        public async Task<ActionResult> TongSoLuong(int? sl)
+        {
+            var session = HttpContext.Session.GetString("LoginInfor");
+            if (String.IsNullOrEmpty(session))
+            {
+                List<GioHangRequest> lstGioHang = new List<GioHangRequest>();
+                if (Request.Cookies["Cart"] != null)
+                {
+                    lstGioHang = JsonConvert.DeserializeObject<List<GioHangRequest>>(Request.Cookies["Cart"]);
+                }
+                // laam them
+                int cout = lstGioHang.Sum(c => c.SoLuong)+sl.Value;
+                TempData["SoLuong"] = cout.ToString();
+
+                if (Request.Cookies["Cart"] != null)
+                {
+                    var response = await _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCart?request=" + Request.Cookies["Cart"]);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response.Content.ReadAsStringAsync().Result); 
+                        cout = temp.GioHangs.Sum(c => c.SoLuong) + sl.Value;
+                        TempData["SoLuong"] = cout.ToString();
+                        // lam end
+
+                        return Json(new { success = true, message = "Add to cart successfully",sl=cout });
+                    }
+                    else return BadRequest();
+                }
+                else
+                {
+                    TempData["SoLuong"] = "0";
+                    return View(new List<GioHangRequest>());
+                }
+            }
+            else
+            {
+                var loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
+                if (loginInfor.vaiTro == 1)
+                {
+                    var response = await _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCartLogin?idNguoiDung=" + loginInfor.Id);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response.Content.ReadAsStringAsync().Result);
+
+                        // lam them
+                        int cout = temp.GioHangs.Sum(c => c.SoLuong) + sl.Value;
+
+                        TempData["SoLuong"] = cout.ToString();
+                        // lam end
+                        TempData["TrangThai"] = "true";
+                        return Json(new { success = true, message = "Add to cart successfully", sl = cout });
+                    }
+                    else return BadRequest();
+                }
+                else 
+                {
+                    TempData["SoLuong"] = "0";
+                    return View(new List<GioHangRequest>());
+                } 
+            }
+        }
         #region Cart
         [HttpGet]
         public async Task<IActionResult> ShoppingCart()
@@ -615,7 +680,7 @@ namespace AppView.Controllers
                         TempData["ListBienThe"] = JsonConvert.SerializeObject(temp.GioHangs);
                         // lam them
                         int cout = temp.GioHangs.Sum(c => c.SoLuong);
-                       
+
                         TempData["SoLuong"] = cout.ToString();
                         // lam end
                         TempData["TrangThai"] = "true";
@@ -623,11 +688,15 @@ namespace AppView.Controllers
                     }
                     else return BadRequest();
                 }
-                else return View(new List<GioHangRequest>());
+                else
+                {
+                    TempData["SoLuong"] = "0";
+                    return View(new List<GioHangRequest>());
+                }
+                }
             }
-        }
         [HttpGet]
-        public IActionResult DeleteFromCart(Guid id)
+        public ActionResult DeleteFromCart(Guid id)
         {
             List<GioHangRequest> bienThes = new List<GioHangRequest>();
             string? result = Request.Cookies["Cart"];
@@ -636,10 +705,28 @@ namespace AppView.Controllers
                 bienThes = JsonConvert.DeserializeObject<List<GioHangRequest>>(result);
             }
             bienThes.Remove(bienThes.Find(p => p.IDChiTietSanPham == id));
-            CookieOptions cookie = new CookieOptions();
-            cookie.Expires = DateTime.Now.AddDays(30);
-            Response.Cookies.Append("Cart", JsonConvert.SerializeObject(bienThes), cookie);
-            return RedirectToAction("ShoppingCart");
+            //
+            var session = HttpContext.Session.GetString("LoginInfor");
+            if (session == null)
+            {
+                CookieOptions cookie = new CookieOptions();
+                cookie.Expires = DateTime.Now.AddDays(30);
+                Response.Cookies.Append("Cart", JsonConvert.SerializeObject(bienThes), cookie);
+                return RedirectToAction("ShoppingCart");
+            }
+            else
+            {
+                var loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
+                if (loginInfor.vaiTro == 1)
+                {
+                    var response = _httpClient.DeleteAsync(_httpClient.BaseAddress + $"GioHang/Deletebyid?idctsp={id}&idNguoiDung={loginInfor.Id}").Result;
+                    if (response.IsSuccessStatusCode) return RedirectToAction("ShoppingCart");
+                    else return RedirectToAction("ShoppingCart");
+                }
+                else return RedirectToAction("ShoppingCart");
+            }
+            //
+            
         }
         [HttpPost]
         public ActionResult AddToCart(string id, int? sl)
@@ -716,10 +803,30 @@ namespace AppView.Controllers
                         }
                     }
                 }
-                CookieOptions cookie = new CookieOptions();
-                cookie.Expires = DateTime.Now.AddDays(30);
-                Response.Cookies.Append("Cart", JsonConvert.SerializeObject(chiTietSanPhams), cookie);
-                return Json(new { success = true, message = "Cập nhật giỏ hàng thành công" });
+                var session = HttpContext.Session.GetString("LoginInfor");
+                if (session == null)
+                {
+                    CookieOptions cookie = new CookieOptions();
+                    cookie.Expires = DateTime.Now.AddDays(30);
+                    Response.Cookies.Append("Cart", JsonConvert.SerializeObject(chiTietSanPhams), cookie);
+                    return Json(new { success = true, message = "Cập nhật giỏ hàng thành công" });
+                }
+                else
+                {
+                    var loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
+                    if (loginInfor.vaiTro == 1)
+                    {
+                        foreach (var item in dssl)
+                        {
+                            Guid id = Guid.Parse(item.Substring(0, 36));
+                            int sl = Convert.ToInt32(item.Substring(36, item.Length - 36));
+                            var response = _httpClient.PutAsync(_httpClient.BaseAddress + $"GioHang/UpdateCart?idctsp={id}&soluong={sl}&idNguoiDung={loginInfor.Id}", null).Result;
+                        }
+                        return Json(new { success = true, message = "Cập nhật giỏ hàng thành công" });
+                    }
+                    else return Json(new { success = false, message = "Chỉ khách hàng mới thêm được vào giỏ hàng" });
+                }
+                
             }
             catch (Exception)
             {
@@ -766,12 +873,27 @@ namespace AppView.Controllers
                         lstGioHang.Add(new GioHangRequest() { IDChiTietSanPham = new Guid(id), SoLuong = (soLuong != null) ? soLuong : 1 });
                     }
                 }
-                CookieOptions cookie = new CookieOptions();
-                cookie.Expires = DateTime.Now.AddDays(30);
-                Response.Cookies.Append("Cart", JsonConvert.SerializeObject(lstGioHang), cookie);
-               
-                return Json(new { success = true, message = "Add to cart successfully" });
-                
+                var session = HttpContext.Session.GetString("LoginInfor");
+                if (session == null)
+                {
+                    CookieOptions cookie = new CookieOptions();
+                    cookie.Expires = DateTime.Now.AddDays(30);
+                    Response.Cookies.Append("Cart", JsonConvert.SerializeObject(lstGioHang), cookie);
+                    return Json(new { success = true, message = "Add to cart successfully" });
+                }
+                else
+                {
+                    var loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
+                    if (loginInfor.vaiTro == 1)
+                    {
+                        var chiTietGioHang = new ChiTietGioHang() { ID = Guid.NewGuid(), SoLuong = (soLuong != null) ? soLuong : 1, IDCTSP = new Guid(id), IDNguoiDung = loginInfor.Id };
+                        var response1 = _httpClient.PostAsJsonAsync(_httpClient.BaseAddress + "GioHang/AddCart", chiTietGioHang).Result;
+                        if (response1.IsSuccessStatusCode) return Json(new { success = true, message = "Add to cart successfully" });
+                        else return Json(new { success = false, message = "Add to cart fail" });
+                    }
+                    else return Json(new { success = false, message = "Chỉ khách hàng mới thêm được vào giỏ hàng" });
+                }
+
             }
             else return Json(new { success = false, message = "Add to cart fail" });
         }
@@ -897,9 +1019,27 @@ namespace AppView.Controllers
             }
             return RedirectToAction("PurchaseOrder");
         }
+        public IActionResult HoanTacHuyDonHang(Guid idHoaDon)
+        {
+            HttpResponseMessage responseDonMua = _httpClient.PutAsync(_httpClient.BaseAddress + $"HoaDon?idhoadon={idHoaDon}&trangthai=2", null).Result;
+            if (responseDonMua.IsSuccessStatusCode)
+            {
+                RedirectToAction("PurchaseOrder");
+            }
+            return RedirectToAction("PurchaseOrder");
+        }
         public IActionResult DoiTraHang(Guid idHoaDon)
         {
             HttpResponseMessage responseDonMua = _httpClient.PutAsync(_httpClient.BaseAddress + $"HoaDon?idhoadon={idHoaDon}&trangthai=9", null).Result;
+            if (responseDonMua.IsSuccessStatusCode)
+            {
+                RedirectToAction("PurchaseOrder");
+            }
+            return RedirectToAction("PurchaseOrder");
+        }
+        public IActionResult HoanTacDoiTraHang(Guid idHoaDon)
+        {
+            HttpResponseMessage responseDonMua = _httpClient.PutAsync(_httpClient.BaseAddress + $"HoaDon?idhoadon={idHoaDon}&trangthai=6", null).Result;
             if (responseDonMua.IsSuccessStatusCode)
             {
                 RedirectToAction("PurchaseOrder");
@@ -1152,7 +1292,11 @@ namespace AppView.Controllers
                 HttpResponseMessage response = _httpClient.PostAsJsonAsync("HoaDon", hoaDon).Result;
                 if (response.IsSuccessStatusCode)
                 {
+                  
                     if(!hoaDon.TrangThai) Response.Cookies.Delete("Cart");
+                    // lam them
+                    TempData["SoLuong"] = "0";
+                    // lam end
                     return "https://localhost:5001/Home/CheckOutSuccess";
                 }
                 else return "";
@@ -1195,6 +1339,7 @@ namespace AppView.Controllers
 
                 string paymentUrl = vnpay.CreateRequestUrl(vnp_Url, "IKQOFVXJPGYEIDNVNICTIIFPXNTXRYCX");
                 //log.InfoFormat("VNPAY URL: {0}", paymentUrl);
+
                 return paymentUrl;
             }
             else return "";

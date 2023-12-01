@@ -60,8 +60,15 @@
                 </div>
                 <div class="col-6 p-3">
                     <div class="form-group">
-                        <label asp-for="TrangThai" class="control-label"></label>
-                        <input asp-for="TrangThai" class="form-control" />
+                        <label asp-for="TrangThai" class="control-label">Trạng thái</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="TrangThai" asp-for="TrangThai" value="0">
+                            <label class="form-check-label" asp-for="TrangThai">Đang làm</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="TrangThai" asp-for="TrangThai" value="1">
+                            <label class="form-check-label" asp-for="TrangThai">Nghỉ làm</label>
+                        </div>
                         <span asp-validation-for="TrangThai" class="text-danger"></span>
                     </div>
                 </div>
@@ -90,7 +97,37 @@
 @*<div>
     <a asp-action="Show">Back to List</a>
 </div>*@
+<script>
+    $("input[name='SDT']").on("input", function () {
+        $(this).removeClass("is-invalid"); // Xóa class "is-invalid" khi nhập số điện thoại
+        $("#sdtErrorMessage").text(""); // Xóa thông báo lỗi
+    });
 
+    $("input[name='PassWord']").on("input", function () {
+        $(this).removeClass("is-invalid"); // Xóa class "is-invalid" khi nhập password
+        $("#passwordErrorMessage").text(""); // Xóa thông báo lỗi
+    });
+    $("form").submit(function () {
+        var passwordInput = $("input[name='PassWord']");
+        var passwordValue = passwordInput.val();
+        if (passwordValue.trim() !== "" && passwordValue.length < 8) {
+            passwordInput.addClass("is-invalid");
+            $("#passwordErrorMessage").text("Password phai lon hon 8 ki tu.");
+            return false;
+        }
+
+        var sdtInput = $("input[name='SDT']");
+        var sdtValue = sdtInput.val();
+        var sdtRegex = /^(0)\d{9}$/;
+        if (sdtValue.trim() !== "" && (!(/^\d+$/.test(sdtValue)) || !sdtRegex.test(sdtValue))) {
+            sdtInput.addClass("is-invalid");
+            $("#sdtErrorMessage").text("Số điện thoại không đúng định dạng."); // Thêm dòng này
+            return false;
+        }
+        return true;
+    });
+
+</script>
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

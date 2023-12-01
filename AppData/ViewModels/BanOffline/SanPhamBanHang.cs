@@ -12,5 +12,6 @@ namespace AppData.ViewModels.BanOffline
         public string Anh { get; set; }
         public string Ten { get; set; }
         public int GiaBan { get; set; }
+        public Guid IdLsp { get; set; }
     }
 }

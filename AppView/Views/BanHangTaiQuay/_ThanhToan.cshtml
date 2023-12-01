@@ -1,7 +1,7 @@
 ﻿@using AppData.Models
 @model AppData.ViewModels.BanOffline.HoaDonThanhToanViewModel
 @{
-    // var lstPttt = ViewData["lstPttt"] as List<PhuongThucThanhToan>;
+     var tletieu = ViewData["TLTieu"];
     <style>
         #voucherinput {
             display: none;
@@ -50,7 +50,7 @@
         </div>
         <div class="d-flex flex-row lh-1">
             <div class="flex-fill"><label for="inputName5" class="form-label">Khách hàng</label></div>
-            <div class="flex-fill text-end"> <span id="tenkh">@Model.KhachHang</span></div>
+            <div class="flex-fill text-end"> <span id="tenkh" style="color:#007bff">@Model.KhachHang</span></div>
         </div>
         <div class="d-flex flex-row lh-1">
             <div class="flex-fill"><label class="form-label">Số lượng</label></div>
@@ -171,7 +171,7 @@
             else{
                if(tienhang !== 0){
                    var diem = $(this).val();
-                   var tltieu = @(ViewBag.tileTieu);
+                   var tltieu = @(ViewBag.TLTieu);
                    var tien = diem * tltieu;
                    $("#tdhd").css('display', 'none');
                    $('#diemtichhd').text('');

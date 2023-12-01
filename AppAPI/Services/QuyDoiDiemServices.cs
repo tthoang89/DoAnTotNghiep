@@ -54,8 +54,8 @@ namespace AppAPI.Services
             if(quydoidiem != null)
             {
                 //quydoidiem.SoDiem = sodiem;
-                quydoidiem.TiLeTichDiem = TiLeTichDiem;
-                quydoidiem.TiLeTieuDiem = TiLeTieuDiem;
+                //quydoidiem.TiLeTichDiem = TiLeTichDiem;
+                //quydoidiem.TiLeTieuDiem = TiLeTieuDiem;
                 quydoidiem.TrangThai = TrangThai;
                 return _allRepository.Update(quydoidiem);
             }

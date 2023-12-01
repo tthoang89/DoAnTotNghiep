@@ -133,5 +133,36 @@ namespace AppAPI.Services
                 return false;
             }
         }
+
+        public async Task<bool> DeleteCartbyIDCTSP(Guid idctsp, Guid idNguoiDung)
+        {
+            try
+            {
+                var lstChiTietGioHang = context.ChiTietGioHangs.Where(x => x.IDNguoiDung == idNguoiDung && x.IDCTSP == idctsp);
+                context.ChiTietGioHangs.RemoveRange(lstChiTietGioHang);
+                await context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> UpdateCart(Guid idctsp, int soluong, Guid idNguoiDung)
+        {
+            try
+            {
+                ChiTietGioHang lstChiTietGioHang = context.ChiTietGioHangs.First(x => x.IDNguoiDung == idNguoiDung && x.IDCTSP == idctsp);
+                lstChiTietGioHang.SoLuong = soluong;
+                context.ChiTietGioHangs.Update(lstChiTietGioHang);
+                await context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
     }
 }

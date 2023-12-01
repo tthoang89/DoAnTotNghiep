@@ -43,14 +43,14 @@
             <div class="form-group">
                 <label class="control-label"> So Tiền Cần</label>
                 <input asp-for="SoTienCan" class="form-control" />
-                <span asp-validation-for="SoTienCan" class="text-danger"></span>
+                <span  class="text-danger">@ViewData["SoTienCan"]</span>
             </div>
             @if (Model.HinhThucGiamGia == 0)
             {
                 <div class="form-group">
                     <label class="control-label"> Giảm Theo Tiền Mặt</label>
                     <input asp-for="GiaTri" class="form-control" />
-                    <span asp-validation-for="GiaTri" class="text-danger"></span>
+                    <span class="text-danger">@ViewData["GiaTri"]</span>
                 </div>
             }
             else
@@ -58,23 +58,24 @@
                 <div class="form-group">
                     <label class="control-label"> Giảm Theo Phần Trăm</label>
                     <input asp-for="GiaTri" class="form-control" />
-                    <span asp-validation-for="GiaTri" class="text-danger"></span>
+                    <span class="text-danger">@ViewData["GiaTri"]</span>
                 </div>
             }
             <div class="form-group">
                 <label class="control-label">Ngày Áp Dụng</label>
                 <input asp-for="NgayApDung" class="form-control" />
-                <span asp-validation-for="NgayApDung" class="text-danger"></span>
+                <span class="text-danger">@ViewData["NgayApDung"]</span>
             </div>
             <div class="form-group">
                 <label class="control-label"> Ngày Kết Thúc</label>
                 <input asp-for="NgayKetThuc" class="form-control" />
-                <span asp-validation-for="NgayKetThuc" class="text-danger"></span>
+                <span class="text-danger">@ViewData["NgayKetThuc"]</span>
+                <span class="text-danger">@ViewData["Ngay"]</span>
             </div>
             <div class="form-group">
                 <label class="control-label"> Số Lượng</label>
                 <input asp-for="SoLuong" class="form-control" />
-                <span asp-validation-for="SoLuong" class="text-danger"></span>
+                <span class="text-danger">@ViewData["SoLuong"]</span>
             </div>
             <div class="form-group">
                 <label class="control-label">Mô Tả</label>
@@ -84,7 +85,7 @@
             <div class="form-group">
                 <label class="control-label">Trạng Thái</label>
                 <input asp-for="TrangThai" class="form-control" />
-                <span asp-validation-for="TrangThai" class="text-danger"></span>
+                <span class="text-danger">@ViewData["TrangThai"]</span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Sửa Voucher" class="btn btn-success" />

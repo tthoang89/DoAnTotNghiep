@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace AppData.ViewModels.BanOffline
 {
-    public class FilterSP
+    public class FilterCTSP
     {
-        public List<Guid> lstDM { get; set; }
-        public int page { get; set; }
-        public int pageSize { get; set; }   
+        public Guid IdSanPham { get; set; }
+        public List<Guid> lstIdMS { get; set; }
+        public List<Guid> lstIdKC { get; set; }
     }
 }

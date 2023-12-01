@@ -427,6 +427,7 @@ namespace AppAPI.Services
                               Ten = sp.Ten,
                               Anh = anh != null ? anh.DuongDan : null,
                               GiaBan = gia != null ? gia.GiaBan : 0,
+                              IdLsp = sp.IDLoaiSP,
                           }).ToListAsync();
         }
 
