@@ -98,7 +98,7 @@
                         <th scope="col">Ngày Đặt</th>
                         <th scope="col">Thành tiền</th>
                         <th scope="col">Trạng thái giao hàng</th>
-                        @*<th scope="col">Điểm tích</th>*@
+                        <th scope="col">Loại hóa đơn</th>
                     </tr>
                 </thead>
                 <tbody id="DShoaDon">
@@ -185,17 +185,17 @@
                             <th scope="row"><a href="PurchaseOrderDetail?idHoaDon=${response.data[i].idHoaDon}">${response.data[i].maHD}</a></th>
                             <td>${response.data[i].ngayTao}</td>
                             <td>${response.data[i].tongTien} VNĐ</td>
-                                <td>
-                                   ${response.data[i].trangThaiGiaoHang === 2 ? '<label>Chờ xác nhận</label>' :
-                                     response.data[i].trangThaiGiaoHang === 3 ? '<label>Đang giao hàng</label>' :
-                                     response.data[i].trangThaiGiaoHang === 4 ? '<label>Đang hoàn hàng</label>' :
-                                     response.data[i].trangThaiGiaoHang === 5 ? '<label>Hoàn hàng thành công</label>' :
-                                     response.data[i].trangThaiGiaoHang === 6 ? '<label>Hoàn thành</label>' :
-                                     response.data[i].trangThaiGiaoHang === 7 ? '<label>Đơn hủy</label>' :
-                                     response.data[i].trangThaiGiaoHang === 8 ? '<label>Chờ xác nhận hủy</label>' :
-                                     '<label>Chờ xác nhận đổi trả hàng</label>'}
-                               </td>
-                           
+                            <td>
+                                ${response.data[i].trangThaiGiaoHang === 2 ? '<label>Chờ xác nhận</label>' :
+                                    response.data[i].trangThaiGiaoHang === 3 ? '<label>Đang giao hàng</label>' :
+                                    response.data[i].trangThaiGiaoHang === 4 ? '<label>Đang hoàn hàng</label>' :
+                                    response.data[i].trangThaiGiaoHang === 5 ? '<label>Hoàn hàng thành công</label>' :
+                                    response.data[i].trangThaiGiaoHang === 6 ? '<label>Hoàn thành</label>' :
+                                    response.data[i].trangThaiGiaoHang === 7 ? '<label>Đơn hủy</label>' :
+                                    response.data[i].trangThaiGiaoHang === 8 ? '<label>Chờ xác nhận hủy</label>' :
+                                    '<label>Chờ xác nhận đổi trả hàng</label>'}
+                            </td>
+                            <td>${response.data[i].loaiHoaDon === 0 ? '<label>Mua hàng online</label>' : '<label>Mua hàng tại quầy</label>'}</td>
                         </tr>`);
                 }
                 paginghd(response.total, function () {
