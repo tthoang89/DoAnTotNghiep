@@ -10,6 +10,10 @@ namespace AppData.ViewModels.BanOffline
     {
         public List<int> lstTT { get; set; }
         public List<int> loaiHD  { get; set; }
+        public int loaitk { get; set; }
+        public string keyWord { get; set; }
+        public string ngaybd { get; set; }
+        public string ngaykt { get; set; }
         public int page { get; set; }
         public int pageSize { get; set; }
     }

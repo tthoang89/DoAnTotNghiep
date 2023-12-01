@@ -24,8 +24,6 @@ namespace AppView.Controllers
         {
             var listhdcho = await _httpClient.GetFromJsonAsync<List<HoaDon>>("HoaDon/GetAllHDCho");
             ViewData["lsthdcho"] = listhdcho;
-            //var listpttt = await _httpClient.GetFromJsonAsync<List<PhuongThucThanhToan>>("HoaDon/PhuongThucThanhToan");
-            //ViewData["lstPttt"] = listpttt;
             return View();
         }
         // Sản phẩm
@@ -55,6 +53,25 @@ namespace AppView.Controllers
             var lsp = await _httpClient.GetFromJsonAsync<List<LoaiSP>>($"LoaiSP/getAll");
             ViewData["lstLSP"] = lsp;
             return PartialView("_LocSP");
+        }
+        // Lọc sản phẩm
+        public async Task<IActionResult> LocSP(FilterSP filter)
+        {
+            var listSP = await _httpClient.GetFromJsonAsync<List<SanPhamBanHang>>("SanPham/getAllSPBanHang");
+            //Lọc danh mục 
+            if(filter.lstDM != null)
+            {
+                listSP = listSP.Where(c=> filter.lstDM.Contains(c.IdLsp)).ToList(); 
+            }
+            //Phân trang
+            var model = listSP.Skip((filter.page - 1) * filter.pageSize).Take(filter.pageSize).ToList();
+            int totalRow = listSP.Count;
+            return Json(new
+            {
+                data = model,
+                total = totalRow,
+                status = true,
+            });
         }
         //Tìm kiếm sản phẩm
         [HttpGet("/BanHangTaiQuay/Search/{keyword}")]
@@ -178,7 +195,7 @@ namespace AppView.Controllers
         {
             var hd = await _httpClient.GetFromJsonAsync<HoaDon>($"HoaDon/GetById/{id}");
             var lstcthd = await _httpClient.GetFromJsonAsync<List<HoaDonChiTietViewModel>>($"ChiTietHoaDon/getByIdHD/{id}");
-            //var listpttt = await _httpClient.GetFromJsonAsync<List<PhuongThucThanhToan>>("HoaDon/PhuongThucThanhToan");
+            
             //Quy đổi điểm
             var qdd = await _httpClient.GetFromJsonAsync<List<QuyDoiDiem>>("QuyDoiDiem");
             var qddActive = qdd.FirstOrDefault(c => c.TrangThai == 1);
@@ -214,7 +231,9 @@ namespace AppView.Controllers
                 DiemTichHD = qddActive != null ? Convert.ToInt32(ttien / qddActive?.TiLeTichDiem) : 0,
                 NhanVien = loginInfor.Ten,
             };
-            ViewBag.tileTieu = qddActive != null ? (qddActive.TiLeTieuDiem) : 0;
+            //ViewBag.LoaiQDD = qddActive.
+            ViewBag.TLTieu = qddActive != null ? (qddActive.TiLeTieuDiem) : 0;
+            ViewBag.LoaiQDD = qddActive != null ? (qddActive.TrangThai) : 0;
             return PartialView("_ThanhToan", hdtt);
         }
         
