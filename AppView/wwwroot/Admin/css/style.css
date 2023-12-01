@@ -372,7 +372,7 @@ h6 {
 }
 
 .accordion-button:not(.collapsed) {
-    color: #012970;
+    color: white;
     background-color: #f6f9ff;
 }
 
@@ -384,7 +384,7 @@ h6 {
 
     .accordion-flush .accordion-button:not(.collapsed) {
         box-shadow: none;
-        color: #4154f1;
+        color: white;
     }
 
 .accordion-flush .accordion-body {
@@ -1999,7 +1999,7 @@ tbody td {
     .radiothoigian .btn-text {
         font-size: 16px;
         font-weight: 600;
-        color: #333;
+        color: #000;
     }
 
     .radiothoigian .content {
@@ -2007,7 +2007,7 @@ tbody td {
     }
 
     .radiothoigian label.box {
-        background: #ddd;
+        background: rgba(1, 41, 112, 0.1);
         margin-top: 12px;
         padding: 10px 12px;
         display: flex;
@@ -2016,33 +2016,6 @@ tbody td {
         cursor: pointer;
         transition: all 0.25s ease;
     }
-
-#one:checked ~ label.first,
-#two:checked ~ label.second {
-    border-color: #8E49E8;
-    background: #d5bbf7;
-}
-
-.radiothoigian label.box:hover {
-    background-color: #e7edfe;
-}
-
-.radiothoigian label.box .circle {
-    height: 20px;
-    width: 20px;
-    background: #ccc;
-    border: 5px solid transparent;
-    display: inline-block;
-    margin-right: 15px;
-    border-radius: 50%;
-    transition: all 0.25s ease;
-    box-shadow: inset -4px -4px 10px rgba(0, 0, 0, 0.2);
-}
-
-#one:checked ~ label.first .circle,
-#two:checked ~ label.second .circle {
-    background: #fff;
-}
 
 .radiothoigian label.box .plan {
     display: flex;
@@ -2088,12 +2061,103 @@ tbody td {
 .tbbills > th:hover {
     background-color: #c8cbcf;
 }
-.ctspitem {
+#ctspitem {
     border: 1px solid transparent;
     border-radius: 5px;
+    width: 25%;
+    height: 300px;
+    font-size: 14px;
 }
-    .ctspitem:hover {
+    #ctspitem:hover{
         border: 2px solid #4154f1;
         border-radius: 5px;
     }
 /*Search HD*/
+.searchhd {
+    display: flex;
+    justify-content: space-between;
+    width: 450px;
+    height: 45px;
+    background-color: white;
+}
+
+    .searchhd .dropdown {
+        position: relative;
+    }
+
+        .searchhd .dropdown .defaultOption {
+            width: 150px;
+            height: 45px;
+            line-height: 45px;
+            text-align: center;
+            cursor: pointer;
+            color: white;
+            background: #7690da;
+        }
+
+        .searchhd .dropdown ul {
+            position: absolute;
+            border-radius: 5px;
+            background-color: white;
+            width: 150px;
+            text-align: center;
+            display: none;
+            padding: 0;
+            list-style: none;
+            padding-top: 10px;
+        }
+
+            .searchhd .dropdown ul.active {
+                display: block;
+            }
+
+            .searchhd .dropdown ul li {
+                padding: 10px 20px;
+                color: rgb(70,70,70);
+                cursor: pointer;
+            }
+
+                .searchhd .dropdown ul li:hover {
+                    background: #7690da;
+                    color: white;
+                }
+
+    .searchhd .searchField {
+        width: 300px;
+        height: 45px;
+        position: relative;
+        flex: 1;
+    }
+
+        .searchhd .searchField input {
+            flex-grow: 1;
+            outline: none;
+            border: 0.5px solid rgb(168,168,168);
+            padding-left: 15px;
+            line-height: 45px;
+            height: 45px;
+            width: 255px;
+        }
+
+    .searchhd .btnsearch {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 45px;
+        height: 45px;
+        background: #7690da;
+        z-index: 1;
+        cursor: pointer;
+    }
+
+        .searchhd .btnsearch:hover {
+            background: #708bd2;
+        }
+
+        .searchhd .btnsearch .fa {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            color: #fff;
+        }

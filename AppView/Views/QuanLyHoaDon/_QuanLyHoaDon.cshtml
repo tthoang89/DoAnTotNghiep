@@ -1,6 +1,6 @@
 ﻿@{
 }
-<div class="d-flex flex-row align-items-stretch" style="background:#e8eaed;">
+<div class="d-flex flex-row align-items-stretch" style="background:rgba(1, 41, 112, 0.1);">
     <div class="d-flex flex-column me-2" style="width:330px;">
         <div class="d-flex align-items-center p-3" style="height:80px">
             <h3 class="heading-page">
@@ -10,23 +10,19 @@
         <!--Thời gian-->
         <div class="container mt-2 fixed">
             <div class="radiothoigian">
-                <span class="btn-text">Thời gian</span>
+                <span class="btn-text">Thời gian</span> <span id="timepicker1"><i class="bx bxs-calendar" style="color:#000; font-size:16px;"></i></span>
                 <div class="content">
                     <input type="radio" name="rd" id="one">
                     <input type="radio" name="rd" id="two">
                     <label for="one" class="box first">
                         <div class="plan">
-                            <span class="circle"></span>
-                            <span class="yearly">Tháng này</span>
+                            <span class="p-1" id="bdau" style="font-weight:600"> </span>
                         </div>
-                        <span class="price">100$/year</span>
                     </label>
-                    <label for="two" class="box second">
+                     <label for="one" class="box first">
                         <div class="plan">
-                            <span class="circle"></span>
-                            <span class="yearly">Lựa chọn khác</span>
+                            <span class="p-1" id="ketthuc" style="font-weight:600"> </span>
                         </div>
-                        <span class="price">120$/year</span>
                     </label>
                 </div>
             </div>
@@ -113,16 +109,32 @@
                 </li>
             </ul>
         </div>
-
     </div>
+
     <!--DANH SÁCH HÓA ĐƠN-->
     <div class="d-flex flex-column p-3 flex-grow-1">
 
         <div class="d-flex flex-row p-1 bg-white align-items-center">
-            <div class="d-flex ms-auto" style="justify-content:center">
-                <div class="mx-2" id="paginghd">
-                    <ul id="pagination-demo" class="pagination-sm"></ul>
+            <div class="d-flex me-auto" style="justify-content:center">
+                <div class="searchhd">
+                    <div class="dropdown">
+                        <div class="defaultOption"><span id="searchtype">Hóa đơn</span> <i class="bi bi-caret-down-fill ms-auto"></i></div>
+
+                        <ul class="ul chonkieu">
+                            <li data-value="1">Hóa đơn</li>
+                            <li data-value="2">Khách hàng</li>
+                        </ul>
+                    </div>
+                    <div class="searchField">
+                        <input type="text" class="input" id="inputhd" autocomplete="off" placeholder="Tìm kiếm theo mã hóa đơn">
+                        <div class="btnsearch" onclick="timKiemHD()">
+                            <i class="fa fa-search"></i>
+                        </div>
+                    </div>
                 </div>
+            </div>
+            <div class="d-flex ms-auto" style="justify-content:center">
+                <ul id="pagination-demo" class="pagination mx-2 my-2"></ul>
             </div>
         </div>
         <div class="d-flex flex-column mt-2">
@@ -132,8 +144,10 @@
                         <th scope="col">Mã hóa đơn</th>
                         <th scope="col">Thời gian</th>
                         <th scope="col">Khách hàng</th>
-                        <th scope="col">Khách trả</th>
                         <th scope="col">Trạng thái</th>
+                        <th scope="col" class="text-end">Tổng tiền hàng</th>
+                        @*<th scope="col" class="text-end">Voucher</th>*@
+                        <th scope="col" class="text-end">Khách đã trả</th>
                     </tr>
                 </thead>
                 <tbody id="billRecord">
@@ -168,9 +182,30 @@
      var itemkb = document.querySelectorAll('.kb .item');
 
      $(document).ready(function() {
+         $('#pagination-demo').twbsPagination('destroy');
          loadBill();
      });
+     //Tìm kiếm hóa đơn
+     var defaultOption = document.querySelector('.defaultOption');
+        var ul = document.querySelector('.ul');
+        defaultOption.onclick = function(){
+            ul.classList.toggle("active");
+        }
+        // Chọn kiểu tìm kiếm
+        $(".chonkieu li").each(function(){
+            $(this).on("click", function(){
+                var value = $(this).text();
+                var loaitk = $(this).data('value');
+                $("#searchtype").text(value);
 
+                if(loaitk === 1){
+                    $("#inputhd").attr("placeholder", "Tìm kiếm theo mã hóa đơn");
+                }else{
+                    $("#inputhd").attr("placeholder", "Tìm kiếm theo tên, SĐT");
+                }
+                ul.classList.toggle("active");
+            })
+        })
      // Drop down trạng thái
      selectTT.toggleClass("open");
      selectTT.on("click", function() {
@@ -185,12 +220,14 @@
      itemtt.forEach(item =>{
          item.addEventListener("click", () =>{
              item.classList.toggle("checked");
+             $('#pagination-demo').twbsPagination('destroy');
              loadBill();
          })
      })
      itemkb.forEach(item =>{
          item.addEventListener("click", () =>{
              item.classList.toggle("checked");
+             $('#pagination-demo').twbsPagination('destroy');
              loadBill();
          })
      })
@@ -205,122 +242,80 @@
        });
        return checkedValues;
      }
-
-     function Fillter(){
-         let lsttt = getCheckedValues(itemtt);
-         let lstkb = getCheckedValues(itemkb);
-         var request = {loaiHD:lstkb, lstTT: lsttt, pageSize: pageSizehd, page:pageIndexhd};
-          $.ajax({
-             url: "/QuanLyHoaDon/LocHD",
-             type: "POST",
-             data: request ,
-             success: function(response) {
-                 $("#billRecord").empty();
-                 for (let i = 0; i < response.data.length; i++) {
-                    $("#billRecord").append(`
-                       <tr onclick="billDetail('${response.data[i].id}');">
-                           <th scope="row">${response.data[i].maHD}</th>
-                           <td>${response.data[i].thoiGian}</td>
-                           <td>${response.data[i].khachHang}</td>
-                           <td class="text-end">${response.data[i].khachTra.toLocaleString()}</td>
-                           <td>
-                               ${response.data[i].trangThai === 2 ? '<label class="badge bg-info">Chờ xác nhận</label>' :
-                               response.data[i].trangThai === 3 ? '<label class="badge bg-primary">Đang giao hàng</label>' :
-                               response.data[i].trangThai === 4 ? '<label class="badge bg-danger">Đang hoàn hàng</label>' :
-                               response.data[i].trangThai === 5 ? '<label class="badge bg-warning">Hoàn hàng thành công</label>' :
-                               response.data[i].trangThai === 6 ? '<label class="badge bg-success">Hoàn thành</label>' :
-                               response.data[i].trangThai === 7 ? '<label class="badge bg-dark">Đơn hủy</label>' :
-                               response.data[i].trangThai === 8 ? '<label class="badge bg-secondary">Chờ xác nhận hủy</label>' :
-                               '<label class="badge bg-light">Chờ xác nhận đổi trả hàng</label>'}
-                           </td>
-                       </tr>
-                    `);
-                 }
-                 paginghd(response.total, function() {
-                     Fillter()
-                 });
-             },
-             error: function(err) {
-                 console.log('Error:', err);
-             }
-         });
-
+     //TimKiemHD
+     function timKiemHD(){
+         $('#pagination-demo').twbsPagination('destroy');
+         loadBill();
      }
-     // Load Danh sách hóa đơn
-     //function loadBill() {
-     //    $.ajax({
-     //        url: "/QuanLyHoaDon/LoadAllHoaDon",
-     //        type: "GET",
-     //        data: {
-     //            page: pageIndexhd,
-     //            pagesize: pageSizehd
-     //        },
-     //        dataType: "json",
-     //        success: function(response) {
-     //            $("#billRecord").empty();
-     //            for (let i = 0; i < response.data.length; i++) {
-     //                $("#billRecord").append(`
-     //                  <tr onclick="billDetail('${response.data[i].id}');">
-     //                      <th scope="row">${response.data[i].maHD}</th>
-     //                      <td>${response.data[i].thoiGian}</td>
-     //                      <td>${response.data[i].khachHang}</td>
-     //                      <td class="text-end">${response.data[i].khachTra.toLocaleString()}</td>
-     //                      <td>
-     //                          ${response.data[i].trangThai === 2 ? '<label class="badge bg-info">Chờ xác nhận</label>' :
-     //                          response.data[i].trangThai === 3 ? '<label class="badge bg-primary">Đang giao hàng</label>' :
-     //                          response.data[i].trangThai === 4 ? '<label class="badge bg-danger">Hoàn hàng</label>' :
-     //                          response.data[i].trangThai === 5 ? '<label class="badge bg-warning">Hoàn hàng thành công</label>' :
-     //                          response.data[i].trangThai === 6 ? '<label class="badge bg-success">Thành công</label>' :
-     //                          response.data[i].trangThai === 7 ? '<label class="badge bg-dark">Đơn hủy</label>' :
-     //                          '<label class="badge bg-secondary">Đơn hàng thất lạc</label>'}
-     //                      </td>
-     //                  </tr>
-     //               `);
-     //            }
-     //            paginghd(response.total, function() {
-     //                loadBill();
-     //            });
-     //        },
-     //        error: function(err) {
-     //            console.log('Error:', err);
-     //        }
-     //    });
-     //}
-
+     // Load danh sách hóa đơn
       function loadBill() {
          let lsttt = getCheckedValues(itemtt);
          let lstkb = getCheckedValues(itemkb);
-         var request = {loaiHD:lstkb, lstTT: lsttt, pageSize: pageSizehd, page:pageIndexhd};
+         let keyWord = $("#inputhd").val();
+         let loaitimkiem = 1;
+         let tgbd = $("#bdau").text();
+         let tgkt = $("#ketthuc").text();
+         if($("#searchtype").text() == "Khách hàng"){
+             loaitimkiem = 2;
+         };
+         var request = {loaiHD:lstkb, lstTT: lsttt, pageSize: pageSizehd, page:pageIndexhd, loaitk:loaitimkiem, keyWord:keyWord, ngaybd: tgbd, ngaykt: tgkt};
          $.ajax({
              url: "/QuanLyHoaDon/LoadAllHoaDon",
              type: "POST",
              dataType: "json",
              data: request,
              success: function(response) {
-                 $("#billRecord").empty();
-                 for (let i = 0; i < response.data.length; i++) {
-                     $("#billRecord").append(`
-                       <tr onclick="billDetail('${response.data[i].id}');">
-                           <th scope="row">${response.data[i].maHD}</th>
-                           <td>${response.data[i].thoiGian}</td>
-                           <td>${response.data[i].khachHang}</td>
-                           <td class="text-end">${response.data[i].khachTra.toLocaleString()}</td>
-                           <td>
-                               ${response.data[i].trangThai === 2 ? '<label class="badge bg-info">Chờ xác nhận</label>' :
-                               response.data[i].trangThai === 3 ? '<label class="badge bg-primary">Đang giao hàng</label>' :
-                               response.data[i].trangThai === 4 ? '<label class="badge bg-danger">Hoàn hàng</label>' :
-                               response.data[i].trangThai === 5 ? '<label class="badge bg-warning">Hoàn hàng thành công</label>' :
-                               response.data[i].trangThai === 6 ? '<label class="badge bg-success">Thành công</label>' :
-                               response.data[i].trangThai === 7 ? '<label class="badge bg-dark">Đơn hủy</label>' :
-                               '<label class="badge bg-secondary">Đơn hàng thất lạc</label>'}
-                           </td>
-                       </tr>
-                    `);
-                 }
-                 console.log(response.total);
-                 paginghd(response.total, function() {
-                     loadBill();
-                 });
+                if(response.data.length !== 0){
+                     $("#billRecord").empty();
+                     var html ='';
+                     if(pageIndexhd ===1 ){
+                          html = `
+                                <tr>
+                                    <td colspan="5" class="text-end fw-bold">
+                                        ${response.tienhang.toLocaleString()}
+                                    </td>
+
+                                    <td class="text-end fw-bold">
+                                         ${response.khachtra.toLocaleString()}
+                                    </td>
+                                </tr>
+                                `;
+                     }
+                     for (let i = 0; i < response.data.length; i++) {
+                         html += `
+                               <tr onclick="billDetail('${response.data[i].id}');">
+                               <th scope="row">${response.data[i].maHD}</th>
+                               <td>${response.data[i].thoiGian}</td>
+                               <td>${response.data[i].khachHang}</td>
+                               <td>
+                                   ${response.data[i].trangThai === 2 ? '<label class="badge bg-info">Chờ xác nhận</label>' :
+                                   response.data[i].trangThai === 3 ? '<label class="badge bg-primary">Đang giao hàng</label>' :
+                                   response.data[i].trangThai === 4 ? '<label class="badge bg-danger">Hoàn hàng</label>' :
+                                   response.data[i].trangThai === 5 ? '<label class="badge bg-warning">Hoàn hàng thành công</label>' :
+                                   response.data[i].trangThai === 6 ? '<label class="badge bg-success">Thành công</label>' :
+                                   response.data[i].trangThai === 7 ? '<label class="badge bg-dark">Đơn hủy</label>' :
+                                   '<label class="badge bg-secondary">Đơn hàng thất lạc</label>'}
+                               </td>
+                               <td class="text-end">${response.data[i].tongTienHang.toLocaleString()}</td>
+                               <td class="text-end">${response.data[i].khachDaTra.toLocaleString()}</td>
+                           </tr>
+                         `;
+                     }
+                     $("#billRecord").append(html);
+                     paginghd(response.total, function() {
+                         loadBill();
+                     });
+                }else{
+                     $("#billRecord").empty();
+                     html = `
+                                <tr>
+                                    <td colspan="6" class="text-center">
+                                        Không có hóa đơn nào
+                                    </td>
+                                </tr>
+                            `;
+                     $("#billRecord").append(html);
+                }
              },
              error: function(err) {
                  console.log('Error:', err);
@@ -335,14 +330,63 @@
      }
      // Phân trang
      function paginghd(totalrow, callback) {
-         var totalpages = Math.ceil(totalrow / pageSizehd);
-            $("#paginghd").twbsPagination({
-             totalPages: totalpages,
-             visiblePages: 5,
-             onPageClick: function(event, page) {
-                 pageIndexhd = page;
-                 setTimeout(callback, 200);
-             }
-         });
+        var totalpages = Math.ceil(totalrow / pageSizehd);
+        $("#pagination-demo").twbsPagination({
+                totalPages: totalpages,
+                visiblePages: 5,
+                startPage: 1,
+                first:'Đầu',
+                last:'Cuối',
+                prev:'Trước',
+                next:'Tiếp',
+                onPageClick: function (event, page) {
+                pageIndexhd = page;
+                setTimeout(callback, 200);
+                }
+        });
      }
+     //Hiển thị datetime
+     $(function() {
+
+        var start = moment().subtract(29, 'days');
+        var end = moment();
+
+        function cb(start, end) {
+            $('#bdau').text(start.format('MM/DD/YYYY HH:mm:ss'));
+            $('#ketthuc').text(end.format('MM/DD/YYYY HH:mm:ss'));
+
+            $('#pagination-demo').twbsPagination('destroy');
+            loadBill();
+        }
+
+        $('#timepicker1').daterangepicker({
+            opens: 'right',
+            showDropdowns: true,
+            startDate: start,
+            timePicker: true,
+            minYear:2010,
+            endDate: end,
+            locale: {
+              customRangeLabel: 'Điều chỉnh',
+              format: 'MM/DD/YYYY HH:mm:ss',
+              applyLabel: 'Áp dụng',
+              cancelLabel: 'Thoát',
+              daysOfWeek: ['H', 'B', 'T', 'N', 'S', 'B','CN'],
+              monthNames: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
+            },
+            ranges: {
+               'Hôm nay': [moment().startOf('day'), moment().endOf('day')],
+               'Hôm qua': [moment().subtract(1, 'days').startOf('day'), moment().subtract(1, 'days').endOf('day')],
+               '7 ngày trước': [moment().subtract(6, 'days').startOf('day'), moment()],
+               '30 ngày trước': [moment().subtract(29, 'days').startOf('day'), moment()],
+               'Tháng này': [moment().startOf('month'), moment().endOf('month')],
+               'Tháng trước': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+               'Năm nay': [moment().startOf('year'), moment().endOf('year')],
+               'Năm trước': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+            }
+        }, cb);
+
+        cb(start, end);
+
+    });
 </script>

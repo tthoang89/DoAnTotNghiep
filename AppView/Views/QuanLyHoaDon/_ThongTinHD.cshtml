@@ -196,7 +196,20 @@
                     </div>
                 }
                 <div class="row text-end">
-                    <label class="col-sm-6 col-form-label">Tiền khách đưa:</label>
+                    <label class="col-sm-6 col-form-label">Tổng cộng:</label>
+                    <div class="col-sm-6 ">
+                        @{
+                            var tongcong = Model.listsp.Sum(c => c.SoLuong * c.GiaLuu) + Model.TienShip - Model.TruTieuDiem;
+                            <label class="col-sm-5 col-form-label">
+                                <b>
+                                    @tongcong?.ToString("n0")
+                                </b>
+                            </label>
+                        }
+                    </div>
+                </div>
+                <div class="row text-end">
+                    <label class="col-sm-6 col-form-label">Khách đã đưa:</label>
                     <div class="col-sm-6 ">
                         <label class="col-sm-5 col-form-label"><b>@Model.TienKhachTra?.ToString("n0")</b></label>
                     </div>
@@ -215,7 +228,7 @@
                 <button type="button" id="save" class="btn btn-success fw-normal text-white"><i class="fa-solid fa-floppy-disk fa-xs me-2" style="color: #ffffff;"></i> Lưu ghi chú</button>
             </div>
             <div class="d-flex p-2">
-                <button type="button" id="exportPDF" class="btn btn-secondary fw-normal text-white" data-bs-dismiss="modal"><i class="fa-solid fa-file-export fa-xs me-2" style="color: #ffffff;"></i> Xuất PDF</button>
+                <button id="exportPDF" class="btn btn-secondary fw-normal text-white"><i class="fa-solid fa-file-export fa-xs me-2" style="color: #ffffff;"></i> Xuất PDF</button>
             </div>
             @if (@Model.TrangThai != 7)
             {
@@ -226,6 +239,7 @@
             <div class="d-flex p-2">
                 <button type="button" class="btn btn-secondary fw-normal text-white" data-bs-dismiss="modal"><i class="fa-solid fa-x fa-xs me-2" style="color: #ffffff;"></i> Đóng</button>
             </div>
+
         </div>
     </div>
     @if (Model.LoaiHD == 0)
@@ -306,88 +320,89 @@
     </div>
 </div>
 <script>
-    $("#save").click(function(){
-        var inputValue = $("#ghiChuinTTHD").val();
-        if(inputValue === ''){
-            inputValue = null;
-        }
-        $.ajax({
-            url: "/BanHangTaiQuay/UpdateGhichu",
-            type: "PUT",
-            dataType: "json",
-            data:{
-                idhd: '@Model.Id',
-                ghichu: inputValue,
-            },
-            success: function() {
-                toastr.success(response.message, "Lưu ghi chú thành công", { timeOut: 300 });
-                    billDetail(id);
-                    loadBill();
-            },
-            error: function(response) {
-                toastr.error('Lưu ghi chú thất bại', 'Error Alert', { timeOut: 300 });
+        $("#save").click(function(){
+            var inputValue = $("#ghiChuinTTHD").val();
+            if(inputValue === ''){
+                inputValue = null;
             }
-        });
-    })
+            $.ajax({
+                url: "/BanHangTaiQuay/UpdateGhichu",
+                type: "PUT",
+                dataType: "json",
+                data:{
+                    idhd: '@Model.Id',
+                    ghichu: inputValue,
+                },
+                success: function() {
+                    toastr.success(response.message, "Lưu ghi chú thành công", { timeOut: 300 });
+                        billDetail(id);
+                        loadBill();
+                },
+                error: function(response) {
+                    toastr.error('Lưu ghi chú thất bại', 'Error Alert', { timeOut: 300 });
+                }
+            });
+        })
 
-    function huyDon(IDHD){
-        var ans = confirm("Bạn có chắc chắn hủy Hóa đơn này?");
-        if(ans){
-            var gc = $("#ghiChuinTTHD").val();
-            if(gc ==='' || gc == '@Model.GhiChu'){
-                toastr.error('Chưa nhập ghi chú hóa đơn', "Error Alert", { timeOut: 300 });
-            }else{
-                $.ajax({
-                    url: "/QuanLyHoaDon/HuyHD",
+        function huyDon(IDHD){
+            var ans = confirm("Bạn có chắc chắn hủy Hóa đơn này?");
+            if(ans){
+                var gc = $("#ghiChuinTTHD").val();
+                if(gc ==='' || gc == '@Model.GhiChu'){
+                    toastr.error('Chưa nhập ghi chú hóa đơn', "Error Alert", { timeOut: 300 });
+                }else{
+                    $.ajax({
+                        url: "/QuanLyHoaDon/HuyHD",
+                        type: "GET",
+                        dataType: 'json',
+                        data:{
+                            idhd: IDHD,
+                            ghichu: gc,
+                        },
+                        contentType: 'application/json',
+                        success: function(response) {
+                            toastr.success(response.message, "Success Alert", { timeOut: 300 });
+                            billDetail(IDHD);
+                            loadBill();
+                        },
+                        error: function(err) {
+                            toastr.error('Thay đổi trạng thái thất bại', "Error Alert", { timeOut: 300 });
+                        }
+                    });
+                }
+            }
+        }
+    $("#exportPDF").click(function(){
+        var id = "@Model.Id"
+        $.ajax({
+        url: "/QuanLyHoaDon/ExportPDF/" + id,
+        type: "GET",
+        success: function(response) {
+        var fileUrl = response.fileUrl;
+        window.open(fileUrl,'_blank');
+        },
+        error: function(err) {
+        toastr.error('Lỗi xuất hóa đơn', "Error Alert", { timeOut: 300 });
+        }
+        });
+        });
+
+         $("#confirmHDMua").click(function(){
+            var ans = confirm("Xác nhận hóa đơn này?");
+            var id = "@Model.Id";
+            if(ans){
+                 $.ajax({
+                    url: "/QuanLyHoaDon/XacNhanDonDat/" + id,
                     type: "GET",
-                    dataType: 'json',
-                    data:{
-                        idhd: IDHD,
-                        ghichu: gc,
-                    },
-                    contentType: 'application/json',
                     success: function(response) {
-                        toastr.success(response.message, "Success Alert", { timeOut: 300 });
-                        billDetail(IDHD);
+                       toastr.success(response.message, "Success Alert", { timeOut: 300 });
+                        billDetail(id);
                         loadBill();
                     },
                     error: function(err) {
-                        toastr.error('Thay đổi trạng thái thất bại', "Error Alert", { timeOut: 300 });
+                       toastr.error('Thay đổi trạng thái thất bại', "Error Alert", { timeOut: 300 });
                     }
                 });
             }
-        }
-    }
-    $("#exportPDF").click(function(){
-        var id = "@Model.Id"
-         $.ajax({
-            url: "/QuanLyHoaDon/ExportPDF/" + id,
-            type: "GET",
-            success: function(response) {
-               var fileUrl = response.fileUrl;
-                window.open(fileUrl,'_blank');
-            },
-            error: function(err) {
-                toastr.error('Thay đổi trạng thái thất bại', "Error Alert", { timeOut: 300 });
-            }
-        });
-    });
-     $("#confirmHDMua").click(function(){
-        var ans = confirm("Xác nhận hóa đơn này?");
-        var id = "@Model.Id";
-        if(ans){
-             $.ajax({
-                url: "/QuanLyHoaDon/XacNhanDonDat/" + id,
-                type: "GET",
-                success: function(response) {
-                   toastr.success(response.message, "Success Alert", { timeOut: 300 });
-                    billDetail(id);
-                    loadBill();
-                },
-                error: function(err) {
-                   toastr.error('Thay đổi trạng thái thất bại', "Error Alert", { timeOut: 300 });
-                }
-            });
-        }
-    })
+        })
 </script>

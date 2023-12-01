@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Newtonsoft.Json;
 using SelectPdf;
+using System.Globalization;
+using System.Net;
 
 namespace AppView.Controllers
 {
@@ -33,7 +35,26 @@ namespace AppView.Controllers
         {
             var listhdql = await _httpClient.GetFromJsonAsync<List<HoaDonQL>>("HoaDon/GetAllHDQly");
             listhdql = listhdql.OrderByDescending(c => c.ThoiGian).ToList();
-            //Lọc loại hd
+            //Lọc thời gian
+            if (filter.ngaybd != null)
+            {
+                var bd = DateTime.Parse(filter.ngaybd);
+                var kt = DateTime.Parse(filter.ngaykt);
+                listhdql = listhdql.Where(c => c.ThoiGian >= bd && c.ThoiGian <= kt).ToList();
+            }
+            //Tìm kiếm 
+            if (filter.keyWord != null)
+            {
+                if (filter.loaitk == 1)
+                {
+                    listhdql = listhdql.Where(c => c.MaHD.ToLower().Contains(filter.keyWord.ToLower())).ToList();
+                }
+                else
+                {
+                    listhdql = listhdql.Where(c => c.KhachHang.ToLower().Contains(filter.keyWord.ToLower())).ToList();
+                }
+            }
+            //Lọc kênh
             if (filter.loaiHD != null)
             {
                 listhdql = listhdql.Where(c => filter.loaiHD.Contains(c.LoaiHD)).ToList();
@@ -43,29 +64,25 @@ namespace AppView.Controllers
             {
                 listhdql = listhdql.Where(c => filter.lstTT.Contains(c.TrangThai)).ToList();
             }
+
+            // Tổng tiền hàng
+            var tth = listhdql.Sum(c => c.TongTienHang);
+            // Tổng tiền khách đã trả
+            var tktra = listhdql.Sum(c => c.KhachDaTra);
+
             int totalRow = listhdql.Count;
             var model = listhdql.Skip((filter.page - 1) * filter.pageSize).Take(filter.pageSize).ToArray();
+            //Lọc loại hd
             return Json(new
             {
+                tienhang = tth,
+                khachtra = tktra,
                 data = model,
                 total = totalRow,
                 status = true,
             });
         }
-        //[HttpGet]
-        //public async Task<IActionResult> LoadAllHoaDon(int page, int pagesize)
-        //{
-        //    var listhdql = await _httpClient.GetFromJsonAsync<List<HoaDonQL>>("HoaDon/GetAllHDQly");
-        //    listhdql = listhdql.OrderByDescending(c => c.ThoiGian).ToList();
-        //    int totalRow = listhdql.Count;
-        //    var model = listhdql.Skip((page - 1) * pagesize).Take(pagesize).ToArray();
-        //    return Json(new
-        //    {
-        //        data = model,
-        //        total = totalRow,
-        //        status = true,
-        //    });
-        //}
+
         //Chi tiết hóa đơn 
         [HttpGet("/QuanLyHoaDon/ViewChiTietHD/{idhd}")]
         public async Task<IActionResult> ViewChiTietHD(string idhd)
@@ -73,30 +90,30 @@ namespace AppView.Controllers
             var hd = await _httpClient.GetFromJsonAsync<ChiTietHoaDonQL>($"HoaDon/ChiTietHoaDonQL/{idhd}");
             return PartialView("_ThongTinHD", hd);
         }
-        //Lọc HD 
-        public async Task<IActionResult> LocHD(FilterHD filter)
-        {
-            var listhdql = await _httpClient.GetFromJsonAsync<List<HoaDonQL>>("HoaDon/GetAllHDQly");
-            listhdql = listhdql.OrderByDescending(c => c.ThoiGian).ToList();
-            //Lọc loại hd
-            if(filter.loaiHD != null)
-            {
-                listhdql = listhdql.Where(c => filter.loaiHD.Contains(c.LoaiHD)).ToList();
-            }
-            //Lọc trạng thái
-            if(filter.lstTT != null)
-            {
-                listhdql = listhdql.Where(c => filter.lstTT.Contains(c.TrangThai)).ToList();
-            }
-            int totalRow = listhdql.Count;
-            var model = listhdql.Skip((filter.page - 1) * filter.pageSize).Take(filter.pageSize).ToArray();
-            return Json(new
-            {
-                data = model,
-                total = totalRow,
-                status = true,
-            });
-        }
+        ////Lọc HD 
+        //public async Task<IActionResult> LocHD(FilterHD filter)
+        //{
+        //    var listhdql = await _httpClient.GetFromJsonAsync<List<HoaDonQL>>("HoaDon/GetAllHDQly");
+        //    listhdql = listhdql.OrderByDescending(c => c.ThoiGian).ToList();
+        //    //Lọc loại hd
+        //    if(filter.loaiHD != null)
+        //    {
+        //        listhdql = listhdql.Where(c => filter.loaiHD.Contains(c.LoaiHD)).ToList();
+        //    }
+        //    //Lọc trạng thái
+        //    if(filter.lstTT != null)
+        //    {
+        //        listhdql = listhdql.Where(c => filter.lstTT.Contains(c.TrangThai)).ToList();
+        //    }
+        //    int totalRow = listhdql.Count;
+        //    var model = listhdql.Skip((filter.page - 1) * filter.pageSize).Take(filter.pageSize).ToArray();
+        //    return Json(new
+        //    {
+        //        data = model,
+        //        total = totalRow,
+        //        status = true,
+        //    });
+        //}
         //Hủy hóa đơn
         [HttpGet("/QuanLyHoaDon/HuyHD")]
         public async Task<IActionResult> HuyHD(Guid idhd, string ghichu)
@@ -186,8 +203,8 @@ namespace AppView.Controllers
         private byte[] ConvertHtmlToPdf(string html)
         {
             var converter = new HtmlToPdf();
-            var doc = converter.ConvertHtmlString(html);
 
+            var doc = converter.ConvertHtmlString(html);
             using (var memoryStream = new MemoryStream())
             {
                 doc.Save(memoryStream);

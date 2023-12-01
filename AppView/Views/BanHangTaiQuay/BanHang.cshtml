@@ -29,7 +29,7 @@
         #sptk:hover {
             border: 2px solid #4154f1;
             background: #cce2fd;
-            border-radius:5px;
+            border-radius: 5px;
         }
     </style>
 }
@@ -87,8 +87,8 @@
                 <div class="search-product d-flex align-items-center">
                     <div class="search-bar">
                         <form class="search-form d-flex align-items-center">
-                            <input type="text" name="query" id="searchsp" placeholder="Tìm kiếm sản phẩm" title="Enter search keyword">
-                            <button title="Tìm kiếm"><i class="bi bi-search"></i></button>
+                            <input type="text" name="query" autocomplete="off" id="searchsp" placeholder="Tìm kiếm sản phẩm" title="Enter search keyword">
+                            <button title="Tìm kiếm" style="pointer-events:none"><i class="bi bi-search"></i></button>
                         </form>
                         <div>
                             <ul class="list-group p-2 bg-light mt-2" id="resultsp">
@@ -97,48 +97,28 @@
                     </div>
                 </div>
             </div>
-            @*<!--Lọc-->
-                <div class="me-auto align-content-center">
+            <!--Lọc-->
+            <div class="me-auto align-content-center">
                 <div class="btn-create d-flex align-items-center">
-                <button type="button" onclick="showFilter()" class="btn btn-primary d-flex align-items-center ms-auto" title="Lọc sản phẩm">
-                <i class="bx bx-filter-alt"></i>
-                </button>
+                    <button type="button" onclick="showFilter()" class="btn btn-primary d-flex align-items-center ms-auto" title="Lọc sản phẩm">
+                        <i class="bx bx-filter-alt"></i>
+                    </button>
                 </div>
-                </div>*@
-            @*            <!--Sắp xếp-->
-                <div class="d-flex flex-column justify-content-center p-1 w-100" style="font-size:14px; ">
-                <div class="select-btn d-flex p-2 w-100" id="select-sapxep" style="height:35px; border-radius:0px; ">
-                <span class="btn-text" style="margin-right:10px">Sắp xếp</span>
-                <span class="arrow-dwn" style="height:14px; width:14px; font-size:10px">
-                <i class="fa-solid fa-chevron-down"></i>
-                </span>
+            </div>
+            <!--Sắp xếp-->
+            @*<div class="d-flex flex-column justify-content-center p-1 w-100" style="font-size:14px; ">
+                <div class="form-check form-switch bg-white rounded-5">
+                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                    <label class="form-check-label" for="flexSwitchCheckDefault">Tăng</label>
                 </div>
-                <ul class="list-items sx">
-                <li class="item">
-                <span class="checkbox">
-                <i class="fa-solid fa-check check-icon" data-value="1" style="height:14px; width:14px; font-size:10px"></i>
-                </span>
-                <span class="item-text"style="font-size:14px; ">Tăng dần</span>
-                </li>
-                <li class="item">
-                <span class="checkbox">
-                <i class="fa-solid fa-check check-icon" data-value="0" style="height:14px; width:14px; font-size:10px"></i>
-                </span>
-                <span class="item-text"style="font-size:14px; ">Giảm dần</span>
-                </li>
-                </ul>
-                </div>
-
-            *@
+            </div>*@
         </div>
         <!--Hiển thị sản phẩm-->
         <div class="d-flex flex-column p-2  mt-3 border-0 rounded-3 bg-white" style="height:640px">
             <ul class="product-list">
             </ul>
             <div class="d-flex flex-row bg-light mt-auto" style="justify-content:center">
-                <div class="mx-2" id="pagingsp">
-                    <ul id="pagination-demo" class="pagination-sm"></ul>
-                </div>
+                <ul id="pagingsp" class="pagination"></ul>
             </div>
         </div>
     </div>
@@ -148,10 +128,6 @@
 <div class="modal border-0 rounded-0" id="locsp" tabindex="-1">
     <div class="modal-dialog" id="modallocsp">
         <div class="modal-content" id="modallocsp-content">
-            <div class="modal-header bg-primary">
-                <h5 class="modal-title fw-700 text-white align-center">LỌC SẢN PHẨM</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
             <div class="modal-body" id="locspbody">
             </div>
         </div>

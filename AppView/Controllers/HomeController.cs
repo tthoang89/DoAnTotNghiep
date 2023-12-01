@@ -1290,7 +1290,11 @@ namespace AppView.Controllers
                 HttpResponseMessage response = _httpClient.PostAsJsonAsync("HoaDon", hoaDon).Result;
                 if (response.IsSuccessStatusCode)
                 {
+                  
                     if(!hoaDon.TrangThai) Response.Cookies.Delete("Cart");
+                    // lam them
+                    TempData["SoLuong"] = "0";
+                    // lam end
                     return "https://localhost:5001/Home/CheckOutSuccess";
                 }
                 else return "";
@@ -1333,6 +1337,7 @@ namespace AppView.Controllers
 
                 string paymentUrl = vnpay.CreateRequestUrl(vnp_Url, "IKQOFVXJPGYEIDNVNICTIIFPXNTXRYCX");
                 //log.InfoFormat("VNPAY URL: {0}", paymentUrl);
+
                 return paymentUrl;
             }
             else return "";
