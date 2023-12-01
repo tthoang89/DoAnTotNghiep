@@ -30,9 +30,69 @@ namespace AppView.Controllers
             _httpClient = new HttpClient();
             _httpClient.BaseAddress = new Uri("https://localhost:7095/api/");
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            // lam start
+            var session = HttpContext.Session.GetString("LoginInfor");
+            if (String.IsNullOrEmpty(session))
+            {
+                List<GioHangRequest> lstGioHang = new List<GioHangRequest>();
+                if (Request.Cookies["Cart"] != null)
+                {
+                    lstGioHang = JsonConvert.DeserializeObject<List<GioHangRequest>>(Request.Cookies["Cart"]);
+                }
+                // laam them
+                int cout = lstGioHang.Sum(c => c.SoLuong);
+                TempData["SoLuong"] = cout.ToString();
+
+                if (Request.Cookies["Cart"] != null)
+                {
+                    var response = await _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCart?request=" + Request.Cookies["Cart"]);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response.Content.ReadAsStringAsync().Result);
+                       
+
+                        // lam end
+                       
+                        TempData["TrangThai"] = "false";
+                        return View(temp.GioHangs);
+                    }
+                    else return BadRequest();
+                }
+                else
+                {
+                    TempData["TongTien"] = "0";
+                    return View(new List<GioHangRequest>());
+                }
+            }
+            else
+            {
+                var loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
+                if (loginInfor.vaiTro == 1)
+                {
+                    var response = await _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCartLogin?idNguoiDung=" + loginInfor.Id);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response.Content.ReadAsStringAsync().Result);
+
+
+                        // lam them
+                        int cout = temp.GioHangs.Sum(c => c.SoLuong);
+
+                        TempData["SoLuong"] = cout.ToString();
+                        // lam end
+                        TempData["TrangThai"] = "true";
+                        return View(temp.GioHangs);
+                    }
+                    else return BadRequest();
+                }
+                else {
+                    TempData["SoLuong"] = "0";
+                    return View(new List<GioHangRequest>());
+                }
+               
+            }
         }
 
         public IActionResult Privacy()
@@ -44,23 +104,211 @@ namespace AppView.Controllers
             return View();
         }
         public IActionResult ProductDetail()
-        {
+        {  
             return View();
         }
         #region SanPham
-        [HttpGet]
-        public JsonResult ShowProduct(int page, int pageSize)
+        [HttpPost]
+        public JsonResult ShowProduct(FilterData filter)
         {
             HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/getAll").Result;
             List<SanPhamViewModel> lstSanpham = new List<SanPhamViewModel>();
             if (response.IsSuccessStatusCode)
             {
                 lstSanpham = JsonConvert.DeserializeObject<List<SanPhamViewModel>>(response.Content.ReadAsStringAsync().Result);
-                var model = lstSanpham.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+                //
+                List<SanPhamViewModel> lstSanphamfn = new List<SanPhamViewModel>();
+                //price-filter
+                if (filter.priceRange != null && filter.priceRange.Count > 0 && !filter.priceRange.Contains("all"))
+                {
+                    foreach (var item in filter.priceRange)
+                    {
+                        if (item == "1")
+                        {
+                            foreach (var x in lstSanpham.Where(p => p.GiaBan < 100000).ToList())
+                            {
+                                lstSanphamfn.Add(x);
+                            }
+                        }
+                        else if (item == "2")
+                        {
+                            foreach (var x in lstSanpham.Where(p => p.GiaBan >= 100000 && p.GiaBan < 200000).ToList())
+                            {
+                                lstSanphamfn.Add(x);
+                            }
+                        }
+                        else if (item == "3")
+                        {
+                            foreach (var x in lstSanpham.Where(p => p.GiaBan >= 200000 && p.GiaBan < 300000).ToList())
+                            {
+                                lstSanphamfn.Add(x);
+                            }
+                        }
+                        else if (item == "4")
+                        {
+                            foreach (var x in lstSanpham.Where(p => p.GiaBan >= 300000 && p.GiaBan < 400000).ToList())
+                            {
+                                lstSanphamfn.Add(x);
+                            }
+                        }
+                        else if (item == "5")
+                        {
+                            foreach (var x in lstSanpham.Where(p => p.GiaBan >= 400000 && p.GiaBan < 500000).ToList())
+                            {
+                                lstSanphamfn.Add(x);
+                            }
+                        }
+                        else if (item == "6")
+                        {
+                            foreach (var x in lstSanpham.Where(p => p.GiaBan > 500000).ToList())
+                            {
+                                lstSanphamfn.Add(x);
+                            }
+                        }
+
+                    }
+                }
+                else
+                {
+                    lstSanphamfn = lstSanpham;
+                }
+                //loaiSP-filter
+                List<SanPhamViewModel> lsttam = new List<SanPhamViewModel>();
+                List<SanPhamViewModel> lsttam1 = new List<SanPhamViewModel>();
+                if (filter.loaiSP != null && filter.loaiSP.Count > 0)
+                {
+                    foreach (var x in filter.loaiSP)
+                    {
+                        lsttam = lstSanphamfn.Where(p => p.LoaiSP == x).ToList();
+                        foreach (var item in lsttam)
+                        {
+                            if (lsttam1.FirstOrDefault(p => p.ID == item.ID) == null)
+                            {
+                                lsttam1.Add(item);
+                            }
+                        }
+                    }
+                    lstSanphamfn = lsttam1;
+                }
+                //Search
+                if (filter.search != null)
+                {
+                    lstSanphamfn = lstSanphamfn.Where(p => p.Ten.ToLower().Contains(filter.search.ToLower())).ToList();
+                }
+
+                //color-filter
+                List<SanPhamViewModel> lstmautam = new List<SanPhamViewModel>();
+                List<SanPhamViewModel> lstmautam1 = new List<SanPhamViewModel>();
+                if (filter.mauSac != null && filter.mauSac.Count > 0)
+                {
+                    foreach (var x in filter.mauSac)
+                    {
+                        lstmautam = lstSanphamfn.Where(p => p.IDMauSac == x).ToList();
+                        foreach (var item in lstmautam)
+                        {
+                            if (lstmautam1.FirstOrDefault(p => p.ID == item.ID) == null)
+                            {
+                                lstmautam1.Add(item);
+                            }
+                        }
+                    }
+                    lstSanphamfn = lstmautam1;
+                }
+                //size-filter
+                List<SanPhamViewModel> lstcotam = new List<SanPhamViewModel>();
+                List<SanPhamViewModel> lstcotam1 = new List<SanPhamViewModel>();
+                if (filter.kichCo != null && filter.kichCo.Count > 0)
+                {
+                    foreach (var x in filter.kichCo)
+                    {
+                        lstcotam = lstSanphamfn.Where(p => p.IDKichCo == x).ToList();
+                        foreach (var item in lstcotam)
+                        {
+                            if (lstcotam1.FirstOrDefault(p => p.ID == item.ID) == null)
+                            {
+                                lstcotam1.Add(item);
+                            }
+                        }
+                    }
+                    lstSanphamfn = lstcotam1;
+                }
+                //material-filter
+                List<SanPhamViewModel> lstchatlieutam = new List<SanPhamViewModel>();
+                List<SanPhamViewModel> lstchatlieutam1 = new List<SanPhamViewModel>();
+                if (filter.chatLieu != null && filter.chatLieu.Count > 0)
+                {
+                    foreach (var x in filter.chatLieu)
+                    {
+                        lstchatlieutam = lstSanphamfn.Where(p => p.IDChatLieu == x).ToList();
+                        foreach (var item in lstchatlieutam)
+                        {
+                            if (lstchatlieutam1.FirstOrDefault(p => p.ID == item.ID) == null)
+                            {
+                                lstchatlieutam1.Add(item);
+                            }
+                        }
+                    }
+                    lstSanphamfn = lstchatlieutam1;
+                }
+                //sort
+                if (filter.sortSP != null)
+                {
+                    if (filter.sortSP == "2")
+                    {
+                        lstSanphamfn = lstSanphamfn.OrderBy(p => p.GiaBan).ToList();
+                    }
+                    else if (filter.sortSP == "3")
+                    {
+                        lstSanphamfn = lstSanphamfn.OrderByDescending(p => p.GiaBan).ToList();
+                    }
+                    else if (filter.sortSP == "4")
+                    {
+                        lstSanphamfn = lstSanphamfn.OrderBy(p => p.GiaBan).ToList();
+                    }
+                    else if (filter.sortSP == "5")
+                    {
+                        lstSanphamfn = lstSanphamfn.OrderByDescending(p => p.GiaBan).ToList();
+                    }
+                    else if (filter.sortSP == "6")
+                    {
+                        lstSanphamfn = lstSanphamfn.OrderBy(p => p.NgayTao.Value.Date).ToList();
+                    }
+                    else if (filter.sortSP == "7")
+                    {
+                        lstSanphamfn = lstSanphamfn.OrderByDescending(p => p.NgayTao.Value.Date).ToList();
+                    }
+                    else if (filter.sortSP == "9")
+                    {
+                        lstSanphamfn = lstSanphamfn.OrderByDescending(p => p.SoLuong).ToList();
+                    }
+                }
+                List<SanPhamViewModel> lstSanPhamfnR = new List<SanPhamViewModel>();
+                foreach (var item in lstSanphamfn)
+                {
+                    if (item.TrangThaiCTSP == 1)
+                    {
+                        if (lstSanPhamfnR.FirstOrDefault(p => p.ID == item.ID) == null)
+                        {
+                            lstSanPhamfnR.Add(item);
+                        }
+
+                    }
+                    else
+                    {
+                        SanPhamViewModel sanPhamViewModel = lstSanpham.FirstOrDefault(p => p.ID == item.ID && p.TrangThaiCTSP == 1);
+                        if (lstSanPhamfnR.FirstOrDefault(p => p.ID == sanPhamViewModel.ID) == null)
+                        {
+                            lstSanPhamfnR.Add(sanPhamViewModel);
+                        }
+                    }
+                }
+                //
+
+                var model = lstSanPhamfnR.Skip((filter.page - 1) * filter.pageSize).Take(filter.pageSize).ToList();
                 return Json(new
                 {
                     data = model,
-                    total = lstSanpham.Count,
+                    total = lstSanPhamfnR.Count,
                     status = true
                 });
             }
@@ -96,351 +344,514 @@ namespace AppView.Controllers
             //return View(lst);
         }
         [HttpGet]
-        public async Task<IActionResult> ProductDetail(string idSanPham,int? pages)
+        public async Task<IActionResult> ProductDetail(string idSanPham, int? pages)
         {
-            HttpResponseMessage response = await _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllChiTietSanPhamHome?idSanPham="+ idSanPham);
+            HttpResponseMessage response = await _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllChiTietSanPhamHome?idSanPham=" + idSanPham);
             var chiTietSanPham = JsonConvert.DeserializeObject<ChiTietSanPhamViewModelHome>(response.Content.ReadAsStringAsync().Result);
-            var lstDanhGia = chiTietSanPham.LSTDanhGia;
-            int pageSize = 20;
-            int pageNumber = pages == null || pages < 0 ? 1 : pages.Value;
-            PagedList<DanhGiaViewModel> lst = new PagedList<DanhGiaViewModel>(lstDanhGia, pageNumber, pageSize);
-            ViewData["ListDanhGia"] = lst;
             return View(chiTietSanPham);
+        }
+        [HttpGet]
+        public JsonResult ShowDanhGiabyIdSP(Guid id, int page, int pageSize)
+        {
+            HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + $"DanhGia/getbyIdSp/{id}").Result;
+            List<DanhGiaViewModel> lstDanhGiaSanpham = new List<DanhGiaViewModel>();
+            if (response.IsSuccessStatusCode)
+            {
+                lstDanhGiaSanpham = JsonConvert.DeserializeObject<List<DanhGiaViewModel>>(response.Content.ReadAsStringAsync().Result);
+                var model = lstDanhGiaSanpham.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+                return Json(new
+                {
+                    data = model,
+                    total = lstDanhGiaSanpham.Count,
+                    status = true
+                });
+            }
+            else return Json(new { status = false });
         }
         #endregion
         #region Filter
-        public IActionResult GetFilteredProducts([FromBody] FilterData filter)
-        {
-            HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/getAll").Result;
-            List<SanPhamViewModel> lstSanpham = new List<SanPhamViewModel>();
-            if (response.IsSuccessStatusCode)
-            {
-                lstSanpham = JsonConvert.DeserializeObject<List<SanPhamViewModel>>(response.Content.ReadAsStringAsync().Result);
-            }
-            List<SanPhamViewModel> lstSanphamfn = new List<SanPhamViewModel>();
-            //price-filter
-            if (filter.priceRange != null && filter.priceRange.Count > 0 && !filter.priceRange.Contains("all"))
-            {
-                foreach (var item in filter.priceRange)
-                {
-                    if (item == "1")
-                    {
-                        foreach (var x in lstSanpham.Where(p => p.GiaBan < 100000).ToList())
-                        {
-                            lstSanphamfn.Add(x);
-                        }
-                    }else if (item == "2")
-                    {
-                        foreach (var x in lstSanpham.Where(p => p.GiaBan >= 100000 && p.GiaBan < 200000).ToList())
-                        {
-                            lstSanphamfn.Add(x);
-                        }
-                    }
-                    else if (item == "3")
-                    {
-                        foreach (var x in lstSanpham.Where(p => p.GiaBan >= 200000 && p.GiaBan < 300000).ToList())
-                        {
-                            lstSanphamfn.Add(x);
-                        }
-                    }
-                    else if (item == "4")
-                    {
-                        foreach (var x in lstSanpham.Where(p => p.GiaBan >= 300000 && p.GiaBan < 400000).ToList())
-                        {
-                            lstSanphamfn.Add(x);
-                        }
-                    }
-                    else if (item == "5")
-                    {
-                        foreach (var x in lstSanpham.Where(p => p.GiaBan >= 400000 && p.GiaBan < 500000).ToList())
-                        {
-                            lstSanphamfn.Add(x);
-                        }
-                    }
-                    else if (item == "6")
-                    {
-                        foreach (var x in lstSanpham.Where(p => p.GiaBan > 500000).ToList())
-                        {
-                            lstSanphamfn.Add(x);
-                        }
-                    }
+        //public IActionResult GetFilteredProducts([FromBody] FilterData filter)
+        //{
+        //    HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/getAll").Result;
+        //    List<SanPhamViewModel> lstSanpham = new List<SanPhamViewModel>();
+        //    if (response.IsSuccessStatusCode)
+        //    {
+        //        lstSanpham = JsonConvert.DeserializeObject<List<SanPhamViewModel>>(response.Content.ReadAsStringAsync().Result);
+        //    }
+        //    List<SanPhamViewModel> lstSanphamfn = new List<SanPhamViewModel>();
+        //    //price-filter
+        //    if (filter.priceRange != null && filter.priceRange.Count > 0 && !filter.priceRange.Contains("all"))
+        //    {
+        //        foreach (var item in filter.priceRange)
+        //        {
+        //            if (item == "1")
+        //            {
+        //                foreach (var x in lstSanpham.Where(p => p.GiaBan < 100000).ToList())
+        //                {
+        //                    lstSanphamfn.Add(x);
+        //                }
+        //            }else if (item == "2")
+        //            {
+        //                foreach (var x in lstSanpham.Where(p => p.GiaBan >= 100000 && p.GiaBan < 200000).ToList())
+        //                {
+        //                    lstSanphamfn.Add(x);
+        //                }
+        //            }
+        //            else if (item == "3")
+        //            {
+        //                foreach (var x in lstSanpham.Where(p => p.GiaBan >= 200000 && p.GiaBan < 300000).ToList())
+        //                {
+        //                    lstSanphamfn.Add(x);
+        //                }
+        //            }
+        //            else if (item == "4")
+        //            {
+        //                foreach (var x in lstSanpham.Where(p => p.GiaBan >= 300000 && p.GiaBan < 400000).ToList())
+        //                {
+        //                    lstSanphamfn.Add(x);
+        //                }
+        //            }
+        //            else if (item == "5")
+        //            {
+        //                foreach (var x in lstSanpham.Where(p => p.GiaBan >= 400000 && p.GiaBan < 500000).ToList())
+        //                {
+        //                    lstSanphamfn.Add(x);
+        //                }
+        //            }
+        //            else if (item == "6")
+        //            {
+        //                foreach (var x in lstSanpham.Where(p => p.GiaBan > 500000).ToList())
+        //                {
+        //                    lstSanphamfn.Add(x);
+        //                }
+        //            }
 
+        //        }
+        //    }
+        //    else
+        //    {
+        //        lstSanphamfn = lstSanpham;
+        //    }
+        //    //loaiSP-filter
+        //    List<SanPhamViewModel> lsttam = new List<SanPhamViewModel>();
+        //    List<SanPhamViewModel> lsttam1 = new List<SanPhamViewModel>();
+        //    if (filter.loaiSP != null && filter.loaiSP.Count > 0)
+        //    {
+        //        foreach (var x in filter.loaiSP)
+        //        {
+        //            lsttam = lstSanphamfn.Where(p => p.LoaiSP == x).ToList();
+        //            foreach (var item in lsttam)
+        //            {
+        //                if (lsttam1.FirstOrDefault(p=>p.ID == item.ID) == null)
+        //                {
+        //                    lsttam1.Add(item);
+        //                }
+        //            }
+        //        }
+        //        lstSanphamfn = lsttam1;
+        //    }
+        //    //Search
+        //    if (filter.search != null)
+        //    {
+        //        lstSanphamfn = lstSanphamfn.Where(p=>p.Ten.ToLower().Contains(filter.search.ToLower())).ToList();
+        //    }
+
+        //    //color-filter
+        //    List<SanPhamViewModel> lstmautam = new List<SanPhamViewModel>();
+        //    List<SanPhamViewModel> lstmautam1 = new List<SanPhamViewModel>();
+        //    if (filter.mauSac != null && filter.mauSac.Count > 0)
+        //    {
+        //        foreach (var x in filter.mauSac)
+        //        {
+        //            lstmautam = lstSanphamfn.Where(p => p.IDMauSac == x).ToList();
+        //            foreach (var item in lstmautam)
+        //            {
+        //                if (lstmautam1.FirstOrDefault(p => p.ID == item.ID) == null)
+        //                {
+        //                    lstmautam1.Add(item);
+        //                }
+        //            }
+        //        }
+        //        lstSanphamfn = lstmautam1;
+        //    }
+        //    //size-filter
+        //    List<SanPhamViewModel> lstcotam = new List<SanPhamViewModel>();
+        //    List<SanPhamViewModel> lstcotam1 = new List<SanPhamViewModel>();
+        //    if (filter.kichCo != null && filter.kichCo.Count > 0)
+        //    {
+        //        foreach (var x in filter.kichCo)
+        //        {
+        //            lstcotam = lstSanphamfn.Where(p => p.IDKichCo == x).ToList();
+        //            foreach (var item in lstcotam)
+        //            {
+        //                if (lstcotam1.FirstOrDefault(p => p.ID == item.ID) == null)
+        //                {
+        //                    lstcotam1.Add(item);
+        //                }
+        //            }
+        //        }
+        //        lstSanphamfn = lstcotam1;
+        //    }
+        //    //material-filter
+        //    List<SanPhamViewModel> lstchatlieutam = new List<SanPhamViewModel>();
+        //    List<SanPhamViewModel> lstchatlieutam1 = new List<SanPhamViewModel>();
+        //    if (filter.chatLieu != null && filter.chatLieu.Count > 0)
+        //    {
+        //        foreach (var x in filter.chatLieu)
+        //        {
+        //            lstchatlieutam = lstSanphamfn.Where(p => p.IDChatLieu == x).ToList();
+        //            foreach (var item in lstchatlieutam)
+        //            {
+        //                if (lstchatlieutam1.FirstOrDefault(p => p.ID == item.ID) == null)
+        //                {
+        //                    lstchatlieutam1.Add(item);
+        //                }
+        //            }
+        //        }
+        //        lstSanphamfn = lstchatlieutam1;
+        //    }
+        //    //sort
+        //    if (filter.sortSP != null)
+        //    {
+        //        if (filter.sortSP == "2")
+        //        {
+        //            lstSanphamfn = lstSanphamfn.OrderBy(p => p.GiaBan).ToList();
+        //        }
+        //        else if (filter.sortSP == "3")
+        //        {
+        //            lstSanphamfn = lstSanphamfn.OrderByDescending(p => p.GiaBan).ToList();
+        //        }
+        //        else if (filter.sortSP == "4")
+        //        {
+        //            lstSanphamfn = lstSanphamfn.OrderBy(p => p.GiaBan).ToList();
+        //        }
+        //        else if (filter.sortSP == "5")
+        //        {
+        //            lstSanphamfn = lstSanphamfn.OrderByDescending(p => p.GiaBan).ToList();
+        //        }
+        //        else if (filter.sortSP == "6")
+        //        {
+        //            lstSanphamfn = lstSanphamfn.OrderBy(p => p.NgayTao).ToList();
+        //        }
+        //        else if (filter.sortSP == "7")
+        //        {
+        //            lstSanphamfn = lstSanphamfn.OrderByDescending(p => p.NgayTao).ToList();
+        //        }
+        //        else if (filter.sortSP == "9")
+        //        {
+        //            lstSanphamfn = lstSanphamfn.OrderByDescending(p => p.SoLuong).ToList();
+        //        }
+        //    }
+        //    List<SanPhamViewModel>lstSanPhamfnR = new List<SanPhamViewModel>();
+        //    foreach (var item in lstSanphamfn)
+        //    {
+        //        if (item.TrangThaiCTSP == 1)
+        //        {
+        //            if (lstSanPhamfnR.FirstOrDefault(p => p.ID == item.ID) == null)
+        //            {
+        //                lstSanPhamfnR.Add(item);
+        //            }
+
+        //        }
+        //        else
+        //        {
+        //            SanPhamViewModel sanPhamViewModel = lstSanpham.FirstOrDefault(p=>p.ID == item.ID && p.TrangThaiCTSP == 1);
+        //            if (lstSanPhamfnR.FirstOrDefault(p=>p.ID == sanPhamViewModel.ID) == null)
+        //            {
+        //                lstSanPhamfnR.Add(sanPhamViewModel);
+        //            }
+        //        }
+        //    }
+
+        //    return PartialView("_ReturnProducts", lstSanPhamfnR);
+        //}
+        #endregion
+        [HttpPost]
+        public async Task<ActionResult> TongSoLuong(int? sl)
+        {
+            var session = HttpContext.Session.GetString("LoginInfor");
+            if (String.IsNullOrEmpty(session))
+            {
+                List<GioHangRequest> lstGioHang = new List<GioHangRequest>();
+                if (Request.Cookies["Cart"] != null)
+                {
+                    lstGioHang = JsonConvert.DeserializeObject<List<GioHangRequest>>(Request.Cookies["Cart"]);
+                }
+                // laam them
+                int cout = lstGioHang.Sum(c => c.SoLuong)+sl.Value;
+                TempData["SoLuong"] = cout.ToString();
+
+                if (Request.Cookies["Cart"] != null)
+                {
+                    var response = await _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCart?request=" + Request.Cookies["Cart"]);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response.Content.ReadAsStringAsync().Result); 
+                        cout = temp.GioHangs.Sum(c => c.SoLuong) + sl.Value;
+                        TempData["SoLuong"] = cout.ToString();
+                        // lam end
+
+                        return Json(new { success = true, message = "Add to cart successfully",sl=cout });
+                    }
+                    else return BadRequest();
+                }
+                else
+                {
+                    TempData["SoLuong"] = "0";
+                    return View(new List<GioHangRequest>());
                 }
             }
             else
             {
-                lstSanphamfn = lstSanpham;
-            }
-            //loaiSP-filter
-            List<SanPhamViewModel> lsttam = new List<SanPhamViewModel>();
-            List<SanPhamViewModel> lsttam1 = new List<SanPhamViewModel>();
-            if (filter.loaiSP != null && filter.loaiSP.Count > 0)
-            {
-                foreach (var x in filter.loaiSP)
+                var loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
+                if (loginInfor.vaiTro == 1)
                 {
-                    lsttam = lstSanphamfn.Where(p => p.LoaiSP == x).ToList();
-                    foreach (var item in lsttam)
+                    var response = await _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCartLogin?idNguoiDung=" + loginInfor.Id);
+                    if (response.IsSuccessStatusCode)
                     {
-                        if (lsttam1.FirstOrDefault(p=>p.ID == item.ID) == null)
-                        {
-                            lsttam1.Add(item);
-                        }
-                    }
-                }
-                lstSanphamfn = lsttam1;
-            }
-            //Search
-            if (filter.search != null)
-            {
-                lstSanphamfn = lstSanphamfn.Where(p=>p.Ten.ToLower().Contains(filter.search.ToLower())).ToList();
-            }
+                        var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response.Content.ReadAsStringAsync().Result);
 
-            //color-filter
-            List<SanPhamViewModel> lstmautam = new List<SanPhamViewModel>();
-            List<SanPhamViewModel> lstmautam1 = new List<SanPhamViewModel>();
-            if (filter.mauSac != null && filter.mauSac.Count > 0)
-            {
-                foreach (var x in filter.mauSac)
-                {
-                    lstmautam = lstSanphamfn.Where(p => p.IDMauSac == x).ToList();
-                    foreach (var item in lstmautam)
-                    {
-                        if (lstmautam1.FirstOrDefault(p => p.ID == item.ID) == null)
-                        {
-                            lstmautam1.Add(item);
-                        }
+                        // lam them
+                        int cout = temp.GioHangs.Sum(c => c.SoLuong) + sl.Value;
+
+                        TempData["SoLuong"] = cout.ToString();
+                        // lam end
+                        TempData["TrangThai"] = "true";
+                        return Json(new { success = true, message = "Add to cart successfully", sl = cout });
                     }
+                    else return BadRequest();
                 }
-                lstSanphamfn = lstmautam1;
-            }
-            //size-filter
-            List<SanPhamViewModel> lstcotam = new List<SanPhamViewModel>();
-            List<SanPhamViewModel> lstcotam1 = new List<SanPhamViewModel>();
-            if (filter.kichCo != null && filter.kichCo.Count > 0)
-            {
-                foreach (var x in filter.kichCo)
+                else 
                 {
-                    lstcotam = lstSanphamfn.Where(p => p.IDKichCo == x).ToList();
-                    foreach (var item in lstcotam)
+                    TempData["SoLuong"] = "0";
+                    return View(new List<GioHangRequest>());
+                } 
+            }
+        }
+        #region Cart
+        [HttpGet]
+        public async Task<IActionResult> ShoppingCart()
+        {
+            var session = HttpContext.Session.GetString("LoginInfor");
+            if (String.IsNullOrEmpty(session))
+            {
+                List<GioHangRequest> lstGioHang = new List<GioHangRequest>();
+                if (Request.Cookies["Cart"] != null)
+                {
+                    lstGioHang = JsonConvert.DeserializeObject<List<GioHangRequest>>(Request.Cookies["Cart"]);
+                }
+                // laam them
+                int cout = lstGioHang.Sum(c => c.SoLuong);              
+                TempData["SoLuong"] = cout.ToString();
+
+                if (Request.Cookies["Cart"] != null)
+                {
+                    var response = await _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCart?request=" + Request.Cookies["Cart"]);
+                    if (response.IsSuccessStatusCode)
                     {
-                        if (lstcotam1.FirstOrDefault(p => p.ID == item.ID) == null)
-                        {
-                            lstcotam1.Add(item);
-                        }
+                        var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response.Content.ReadAsStringAsync().Result);
+                        TempData["TongTien"] = temp.TongTien.ToString();
+                       
+                        // lam end
+                        TempData["ListBienThe"] = JsonConvert.SerializeObject(temp.GioHangs);
+                       
+                        TempData["TrangThai"] = "false";
+                        return View(temp.GioHangs);
                     }
+                    else return BadRequest();
                 }
-                lstSanphamfn = lstcotam1;
+                else {
+                    TempData["TongTien"] = "0";
+                    return View(new List<GioHangRequest>());
+                } 
             }
-            //material-filter
-            List<SanPhamViewModel> lstchatlieutam = new List<SanPhamViewModel>();
-            List<SanPhamViewModel> lstchatlieutam1 = new List<SanPhamViewModel>();
-            if (filter.chatLieu != null && filter.chatLieu.Count > 0)
+            else
             {
-                foreach (var x in filter.chatLieu)
+                var loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
+                if (loginInfor.vaiTro == 1)
                 {
-                    lstchatlieutam = lstSanphamfn.Where(p => p.IDChatLieu == x).ToList();
-                    foreach (var item in lstchatlieutam)
+                    var response = await _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCartLogin?idNguoiDung=" + loginInfor.Id);
+                    if (response.IsSuccessStatusCode)
                     {
-                        if (lstchatlieutam1.FirstOrDefault(p => p.ID == item.ID) == null)
-                        {
-                            lstchatlieutam1.Add(item);
-                        }
+                        var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response.Content.ReadAsStringAsync().Result);
+                        TempData["TongTien"] = temp.TongTien.ToString();
+                        TempData["ListBienThe"] = JsonConvert.SerializeObject(temp.GioHangs);
+                        // lam them
+                        int cout = temp.GioHangs.Sum(c => c.SoLuong);
+
+                        TempData["SoLuong"] = cout.ToString();
+                        // lam end
+                        TempData["TrangThai"] = "true";
+                        return View(temp.GioHangs);
                     }
-                }
-                lstSanphamfn = lstchatlieutam1;
-            }
-            //sort
-            if (filter.sortSP != null)
-            {
-                if (filter.sortSP == "2")
-                {
-                    lstSanphamfn = lstSanphamfn.OrderBy(p => p.GiaBan).ToList();
-                }
-                else if (filter.sortSP == "3")
-                {
-                    lstSanphamfn = lstSanphamfn.OrderByDescending(p => p.GiaBan).ToList();
-                }
-                else if (filter.sortSP == "4")
-                {
-                    lstSanphamfn = lstSanphamfn.OrderBy(p => p.GiaBan).ToList();
-                }
-                else if (filter.sortSP == "5")
-                {
-                    lstSanphamfn = lstSanphamfn.OrderByDescending(p => p.GiaBan).ToList();
-                }
-                else if (filter.sortSP == "6")
-                {
-                    lstSanphamfn = lstSanphamfn.OrderBy(p => p.NgayTao).ToList();
-                }
-                else if (filter.sortSP == "7")
-                {
-                    lstSanphamfn = lstSanphamfn.OrderByDescending(p => p.NgayTao).ToList();
-                }
-                else if (filter.sortSP == "9")
-                {
-                    lstSanphamfn = lstSanphamfn.OrderByDescending(p => p.SoLuong).ToList();
-                }
-            }
-            List<SanPhamViewModel>lstSanPhamfnR = new List<SanPhamViewModel>();
-            foreach (var item in lstSanphamfn)
-            {
-                if (item.TrangThaiCTSP == 1)
-                {
-                    if (lstSanPhamfnR.FirstOrDefault(p => p.ID == item.ID) == null)
-                    {
-                        lstSanPhamfnR.Add(item);
-                    }
-                    
+                    else return BadRequest();
                 }
                 else
                 {
-                    SanPhamViewModel sanPhamViewModel = lstSanpham.FirstOrDefault(p=>p.ID == item.ID && p.TrangThaiCTSP == 1);
-                    if (lstSanPhamfnR.FirstOrDefault(p=>p.ID == sanPhamViewModel.ID) == null)
-                    {
-                        lstSanPhamfnR.Add(sanPhamViewModel);
-                    }
+                    TempData["SoLuong"] = "0";
+                    return View(new List<GioHangRequest>());
+                }
                 }
             }
-
-            return PartialView("_ReturnProducts", lstSanPhamfnR);
-        }
-        #endregion
-
-        #region Cart
         [HttpGet]
-        public IActionResult ShoppingCart()
+        public ActionResult DeleteFromCart(Guid id)
         {
-            List<ChiTietSanPhamViewModel> bienThes = new List<ChiTietSanPhamViewModel>();
-            if (Request.Cookies["Cart"] != null)
-            {
-                bienThes = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModel>>(Request.Cookies["Cart"]);
-            }
-            // laam them
-            int cout = 0;
-            for (int i = 0; i < bienThes.Sum(c => c.SoLuong); i++)
-            {
-                cout++;
-            }
-            long tongtien = 0;
-            foreach (var x in bienThes)
-            {
-                tongtien += x.GiaBan * x.SoLuong;
-            }
-            TempData["TongTien"] = tongtien.ToString();
-            ViewData["cout"] = cout;
-            // lam end
-            TempData["ListBienThe"] = JsonConvert.SerializeObject(bienThes);
-            return View(bienThes);
-        }
-        [HttpGet]
-        public IActionResult DeleteFromCart(Guid id)
-        {
-            List<ChiTietSanPhamViewModel> bienThes = new List<ChiTietSanPhamViewModel>();
+            List<GioHangRequest> bienThes = new List<GioHangRequest>();
             string? result = Request.Cookies["Cart"];
             if (result != null)
             {
-                bienThes = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModel>>(result);
+                bienThes = JsonConvert.DeserializeObject<List<GioHangRequest>>(result);
             }
-            bienThes.Remove(bienThes.Find(p => p.ID == id));
-            CookieOptions cookie = new CookieOptions();
-            cookie.Expires = DateTime.Now.AddDays(30);
-            Response.Cookies.Append("Cart", JsonConvert.SerializeObject(bienThes), cookie);
-            return RedirectToAction("ShoppingCart");
+            bienThes.Remove(bienThes.Find(p => p.IDChiTietSanPham == id));
+            //
+            var session = HttpContext.Session.GetString("LoginInfor");
+            if (session == null)
+            {
+                CookieOptions cookie = new CookieOptions();
+                cookie.Expires = DateTime.Now.AddDays(30);
+                Response.Cookies.Append("Cart", JsonConvert.SerializeObject(bienThes), cookie);
+                return RedirectToAction("ShoppingCart");
+            }
+            else
+            {
+                var loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
+                if (loginInfor.vaiTro == 1)
+                {
+                    var response = _httpClient.DeleteAsync(_httpClient.BaseAddress + $"GioHang/Deletebyid?idctsp={id}&idNguoiDung={loginInfor.Id}").Result;
+                    if (response.IsSuccessStatusCode) return RedirectToAction("ShoppingCart");
+                    else return RedirectToAction("ShoppingCart");
+                }
+                else return RedirectToAction("ShoppingCart");
+            }
+            //
+            
         }
         [HttpPost]
         public ActionResult AddToCart(string id, int? sl)
         {
-            HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + $"SanPham/GetChiTietSanPhamByID?id="+id).Result;
-            if (response.IsSuccessStatusCode)
+            List<GioHangRequest> lstGioHang;
+            string? result = Request.Cookies["Cart"];
+            if (string.IsNullOrEmpty(result))
             {
-                List<ChiTietSanPhamViewModel> chiTietSanPhams;
-                ChiTietSanPhamViewModel chiTietSanPham = JsonConvert.DeserializeObject<ChiTietSanPhamViewModel>(response.Content.ReadAsStringAsync().Result);
-                string? result = Request.Cookies["Cart"];
-                if (string.IsNullOrEmpty(result))
+                //chiTietSanPham.SoLuong = (sl != null)?sl.Value:1;
+                lstGioHang = new List<GioHangRequest>() { new GioHangRequest() { IDChiTietSanPham = new Guid(id), SoLuong = (sl != null) ? sl.Value : 1 } };
+            }
+            else
+            {
+                lstGioHang = JsonConvert.DeserializeObject<List<GioHangRequest>>(result);
+                var tempBienThe = lstGioHang.FirstOrDefault(x => x.IDChiTietSanPham == new Guid(id));
+                if (tempBienThe != null)
                 {
-                    chiTietSanPham.SoLuong = (sl != null)?Convert.ToInt32(sl):1;
-                    chiTietSanPhams = new List<ChiTietSanPhamViewModel>() { chiTietSanPham };
-                }
-                else
-                {
-                    chiTietSanPhams = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModel>>(result);
-                    var tempBienThe = chiTietSanPhams.FirstOrDefault(x => x.ID == chiTietSanPham.ID);
-                    if (tempBienThe != null)
+                    //Sua 
+                    if (sl == null)
                     {
-                        //Sua 
-                        if (sl == null)
-                        {
-                            tempBienThe.SoLuong++;
-                        }
-                        else
-                        {
-                            tempBienThe.SoLuong = tempBienThe.SoLuong + Convert.ToInt32(sl);
-                        }
-                        
+                        tempBienThe.SoLuong++;
                     }
                     else
                     {
-                        chiTietSanPham.SoLuong = (sl != null) ? Convert.ToInt32(sl) : 1;
-                        chiTietSanPhams.Add(chiTietSanPham);
+                        tempBienThe.SoLuong = tempBienThe.SoLuong + sl.Value;
                     }
+
                 }
+                else
+                {
+                    lstGioHang.Add(new GioHangRequest() { IDChiTietSanPham = new Guid(id), SoLuong = (sl != null) ? sl.Value : 1 });
+                }
+            }
+            var session = HttpContext.Session.GetString("LoginInfor");
+            if(session == null)
+            {
                 CookieOptions cookie = new CookieOptions();
                 cookie.Expires = DateTime.Now.AddDays(30);
-                Response.Cookies.Append("Cart", JsonConvert.SerializeObject(chiTietSanPhams), cookie);
+                Response.Cookies.Append("Cart", JsonConvert.SerializeObject(lstGioHang), cookie);
+               
                 return Json(new { success = true, message = "Add to cart successfully" });
             }
-            else return Json(new { success = false, message = "Add to cart fail" });
+            else
+            {
+                var loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
+                if (loginInfor.vaiTro == 1)
+                {
+                    var chiTietGioHang = new ChiTietGioHang() { ID = Guid.NewGuid(), SoLuong = (sl != null) ? sl.Value : 1, IDCTSP = new Guid(id), IDNguoiDung = loginInfor.Id };
+                    var response = _httpClient.PostAsJsonAsync(_httpClient.BaseAddress + "GioHang/AddCart",chiTietGioHang).Result;
+                   
+                    if (response.IsSuccessStatusCode) return Json(new { success = true, message = "Add to cart successfully" });
+                    else return Json(new { success = false, message = "Add to cart fail" });
+                }
+                else return Json(new { success = false, message = "Chỉ khách hàng mới thêm được vào giỏ hàng" });
+            }
         }
         [HttpPost]
         public IActionResult UpdateCart(List<string> dssl)
         {
             try
             {
-                List<ChiTietSanPhamViewModel> chiTietSanPhams;
+                List<GioHangRequest> chiTietSanPhams;
                 string? result = Request.Cookies["Cart"];
-                chiTietSanPhams = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModel>>(result);
+                chiTietSanPhams = JsonConvert.DeserializeObject<List<GioHangRequest>>(result);
                 foreach (var item in dssl)
                 {
                     Guid id = Guid.Parse(item.Substring(0, 36));
                     int sl = Convert.ToInt32(item.Substring(36, item.Length - 36));
                     foreach (var x in chiTietSanPhams)
                     {
-                        if (x.ID == id)
+                        if (x.IDChiTietSanPham == id)
                         {
                             x.SoLuong = sl;
                         }
                     }
                 }
-                CookieOptions cookie = new CookieOptions();
-                cookie.Expires = DateTime.Now.AddDays(30);
-                Response.Cookies.Append("Cart", JsonConvert.SerializeObject(chiTietSanPhams), cookie);
-                return Json(new { success = true, message = "Cập nhật giỏ hàng thành công" });
+                var session = HttpContext.Session.GetString("LoginInfor");
+                if (session == null)
+                {
+                    CookieOptions cookie = new CookieOptions();
+                    cookie.Expires = DateTime.Now.AddDays(30);
+                    Response.Cookies.Append("Cart", JsonConvert.SerializeObject(chiTietSanPhams), cookie);
+                    return Json(new { success = true, message = "Cập nhật giỏ hàng thành công" });
+                }
+                else
+                {
+                    var loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
+                    if (loginInfor.vaiTro == 1)
+                    {
+                        foreach (var item in dssl)
+                        {
+                            Guid id = Guid.Parse(item.Substring(0, 36));
+                            int sl = Convert.ToInt32(item.Substring(36, item.Length - 36));
+                            var response = _httpClient.PutAsync(_httpClient.BaseAddress + $"GioHang/UpdateCart?idctsp={id}&soluong={sl}&idNguoiDung={loginInfor.Id}", null).Result;
+                        }
+                        return Json(new { success = true, message = "Cập nhật giỏ hàng thành công" });
+                    }
+                    else return Json(new { success = false, message = "Chỉ khách hàng mới thêm được vào giỏ hàng" });
+                }
+                
             }
             catch (Exception)
             {
 
                 return Json(new { success = true, message = "Cập nhật giỏ hàng thất bại" });
             }
-            
+
         }
         [HttpPost]
-        public ActionResult BuyNow(string id,int soLuong)
+        public ActionResult BuyNow(string id, int soLuong)
         {
             HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + $"SanPham/GetChiTietSanPhamByID?id=" + id).Result;
             if (response.IsSuccessStatusCode)
             {
-                List<ChiTietSanPhamViewModel> chiTietSanPhams;
-                ChiTietSanPhamViewModel chiTietSanPham = JsonConvert.DeserializeObject<ChiTietSanPhamViewModel>(response.Content.ReadAsStringAsync().Result);
+                //moiw
+                List<GioHangRequest> lstGioHang;
+                //ChiTietSanPhamViewModel chiTietSanPham = JsonConvert.DeserializeObject<ChiTietSanPhamViewModel>(response.Content.ReadAsStringAsync().Result);
                 string? result = Request.Cookies["Cart"];
                 if (string.IsNullOrEmpty(result))
                 {
-                    chiTietSanPham.SoLuong = soLuong;
-                    chiTietSanPhams = new List<ChiTietSanPhamViewModel>() { chiTietSanPham };
+                    //chiTietSanPham.SoLuong = (sl != null)?sl.Value:1;
+                    lstGioHang = new List<GioHangRequest>() { new GioHangRequest() { IDChiTietSanPham = new Guid(id), SoLuong = (soLuong != null) ? soLuong : 1 } };
                 }
                 else
                 {
-                    chiTietSanPhams = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModel>>(result);
-                    var tempBienThe = chiTietSanPhams.FirstOrDefault(x => x.ID == chiTietSanPham.ID);
+                    lstGioHang = JsonConvert.DeserializeObject<List<GioHangRequest>>(result);
+                    var tempBienThe = lstGioHang.FirstOrDefault(x => x.IDChiTietSanPham == new Guid(id));
                     if (tempBienThe != null)
                     {
                         //Sua 
@@ -452,17 +863,35 @@ namespace AppView.Controllers
                         {
                             tempBienThe.SoLuong = tempBienThe.SoLuong + soLuong;
                         }
+
                     }
                     else
                     {
-                        chiTietSanPham.SoLuong = soLuong;
-                        chiTietSanPhams.Add(chiTietSanPham);
+                        //chiTietSanPham.SoLuong = (sl != null) ? sl.Value : 1;
+                        lstGioHang.Add(new GioHangRequest() { IDChiTietSanPham = new Guid(id), SoLuong = (soLuong != null) ? soLuong : 1 });
                     }
                 }
-                CookieOptions cookie = new CookieOptions();
-                cookie.Expires = DateTime.Now.AddDays(30);
-                Response.Cookies.Append("Cart", JsonConvert.SerializeObject(chiTietSanPhams), cookie);
-                return Json(new { success = true, message = "Add to cart successfully" });
+                var session = HttpContext.Session.GetString("LoginInfor");
+                if (session == null)
+                {
+                    CookieOptions cookie = new CookieOptions();
+                    cookie.Expires = DateTime.Now.AddDays(30);
+                    Response.Cookies.Append("Cart", JsonConvert.SerializeObject(lstGioHang), cookie);
+                    return Json(new { success = true, message = "Add to cart successfully" });
+                }
+                else
+                {
+                    var loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
+                    if (loginInfor.vaiTro == 1)
+                    {
+                        var chiTietGioHang = new ChiTietGioHang() { ID = Guid.NewGuid(), SoLuong = (soLuong != null) ? soLuong : 1, IDCTSP = new Guid(id), IDNguoiDung = loginInfor.Id };
+                        var response1 = _httpClient.PostAsJsonAsync(_httpClient.BaseAddress + "GioHang/AddCart", chiTietGioHang).Result;
+                        if (response1.IsSuccessStatusCode) return Json(new { success = true, message = "Add to cart successfully" });
+                        else return Json(new { success = false, message = "Add to cart fail" });
+                    }
+                    else return Json(new { success = false, message = "Chỉ khách hàng mới thêm được vào giỏ hàng" });
+                }
+
             }
             else return Json(new { success = false, message = "Add to cart fail" });
         }
@@ -470,18 +899,20 @@ namespace AppView.Controllers
 
         #region Login
         [HttpGet]
-        public IActionResult Login()
+        public IActionResult Login(string actionName)
         {
+            TempData["ActionName"] = actionName;
             return View();
         }
         [HttpPost]
-        public IActionResult Login(string login, string password)
+        public async Task<ActionResult> Login(string login, string password)
         {
             //https://localhost:7095/api/QuanLyNguoiDung/DangNhap?email=tam%40gmail.com&password=chungtam200396
-             if(string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password)){
-        ViewBag.ErrorMessage = "Vui lòng nhập đầy đủ thông tin đăng nhập.";
-        return View();
-    }
+            if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password))
+            {
+                ViewBag.ErrorMessage = "Vui lòng nhập đầy đủ thông tin đăng nhập.";
+                return View();
+            }
             if (login.Contains('@'))
             {
                 login = login.Replace("@", "%40");
@@ -490,8 +921,14 @@ namespace AppView.Controllers
             if (response.IsSuccessStatusCode)
             {
                 HttpContext.Session.SetString("LoginInfor", response.Content.ReadAsStringAsync().Result);
-                return RedirectToAction("Index");
+                string actionName = TempData["ActionName"].ToString();
+                // lam them
+
+                //lam end
+
+                return RedirectToAction(actionName);
             }
+           
             ViewBag.ErrorMessage = "Email hoặc password không chính xác.";
             return View();
         }
@@ -547,23 +984,24 @@ namespace AppView.Controllers
             {
                 hdctDanhGia = JsonConvert.DeserializeObject<ChiTietHoaDonDanhGiaViewModel>(responseDonMuaCT.Content.ReadAsStringAsync().Result);
             }
-            return View("ReviewProducts",hdctDanhGia);
+            return View("ReviewProducts", hdctDanhGia);
         }
         [HttpPost]
-        public IActionResult ChangePassword(string newPassword)
+        public IActionResult ChangePassword(string newPassword, string oldPassword)
         {
             var session = HttpContext.Session.GetString("LoginInfor");
             ChangePasswordRequest request = new ChangePasswordRequest();
             request.ID = JsonConvert.DeserializeObject<LoginViewModel>(session).Id;
             request.NewPassword = newPassword;
-            var response = _httpClient.PutAsJsonAsync(_httpClient.BaseAddress + "QuanLyNguoiDung/ChangePassword",request).Result;
+            request.OldPassword = oldPassword;
+            var response = _httpClient.PutAsJsonAsync(_httpClient.BaseAddress + "QuanLyNguoiDung/ChangePassword", request).Result;
             HttpContext.Session.Remove("LoginInfor");
-            if(response.IsSuccessStatusCode) return RedirectToAction("Login");
+            if (response.IsSuccessStatusCode) return RedirectToAction("Login");
             else return BadRequest();
         }
         public IActionResult DanhGiaSanPham([FromBody] DanhGiaCTHDViewModel danhGiaCTHDView)
         {
-            HttpResponseMessage responseDonMuaCT = _httpClient.PutAsync(_httpClient.BaseAddress + $"DanhGia?idCTHD={danhGiaCTHDView.idCTHD}&soSao={danhGiaCTHDView.soSao}&binhLuan={danhGiaCTHDView.danhgia}",null).Result;
+            HttpResponseMessage responseDonMuaCT = _httpClient.PutAsync(_httpClient.BaseAddress + $"DanhGia?idCTHD={danhGiaCTHDView.idCTHD}&soSao={danhGiaCTHDView.soSao}&binhLuan={danhGiaCTHDView.danhgia}", null).Result;
             if (responseDonMuaCT.IsSuccessStatusCode)
             {
                 RedirectToAction("PurchaseOrderDetail", danhGiaCTHDView.idHD);
@@ -572,7 +1010,7 @@ namespace AppView.Controllers
         }
         public IActionResult HuyDonHang(Guid idHoaDon)
         {
-            HttpResponseMessage responseDonMua = _httpClient.PutAsync(_httpClient.BaseAddress + $"HoaDon?idhoadon={idHoaDon}&trangthai=8",null).Result;
+            HttpResponseMessage responseDonMua = _httpClient.PutAsync(_httpClient.BaseAddress + $"HoaDon?idhoadon={idHoaDon}&trangthai=8", null).Result;
             if (responseDonMua.IsSuccessStatusCode)
             {
                 RedirectToAction("PurchaseOrder");
@@ -588,7 +1026,7 @@ namespace AppView.Controllers
             }
             return RedirectToAction("PurchaseOrder");
         }
-        public IActionResult GetHoaDonByTrangThai([FromBody] HoaDon danhGiaCTHDView)
+        public IActionResult GetHoaDonByTrangThai(HoaDon danhGiaCTHDView, int page, int pageSize)
         {
             var session = HttpContext.Session.GetString("LoginInfor");
             LoginViewModel loginViewModel = JsonConvert.DeserializeObject<LoginViewModel>(session);
@@ -597,12 +1035,30 @@ namespace AppView.Controllers
             if (responseDonMua.IsSuccessStatusCode)
             {
                 donMuaViewModels = JsonConvert.DeserializeObject<List<DonMuaViewModel>>(responseDonMua.Content.ReadAsStringAsync().Result);
+                if (danhGiaCTHDView.TrangThaiGiaoHang != 0 && danhGiaCTHDView.TrangThaiGiaoHang != null)
+                {
+                    donMuaViewModels = donMuaViewModels.Where(p => p.TrangThaiGiaoHang == danhGiaCTHDView.TrangThaiGiaoHang).ToList();
+                    var model = donMuaViewModels.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+                    return Json(new
+                    {
+                        data = model,
+                        total = donMuaViewModels.Count,
+                        status = true
+                    });
+                }
+                else
+                {
+                    var model = donMuaViewModels.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+                    return Json(new
+                    {
+                        data = model,
+                        total = donMuaViewModels.Count,
+                        status = true
+                    });
+                }
             }
-            if (danhGiaCTHDView.TrangThaiGiaoHang != 0 && danhGiaCTHDView.TrangThaiGiaoHang != null)
-            {
-                donMuaViewModels = donMuaViewModels.Where(p => p.TrangThaiGiaoHang == danhGiaCTHDView.TrangThaiGiaoHang).ToList();
-            }
-            return PartialView("_ReturnHoaDon", donMuaViewModels);
+            else return Json(new { status = false });
+
         }
         public IActionResult LogOut()
         {
@@ -665,7 +1121,8 @@ namespace AppView.Controllers
         public IActionResult ForgotPassword(string email)
         {
             var khachHang = JsonConvert.DeserializeObject<KhachHangViewModel>(_httpClient.GetAsync(_httpClient.BaseAddress + "KhachHang/GetKhachHangByEmail?email=" + email).Result.Content.ReadAsStringAsync().Result);
-            if(khachHang.Id != null) {
+            if (khachHang.Id != null)
+            {
                 string ma = Guid.NewGuid().ToString().Substring(0, 5);
                 MailData mailData = new MailData() { EmailToId = email, EmailToName = email, EmailSubject = "Mã xác nhận", EmailBody = "Mã xác nhận: " + ma };
                 HttpResponseMessage response = _httpClient.PostAsJsonAsync(_httpClient.BaseAddress + "Mail/SendMail", mailData).Result;
@@ -699,16 +1156,21 @@ namespace AppView.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult ChangeForgotPassword(string password)
+        public IActionResult ChangeForgotPassword(string password, string confirmPassword)
         {
-            string[] submit = HttpContext.Session.GetString("ForgotPassword").Split(":");
-            KhachHangViewModel khachHang = new KhachHangViewModel() { Id = new Guid(submit[0]),Password = password };
-            HttpResponseMessage response = _httpClient.PostAsJsonAsync(_httpClient.BaseAddress + "KhachHang/ChangeForgotPassword", khachHang).Result;
-            if (response.IsSuccessStatusCode)
+            if (password == confirmPassword)
             {
-                return RedirectToAction("Login");
+                string[] submit = HttpContext.Session.GetString("ForgotPassword").Split(":");
+                KhachHangViewModel khachHang = new KhachHangViewModel() { Id = new Guid(submit[0]), Password = password };
+                HttpResponseMessage response = _httpClient.PostAsJsonAsync(_httpClient.BaseAddress + "KhachHang/ChangeForgotPassword", khachHang).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Login");
+                }
+                else return BadRequest();
             }
             else return BadRequest();
+
         }
 
 
@@ -730,7 +1192,7 @@ namespace AppView.Controllers
                 TempData["Message"] = "Invalid email.";
                 return RedirectToAction("Login");
             }
-            
+
         }
 
         [HttpPost]
@@ -753,7 +1215,7 @@ namespace AppView.Controllers
                 if (response.IsSuccessStatusCode)
                 {
                     TempData["Message"] = "Password reset successfully";
-                    return RedirectToAction("Login"); 
+                    return RedirectToAction("Login");
                 }
                 else
                 {
@@ -768,6 +1230,17 @@ namespace AppView.Controllers
 
         #region CheckOut
         [HttpGet]
+        public JsonResult UseDiemTich(int diem, string id)
+        {
+            var response = _httpClient.GetAsync(_httpClient.BaseAddress + $"QuanLyNguoiDung/UseDiemTich?diem={diem}&id={id}").Result;
+            if (response.IsSuccessStatusCode)
+            {
+                var soTienGiam = response.Content.ReadAsStringAsync().Result;
+                return Json(soTienGiam);
+            }
+            else return Json(0);
+        }
+        [HttpGet]
         public IActionResult CheckOut()
         {
             return View();
@@ -779,22 +1252,31 @@ namespace AppView.Controllers
             {
                 List<ChiTietHoaDonViewModel> lstChiTietHoaDon = new List<ChiTietHoaDonViewModel>();
                 string temp = TempData["ListBienThe"] as string;
-                foreach (var item in JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModel>>(temp))
+                string trangThai = TempData["TrangThai"] as string;
+                foreach (var item in JsonConvert.DeserializeObject<List<GioHangRequest>>(temp))
                 {
                     ChiTietHoaDonViewModel chiTietHoaDon = new ChiTietHoaDonViewModel();
-                    chiTietHoaDon.IDChiTietSanPham = item.ID;
+                    chiTietHoaDon.IDChiTietSanPham = item.IDChiTietSanPham;
                     chiTietHoaDon.SoLuong = item.SoLuong;
-                    chiTietHoaDon.DonGia = item.GiaBan;
+                    chiTietHoaDon.DonGia = item.DonGia.Value;
                     lstChiTietHoaDon.Add(chiTietHoaDon);
                 }
                 hoaDon.ChiTietHoaDons = lstChiTietHoaDon;
-                hoaDon.Diem = 0;
+                hoaDon.TrangThai = Convert.ToBoolean(trangThai);
+                var session = HttpContext.Session.GetString("LoginInfor");
+                if (session != null)
+                {
+                    hoaDon.IDNguoiDung = JsonConvert.DeserializeObject<LoginViewModel>(session).Id;
+                }
                 TempData.Remove("TongTien");
-                //hoaDon.TongTien = Convert.ToInt32(tongTien.Replace(",", ""));
                 HttpResponseMessage response = _httpClient.PostAsJsonAsync("HoaDon", hoaDon).Result;
                 if (response.IsSuccessStatusCode)
                 {
-                    Response.Cookies.Delete("Cart");
+                  
+                    if(!hoaDon.TrangThai) Response.Cookies.Delete("Cart");
+                    // lam them
+                    TempData["SoLuong"] = "0";
+                    // lam end
                     return "https://localhost:5001/Home/CheckOutSuccess";
                 }
                 else return "";
@@ -837,6 +1319,7 @@ namespace AppView.Controllers
 
                 string paymentUrl = vnpay.CreateRequestUrl(vnp_Url, "IKQOFVXJPGYEIDNVNICTIIFPXNTXRYCX");
                 //log.InfoFormat("VNPAY URL: {0}", paymentUrl);
+
                 return paymentUrl;
             }
             else return "";

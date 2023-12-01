@@ -15,6 +15,8 @@ namespace AppData.ViewModels
         public string Ten { get; set; }
         public string SDT { get; set; }
         public int? DiemTich { get; set; }
+        //0 - Nhan Vien
+        //1 - Khach Hang
         public int? vaiTro { get; set; }
     }
 }

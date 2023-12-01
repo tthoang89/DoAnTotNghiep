@@ -43,28 +43,28 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.ID)
+                @item.ID
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Ten)
+                @item.Ten
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.TrangThai)
+                @item.TrangThai
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.LoaiSP)
+                @item.LoaiSP
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IdChiTietSanPham)
+                @item.IdChiTietSanPham
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Image)
+                @item.Image
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.GiaBan)
+                @item.GiaBan
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.GiaGoc)
+                @item.GiaGoc
             </td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |

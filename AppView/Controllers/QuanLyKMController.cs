@@ -14,7 +14,7 @@ namespace AppView.Controllers
         {
             _httpClient = new HttpClient();
         }
-        public int PageSize = 8;
+        public int PageSize = 10;
         #region QL Khuyen Mai Cho SP
         // Get All QL Khuyen Mai
         [HttpGet]
@@ -213,15 +213,36 @@ namespace AppView.Controllers
        
         public async Task<IActionResult> Create(KhuyenMaiView kmv)
         {
-            var response = await
+            if (kmv.GiaTri==null||kmv.GiaTri==0)
+            {
+                ViewData["GiaTri"] = "Mời Bạn nhập Giá Trị";
+            }
+            
+            if (kmv.NgayApDung == null)
+            {
+                ViewData["NgayApDung"] = "Mời bạn nhập ngày áp dụng";
+            }
+            if (kmv.NgayKetThuc == null)
+            {
+                ViewData["NgayKetThuc"] = "Mời bạn nhập ngày kết thúc";
+            }
+            if (kmv.NgayKetThuc < kmv.NgayApDung)
+            {
+                ViewData["Ngay"] = "Ngày kết thúc phải lớn hơn hoặc bằng ngày áp dụng";
+            }
+            else
+            {
+                var response = await
            _httpClient.PostAsJsonAsync("https://localhost:7095/api/KhuyenMai", kmv);
-            if (response.IsSuccessStatusCode) return RedirectToAction("GetAllKM");
+                if (response.IsSuccessStatusCode) return RedirectToAction("GetAllKM");
+                return View();
+            }
             return View();
+            
         }
         // update
         public  IActionResult Update(Guid id)
-        {
-           
+        {           
             var url = $"https://localhost:7095/api/KhuyenMai/{id}";
             var response = _httpClient.GetAsync(url).Result;
             var result = response.Content.ReadAsStringAsync().Result;
@@ -232,10 +253,29 @@ namespace AppView.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(KhuyenMaiView kmv)
         {
-            
+            if (kmv.GiaTri == null || kmv.GiaTri == 0)
+            {
+                ViewData["GiaTri"] = "Mời Bạn nhập giá trị";
+            }
 
-            var response = await _httpClient.PutAsJsonAsync($"https://localhost:7095/api/KhuyenMai/{kmv.ID}", kmv);
-            if (response.IsSuccessStatusCode) return RedirectToAction("GetAllKM");
+            if (kmv.NgayApDung == null)
+            {
+                ViewData["NgayApDung"] = "Mời bạn nhập ngày áp dụng";
+            }
+            if (kmv.NgayKetThuc == null)
+            {
+                ViewData["NgayKetThuc"] = "Mời bạn nhập ngày kết thúc";
+            }
+            if (kmv.NgayKetThuc < kmv.NgayApDung)
+            {
+                ViewData["Ngay"] = "Ngày kết thúc phải lớn hơn hoặc bằng ngày áp dụng";
+            }
+            else
+            {
+                var response = await _httpClient.PutAsJsonAsync($"https://localhost:7095/api/KhuyenMai/{kmv.ID}", kmv);
+                if (response.IsSuccessStatusCode) return RedirectToAction("GetAllKM");
+                return View();
+            }        
             return View();
         }
         public async Task<IActionResult> Delete(Guid id)

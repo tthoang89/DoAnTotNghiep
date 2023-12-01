@@ -57,21 +57,11 @@
             <th>
                 Tên Sản Phẩm
             </th>
-            <th>
-                Mô Tả
-            </th>
+            
             <th>
                 Tên Ảnh
             </th>
-            <th>
-                Số lượng CTSP
-            </th>
-            <th>
-                Tổng số sao
-            </th>
-            <th>
-                Tổng đánh giá
-            </th>
+           
 
             <th>
                 Giá Bán
@@ -102,9 +92,7 @@
                 <td>
                     <strong style="color:black">@item.Ten</strong>
                 </td>
-                <td>
-                    <strong style="color:black">@item.MoTa</strong>
-                </td>
+               
                 <td>
                     @{
 
@@ -113,7 +101,7 @@
                             string extension = System.IO.Path.GetExtension(item.TenAnh);
                             if (imageExtensions.Contains(extension.Trim()))
                             {
-                                <img class="img-fluid w-100" src="/img/product/@item.TenAnh" style="width:100px;height:250px" />
+                                <img class="img-fluid w-100" src="/img/product/@item.TenAnh" style="width:150px;height:275px" />
                             }
                             else
                             {
@@ -126,16 +114,7 @@
                         }
                     }
                 </td>
-                <td>
-                    <strong style="color:green">@item.SoLuongCTSP</strong>
-                </td>
-
-                <td>
-                    <strong style="color:black">@item.TongSoSao</strong>
-                </td>
-                <td>
-                    <strong style="color:black">@item.TongDanhGia</strong>
-                </td>
+               
 
                 <td>
                     <strong style="color:black">@item.GiaBan</strong>

@@ -17,6 +17,8 @@ namespace AppData.ViewModels
         public string? Email { get; set; }
         [Required, StringLength(30)]
         public string? Name { get; set; }
+        [Required]
+        public string? SDT { get; set; }
         [Required, StringLength(8)]
         public string Password { get; set; }
 

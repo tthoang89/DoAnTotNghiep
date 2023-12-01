@@ -16,7 +16,7 @@ namespace AppView.Controllers
             httpClients = new HttpClient();
         }
 
-        public int PageSize = 8;
+        public int PageSize = 10;
         // Get ALl KH
         public async Task<IActionResult> GetAllKhachHang(int ProductPage = 1)
         {
@@ -66,10 +66,48 @@ namespace AppView.Controllers
 
         public async Task<IActionResult> Create(KhachHangView kh)
         {
+
+
+            if (kh.Password != null)
+            {
+                if (kh.Password.Length < 5)
+                {
+                    ViewData["MK"] = "Mật Khẩu phải lớn hơn 5 kí tự";
+                }
+            }
+            if (kh.SDT != null)
+            {
+                if (kh.SDT.Length < 10)
+                {
+                    ViewData["SDT"] = "Số Điện thoại không hợp lệ";
+                }
+                //var timkiem = kh1.Where(x => x.SDT == kh.SDT).FirstOrDefault();
+                //if (timkiem != null)
+                //{
+                //    ViewData["SDT"] = "Số Điện thoại này đã được đăng kí";
+                //}
+            }
+            //if (kh.Email != null)
+            //{
+            //var email = kh1.Where(x => x.SDT == kh.Email).FirstOrDefault();
+            //if (email != null)
+            //{               
+            //        ViewData["Email"] = "Email này đã được đăng kí";                   
+            //}
+
+            //}
+
             var url = $"https://localhost:7095/api/KhachHang/PostKHView";
-            var response = await httpClients.PostAsJsonAsync(url, kh);
-            if (response.IsSuccessStatusCode) return RedirectToAction("GetAllKhachHang");
-            return View();
+                var response = await httpClients.PostAsJsonAsync(url, kh);
+                if (response.IsSuccessStatusCode) return RedirectToAction("GetAllKhachHang");
+                return View();
+           
+
+
+           
+            
+            
+            
         }
         [HttpGet]
 
@@ -97,14 +135,17 @@ namespace AppView.Controllers
 
         public async Task<IActionResult> Update(KhachHangView kh)
         {
-
-            var url =
+           
+                var url =
                 $"https://localhost:7095/api/KhachHang/{kh.IDKhachHang}";
-            var response = await httpClients.PutAsJsonAsync(url, kh);
-            if (response.IsSuccessStatusCode) return RedirectToAction("GetAllKhachHang");
+                var response = await httpClients.PutAsJsonAsync(url, kh);
+                if (response.IsSuccessStatusCode) return RedirectToAction("GetAllKhachHang");
+                return View();
+            
+           
 
 
-            return View();
+            
         }
 
 

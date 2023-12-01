@@ -7,6 +7,7 @@
     {
         loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(Context.Session.GetString("LoginInfor"));
     }
+    //string? count = TempData.Peek("SoLuong") as string;
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -79,7 +80,7 @@
                                     }
                                     else
                                     {
-                                        <a asp-controller="Home" asp-action="Login" style="color:white">
+                                        <a asp-controller="Home" asp-action="Login" asp-route-actionName="Index" style="color:white">
                                             Đăng nhập
                                         </a>
                                     }
@@ -118,7 +119,7 @@
                             </li>
 
                             <li><a asp-controller="Home" asp-action="Blog">Blog</a></li>
-                            <li><a asp-controller="Home" asp-action="Contacts">Liên lạc</a></li>
+                            <li><a asp-controller="Home" asp-action="Contacts">Liên lạc </a></li>
 
                         </ul>
                     </nav>
@@ -127,8 +128,7 @@
                     <div class="header__nav__option">
                         <a href="#" class="search-switch"><img src="/img/icon/search.png" alt=""></a>
                         <a href="#"><img src="/img/icon/heart.png" alt=""></a>
-                        <a asp-controller="Home" asp-action="ShoppingCart"><img src="/img/icon/cart.png" alt=""> <span>0</span></a>
-                        <div class="price">  @ViewData["cout"]</div>
+                        @await Html.PartialAsync("CartPartial.cshtml")
                     </div>
                 </div>
             </div>
