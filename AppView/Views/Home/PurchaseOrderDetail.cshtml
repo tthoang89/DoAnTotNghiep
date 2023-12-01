@@ -217,16 +217,7 @@
                             @{
                                 foreach (var item in lichSuTichDiems)
                                 {
-                                    if (item.TrangThai == 1)
-                                    {
-                                        <tr>
-                                            <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;">
-                                                Điểm được tích
-                                            </td>
-                                            <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: 130px;padding-right: 70px; text-align: right;">@diemtich.ToString("n0") Điểm</td>
-                                        </tr>
-                                    }
-                                    else if (item.TrangThai == 0)
+                                    if (item.TrangThai == 0)
                                     {
                                         <tr>
                                             <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;">
@@ -237,14 +228,24 @@
                                     }
                                 }
                             }
-                            
-                            
                             <tr>
                                 <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;">
                                     Tổng tiền
                                 </td>
                                 <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: 130px;padding-right: 70px; text-align: right;">@tongtien.ToString("n0") VNĐ</td>
                             </tr>
+                            @foreach (var item in lichSuTichDiems)
+                            {
+                                if (item.TrangThai == 1)
+                                {
+                                    <tr>
+                                        <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;">
+                                            Điểm được tích
+                                        </td>
+                                        <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: 130px;padding-right: 70px; text-align: right;">@diemtich.ToString("n0") Điểm</td>
+                                    </tr>
+                                }
+                            }
                         </tbody>
                     </table>
                 </tfoot>
@@ -262,7 +263,22 @@
         {
             <div style="text-align:-webkit-right ;">
                 <div style="border: none; border-radius: 10px; color: white; background-color: black; text-align:center;width: 150px; height: 50px; display: grid; align-items: center;">
-                    <a style="color:white;" asp-controller="Home" asp-action="DoiTraHang" asp-route-idHoaDon="@Model.First().ID">Đổi trả hàng/Hoàn hàng</a>
+                    <a style="color:white;" asp-controller="Home" asp-action="DoiTraHang" asp-route-idHoaDon="@Model.First().ID">Đổi trả hàng/Hoàn tiền</a>
+                </div>
+            </div>
+        }else if (trangthaiGiaoHang == 8)
+        {
+            <div style="text-align:-webkit-right ;">
+                <div style="border: none; border-radius: 10px; color: white; background-color: black; text-align:center;width: 150px; height: 50px; display: grid; align-items: center;">
+                    <a style="color:white;" asp-controller="Home" asp-action="HoanTacHuyDonHang" asp-route-idHoaDon="@Model.First().ID">Hoàn tác hủy đơn hàng</a>
+                </div>
+            </div>
+        }
+        else if (trangthaiGiaoHang == 9)
+        {
+            <div style="text-align:-webkit-right ;">
+                <div style="border: none; border-radius: 10px; color: white; background-color: black; text-align:center;width: 150px; height: 50px; display: grid; align-items: center;">
+                    <a style="color:white;" asp-controller="Home" asp-action="HoanTacDoiTraHang" asp-route-idHoaDon="@Model.First().ID">Hoàn tác trả hàng</a>
                 </div>
             </div>
         }

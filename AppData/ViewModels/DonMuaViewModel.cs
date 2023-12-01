@@ -28,5 +28,6 @@ namespace AppData.ViewModels
         public int? TongTien { get; set; }
         public int TiLeTichDiem { get; set; }
         public int TiLeTieuDiem { get; set; }
+        public int LoaiHoaDon { get; set; }
     }
 }
