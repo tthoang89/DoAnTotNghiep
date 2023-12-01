@@ -70,6 +70,11 @@ namespace AppAPI.Controllers
             var reponse = await _sanPhamServices.AddAnhToSanPham(request);
             return Ok(reponse);
         }
+        [HttpGet("GetAllAnhSanPham")]
+        public List<Anh> GetAllAnhSanPham(Guid idSanPham)
+        {
+            return _sanPhamServices.GetAllAnhSanPham(idSanPham);
+        }
         #endregion
 
         #region ChiTietSanPham

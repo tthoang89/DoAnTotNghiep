@@ -4,14 +4,18 @@
     ViewData["Title"] = "ProductManager";
 }
 
-<h1>ProductManager</h1>
+<h1>Quản lý sản phẩm</h1>
 
-<p>
-    <a asp-action="AddSanPham">Create New</a>
-</p>
+<div>
+
+</div>
+
 <table class="table">
     <thead>
         <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Image)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.ID)
             </th>
@@ -28,9 +32,6 @@
                 @Html.DisplayNameFor(model => model.IdChiTietSanPham)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Image)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.GiaBan)
             </th>
             <th>
@@ -40,38 +41,43 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @item.ID
-            </td>
-            <td>
-                @item.Ten
-            </td>
-            <td>
-                @item.TrangThai
-            </td>
-            <td>
-                @item.LoaiSP
-            </td>
-            <td>
-                @item.IdChiTietSanPham
-            </td>
-            <td>
-                @item.Image
-            </td>
-            <td>
-                @item.GiaBan
-            </td>
-            <td>
-                @item.GiaGoc
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                    @Html.ActionLink("Details", "ProductDetail", new {  idSanPham=item.ID  }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <img src="~/img/product/@item.Image" style="width:70px;height:70px"/>
+                </td>
+                <td>
+                    @item.ID
+                </td>
+                <td>
+                    @item.Ten
+                </td>
+                <td>
+                    @item.TrangThai
+                </td>
+                <td>
+                    @item.LoaiSP
+                </td>
+                <td>
+                    @item.IdChiTietSanPham
+                </td>
+                <td>
+                    @item.GiaBan
+                </td>
+                <td>
+                    @item.GiaGoc
+                </td>
+                <td style="width:150px">
+                    @* @Html.ActionLink("Details", "ProductDetail", new {  idSanPham=item.ID  }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ }) *@
+                    <a asp-action="ProductDetail" class="btn btn-primary" asp-route-idSanPham="@item.ID">Chi tiết</a>
+                    <a asp-action="ProductDetail" class="btn btn-danger" asp-route-idSanPham="@item.ID">Xoá</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+<div class="d-flex justify-content-end">
+    <a asp-action="AddSanPham" class="btn btn-primary">Thêm sản phẩm</a>
+</div>

@@ -154,6 +154,10 @@ namespace AppAPI.Services
                 return false;
             }
         }
+        public List<Anh> GetAllAnhSanPham(Guid idSanPham)
+        {
+            return _context.Anhs.Where(x=>x.IDSanPham == idSanPham).ToList();
+        }
         #endregion
 
         #region ChiTietSanPham

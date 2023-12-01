@@ -1,0 +1,71 @@
+﻿@model IEnumerable<AppData.Models.Anh>
+
+@{
+    ViewData["Title"] = "QuanLyAnh";
+}
+
+<h1>Quản lý ảnh</h1>
+
+<div style="margin-bottom:10px">
+    <label for="image" class="btn btn-primary">Thêm ảnh</label>
+    <input id="image" style="visibility:hidden;" type="file" onchange="AddImage(event)">
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DuongDan)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TrangThai)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IDMauSac)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IDSanPham)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DuongDan)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TrangThai)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IDMauSac)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IDSanPham)
+            </td>
+            <td>
+                @Html.ActionLink("Sửa", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Xóa", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+<script src="/js/jquery-3.3.1.min.js"></script>
+<script>
+    function AddImage(event) {
+        var value = event.target.files[0];
+        var formData = new FormData();
+        formData.append("file", value);
+        fetch("/Admin/AddAnhNoColor", {
+            method: 'POST',
+            body:formData
+        });
+    };
+</script>

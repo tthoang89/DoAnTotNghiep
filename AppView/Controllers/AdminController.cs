@@ -79,9 +79,29 @@ namespace AppView.Controllers
         public IActionResult ProductDetail(string idSanPham)
         {
             var response = _httpClient.GetAsync(_httpClient.BaseAddress+ "SanPham/GetAllChiTietSanPhamAdmin?idSanPham=" + idSanPham).Result;
-            var lstSanPham = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModelAdmin>>(response.Content.ReadAsStringAsync().Result);
-            TempData["IDSanPham"] = idSanPham;
-            return View(lstSanPham);
+            if (response.IsSuccessStatusCode)
+            {
+                var lstSanPham = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModelAdmin>>(response.Content.ReadAsStringAsync().Result);
+                TempData["IDSanPham"] = idSanPham;
+                return View(lstSanPham);
+            }
+            else return BadRequest();
+        }
+        [HttpGet]
+        public IActionResult QuanLyAnh(Guid idSanPham)
+        {
+            var response = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllAnhSanPham?idSanPham=" + idSanPham).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                var lstAnh = JsonConvert.DeserializeObject<List<Anh>>(response.Content.ReadAsStringAsync().Result);
+                return View(lstAnh);
+            }
+            else return BadRequest();
+        }
+        [HttpPost]
+        public IActionResult AddAnhNoColor(IFormFile file)
+        {
+            return View();
         }
         [HttpGet]
         public IActionResult AddChiTietSanPham(string idSanPham)
@@ -109,20 +129,6 @@ namespace AppView.Controllers
             var lstAnhRequest = JsonConvert.DeserializeObject<List<AnhRequest>>(TempData["MauSacs"].ToString());
             return View(lstAnhRequest);
         }
-        //[HttpPost]
-        //public IActionResult AddAnhToMauSac(List<string> idMauSacs,List<IFormFile> images)
-        //{
-        //    string wwwrootPath = _hostEnvironment.WebRootPath;
-        //    string idSanPham = TempData["IDSanPham"].ToString();
-        //    List<AnhRequest> lstAnhRequest = new List<AnhRequest>();
-        //    for (var i = 0; i < images.Count; i++)
-        //    {
-        //        lstAnhRequest.Add(new AnhRequest() { IDSanPham = new Guid(idSanPham), IDMauSac = new Guid(idMauSacs[i]), DuongDan = _iFileService.AddFile(images[i], wwwrootPath).Result });
-        //    }
-        //    HttpResponseMessage response = _httpClient.PostAsJsonAsync(_httpClient.BaseAddress + "SanPham/AddAnh", lstAnhRequest).Result;
-        //    if (response.IsSuccessStatusCode) return RedirectToAction("ProductManager");
-        //    else return BadRequest();
-        //}
         [HttpGet]
         public IActionResult UpdateChiTietSanPham()
         {
