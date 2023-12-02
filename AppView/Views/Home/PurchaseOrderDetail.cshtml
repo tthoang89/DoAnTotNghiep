@@ -133,7 +133,7 @@
                                 giaTri = item.GiaTri;
                                 diemSudung = item.lichSuTichDiems.FirstOrDefault(p => p.TrangThai == 0) != null ? item.lichSuTichDiems.FirstOrDefault(p => p.TrangThai == 0).Diem:0;
                                 diemTich = item.lichSuTichDiems.FirstOrDefault(p => p.TrangThai == 1) != null ? item.lichSuTichDiems.FirstOrDefault(p => p.TrangThai == 1).Diem:0;
-                                trangThaiLichSuTichDiem = item.TrangThaiLichSuTichDiem;
+                                trangThaiLichSuTichDiem = item.lichSuTichDiems.FirstOrDefault(p => p.TrangThai == 0) != null ? 0 : 1;
                                 hinhThucGiamGia =item.HinhThucGiamGia;
                                 tileTieuDiem = item.TiLeTieuDiem;
                                 tileTichDiem = item.TiLeTichDiem;
@@ -153,10 +153,10 @@
                                 {
                                     if (trangThaiLichSuTichDiem == 0)
                                     {
-                                        tongtien = giaSP * (100 - Convert.ToInt32(giaTri) / 100) + tienShip - diemSudung * tileTieuDiem;
+                                        tongtien = Convert.ToInt32(giaSP - giaSP * (Convert.ToDouble(giaTri) / 100)) + tienShip - diemSudung * tileTieuDiem;
                                     }else
                                     {
-                                        tongtien = giaSP * (100 - Convert.ToInt32(giaTri) / 100) + tienShip;
+                                        tongtien = Convert.ToInt32(giaSP - giaSP * (Convert.ToDouble(giaTri) / 100)) + tienShip;
                                     }
 
                                 }else if (hinhThucGiamGia == 1)
