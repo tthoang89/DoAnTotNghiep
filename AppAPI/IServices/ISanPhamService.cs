@@ -17,6 +17,7 @@ namespace AppAPI.IServices
         Task<bool> DeleteSanPham(Guid id);
         bool CheckTrungTenSP(SanPhamRequest lsp);
         Task<bool> AddAnhToSanPham(List<AnhRequest> request);
+        List<Anh> GetAllAnhSanPham(Guid idSanPham);
         #endregion
 
         #region LoaiSanPham

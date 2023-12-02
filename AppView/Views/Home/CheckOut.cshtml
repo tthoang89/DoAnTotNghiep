@@ -12,6 +12,13 @@
     long tienship = 0;
     Layout = "_Layout";
 }
+<style>
+    a:hover{
+        text-decoration: none;
+        outline: none;
+        color: black;
+    }
+</style>
 <!-- Breadcrumb Section Begin -->
 <section class="breadcrumb-option">
     <div class="container">
@@ -167,9 +174,6 @@
                         <button onclick="createhoadon()" class="site-btn">
                             XÁC NHẬN
                         </button>
-                        @*                         <a class="site-btn" asp-action="Pay" asp-controller="Home" style="text-align:center">
-                        THANH TOÁN
-                        </a> *@
                     </div>
                 </div>
             </div>
@@ -391,7 +395,7 @@
                 }
                 var ipVoucher = document.getElementById("moneyvoucher");
                 ipVoucher.hidden = false;
-                ipVoucher.innerHTML = "Số tiền được giảm (Voucher)<span>" + tienVoucher + " VNĐ</span>";
+                ipVoucher.innerHTML = "Số tiền giảm (Voucher)<span>" + tienVoucher + " VNĐ</span>";
                 document.getElementById("total").innerHTML = (tienShip + @tongtien-tienVoucher - tienDiem) + "VNĐ";
             },
             error: function (response) {
@@ -413,7 +417,7 @@
                 var ipDiem = document.getElementById("moneyscore");
                 ipDiem.hidden = false;
                 tienDiem = response;
-                ipDiem.innerHTML = "Số tiền được giảm (Voucher)<span>" + tienDiem + " VNĐ</span>";
+                ipDiem.innerHTML = "Số tiền giảm (Điểm)<span>" + tienDiem + " VNĐ</span>";
                 document.getElementById("total").innerHTML = (tienShip + @tongtien-tienVoucher-tienDiem) + "VNĐ";
             },
             error: function (response) {

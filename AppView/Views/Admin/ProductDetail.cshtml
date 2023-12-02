@@ -5,11 +5,8 @@
     string idSanPham = TempData["IDSanPham"] as string;
 }
 
-<h1>ProductDetail</h1>
+<h1>Chi tiết sản phẩm</h1>
 
-<p>
-    <a asp-action="AddChiTietSanPham" asp-route-idSanPham="@idSanPham">Create New</a>
-</p>
 <form>
     <table class="table">
         <thead>
@@ -58,14 +55,18 @@
                         @item.TenKhuyenMai
                     </td>
                     <td>
-                        @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                        @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                        @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                        <a asp-action="AddChiTietSanPham" asp-route-idSanPham="@idSanPham" class="btn btn-secondary">Tạo mã QR</a>
+                        <a asp-action="AddChiTietSanPham" asp-route-idSanPham="@idSanPham" class="btn btn-danger">Xóa</a>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
-    <button type="submit"></button>
 </form>
+<div class="d-flex justify-content-end">
+    <a asp-action="AddChiTietSanPham" asp-route-idSanPham="@idSanPham" class="btn btn-secondary">Tạo mã QR</a>
+    <a asp-action="QuanLyAnh" asp-route-idSanPham="@idSanPham" class="btn btn-success" style="margin-left:5px">Quản lý ảnh</a>
+    <a asp-action="AddChiTietSanPham" asp-route-idSanPham="@idSanPham" class="btn btn-primary" style="margin-left:5px">Thêm chi tiết sản phẩm</a>
+</div>
+
 
