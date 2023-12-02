@@ -282,6 +282,14 @@
                 </div>
             </div>
         }
+        else if (trangthaiGiaoHang == 3)
+        {
+            <div style="text-align:-webkit-right ;">
+                <div style="border: none; border-radius: 10px; color: white; background-color: black; text-align:center;width: 150px; height: 50px; display: grid; align-items: center;">
+                    <a style="color:white;" asp-controller="Home" asp-action="XacNhanGHTC" asp-route-idHoaDon="@Model.First().ID">Xác nhận giao hàng thành công</a>
+                </div>
+            </div>
+        }
     </div>
     
 </section>

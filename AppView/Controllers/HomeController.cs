@@ -1046,6 +1046,15 @@ namespace AppView.Controllers
             }
             return RedirectToAction("PurchaseOrder");
         }
+        public IActionResult XacNhanGHTC(Guid idHoaDon)
+        {
+            HttpResponseMessage responseDonMua = _httpClient.PutAsync(_httpClient.BaseAddress + $"HoaDon?idhoadon={idHoaDon}&trangthai=6", null).Result;
+            if (responseDonMua.IsSuccessStatusCode)
+            {
+                RedirectToAction("PurchaseOrderDetail",idHoaDon);
+            }
+            return RedirectToAction("PurchaseOrder");
+        }
         public IActionResult GetHoaDonByTrangThai(HoaDon danhGiaCTHDView, int page, int pageSize)
         {
             var session = HttpContext.Session.GetString("LoginInfor");

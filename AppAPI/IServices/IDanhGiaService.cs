@@ -11,6 +11,6 @@ namespace AppAPI.IServices
         Task<List<DanhGiaViewModel>> GetDanhGiaByIdSanPham(Guid idsp);
         Task<List<DanhGiaViewModel>> GetDanhGiaByIdBthe(Guid idbt);
         Task<bool> AnDanhGia(Guid id);
-        public bool UpdateDanhGia(Guid idCTHD,int soSao,string binhLuan);
+        public bool UpdateDanhGia(Guid idCTHD,int soSao,string? binhLuan);
     }
 }

@@ -52,7 +52,7 @@ namespace AppAPI.Controllers
             return Ok(result);
         }
         [HttpPut]
-        public bool UpdateDanhGia(Guid idCTHD, int soSao, string binhLuan)
+        public bool UpdateDanhGia(Guid idCTHD, int soSao, string? binhLuan)
         {
             return _danhGiaService.UpdateDanhGia(idCTHD,soSao,binhLuan);
         }

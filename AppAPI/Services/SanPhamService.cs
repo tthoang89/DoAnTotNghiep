@@ -214,9 +214,6 @@ namespace AppAPI.Services
                                join ctsp in _context.ChiTietSanPhams on sp.ID equals ctsp.IDSanPham
                                join cthd in _context.ChiTietHoaDons on ctsp.ID equals cthd.IDCTSP
                                join dg in _context.DanhGias.Where(p=>p.TrangThai == 1) on cthd.ID equals dg.ID
-                               join hd in _context.HoaDons on cthd.IDHoaDon equals hd.ID
-                               join lstd in _context.LichSuTichDiems on hd.ID equals lstd.IDHoaDon
-                               join kh in _context.KhachHangs on lstd.IDKhachHang equals kh.IDKhachHang
                                select new DanhGiaViewModel()
                                {
                                    Sao = dg.Sao,
