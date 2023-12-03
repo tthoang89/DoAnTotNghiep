@@ -235,7 +235,7 @@ namespace AppAPI.Services
                                    DuongDanSPTT = _context.Anhs.FirstOrDefault(x => x.IDMauSac == ms.ID && x.IDSanPham == sp.ID).DuongDan,
                                }).ToListAsync();
             chiTietSanPham.SoSao = chiTietSanPham.SoSao / query.Count();
-            chiTietSanPham.sosaoPercent = Convert.ToInt32((chiTietSanPham.SoSao / 5) * 100);
+            chiTietSanPham.sosaoPercent = float.IsNaN(chiTietSanPham.SoSao) ? 0 : Convert.ToInt32((chiTietSanPham.SoSao / 5) * 100);
             chiTietSanPham.SoDanhGia = query.Count();
             chiTietSanPham.LSTSPTuongTu = sptt;
             return chiTietSanPham;

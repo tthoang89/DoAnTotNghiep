@@ -16,6 +16,10 @@
     var trangthaiGiaoHang = 0;
     var ngaythanhToan = DateTime.Now;
     int trangthaiDanhGia = 0;
+    string tennguoinhan = "";
+    string SDT = "";
+    string email = "";
+    string diachi = "";
     List<LichSuTichDiem> lichSuTichDiems = new List<LichSuTichDiem>();
 }
 <style>
@@ -141,6 +145,10 @@
                                 ngaythanhToan = Convert.ToDateTime(item.NgayThanhToan);
                                 trangthaiDanhGia += item.TrangThaiDanhGia;
                                 lichSuTichDiems = item.lichSuTichDiems;
+                                tennguoinhan = item.TenNguoiNhan;
+                                SDT = item.SDT;
+                                email = item.Email;
+                                diachi = item.DiaChi;
                             }
                         </tr>
                     }
@@ -251,6 +259,23 @@
                 </tfoot>
             </table>
         </div>
+        
+        <div class="row">
+            <div class="col-6">
+                <div style="background-color: #d9edf7; border: 1px solid #bce8f1; padding: 10px;">
+                    <h4>Địa Chỉ Nhận Hàng</h4>
+                </div>
+                <div style="background-color: white; padding: 10px;">
+                    <div style="font-weight: bold;padding: 5px;">@tennguoinhan</div>
+                    <div style="padding: 5px;">@diachi</div>
+                    <div style="padding: 5px;">@SDT</div>
+                    <div style="padding: 5px;">@email</div>
+                </div>
+            </div>
+            @*<div class="col-6">
+
+            </div>*@
+        </div>
         @if (trangthaiGiaoHang == 2)
         {
         <div style="text-align:-webkit-right ;">
@@ -290,6 +315,7 @@
                 </div>
             </div>
         }
+
     </div>
     
 </section>
