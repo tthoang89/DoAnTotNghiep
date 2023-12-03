@@ -75,13 +75,17 @@ namespace AppAPI.Services
         {
             try
             {
-                var lstDonMua = await(from b in context.HoaDons.Where(p=>p.LoaiHD == 0) 
+                var lstDonMua = await(from b in context.HoaDons
                                       
                                       select new DonMuaViewModel()
                                        {
                                            IDHoaDon = b.ID,
                                            NgayTao = b.NgayTao,
                                            NgayThanhToan = b.NgayThanhToan,
+                                           NgayNhanHang = b.NgayNhanHang,
+                                           Ngaytao1 = null,
+                                           Ngaynhanhang1 = null,
+                                           Ngaythanhtoan1 = null,
                                            TenNguoiNhan = b.TenNguoiNhan,
                                            SDT = b.SDT,
                                            Email = b.Email,
@@ -90,7 +94,8 @@ namespace AppAPI.Services
                                            TrangThaiGiaoHang = b.TrangThaiGiaoHang,
                                            IdNguoiDung = context.LichSuTichDiems.FirstOrDefault(p => p.IDHoaDon == b.ID) != null ? context.LichSuTichDiems.FirstOrDefault(p=>p.IDHoaDon == b.ID).IDKhachHang.Value : null,
                                            MaHD = b.MaHD,
-                                           TongTien = b.TongTien
+                                           TongTien = b.TongTien,
+                                           LoaiHoaDon = b.LoaiHD
                                        }).ToListAsync();
                 
                 lstDonMua = lstDonMua.Where(P => P.IdNguoiDung == idKhachHang).ToList();

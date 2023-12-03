@@ -57,8 +57,8 @@ namespace AppAPI.Services
                                join cthd in _context.ChiTietHoaDons on ctsp.ID equals cthd.IDCTSP
                                join dg in _context.DanhGias.Where(p => p.TrangThai == 1) on cthd.ID equals dg.ID
                                join hd in _context.HoaDons on cthd.IDHoaDon equals hd.ID
-                               join lstd in _context.LichSuTichDiems on hd.ID equals lstd.IDHoaDon
-                               join kh in _context.KhachHangs on lstd.IDKhachHang equals kh.IDKhachHang
+                               //join lstd in _context.LichSuTichDiems on hd.ID equals lstd.IDHoaDon
+                               // kh in _context.KhachHangs on lstd.IDKhachHang equals kh.IDKhachHang
                                join cl in _context.ChatLieus on sp.IDChatLieu equals cl.ID
                                join ms in _context.MauSacs on ctsp.IDMauSac equals ms.ID
                                join kc in _context.KichCos on ctsp.IDKichCo equals kc.ID
@@ -68,7 +68,7 @@ namespace AppAPI.Services
                                    Sao = dg.Sao,
                                    BinhLuan = dg.BinhLuan,
                                    TrangThai = dg.TrangThai,
-                                   TenKH = kh.Ten,
+                                   TenKH = _context.KhachHangs.FirstOrDefault(p=>p.IDKhachHang == _context.LichSuTichDiems.FirstOrDefault(p=>p.IDHoaDon == hd.ID).IDKhachHang).Ten,
                                    ChatLieu = cl.Ten,
                                    MauSac = ms.Ten,
                                    KichCo = kc.Ten,
@@ -149,7 +149,7 @@ namespace AppAPI.Services
             throw new NotImplementedException();
         }
 
-        public bool UpdateDanhGia(Guid idCTHD, int soSao, string binhLuan)
+        public bool UpdateDanhGia(Guid idCTHD, int soSao, string? binhLuan)
         {
             try
             {

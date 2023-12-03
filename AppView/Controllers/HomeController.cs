@@ -5,15 +5,18 @@ using AppData.ViewModels.Mail;
 using AppData.ViewModels.QLND;
 using AppData.ViewModels.SanPham;
 using AppData.ViewModels.VNPay;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Net;
 using System.Text;
 using System.Web.Helpers;
+using TechTalk.SpecFlow.Infrastructure;
 using X.PagedList;
 
 
@@ -271,11 +274,11 @@ namespace AppView.Controllers
                     }
                     else if (filter.sortSP == "6")
                     {
-                        lstSanphamfn = lstSanphamfn.OrderBy(p => p.NgayTao.Value.Date).ToList();
+                        lstSanphamfn = lstSanphamfn.OrderBy(p => p.NgayTao.Value.Date).ThenBy(p => p.NgayTao.Value.TimeOfDay).ToList();
                     }
                     else if (filter.sortSP == "7")
                     {
-                        lstSanphamfn = lstSanphamfn.OrderByDescending(p => p.NgayTao.Value.Date).ToList();
+                        lstSanphamfn = lstSanphamfn.OrderByDescending(p => p.NgayTao.Value.Date).ThenBy(p => p.NgayTao.Value.TimeOfDay).ToList();
                     }
                     else if (filter.sortSP == "9")
                     {
@@ -369,6 +372,7 @@ namespace AppView.Controllers
             else return Json(new { status = false });
         }
         #endregion
+        
         #region Filter
         //public IActionResult GetFilteredProducts([FromBody] FilterData filter)
         //{
@@ -959,11 +963,11 @@ namespace AppView.Controllers
             var session = HttpContext.Session.GetString("LoginInfor");
             LoginViewModel loginViewModel = JsonConvert.DeserializeObject<LoginViewModel>(session);
             List<DonMuaViewModel> donMuaViewModels = new List<DonMuaViewModel>();
-            HttpResponseMessage responseDonMua = _httpClient.GetAsync(_httpClient.BaseAddress + $"LichSuTichDiem/GetAllDonMua?IDkhachHang={loginViewModel.Id}").Result;
-            if (responseDonMua.IsSuccessStatusCode)
-            {
-                donMuaViewModels = JsonConvert.DeserializeObject<List<DonMuaViewModel>>(responseDonMua.Content.ReadAsStringAsync().Result);
-            }
+            //HttpResponseMessage responseDonMua = _httpClient.GetAsync(_httpClient.BaseAddress + $"LichSuTichDiem/GetAllDonMua?IDkhachHang={loginViewModel.Id}").Result;
+            //if (responseDonMua.IsSuccessStatusCode)
+            //{
+            //    donMuaViewModels = JsonConvert.DeserializeObject<List<DonMuaViewModel>>(responseDonMua.Content.ReadAsStringAsync().Result);
+            //}
             return View("PurchaseOrder", donMuaViewModels);
         }
         public IActionResult PurchaseOrderDetail(Guid idHoaDon)
@@ -1001,6 +1005,10 @@ namespace AppView.Controllers
         }
         public IActionResult DanhGiaSanPham([FromBody] DanhGiaCTHDViewModel danhGiaCTHDView)
         {
+            if (danhGiaCTHDView.danhgia == "")
+            {
+                danhGiaCTHDView.danhgia = "Người dùng này không để lại bình luận";
+            }
             HttpResponseMessage responseDonMuaCT = _httpClient.PutAsync(_httpClient.BaseAddress + $"DanhGia?idCTHD={danhGiaCTHDView.idCTHD}&soSao={danhGiaCTHDView.soSao}&binhLuan={danhGiaCTHDView.danhgia}", null).Result;
             if (responseDonMuaCT.IsSuccessStatusCode)
             {
@@ -1017,6 +1025,15 @@ namespace AppView.Controllers
             }
             return RedirectToAction("PurchaseOrder");
         }
+        public IActionResult HoanTacHuyDonHang(Guid idHoaDon)
+        {
+            HttpResponseMessage responseDonMua = _httpClient.PutAsync(_httpClient.BaseAddress + $"HoaDon?idhoadon={idHoaDon}&trangthai=2", null).Result;
+            if (responseDonMua.IsSuccessStatusCode)
+            {
+                RedirectToAction("PurchaseOrder");
+            }
+            return RedirectToAction("PurchaseOrder");
+        }
         public IActionResult DoiTraHang(Guid idHoaDon)
         {
             HttpResponseMessage responseDonMua = _httpClient.PutAsync(_httpClient.BaseAddress + $"HoaDon?idhoadon={idHoaDon}&trangthai=9", null).Result;
@@ -1026,7 +1043,25 @@ namespace AppView.Controllers
             }
             return RedirectToAction("PurchaseOrder");
         }
-        public IActionResult GetHoaDonByTrangThai(HoaDon danhGiaCTHDView, int page, int pageSize)
+        public IActionResult HoanTacDoiTraHang(Guid idHoaDon)
+        {
+            HttpResponseMessage responseDonMua = _httpClient.PutAsync(_httpClient.BaseAddress + $"HoaDon?idhoadon={idHoaDon}&trangthai=6", null).Result;
+            if (responseDonMua.IsSuccessStatusCode)
+            {
+                RedirectToAction("PurchaseOrder");
+            }
+            return RedirectToAction("PurchaseOrder");
+        }
+        public IActionResult XacNhanGHTC(Guid idHoaDon)
+        {
+            HttpResponseMessage responseDonMua = _httpClient.PutAsync(_httpClient.BaseAddress + $"HoaDon?idhoadon={idHoaDon}&trangthai=6", null).Result;
+            if (responseDonMua.IsSuccessStatusCode)
+            {
+                RedirectToAction("PurchaseOrderDetail",idHoaDon);
+            }
+            return RedirectToAction("PurchaseOrder");
+        }
+        public IActionResult GetHoaDonByTrangThai(HoaDon danhGiaCTHDView, int page, int pageSize, string Search)
         {
             var session = HttpContext.Session.GetString("LoginInfor");
             LoginViewModel loginViewModel = JsonConvert.DeserializeObject<LoginViewModel>(session);
@@ -1035,9 +1070,22 @@ namespace AppView.Controllers
             if (responseDonMua.IsSuccessStatusCode)
             {
                 donMuaViewModels = JsonConvert.DeserializeObject<List<DonMuaViewModel>>(responseDonMua.Content.ReadAsStringAsync().Result);
+                donMuaViewModels = donMuaViewModels.OrderByDescending(p => p.NgayTao.Date).ThenBy(p => p.NgayTao.TimeOfDay).ToList();
+
+                foreach (var item in donMuaViewModels)
+                {
+                    item.Ngaytao1 = item.NgayTao.ToString("dd/MM/yyyy");
+                    item.Ngaythanhtoan1 = item.NgayThanhToan != null ? item.NgayThanhToan.Value.ToString("dd/MM/yyyy"): null;
+                    item.Ngaynhanhang1 = item.NgayNhanHang != null? item.NgayNhanHang.Value.ToString("dd/MM/yyyy"):null;
+                }
+                if (Search != null)
+                {
+                    donMuaViewModels = donMuaViewModels.Where(p => p.MaHD.ToLower().Contains(Search.ToLower())).ToList();
+                }
                 if (danhGiaCTHDView.TrangThaiGiaoHang != 0 && danhGiaCTHDView.TrangThaiGiaoHang != null)
                 {
                     donMuaViewModels = donMuaViewModels.Where(p => p.TrangThaiGiaoHang == danhGiaCTHDView.TrangThaiGiaoHang).ToList();
+
                     var model = donMuaViewModels.Skip((page - 1) * pageSize).Take(pageSize).ToList();
                     return Json(new
                     {

@@ -749,7 +749,8 @@ namespace AppAPI.Services
                 }
                 if (trangThai == 6)
                 {
-                    update.NgayThanhToan = DateTime.Now;
+                    update.NgayThanhToan = update.NgayThanhToan == null ? DateTime.Now : update.NgayThanhToan;
+                    update.NgayNhanHang = update.NgayNhanHang == null ? DateTime.Now : update.NgayNhanHang;
                 }
                 update.TrangThaiGiaoHang = trangThai;
                 update.IDNhanVien = idNhanVien;

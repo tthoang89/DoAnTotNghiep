@@ -16,6 +16,10 @@
     var trangthaiGiaoHang = 0;
     var ngaythanhToan = DateTime.Now;
     int trangthaiDanhGia = 0;
+    string tennguoinhan = "";
+    string SDT = "";
+    string email = "";
+    string diachi = "";
     List<LichSuTichDiem> lichSuTichDiems = new List<LichSuTichDiem>();
 }
 <style>
@@ -133,7 +137,7 @@
                                 giaTri = item.GiaTri;
                                 diemSudung = item.lichSuTichDiems.FirstOrDefault(p => p.TrangThai == 0) != null ? item.lichSuTichDiems.FirstOrDefault(p => p.TrangThai == 0).Diem:0;
                                 diemTich = item.lichSuTichDiems.FirstOrDefault(p => p.TrangThai == 1) != null ? item.lichSuTichDiems.FirstOrDefault(p => p.TrangThai == 1).Diem:0;
-                                trangThaiLichSuTichDiem = item.TrangThaiLichSuTichDiem;
+                                trangThaiLichSuTichDiem = item.lichSuTichDiems.FirstOrDefault(p => p.TrangThai == 0) != null ? 0 : 1;
                                 hinhThucGiamGia =item.HinhThucGiamGia;
                                 tileTieuDiem = item.TiLeTieuDiem;
                                 tileTichDiem = item.TiLeTichDiem;
@@ -141,6 +145,10 @@
                                 ngaythanhToan = Convert.ToDateTime(item.NgayThanhToan);
                                 trangthaiDanhGia += item.TrangThaiDanhGia;
                                 lichSuTichDiems = item.lichSuTichDiems;
+                                tennguoinhan = item.TenNguoiNhan;
+                                SDT = item.SDT;
+                                email = item.Email;
+                                diachi = item.DiaChi;
                             }
                         </tr>
                     }
@@ -149,17 +157,17 @@
                     <table style="background-color:white;">
                         <tbody>
                             @{
-                                if (hinhThucGiamGia == 0)
+                                if (hinhThucGiamGia == 1)
                                 {
                                     if (trangThaiLichSuTichDiem == 0)
                                     {
-                                        tongtien = giaSP * (100 - Convert.ToInt32(giaTri) / 100) + tienShip - diemSudung * tileTieuDiem;
+                                        tongtien = Convert.ToInt32(giaSP - giaSP * (Convert.ToDouble(giaTri) / 100)) + tienShip - diemSudung * tileTieuDiem;
                                     }else
                                     {
-                                        tongtien = giaSP * (100 - Convert.ToInt32(giaTri) / 100) + tienShip;
+                                        tongtien = Convert.ToInt32(giaSP - giaSP * (Convert.ToDouble(giaTri) / 100)) + tienShip;
                                     }
 
-                                }else if (hinhThucGiamGia == 1)
+                                }else if (hinhThucGiamGia == 0)
                                 {
                                     if (trangThaiLichSuTichDiem == 0)
                                     {
@@ -196,7 +204,7 @@
                                 </td>
                                 <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: 130px;padding-right: 70px; text-align: right;">+ @tienShip.ToString("n0") VNĐ</td>
                             </tr>
-                            @if (hinhThucGiamGia == 0)
+                            @if (hinhThucGiamGia == 1)
                             {
                                 <tr>
                                     <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;">
@@ -205,7 +213,7 @@
                                     <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: 130px;padding-right: 70px; text-align: right;">- @giaTri%</td>
                                 </tr>
                             }
-                            else if (hinhThucGiamGia == 1)
+                            else if (hinhThucGiamGia == 0)
                             {
                                 <tr>
                                     <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;">
@@ -217,16 +225,7 @@
                             @{
                                 foreach (var item in lichSuTichDiems)
                                 {
-                                    if (item.TrangThai == 1)
-                                    {
-                                        <tr>
-                                            <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;">
-                                                Điểm được tích
-                                            </td>
-                                            <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: 130px;padding-right: 70px; text-align: right;">@diemtich.ToString("n0") Điểm</td>
-                                        </tr>
-                                    }
-                                    else if (item.TrangThai == 0)
+                                    if (item.TrangThai == 0)
                                     {
                                         <tr>
                                             <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;">
@@ -237,18 +236,45 @@
                                     }
                                 }
                             }
-                            
-                            
                             <tr>
                                 <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;">
                                     Tổng tiền
                                 </td>
                                 <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: 130px;padding-right: 70px; text-align: right;">@tongtien.ToString("n0") VNĐ</td>
                             </tr>
+                            @foreach (var item in lichSuTichDiems)
+                            {
+                                if (item.TrangThai == 1)
+                                {
+                                    <tr>
+                                        <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;">
+                                            Điểm được tích
+                                        </td>
+                                        <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: 130px;padding-right: 70px; text-align: right;">@diemtich.ToString("n0") Điểm</td>
+                                    </tr>
+                                }
+                            }
                         </tbody>
                     </table>
                 </tfoot>
             </table>
+        </div>
+        
+        <div class="row">
+            <div class="col-6">
+                <div style="background-color: #d9edf7; border: 1px solid #bce8f1; padding: 10px;">
+                    <h4>Địa Chỉ Nhận Hàng</h4>
+                </div>
+                <div style="background-color: white; padding: 10px;">
+                    <div style="font-weight: bold;padding: 5px;">@tennguoinhan</div>
+                    <div style="padding: 5px;">@diachi</div>
+                    <div style="padding: 5px;">@SDT</div>
+                    <div style="padding: 5px;">@email</div>
+                </div>
+            </div>
+            @*<div class="col-6">
+
+            </div>*@
         </div>
         @if (trangthaiGiaoHang == 2)
         {
@@ -262,10 +288,34 @@
         {
             <div style="text-align:-webkit-right ;">
                 <div style="border: none; border-radius: 10px; color: white; background-color: black; text-align:center;width: 150px; height: 50px; display: grid; align-items: center;">
-                    <a style="color:white;" asp-controller="Home" asp-action="DoiTraHang" asp-route-idHoaDon="@Model.First().ID">Đổi trả hàng/Hoàn hàng</a>
+                    <a style="color:white;" asp-controller="Home" asp-action="DoiTraHang" asp-route-idHoaDon="@Model.First().ID">Đổi trả hàng/Hoàn tiền</a>
+                </div>
+            </div>
+        }else if (trangthaiGiaoHang == 8)
+        {
+            <div style="text-align:-webkit-right ;">
+                <div style="border: none; border-radius: 10px; color: white; background-color: black; text-align:center;width: 150px; height: 50px; display: grid; align-items: center;">
+                    <a style="color:white;" asp-controller="Home" asp-action="HoanTacHuyDonHang" asp-route-idHoaDon="@Model.First().ID">Hoàn tác hủy đơn hàng</a>
                 </div>
             </div>
         }
+        else if (trangthaiGiaoHang == 9)
+        {
+            <div style="text-align:-webkit-right ;">
+                <div style="border: none; border-radius: 10px; color: white; background-color: black; text-align:center;width: 150px; height: 50px; display: grid; align-items: center;">
+                    <a style="color:white;" asp-controller="Home" asp-action="HoanTacDoiTraHang" asp-route-idHoaDon="@Model.First().ID">Hoàn tác trả hàng</a>
+                </div>
+            </div>
+        }
+        else if (trangthaiGiaoHang == 3)
+        {
+            <div style="text-align:-webkit-right ;">
+                <div style="border: none; border-radius: 10px; color: white; background-color: black; text-align:center;width: 150px; height: 50px; display: grid; align-items: center;">
+                    <a style="color:white;" asp-controller="Home" asp-action="XacNhanGHTC" asp-route-idHoaDon="@Model.First().ID">Xác nhận giao hàng thành công</a>
+                </div>
+            </div>
+        }
+
     </div>
     
 </section>

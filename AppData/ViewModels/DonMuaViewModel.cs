@@ -19,6 +19,10 @@ namespace AppData.ViewModels
         public Guid? IDHoaDon { get; set; }
         public DateTime NgayTao { get; set; }
         public DateTime? NgayThanhToan { get; set; }
+        public DateTime? NgayNhanHang { get; set; }
+        public string? Ngaytao1 { get; set; }
+        public string? Ngaythanhtoan1 { get; set; }
+        public string? Ngaynhanhang1 { get; set; }
         public string? TenNguoiNhan { get; set; }
         public string? SDT { get; set; }
         public string? Email { get; set; }
@@ -28,5 +32,6 @@ namespace AppData.ViewModels
         public int? TongTien { get; set; }
         public int TiLeTichDiem { get; set; }
         public int TiLeTieuDiem { get; set; }
+        public int LoaiHoaDon { get; set; }
     }
 }
