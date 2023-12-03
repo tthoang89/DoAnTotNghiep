@@ -442,7 +442,7 @@
     function getRatings() {
         
             // Get percentage
-            var starPercentage = (@Model.SoSao / starsTotal) * 100;
+            var starPercentage = @Model.sosaoPercent;
             // Round to nearest 10
             var starPercentageRounded = `${Math.round(starPercentage / 10) * 10}%`;
             // Set width of stars-inner to percentage

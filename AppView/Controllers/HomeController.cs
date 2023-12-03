@@ -1005,6 +1005,10 @@ namespace AppView.Controllers
         }
         public IActionResult DanhGiaSanPham([FromBody] DanhGiaCTHDViewModel danhGiaCTHDView)
         {
+            if (danhGiaCTHDView.danhgia == "")
+            {
+                danhGiaCTHDView.danhgia = "Người dùng này không để lại bình luận";
+            }
             HttpResponseMessage responseDonMuaCT = _httpClient.PutAsync(_httpClient.BaseAddress + $"DanhGia?idCTHD={danhGiaCTHDView.idCTHD}&soSao={danhGiaCTHDView.soSao}&binhLuan={danhGiaCTHDView.danhgia}", null).Result;
             if (responseDonMuaCT.IsSuccessStatusCode)
             {
