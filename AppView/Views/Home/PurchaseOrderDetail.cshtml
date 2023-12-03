@@ -133,7 +133,7 @@
                                 giaTri = item.GiaTri;
                                 diemSudung = item.lichSuTichDiems.FirstOrDefault(p => p.TrangThai == 0) != null ? item.lichSuTichDiems.FirstOrDefault(p => p.TrangThai == 0).Diem:0;
                                 diemTich = item.lichSuTichDiems.FirstOrDefault(p => p.TrangThai == 1) != null ? item.lichSuTichDiems.FirstOrDefault(p => p.TrangThai == 1).Diem:0;
-                                trangThaiLichSuTichDiem = item.TrangThaiLichSuTichDiem;
+                                trangThaiLichSuTichDiem = item.lichSuTichDiems.FirstOrDefault(p => p.TrangThai == 0) != null ? 0 : 1;
                                 hinhThucGiamGia =item.HinhThucGiamGia;
                                 tileTieuDiem = item.TiLeTieuDiem;
                                 tileTichDiem = item.TiLeTichDiem;
@@ -149,17 +149,17 @@
                     <table style="background-color:white;">
                         <tbody>
                             @{
-                                if (hinhThucGiamGia == 0)
+                                if (hinhThucGiamGia == 1)
                                 {
                                     if (trangThaiLichSuTichDiem == 0)
                                     {
-                                        tongtien = giaSP * (100 - Convert.ToInt32(giaTri) / 100) + tienShip - diemSudung * tileTieuDiem;
+                                        tongtien = Convert.ToInt32(giaSP - giaSP * (Convert.ToDouble(giaTri) / 100)) + tienShip - diemSudung * tileTieuDiem;
                                     }else
                                     {
-                                        tongtien = giaSP * (100 - Convert.ToInt32(giaTri) / 100) + tienShip;
+                                        tongtien = Convert.ToInt32(giaSP - giaSP * (Convert.ToDouble(giaTri) / 100)) + tienShip;
                                     }
 
-                                }else if (hinhThucGiamGia == 1)
+                                }else if (hinhThucGiamGia == 0)
                                 {
                                     if (trangThaiLichSuTichDiem == 0)
                                     {
@@ -196,7 +196,7 @@
                                 </td>
                                 <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: 130px;padding-right: 70px; text-align: right;">+ @tienShip.ToString("n0") VNĐ</td>
                             </tr>
-                            @if (hinhThucGiamGia == 0)
+                            @if (hinhThucGiamGia == 1)
                             {
                                 <tr>
                                     <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;">
@@ -205,7 +205,7 @@
                                     <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: 130px;padding-right: 70px; text-align: right;">- @giaTri%</td>
                                 </tr>
                             }
-                            else if (hinhThucGiamGia == 1)
+                            else if (hinhThucGiamGia == 0)
                             {
                                 <tr>
                                     <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;">
@@ -279,6 +279,14 @@
             <div style="text-align:-webkit-right ;">
                 <div style="border: none; border-radius: 10px; color: white; background-color: black; text-align:center;width: 150px; height: 50px; display: grid; align-items: center;">
                     <a style="color:white;" asp-controller="Home" asp-action="HoanTacDoiTraHang" asp-route-idHoaDon="@Model.First().ID">Hoàn tác trả hàng</a>
+                </div>
+            </div>
+        }
+        else if (trangthaiGiaoHang == 3)
+        {
+            <div style="text-align:-webkit-right ;">
+                <div style="border: none; border-radius: 10px; color: white; background-color: black; text-align:center;width: 150px; height: 50px; display: grid; align-items: center;">
+                    <a style="color:white;" asp-controller="Home" asp-action="XacNhanGHTC" asp-route-idHoaDon="@Model.First().ID">Xác nhận giao hàng thành công</a>
                 </div>
             </div>
         }

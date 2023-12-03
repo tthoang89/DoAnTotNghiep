@@ -13,6 +13,7 @@ namespace AppData.ViewModels.SanPham
         public string Ten { get; set; }
         public float SoSao { get; set; }
         public int SoDanhGia { get; set; }
+        public int sosaoPercent { get; set; }
         public List<GiaTriViewModel> MauSacs { get; set; }
         public List<AnhRequest> Anhs { get; set; }
         public List<GiaTriViewModel> KichCos { get; set; }

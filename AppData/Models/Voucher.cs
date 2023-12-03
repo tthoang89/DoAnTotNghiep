@@ -4,7 +4,7 @@
     {
         public Guid ID { get; set; }
         public string Ten { get; set; }
-        public int HinhThucGiamGia { get; set; }//0 là giảm theo %, 1 là giảm thẳng giá tiền
+        public int HinhThucGiamGia { get; set; }//1 là giảm theo %, 0 là giảm thẳng giá tiền
         public int SoTienCan { get; set; }
         public int GiaTri { get; set; }
         public DateTime NgayApDung { get; set; }

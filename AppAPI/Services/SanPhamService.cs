@@ -214,9 +214,6 @@ namespace AppAPI.Services
                                join ctsp in _context.ChiTietSanPhams on sp.ID equals ctsp.IDSanPham
                                join cthd in _context.ChiTietHoaDons on ctsp.ID equals cthd.IDCTSP
                                join dg in _context.DanhGias.Where(p=>p.TrangThai == 1) on cthd.ID equals dg.ID
-                               join hd in _context.HoaDons on cthd.IDHoaDon equals hd.ID
-                               join lstd in _context.LichSuTichDiems on hd.ID equals lstd.IDHoaDon
-                               join kh in _context.KhachHangs on lstd.IDKhachHang equals kh.IDKhachHang
                                select new DanhGiaViewModel()
                                {
                                    Sao = dg.Sao,
@@ -226,18 +223,19 @@ namespace AppAPI.Services
             {
                 chiTietSanPham.SoSao += Convert.ToInt32(item.Sao);
             }
-            var sptt = await (from sp in _context.SanPhams.Where(p => p.IDLoaiSP == sanPham.IDLoaiSP)
+            var sptt = await (from sp in _context.SanPhams.Where(p => p.IDLoaiSP == sanPham.IDLoaiSP && p.ID != idSanPham)
                                join ctsp in _context.ChiTietSanPhams.Where(p=>p.TrangThai == 1) on sp.ID equals ctsp.IDSanPham
                                join ms in _context.MauSacs on ctsp.IDMauSac equals ms.ID
-                               join anh in _context.Anhs on sp.ID equals anh.IDSanPham
+                               
                                select new SanPhamTuongTuViewModel()
                                {
                                    IDSP = sp.ID,
                                    TenSP = sp.Ten,
                                    GiaSPTT = ctsp.GiaBan,
-                                   DuongDanSPTT = anh.DuongDan
+                                   DuongDanSPTT = _context.Anhs.FirstOrDefault(x => x.IDMauSac == ms.ID && x.IDSanPham == sp.ID).DuongDan,
                                }).ToListAsync();
             chiTietSanPham.SoSao = chiTietSanPham.SoSao / query.Count();
+            chiTietSanPham.sosaoPercent = Convert.ToInt32((chiTietSanPham.SoSao / 5) * 100);
             chiTietSanPham.SoDanhGia = query.Count();
             chiTietSanPham.LSTSPTuongTu = sptt;
             return chiTietSanPham;
