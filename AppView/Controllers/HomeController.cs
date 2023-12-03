@@ -12,9 +12,11 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Net;
 using System.Text;
 using System.Web.Helpers;
+using TechTalk.SpecFlow.Infrastructure;
 using X.PagedList;
 
 
@@ -961,11 +963,11 @@ namespace AppView.Controllers
             var session = HttpContext.Session.GetString("LoginInfor");
             LoginViewModel loginViewModel = JsonConvert.DeserializeObject<LoginViewModel>(session);
             List<DonMuaViewModel> donMuaViewModels = new List<DonMuaViewModel>();
-            HttpResponseMessage responseDonMua = _httpClient.GetAsync(_httpClient.BaseAddress + $"LichSuTichDiem/GetAllDonMua?IDkhachHang={loginViewModel.Id}").Result;
-            if (responseDonMua.IsSuccessStatusCode)
-            {
-                donMuaViewModels = JsonConvert.DeserializeObject<List<DonMuaViewModel>>(responseDonMua.Content.ReadAsStringAsync().Result);
-            }
+            //HttpResponseMessage responseDonMua = _httpClient.GetAsync(_httpClient.BaseAddress + $"LichSuTichDiem/GetAllDonMua?IDkhachHang={loginViewModel.Id}").Result;
+            //if (responseDonMua.IsSuccessStatusCode)
+            //{
+            //    donMuaViewModels = JsonConvert.DeserializeObject<List<DonMuaViewModel>>(responseDonMua.Content.ReadAsStringAsync().Result);
+            //}
             return View("PurchaseOrder", donMuaViewModels);
         }
         public IActionResult PurchaseOrderDetail(Guid idHoaDon)
@@ -1055,7 +1057,7 @@ namespace AppView.Controllers
             }
             return RedirectToAction("PurchaseOrder");
         }
-        public IActionResult GetHoaDonByTrangThai(HoaDon danhGiaCTHDView, int page, int pageSize)
+        public IActionResult GetHoaDonByTrangThai(HoaDon danhGiaCTHDView, int page, int pageSize, string Search)
         {
             var session = HttpContext.Session.GetString("LoginInfor");
             LoginViewModel loginViewModel = JsonConvert.DeserializeObject<LoginViewModel>(session);
@@ -1064,9 +1066,22 @@ namespace AppView.Controllers
             if (responseDonMua.IsSuccessStatusCode)
             {
                 donMuaViewModels = JsonConvert.DeserializeObject<List<DonMuaViewModel>>(responseDonMua.Content.ReadAsStringAsync().Result);
+                donMuaViewModels = donMuaViewModels.OrderByDescending(p => p.NgayTao.Date).ThenBy(p => p.NgayTao.TimeOfDay).ToList();
+
+                foreach (var item in donMuaViewModels)
+                {
+                    item.Ngaytao1 = item.NgayTao.ToString("dd/MM/yyyy");
+                    item.Ngaythanhtoan1 = item.NgayThanhToan != null ? item.NgayThanhToan.Value.ToString("dd/MM/yyyy"): null;
+                    item.Ngaynhanhang1 = item.NgayNhanHang != null? item.NgayNhanHang.Value.ToString("dd/MM/yyyy"):null;
+                }
+                if (Search != null)
+                {
+                    donMuaViewModels = donMuaViewModels.Where(p => p.MaHD.ToLower().Contains(Search.ToLower())).ToList();
+                }
                 if (danhGiaCTHDView.TrangThaiGiaoHang != 0 && danhGiaCTHDView.TrangThaiGiaoHang != null)
                 {
                     donMuaViewModels = donMuaViewModels.Where(p => p.TrangThaiGiaoHang == danhGiaCTHDView.TrangThaiGiaoHang).ToList();
+
                     var model = donMuaViewModels.Skip((page - 1) * pageSize).Take(pageSize).ToList();
                     return Json(new
                     {
