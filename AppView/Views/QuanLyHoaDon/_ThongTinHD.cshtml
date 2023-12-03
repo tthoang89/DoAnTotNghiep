@@ -218,24 +218,39 @@
         </div>
         <hr />
         <div class="d-flex flex-row justify-content-end">
+            @if (@Model.TrangThai == 3)
+            {
+                <div class="d-flex p-2">
+                    <button type="button" onclick="DoiTrangThai('6')"  class="btn btn-primary fw-normal text-white"><i class="fa-solid fa-check fa-xs me-2" style="color: #ffffff;"></i>Giao hàng thành công</button>
+                </div>
+            }
+            @if (@Model.TrangThai == 9)
+            {
+                <div class="d-flex p-2">
+                    <button type="button" onclick="DoiTrangThai('4')"  class="btn btn-danger fw-normal text-white"><i class="fa-solid fa-check fa-xs me-2" style="color: #ffffff;"></i> Xác nhận trả hàng</button>
+                </div>
+            }
             @if (@Model.TrangThai == 2)
             {
                 <div class="d-flex p-2">
-                    <button type="button" id="confirmHDMua" class="btn btn-success fw-normal text-white"><i class="fa-solid fa-check fa-xs me-2" style="color: #ffffff;"></i> Xác nhận hóa đơn</button>
+                    <button type="button" onclick="DoiTrangThai('3')" class="btn btn-success fw-normal text-white"><i class="fa-solid fa-check fa-xs me-2" style="color: #ffffff;"></i> Xác nhận hóa đơn</button>
                 </div>
             }
             <div class="d-flex p-2">
                 <button type="button" id="save" class="btn btn-success fw-normal text-white"><i class="fa-solid fa-floppy-disk fa-xs me-2" style="color: #ffffff;"></i> Lưu ghi chú</button>
             </div>
+
             <div class="d-flex p-2">
                 <button id="exportPDF" class="btn btn-secondary fw-normal text-white"><i class="fa-solid fa-file-export fa-xs me-2" style="color: #ffffff;"></i> Xuất PDF</button>
             </div>
+
             @if (@Model.TrangThai != 7)
             {
                 <div class="d-flex p-2">
                     <button type="button" class="btn btn-danger fw-normal text-white" onclick="huyDon('@Model.Id')"><i class="fa-solid fa-trash fa-xs me-2" style="color: #ffffff;"></i>Hủy bỏ</button>
                 </div>
             }
+
             <div class="d-flex p-2">
                 <button type="button" class="btn btn-secondary fw-normal text-white" data-bs-dismiss="modal"><i class="fa-solid fa-x fa-xs me-2" style="color: #ffffff;"></i> Đóng</button>
             </div>
@@ -345,12 +360,13 @@
         })
 
         function huyDon(IDHD){
-            var ans = confirm("Bạn có chắc chắn hủy Hóa đơn này?");
-            if(ans){
+            if(gc ==='' || gc == '@Model.GhiChu'){
+                toastr.error('Chưa nhập ghi chú hóa đơn', "Error Alert", { timeOut: 300 });
+            }else{
+                var ans = confirm("Bạn có chắc chắn hủy Hóa đơn này?");
+                if(ans){
                 var gc = $("#ghiChuinTTHD").val();
-                if(gc ==='' || gc == '@Model.GhiChu'){
-                    toastr.error('Chưa nhập ghi chú hóa đơn', "Error Alert", { timeOut: 300 });
-                }else{
+                
                     $.ajax({
                         url: "/QuanLyHoaDon/HuyHD",
                         type: "GET",
@@ -369,40 +385,46 @@
                             toastr.error('Thay đổi trạng thái thất bại', "Error Alert", { timeOut: 300 });
                         }
                     });
+                
                 }
             }
         }
     $("#exportPDF").click(function(){
         var id = "@Model.Id"
         $.ajax({
-        url: "/QuanLyHoaDon/ExportPDF/" + id,
-        type: "GET",
-        success: function(response) {
-        var fileUrl = response.fileUrl;
-        window.open(fileUrl,'_blank');
-        },
-        error: function(err) {
-        toastr.error('Lỗi xuất hóa đơn', "Error Alert", { timeOut: 300 });
-        }
-        });
-        });
-
-         $("#confirmHDMua").click(function(){
-            var ans = confirm("Xác nhận hóa đơn này?");
-            var id = "@Model.Id";
-            if(ans){
-                 $.ajax({
-                    url: "/QuanLyHoaDon/XacNhanDonDat/" + id,
-                    type: "GET",
-                    success: function(response) {
-                       toastr.success(response.message, "Success Alert", { timeOut: 300 });
-                        billDetail(id);
-                        loadBill();
-                    },
-                    error: function(err) {
-                       toastr.error('Thay đổi trạng thái thất bại', "Error Alert", { timeOut: 300 });
-                    }
-                });
+            url: "/QuanLyHoaDon/ExportPDF/" + id,
+            type: "GET",
+            success: function(response) {
+            var fileUrl = response.fileUrl;
+            window.open(fileUrl,'_blank');
+            },
+            error: function(err) {
+            toastr.error('Lỗi xuất hóa đơn', "Error Alert", { timeOut: 300 });
             }
-        })
+        });
+    });
+
+    function DoiTrangThai(tragthai){
+        var ans = confirm("Cập nhật trạng thái hóa đơn này?");
+        var id = "@Model.Id";
+        if(ans){
+                $.ajax({
+                url: "/QuanLyHoaDon/DoiTrangThai",
+                type: "POST",
+                data:{
+                    trangthai:tragthai,
+                    idhd: id,
+                },
+                success: function(response) {
+                    toastr.success(response.message, "Success Alert", { timeOut: 300 });
+                    billDetail(id);
+                    loadBill();
+                },
+                error: function(err) {
+                    toastr.error('Thay đổi trạng thái thất bại', "Error Alert", { timeOut: 300 });
+                }
+            });
+        }
+    }
+
 </script>

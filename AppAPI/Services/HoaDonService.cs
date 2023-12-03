@@ -628,9 +628,9 @@ namespace AppAPI.Services
         {
             var update = reposHoaDon.GetAll().FirstOrDefault(p => p.ID == hoaDon.Id);
 
-            //Lưu tiền vào HDCT
+            //Lưu tiền vào hóa đơn chi tiết
             var lsthdct = context.ChiTietHoaDons.Where(c => c.IDHoaDon == hoaDon.Id).ToList();
-            //Xóa lsthdct có số lượng = 0
+            //Xóa hóa đơn chi tiết có số lượng = 0
             var delete = lsthdct.Where(c => c.SoLuong == 0).ToList();
             context.ChiTietHoaDons.RemoveRange(delete);
             context.SaveChanges();
@@ -658,21 +658,38 @@ namespace AppAPI.Services
             var lstd = reposLichSuTichDiem.GetAll().FirstOrDefault(c => c.IDHoaDon == hoaDon.Id);
             if (lstd != null)
             {
-                lstd.Diem = hoaDon.DiemTichHD;
-                reposLichSuTichDiem.Update(lstd);
-                // Tạo ls tiêu điểm
-                if (hoaDon.DiemSD > 0)
+                //Lấy id quy đổi điểm
+                var qqdiem = reposQuyDoiDiem.GetAll().FirstOrDefault(c => c.ID == lstd.IDQuyDoiDiem);
+                if(qqdiem.TrangThai == 1) // Tích hoặc tiêu 
                 {
-                    LichSuTichDiem lstieudiem = new LichSuTichDiem()
+                    if(hoaDon.DiemTichHD > hoaDon.DiemSD && hoaDon.DiemTichHD > 0) //luôn có 1 trong 2 cái có gtri =0
                     {
-                        ID = new Guid(),
-                        IDHoaDon = lstd.IDHoaDon,
-                        IDKhachHang = lstd.IDKhachHang,
-                        Diem = hoaDon.DiemSD,
-                        TrangThai = 0,
-                        IDQuyDoiDiem = lstd.IDQuyDoiDiem,
-                    };
-                    reposLichSuTichDiem.Add(lstieudiem);
+                        lstd.Diem = hoaDon.DiemTichHD;
+                    }
+                    else
+                    {
+                        lstd.TrangThai = 0;
+                        lstd.Diem = hoaDon.DiemSD;
+                        reposLichSuTichDiem.Update(lstd);
+                    }
+                }
+                else if(qqdiem.TrangThai == 2) // Cả tích và cả tiêu
+                {
+                    lstd.Diem = hoaDon.DiemTichHD;
+                    reposLichSuTichDiem.Update(lstd);
+                    if (hoaDon.DiemSD > 0)
+                    {
+                        LichSuTichDiem lstieudiem = new LichSuTichDiem()
+                        {
+                            ID = new Guid(),
+                            IDHoaDon = lstd.IDHoaDon,
+                            IDKhachHang = lstd.IDKhachHang,
+                            Diem = hoaDon.DiemSD,
+                            TrangThai = 0,
+                            IDQuyDoiDiem = lstd.IDQuyDoiDiem,
+                        };
+                        reposLichSuTichDiem.Add(lstieudiem);
+                    }
                 }
                 // Thêm điểm cho Khách hàng và trừ
                 var kh = reposKhachHang.GetAll().FirstOrDefault(c => c.IDKhachHang == lstd.IDKhachHang);
@@ -694,7 +711,6 @@ namespace AppAPI.Services
             update.NgayThanhToan = hoaDon.NgayThanhToan;
             update.TrangThaiGiaoHang = hoaDon.TrangThai;
             update.TongTien = hoaDon.TongTien;
-            //update.ThueVAT = hoaDon.ThueVAT;
             update.PhuongThucThanhToan = hoaDon.PTTT;
             update.IDVoucher = hoaDon.IdVoucher == Guid.Empty ? null : hoaDon.IdVoucher;
             return reposHoaDon.Update(update);

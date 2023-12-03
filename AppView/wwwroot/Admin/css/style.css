@@ -2161,3 +2161,34 @@ tbody td {
             transform: translate(-50%,-50%);
             color: #fff;
         }
+#voucherinput {
+    display: none;
+}
+
+#tienkhuyenmai {
+    display: none;
+}
+
+#sdtd {
+    display: block;
+}
+
+#diemKHSD {
+    width: 130px;
+    text-align: right;
+    border: none;
+    border-bottom: 2px solid #2c384e;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+    #diemKHSD::-webkit-outer-spin-button,
+    #diemKHSD::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+    }
+
+    #diemKHSD:focus {
+        border: none;
+        border-bottom: 3px solid #4154f1;
+        outline: none;
+    }

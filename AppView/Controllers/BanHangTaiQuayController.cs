@@ -23,6 +23,12 @@ namespace AppView.Controllers
         public async Task<IActionResult> BanHang()
         {
             var listhdcho = await _httpClient.GetFromJsonAsync<List<HoaDon>>("HoaDon/GetAllHDCho");
+            var deletehdcho = listhdcho.Where(c => !c.NgayTao.Date.Equals(DateTime.Today.Date)).ToList();
+            foreach (var item in deletehdcho)
+            {
+                var response = await _httpClient.DeleteAsync($"HoaDon/deleteHoaDon/{item.ID}");
+            }
+            listhdcho = await _httpClient.GetFromJsonAsync<List<HoaDon>>("HoaDon/GetAllHDCho");
             ViewData["lsthdcho"] = listhdcho;
             return View();
         }
@@ -59,9 +65,9 @@ namespace AppView.Controllers
         {
             var listSP = await _httpClient.GetFromJsonAsync<List<SanPhamBanHang>>("SanPham/getAllSPBanHang");
             //Lọc danh mục 
-            if(filter.lstDM != null)
+            if (filter.lstDM != null)
             {
-                listSP = listSP.Where(c=> filter.lstDM.Contains(c.IdLsp)).ToList(); 
+                listSP = listSP.Where(c => filter.lstDM.Contains(c.IdLsp)).ToList();
             }
             //Phân trang
             var model = listSP.Skip((filter.page - 1) * filter.pageSize).Take(filter.pageSize).ToList();
@@ -82,7 +88,7 @@ namespace AppView.Controllers
                 .Where(c => c.Ten.ToLower().Contains(keyword.ToLower()))
                 .Distinct()
                 .ToList();
-           var result = new List<SanPhamBanHang>();
+            var result = new List<SanPhamBanHang>();
             if (distinctResult.Count < 3)
             {
                 var additionalItems = distinctResult.Take(result.Count).ToList();
@@ -102,19 +108,19 @@ namespace AppView.Controllers
         {
             var lstctsP = await _httpClient.GetFromJsonAsync<List<ChiTietCTSPBanHang>>($"SanPham/getChiTietCTSPBHById/{filter.IdSanPham}");
             //Lọc màu
-            if(filter.lstIdMS != null)
+            if (filter.lstIdMS != null)
             {
                 lstctsP = lstctsP.Where(c => filter.lstIdMS.Contains(c.idMauSac)).ToList();
             }
             //Lọc kích thước
-            if(filter.lstIdKC != null)
+            if (filter.lstIdKC != null)
             {
                 lstctsP = lstctsP.Where(c => filter.lstIdKC.Contains(c.idKichCo)).ToList();
             }
             return Json(new { data = lstctsP });
         }
         //Update ghi chú
-        public async Task<IActionResult>UpdateGhichu(Guid idhd, string ghichu)
+        public async Task<IActionResult> UpdateGhichu(Guid idhd, string ghichu)
         {
             var loginInfor = new LoginViewModel();
             string? session = HttpContext.Session.GetString("LoginInfor");
@@ -123,13 +129,13 @@ namespace AppView.Controllers
                 loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
             }
             var stringURL = $"https://localhost:7095/api/HoaDon/UpdateGhichu?idhd={idhd}&idnv={loginInfor.Id}&ghichu={ghichu}";
-            var response = await _httpClient.PutAsync(stringURL,null);
+            var response = await _httpClient.PutAsync(stringURL, null);
             if (response.IsSuccessStatusCode)
             {
                 return Json(new { success = true, });
             }
             else
-                return Json(new { success = false,});
+                return Json(new { success = false, });
         }
         //Lấy Hóa đơn chi tiết
         [HttpGet("/BanHangTaiQuay/getCTHD/{id}")]
@@ -195,10 +201,10 @@ namespace AppView.Controllers
         {
             var hd = await _httpClient.GetFromJsonAsync<HoaDon>($"HoaDon/GetById/{id}");
             var lstcthd = await _httpClient.GetFromJsonAsync<List<HoaDonChiTietViewModel>>($"ChiTietHoaDon/getByIdHD/{id}");
-            
+
             //Quy đổi điểm
             var qdd = await _httpClient.GetFromJsonAsync<List<QuyDoiDiem>>("QuyDoiDiem");
-            var qddActive = qdd.FirstOrDefault(c => c.TrangThai == 1);
+            var qddActive = qdd.FirstOrDefault(c => c.TrangThai != 0);
             //Kiểm tra là hóa đơn của khách có tài khoản không?
             var khachHang = "Khách lẻ";
             int? dtkh = 0;
@@ -206,6 +212,10 @@ namespace AppView.Controllers
             if (response == true)
             {
                 var lstd = await _httpClient.GetFromJsonAsync<LichSuTichDiem>($"HoaDon/LichSuGiaoDich/{id}");
+                //Sửa lịch sử tích điểm nếu có thay đổi quy đổi điểm bên quản trị
+                string url = $"LichSuTichDiem/{lstd.ID}?diem={lstd.Diem}&trangthai={lstd.TrangThai}&IdKhachHang={lstd.IDKhachHang}&IdQuyDoiDiem={qddActive.ID}&IdHoaDon={id}";
+                var lstdresponse = await _httpClient.PutAsync(url, null);
+                //Lấy tên kh
                 var kh = await _httpClient.GetFromJsonAsync<KhachHang>($"KhachHang/GetById?id={lstd.IDKhachHang}");
                 khachHang = kh.Ten;
                 dtkh = kh.DiemTich;
@@ -218,7 +228,6 @@ namespace AppView.Controllers
             }
             var soluong = lstcthd.Sum(c => c.SoLuong);
             var ttien = lstcthd.Sum(c => c.SoLuong * c.GiaKM);
-            //ViewData["lstPttt"] = listpttt;
             var hdtt = new HoaDonThanhToanViewModel()
             {
                 Id = hd.ID,
@@ -231,12 +240,11 @@ namespace AppView.Controllers
                 DiemTichHD = qddActive != null ? Convert.ToInt32(ttien / qddActive?.TiLeTichDiem) : 0,
                 NhanVien = loginInfor.Ten,
             };
-            //ViewBag.LoaiQDD = qddActive.
             ViewBag.TLTieu = qddActive != null ? (qddActive.TiLeTieuDiem) : 0;
             ViewBag.LoaiQDD = qddActive != null ? (qddActive.TrangThai) : 0;
             return PartialView("_ThanhToan", hdtt);
         }
-        
+
         //ThanhToan
         public async Task<IActionResult> ThanhToan(HoaDonThanhToanRequest request)
         {
@@ -253,7 +261,7 @@ namespace AppView.Controllers
                 DiemSD = request.DiemSD,
                 TrangThai = 6,
             };
-            var response = await _httpClient.PutAsJsonAsync("HoaDon/UpdateHoaDon/",hdrequest);
+            var response = await _httpClient.PutAsJsonAsync("HoaDon/UpdateHoaDon/", hdrequest);
             if (response.IsSuccessStatusCode) return Json(new { success = true, message = "Thanh toán thành công" });
             return Json(new { success = false, message = "Thanh toán thất bại" });
         }
@@ -295,7 +303,7 @@ namespace AppView.Controllers
             try
             {
                 var qdd = await _httpClient.GetFromJsonAsync<List<QuyDoiDiem>>("QuyDoiDiem");
-                var idqdd = qdd.FirstOrDefault(c => c.TrangThai == 1).ID;
+                var idqdd = qdd.FirstOrDefault(c => c.TrangThai != 0).ID;
                 var checkexist = await _httpClient.GetFromJsonAsync<bool>($"HoaDon/CheckLSGDHD/{idhd}");
                 if (checkexist == true) // Tồn tại-> sửa
                 {
@@ -355,24 +363,27 @@ namespace AppView.Controllers
         //Check voucher
 
         [HttpGet]
-        public  async Task<IActionResult> CheckVoucher(string voucher, int ttien)
+        public async Task<IActionResult> CheckVoucher(string voucher, int ttien)
         {
             string apiURL = $"https://localhost:7095/api/Voucher";
             var listvc = await _httpClient.GetFromJsonAsync<List<Voucher>>(apiURL);
-            var vc = listvc.FirstOrDefault(c=>c.Ten.ToUpper() == voucher.ToUpper());
-            if(vc == null)
+            var vc = listvc.FirstOrDefault(c => c.Ten.ToUpper() == voucher.ToUpper());
+            if (vc == null)
             {
                 return Json(new { success = false, message = "Voucher không hợp lệ" });
-            }else if(vc.SoTienCan > ttien)
+            }
+            else if (vc.SoTienCan > ttien)
             {
-                return Json(new { success = false, message = "Đặt đơn "+vc.SoTienCan.ToString("n0")+" để áp dụng" });
-            }else if( vc.HinhThucGiamGia == 0)
+                return Json(new { success = false, message = "Thanh toán tối thiểu " + vc.SoTienCan.ToString("n0") + " để áp dụng" });
+            }
+            else if (vc.HinhThucGiamGia == 0)
             {
-                return Json(new { success = true, idvoucher = vc.ID, giatri = vc.GiaTri, message="Bạn được giảm "+ vc.GiaTri.ToString("n0") +" VND" });
+                return Json(new { success = true, idvoucher = vc.ID, giatri = vc.GiaTri, message = "Bạn được giảm " + vc.GiaTri.ToString("n0") + " VND" });
 
-            }else if(vc.HinhThucGiamGia == 1)
+            }
+            else if (vc.HinhThucGiamGia == 1)
             {
-                return Json(new { success = true, idvoucher = vc.ID, giatri = (ttien * vc.GiaTri/100), message = "Bạn được giảm " + vc.GiaTri+"%" });
+                return Json(new { success = true, idvoucher = vc.ID, giatri = (ttien * vc.GiaTri / 100), message = "Bạn được giảm " + vc.GiaTri + "%" });
             }
             return Json(new { message = "Đã xảy ra lỗi" });
         }
