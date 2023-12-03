@@ -391,7 +391,7 @@
                     tienVoucher = (@tongtien * response.giaTri) / 100;
                 }
                 else if (response.hinhThuc == 0){
-                    tienVoucher = @tongtien - response.giaTri;
+                    tienVoucher = response.giaTri;
                 }
                 var ipVoucher = document.getElementById("moneyvoucher");
                 ipVoucher.hidden = false;
