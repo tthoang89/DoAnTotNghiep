@@ -41,13 +41,13 @@
             {
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => Model.ChiTietSanPhams[i].TenMauSac)
+                        <input type="text" asp-for="ChiTietSanPhams[i].TenMauSac" style="border:none" readonly>
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => Model.ChiTietSanPhams[i].MaMau)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => Model.ChiTietSanPhams[i].TenKichCo)
+                        <input type="text" asp-for="ChiTietSanPhams[i].TenKichCo" style="border:none" readonly>
                     </td>
                     <td>
                         <input type="number" asp-for="ChiTietSanPhams[i].SoLuong">

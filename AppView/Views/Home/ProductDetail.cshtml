@@ -336,8 +336,8 @@
         document.getElementById("maSP").innerHTML = chiTietSP.id;
     }
     function getKichCo(element) {
-        size = kichCos.find(x=>x.ten==element.value).id;
-        var chiTietSP = chiTietSanPhams.find(x => x.idKichCo == size && x.idMauSac==color);
+        size = kichCos.find(x=>x.giaTri==element.value).id;
+        var chiTietSP = chiTietSanPhams.find(x => x.kichCo == size && x.mauSac == color);
         var lstKichCoElement = document.getElementById("sizes").children;
         for (let i = 0; i < lstKichCoElement.length; i++) {
             if (lstKichCoElement[i].children[0].style.border = "2px black solid") {
@@ -382,7 +382,6 @@
                 }
             },
             error: function (response) {
-                console.log(response);
                 toastr.error(response.message, 'Error Alert', { timeOut: 300 });
             }
         });
@@ -421,7 +420,6 @@
                 }
             },
             error: function (response) {
-                console.log(response);
                 toastr.error(response.message, 'Error Alert', { timeOut: 300 });
             }
         });
@@ -454,7 +452,6 @@
     var pageIndex = 1;
     var pagesize = 5;
     var idSP = '@Model.IDSanPham';
-    console.log(idSP);
     function loadDGsp() {
         var request = { id: idSP, page: pageIndex, pageSize: pagesize };
         $.ajax({
@@ -462,7 +459,6 @@
             type: "GET",
             data: request,
             success: function (response) {
-                console.log(response);
                 $("#danhgia").empty();
                 $.each(response.data, function (i, item) {
                     if(item.sao === 1){
