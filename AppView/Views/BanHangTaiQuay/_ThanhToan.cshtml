@@ -1,41 +1,6 @@
 ﻿@using AppData.Models
 @model AppData.ViewModels.BanOffline.HoaDonThanhToanViewModel
 @{
-     var tletieu = ViewData["TLTieu"];
-    <style>
-        #voucherinput {
-            display: none;
-        }
-
-        #tienkhuyenmai {
-            display: none;
-        }
-
-        #sdtd {
-            display: block;
-        }
-
-        #diemKHSD {
-            width: 100px;
-            text-align: right;
-            border: none;
-            border-bottom: 2px solid #2c384e;
-            display: inline-block;
-            vertical-align: middle;
-        }
-
-            #diemKHSD::-webkit-outer-spin-button,
-            #diemKHSD::-webkit-inner-spin-button {
-                -webkit-appearance: none;
-            }
-
-            #diemKHSD:focus {
-                border: none;
-                border-bottom: 3px solid #4154f1;
-                outline: none;
-            }
-
-    </style>
 }
 <div class="d-flex flex-column" style="height:100%;font-size:18px">
     <span id="idvoucher" hidden></span>
@@ -45,12 +10,23 @@
             <div class="flex-fill text-end"><span id="ngay"></span>@Model.NgayThanhToan</div>
         </div>
         <hr />
-        <div class="d-flex flex-row lh-1">
-            <div class="flex-fill"><label for="inputName5" class="form-label ">Mã HD: @Model.MaHD</label></div>
-        </div>
-        <div class="d-flex flex-row lh-1">
-            <div class="flex-fill"><label for="inputName5" class="form-label">Khách hàng</label></div>
-            <div class="flex-fill text-end"> <span id="tenkh" style="color:#007bff">@Model.KhachHang</span></div>
+        <div class="d-flex flex-column lh-1">
+
+            <h4 style="color:#007bff" class="form-label fw-bold">@Model.KhachHang</h4>
+            <div class="d-flex flex-row">
+                @if (@Model.KhachHang != "Khách lẻ")
+                {
+                    <div>
+                        <label class="badge bg-success">Điểm: @Model.DiemKH</label>
+                    </div>
+                    <div class="ms-auto">
+                        <div id="tdhd" class="badge bg-primary">
+                            Điểm tích hóa đơn:
+                            <span id="tichdiemhd" class="text-white"></span>
+                        </div>
+                    </div>
+                }
+            </div>
         </div>
         <div class="d-flex flex-row lh-1">
             <div class="flex-fill"><label class="form-label">Số lượng</label></div>
@@ -64,29 +40,14 @@
         @if (@Model.KhachHang != "Khách lẻ")
         {
             <div class="d-flex flex-row lh-1">
-                <div class="flex-fill"><label for="inputEmail5" class="form-label">Điểm của khách hàng: </label></div>
-                <div class="flex-fill text-end"><span>@Model.DiemKH</span></div>
-            </div>
-            <div class="d-flex flex-row lh-1">
                 <div class="col-4">
-                    <div class="flex-fill"><label for="inputEmail5" class="form-label">Điểm sử dụng</label></div>
+                    <div class="flex-fill"><label for="inputEmail5" class="form-label">Điểm</label></div>
                 </div>
                 <div class="col-4">
-                    <div class="flex-fill  me-auto text-end"><input type="number" id="diemKHSD" /></div>
+                    <div class="flex-fill  me-auto text-end"><input type="number" placeholder="Nhập vào điểm" id="diemKHSD" /></div>
                 </div>
                 <div class="col-4">
                     <div class="flex-fill text-end"><span id="tientrutichdiem"></span></div>
-
-                </div>
-            </div>
-            @* <div class="d-flex flex-row lh-1">
-                <div class="flex-fill"><label for="inputEmail5" class="form-label">Tiền trừ tích điểm: </label></div>
-                <div class="flex-fill text-end"><span id="tientrutichdiem"></span></div>
-                </div>*@
-            <div id="tdhd">
-                <div class="d-flex flex-row lh-1">
-                    <div class="flex-fill"><label for="inputEmail5" class="form-label">Tích điểm hóa đơn: </label></div>
-                    <div class="flex-fill text-end"><span id="diemtichhd">@Model.DiemTichHD</span></div>
                 </div>
             </div>
         }
@@ -97,9 +58,9 @@
             </div>
         </div>
         <div class="d-flex flex-row lh-1">
-            <div class="flex-fill"><label for="inputEmail5" class="form-label">Khách cần trả</label></div>
+            <div class="flex-fill"><label for="inputEmail5" class="form-label fw-bold">Khách cần trả</label></div>
             <div class="flex-fill text-end">
-                <span id="khachCanTra"></span>
+                <span id="khachCanTra" style="font-size:20px;font-weight:bold"></span>
             </div>
         </div>
         <div class="d-flex flex-row lh-1">
@@ -125,14 +86,12 @@
         </div>
     </form>
     <div class="d-flex flex-column mt-auto">
-        <div class="mt-auto text-danger p-3" id="notification"></div>
         <div class="d-flex flex-row p-3">
             <div class="col-8" id="voucherinput">
                 <div class="input-group">
                     <input type="text" class="form-control border border-dark" placeholder="Nhập voucher" id="valuevoucher" />
                     <button type="button" class="btn btn-primary" id="usevoucher">Áp dụng</button>
                 </div>
-                <div class="mt-auto text-danger" id="vldvoucher"></div>
             </div>
             <div class="col-4 ms-auto">
                 <button class="btn btn-secondary w-100" id="btn-showvoucher">
@@ -145,8 +104,12 @@
 </div>
 <script>
     $(document).ready(function(){
+        $("#tichdiemhd").text(tdhd);
         TinhTien();
     })
+    var diemkh = @(Model.DiemKH);
+    var tienhang = @(Model.TongTien);
+    var tdhd = @(Model.DiemTichHD);
         //Tính tiền
        function TinhTien() {
             var tt = @Model.TongTien;
@@ -158,29 +121,37 @@
         }
         //Áp dụng tích điểm
         $('#diemKHSD').on("input",function(){
-            var diemkh = parseInt('@Model.DiemKH');
-            var tienhang = parseInt('@Model.TongTien');
-            if($(this).val() ===''){
-                $("#tientrutichdiem").text('');
-                $("#notification").text('');
-                $('#diemtichhd').text('@Model.DiemTichHD');
-                $("#tdhd").css('display', 'block');
-            }else if($(this).val() > diemkh){
-                $("#notification").text('Điểm dùng không đủ');
-            }
-            else{
-               if(tienhang !== 0){
-                   var diem = $(this).val();
-                   var tltieu = @(ViewBag.TLTieu);
-                   var tien = diem * tltieu;
-                   $("#tdhd").css('display', 'none');
-                   $('#diemtichhd').text('');
-                   $('#tientrutichdiem').text(tien.toLocaleString());
-                   $("#notification").text('');
-               }else{
-                   $("#notification").text('Chưa chọn sản phẩm mua hàng');
-                   $(this).val('');
-               }
+            if(@(ViewBag.LoaiQDD) === 1){ // Chỉ tích hoặc tiêu
+                if($(this).val() ===''){ // không nhập
+                    $('#tientrutichdiem').text('');
+                    $("#tdhd").css('display', 'block');
+                    $("#tichdiemhd").text(tdhd);
+                }else if($(this).val() > diemkh){
+                    toastr.error('Số điểm không đủ', "Error Alert", { timeOut: 1000 });
+                }else{
+                   if(tienhang !== 0){
+                       var diem = $(this).val();
+                       var tien = diem * @(ViewBag.TLTieu);
+                       $("tichdiemhd").text("");
+                       $("#tdhd").css('display', 'none');
+                       $('#tientrutichdiem').text(tien.toLocaleString());
+                   }else{
+                       toastr.error('Chưa chọn sản phẩm mua hàng', "Error Alert", { timeOut: 1000 });
+                       $(this).val('');
+                   }
+                }
+            }else if(@(ViewBag.LoaiQDD) === 2){
+                if(tienhang !== 0){
+                    if($(this).val() > diemkh){
+                        toastr.error('Số điểm không đủ', "Error Alert", { timeOut: 1000 });
+                    }else{
+                           var diem = $(this).val();
+                           var tien = diem * @(ViewBag.TLTieu);
+                           $('#tientrutichdiem').text(tien.toLocaleString());
+                    }
+                }else{
+                    toastr.error('Chưa chọn sản phẩm mua hàng', "Error Alert", { timeOut: 1000 });
+                }
             }
             TinhTien();
         })
@@ -206,7 +177,7 @@
             var tongtien = @Model.TongTien;
             var value = $("#valuevoucher").val();
             if(value ===''){
-                $("#vldvoucher").text('Chưa nhập voucher áp dụng');
+                    toastr.error("Chưa nhập voucher áp dụng", "Error Alert", { timeOut: 1000 });
             }else{
                 $.ajax({
                 url: "/BanHangTaiQuay/CheckVoucher",
@@ -218,12 +189,12 @@
                 dataType: "json",
                 success: function(response) {
                     if(response.success === true){
+                        toastr.success(response.message, "Success Alert", { timeOut: 1000 });
                         $("#idvoucher").text(response.idvoucher);
-                        $("#vldvoucher").text(response.message);
                         $("#tienkhuyenmai").css('display', 'block');
                         $("#giatrivoucher").text(response.giatri.toLocaleString());
                     }else{
-                        $("#vldvoucher").text(response.message);
+                        toastr.error(response.message, "Error Alert", { timeOut: 1000 });
                         $("#idvoucher").val('');
                         $("#tienkhuyenmai").css('display', 'none');
                         $("#giatrivoucher").text('');
@@ -232,7 +203,7 @@
                 }
                 ,
                 error: function(response){
-                    $("#vldvoucher").text(response.message);
+                    toastr.error(response.message, "Error Alert", { timeOut: 1000 });
                 },
                 });
             }

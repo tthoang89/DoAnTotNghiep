@@ -171,6 +171,9 @@
         var pageIndexsp = 1;//Trang ban đầu
         $(document).ready(function() {
             loadsp();
+            if(@lsthdcho.Count == 0){
+                addHDCho();
+            }
             activeTab(0);
             $(function () {
               $(document).on("click", ".tab", function (e) {
@@ -254,6 +257,9 @@
                     dataType: "json"
                 });
                 $(".tabs-box").empty();
+                if(data.length === 0){
+                    addHDCho();
+                }
                 for (let i = 0; i < data.length; i++) {
                     const item = data[i];
                     const itemID = item.id;
@@ -280,7 +286,6 @@
                 dataType: 'json',
                 contentType: 'application/json',
                 success: function(response) {
-                    toastr.success('Thêm thành công', "Success Alert", { timeOut: 300 });
                     loadHDCHO(function(){
                          activeTab(1);
                     });
@@ -305,7 +310,6 @@
                             activeTab(0);
                          });
                         loadsp();
-                        toastr.success('Xóa thành công', 'Success Alert', {timeOut : 300});
                     },
                 error: function(response) {
                         toastr.error('Xóa thất bại', 'Error Alert', { timeOut: 300 });
@@ -370,14 +374,15 @@
         function thanhToan(id){
             var ttien = parseInt($("#khachCanTra").text().replace(/,/g, ""));
             if(ttien ===0){
-                $("#notification").text('Chưa có sản phẩm để thanh toán');
+                toastr.error('Chưa có sản phẩm để thanh toán', 'Error Alert', { timeOut: 300 });
             }else{
                 var pttt = $('input[name="pttt"]:checked').val();
-                var thuevat = parseInt($("#thueVAT").text().replace(/,/g, ""));
                 var idvoucher = $("#idvoucher").text();
-                var tichdiemhd = $("#diemtichhd").text();
-                var tichdiemsd = parseInt($('#diemKHSD').val());
-                var request= {Id: id, PTTT: pttt,IdNhanVien:'@loginInfor.Id', IdVoucher: idvoucher,TongTien: ttien, ThueVAT: thuevat, DiemTichHD: tichdiemhd, DiemSD: tichdiemsd};
+                var tichdiemhd = $("#tichdiemhd").text();
+                console.log(tichdiemhd);
+                var tichdiemsd = ($('#diemKHSD').val());
+                var request= {Id: id, PTTT: pttt,IdNhanVien:'@loginInfor.Id', IdVoucher: idvoucher,TongTien: ttien, DiemTichHD: tichdiemhd, DiemSD: tichdiemsd};
+                console.log(request);
                 $.ajax({
                         url: "/BanHangTaiQuay/ThanhToan",
                         async: false,

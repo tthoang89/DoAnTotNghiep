@@ -133,9 +133,8 @@ namespace AppView.Controllers
             }
             return Json(new { success = false, message = "Cập nhật trạng thái thất bại" });
         }
-        // Xác nhận hóa đơn đặt 
-        [HttpGet("/QuanLyHoaDon/XacNhanDonDat/{idhd}")]
-        public async Task<IActionResult> XacNhanDonDat(Guid idhd)
+        // Cập nhật trạng thái
+        public async Task<IActionResult> DoiTrangThai(Guid idhd,int trangthai)
         {
             var loginInfor = new LoginViewModel();
             string? session = HttpContext.Session.GetString("LoginInfor");
@@ -145,7 +144,7 @@ namespace AppView.Controllers
             }
             var idnv = loginInfor.Id;
 
-            string url = $"HoaDon?idhoadon={idhd}&trangthai={3}&idnhanvien={idnv}";
+            string url = $"HoaDon?idhoadon={idhd}&trangthai={trangthai}&idnhanvien={idnv}";
             var response = await _httpClient.PutAsync(url, null);
             if (response.IsSuccessStatusCode)
             {

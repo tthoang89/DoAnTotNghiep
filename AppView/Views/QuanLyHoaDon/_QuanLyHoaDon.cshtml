@@ -12,14 +12,13 @@
             <div class="radiothoigian">
                 <span class="btn-text">Thời gian</span> <span id="timepicker1"><i class="bx bxs-calendar" style="color:#000; font-size:16px;"></i></span>
                 <div class="content">
-                    <input type="radio" name="rd" id="one">
-                    <input type="radio" name="rd" id="two">
-                    <label for="one" class="box first">
+                    <label class="box first">
                         <div class="plan">
-                            <span class="p-1" id="bdau" style="font-weight:600"> </span>
+                            <span class="p-1" id="bdau" style="font-weight:600" aria-span="State"> </span>
                         </div>
                     </label>
-                     <label for="one" class="box first">
+
+                    <label for="one" class="box first">
                         <div class="plan">
                             <span class="p-1" id="ketthuc" style="font-weight:600"> </span>
                         </div>
@@ -294,7 +293,8 @@
                                    response.data[i].trangThai === 5 ? '<label class="badge bg-warning">Hoàn hàng thành công</label>' :
                                    response.data[i].trangThai === 6 ? '<label class="badge bg-success">Thành công</label>' :
                                    response.data[i].trangThai === 7 ? '<label class="badge bg-dark">Đơn hủy</label>' :
-                                   '<label class="badge bg-secondary">Đơn hàng thất lạc</label>'}
+                                   response.data[i].trangThai === 8 ? '<label class="badge bg-dark">Chờ xác nhận hủy</label>' :
+                                   '<label class="badge bg-secondary">Chờ xác nhận đổi trả hàng</label>'}
                                </td>
                                <td class="text-end">${response.data[i].tongTienHang.toLocaleString()}</td>
                                <td class="text-end">${response.data[i].khachDaTra.toLocaleString()}</td>
@@ -354,7 +354,6 @@
         function cb(start, end) {
             $('#bdau').text(start.format('MM/DD/YYYY HH:mm:ss'));
             $('#ketthuc').text(end.format('MM/DD/YYYY HH:mm:ss'));
-
             $('#pagination-demo').twbsPagination('destroy');
             loadBill();
         }
@@ -387,6 +386,5 @@
         }, cb);
 
         cb(start, end);
-
     });
 </script>
