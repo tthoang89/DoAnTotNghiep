@@ -134,12 +134,14 @@ namespace AppView.Controllers
         {
             var request = JsonConvert.DeserializeObject<ChiTietSanPhamUpdateRequest>(TempData["UpdateChiTietSanPham"].ToString());
             TempData["SanPham"]=request.IDSanPham.ToString();
+            TempData["MaSP"] = request.Ma;
             return View(request);
         }
         [HttpPost]
         public IActionResult UpdateChiTietSanPham(ChiTietSanPhamUpdateRequest request)
         {
             request.IDSanPham = new Guid(TempData.Peek("SanPham").ToString());
+            request.Ma = TempData["MaSP"] as string;
             var response = _httpClient.PostAsJsonAsync(_httpClient.BaseAddress+ "SanPham/AddChiTietSanPham",request).Result;
             if (response.IsSuccessStatusCode)
             {
