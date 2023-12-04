@@ -322,7 +322,11 @@
                  sl: SL
              },
              success: function(response) {
-                 gethdct('@Model.Id');
+                 if(response.success === true){
+                    gethdct('@Model.Id');
+                 }else{
+                    toastr.error(response.message, 'Error Alert', { timeOut: 500 });
+                 }
              },
              error: function(response) {
                  toastr.error('Thêm sản phẩm thất bại', 'Error Alert', { timeOut: 300 });

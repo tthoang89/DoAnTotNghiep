@@ -38,8 +38,18 @@ namespace AppView.Controllers
             //Lọc thời gian
             if (filter.ngaybd != null)
             {
-                var bd = DateTime.Parse(filter.ngaybd);
-                var kt = DateTime.Parse(filter.ngaykt);
+                string[] formats = { "MM/dd/yyyy HH:mm:ss" };
+                //var bd = DateTime.ParseExact(filter.ngaybd, formats, new CultureInfo("en-US"), DateTimeStyles.None);
+                //var kt = DateTime.ParseExact(filter.ngaykt, formats, new CultureInfo("en-US"), DateTimeStyles.None);
+
+                DateTime parsedDate = DateTime.ParseExact(filter.ngaybd, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+                DateTime parsedDate1 = DateTime.ParseExact(filter.ngaykt, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+                string output = parsedDate.ToString("MM/dd/yyyy HH:mm:ss");
+                string output1 = parsedDate1.ToString("MM/dd/yyyy HH:mm:ss");
+
+                var bd = DateTime.ParseExact(output, formats, new CultureInfo("en-US"), DateTimeStyles.None);
+                var kt = DateTime.ParseExact(output1, formats, new CultureInfo("en-US"), DateTimeStyles.None);
+
                 listhdql = listhdql.Where(c => c.ThoiGian >= bd && c.ThoiGian <= kt).ToList();
             }
             //Tìm kiếm 
@@ -51,7 +61,7 @@ namespace AppView.Controllers
                 }
                 else
                 {
-                    listhdql = listhdql.Where(c => c.KhachHang.ToLower().Contains(filter.keyWord.ToLower())).ToList();
+                    listhdql = listhdql.Where(c => c.KhachHang.ToLower().Contains(filter.keyWord.ToLower()) || c.SDT.Contains(filter.keyWord)).ToList();
                 }
             }
             //Lọc kênh
@@ -90,30 +100,7 @@ namespace AppView.Controllers
             var hd = await _httpClient.GetFromJsonAsync<ChiTietHoaDonQL>($"HoaDon/ChiTietHoaDonQL/{idhd}");
             return PartialView("_ThongTinHD", hd);
         }
-        ////Lọc HD 
-        //public async Task<IActionResult> LocHD(FilterHD filter)
-        //{
-        //    var listhdql = await _httpClient.GetFromJsonAsync<List<HoaDonQL>>("HoaDon/GetAllHDQly");
-        //    listhdql = listhdql.OrderByDescending(c => c.ThoiGian).ToList();
-        //    //Lọc loại hd
-        //    if(filter.loaiHD != null)
-        //    {
-        //        listhdql = listhdql.Where(c => filter.loaiHD.Contains(c.LoaiHD)).ToList();
-        //    }
-        //    //Lọc trạng thái
-        //    if(filter.lstTT != null)
-        //    {
-        //        listhdql = listhdql.Where(c => filter.lstTT.Contains(c.TrangThai)).ToList();
-        //    }
-        //    int totalRow = listhdql.Count;
-        //    var model = listhdql.Skip((filter.page - 1) * filter.pageSize).Take(filter.pageSize).ToArray();
-        //    return Json(new
-        //    {
-        //        data = model,
-        //        total = totalRow,
-        //        status = true,
-        //    });
-        //}
+        
         //Hủy hóa đơn
         [HttpGet("/QuanLyHoaDon/HuyHD")]
         public async Task<IActionResult> HuyHD(Guid idhd, string ghichu)

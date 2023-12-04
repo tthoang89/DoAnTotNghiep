@@ -17,7 +17,7 @@ namespace AppData.ViewModels.BanOffline
         public int SoLuong { get; set; }
         public int GiaKM { get; set; } // Cho hóa đơn chưa thanh toán
         public int? GiaGoc { get; set; }// Cho hóa đơn chưa thanh toán
-        public int? GiaLuu { get; set; } // Hóa đơn thanh toán rồi
+        public int GiaLuu { get; set; } // Hóa đơn thanh toán rồi
 
     }
 }

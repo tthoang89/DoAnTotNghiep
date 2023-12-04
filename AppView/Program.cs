@@ -12,10 +12,10 @@ builder.Services.AddSession(cfg =>
 {
     cfg.IdleTimeout = new TimeSpan(1,0,0);
 });
-//builder.Services.Configure<RazorViewEngineOptions>(options =>
-//{
-//    options.ViewLocationFormats.Add("/Views/QuanLyHoaDon/ExportHD" + RazorViewEngine.ViewExtension);
-//});
+builder.Services.Configure<RazorViewEngineOptions>(options =>
+{
+    options.ViewLocationFormats.Add("/Views/QuanLyHoaDon/ExportHD" + RazorViewEngine.ViewExtension);
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

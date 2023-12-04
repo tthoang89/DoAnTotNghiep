@@ -97,8 +97,16 @@
                     </div>
                 </div>
             </div>
+            <!--Quét QR-->
+            <div class="d-flex align-content-center">
+                <div class="d-flex align-items-center">
+                    <button type="button" onclick="" class="btn btn-primary d-flex align-items-center ms-auto" title="Quét mã vạch">
+                        <i class="bx bx-barcode-reader"></i>
+                    </button>
+                </div>
+            </div>
             <!--Lọc-->
-            <div class="me-auto align-content-center">
+            <div class="d-flex me-auto align-content-center">
                 <div class="btn-create d-flex align-items-center">
                     <button type="button" onclick="showFilter()" class="btn btn-primary d-flex align-items-center ms-auto" title="Lọc sản phẩm">
                         <i class="bx bx-filter-alt"></i>
@@ -242,6 +250,11 @@
                 $("#pagingsp").twbsPagination({
                 totalPages: totalgages,
                 visiblePages: 5,
+                startPage: 1,
+                first:'Đầu',
+                last:'Cuối',
+                prev:'Trước',
+                next:'Tiếp',
                 onPageClick: function (event, page) {
                     pageIndexsp = page;
                     setTimeout(callback,200);
@@ -268,7 +281,7 @@
                     <li class="tab" onclick="gethdct('${itemID}')">
                         <span value="${itemID}">
                         <a>Hoá đơn ${index}</a>
-                        <a style="padding-left: 10px;" onclick="deleteHDCho('${itemID}')"><i class="fas fa-times"></i></a>
+                        <a style="padding-left: 10px;" onclick="deleteHDCho('${itemID}')" title="Xóa"><i class="fas fa-times"></i></a>
                         </span>
                     </li>
                     `);
@@ -373,6 +386,9 @@
         //Thanh toán chuyển trạng thái
         function thanhToan(id){
             var ttien = parseInt($("#khachCanTra").text().replace(/,/g, ""));
+            if(ttien <=0){
+                toastr.error('Số tiền thanh toán không hợp lệ', 'Error Alert', { timeOut: 300 });
+            }
             if(ttien ===0){
                 toastr.error('Chưa có sản phẩm để thanh toán', 'Error Alert', { timeOut: 300 });
             }else{
@@ -380,7 +396,10 @@
                 var idvoucher = $("#idvoucher").text();
                 var tichdiemhd = $("#tichdiemhd").text();
                 console.log(tichdiemhd);
-                var tichdiemsd = ($('#diemKHSD').val());
+                var tichdiemsd = $('diemKHSD').val();
+                if($('#tientrutichdiem').text() === 0 || $('#tientrutichdiem').text() ===''){
+                    tichdiemsd= 0;
+                };
                 var request= {Id: id, PTTT: pttt,IdNhanVien:'@loginInfor.Id', IdVoucher: idvoucher,TongTien: ttien, DiemTichHD: tichdiemhd, DiemSD: tichdiemsd};
                 console.log(request);
                 $.ajax({

@@ -365,6 +365,7 @@ namespace AppAPI.Services
                               Id = hd.ID,
                               MaHD = hd.MaHD,
                               KhachHang = kh != null ? kh.Ten : "Khách lẻ",
+                              SDT = kh != null ? kh.SDT : null,
                               PTTT = hd.PhuongThucThanhToan,
                               ThoiGian = hd.NgayTao,
 //                              GiamGia = (from vc in context.Vouchers
@@ -445,7 +446,7 @@ namespace AppAPI.Services
                                             PhanLoai = ms.Ten + " - " + kc.Ten,
                                             SoLuong = cthd.SoLuong,
                                             GiaGoc = ctsp.GiaBan,
-                                            GiaLuu = cthd.DonGia,
+                                            GiaLuu = cthd.DonGia==null? 0: cthd.DonGia,
                                             GiaKM = km == null ? ctsp.GiaBan : (km.TrangThai == 0 ? ctsp.GiaBan - km.GiaTri : (ctsp.GiaBan * (100 - km.GiaTri) / 100))
                                         }).ToList(),
                               lstlstd = (from lstd in context.LichSuTichDiems
