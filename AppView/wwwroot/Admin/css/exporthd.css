@@ -1,11 +1,11 @@
 ﻿body {
     margin-top: 20px;
-    color: #2e323c;
+    color: #444444;
     background: #f5f6fa;
     position: relative;
     height: 100%;
+    font-family: inherit, sans-serif;
 }
-
 .invoice-container {
     padding: 1rem;
 }

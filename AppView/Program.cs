@@ -1,6 +1,7 @@
 using AppView.IServices;
 using AppView.Services;
 using Microsoft.AspNetCore.Mvc.Razor;
+using Rotativa.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,10 +12,6 @@ builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddSession(cfg =>
 {
     cfg.IdleTimeout = new TimeSpan(1,0,0);
-});
-builder.Services.Configure<RazorViewEngineOptions>(options =>
-{
-    options.ViewLocationFormats.Add("/Views/QuanLyHoaDon/ExportHD" + RazorViewEngine.ViewExtension);
 });
 var app = builder.Build();
 
@@ -40,4 +37,6 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}");
 
+IWebHostEnvironment env = app.Environment;
+Rotativa.AspNetCore.RotativaConfiguration.Setup(env.WebRootPath, "../Rotativa/Windows");
 app.Run();

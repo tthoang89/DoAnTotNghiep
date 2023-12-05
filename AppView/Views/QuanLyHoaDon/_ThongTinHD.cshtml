@@ -14,9 +14,12 @@
             <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#ttgh" type="button" role="tab" aria-selected="false" tabindex="-1">Thông tin giao hàng</button>
         </li>
     }
-    <li class="nav-item" role="presentation">
-        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#lstd" type="button" role="tab" aria-selected="false" tabindex="-1">Lịch sử tích điểm</button>
-    </li>
+    @if (Model.KhachHang != "Khách lẻ")
+    {
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#lstd" type="button" role="tab" aria-selected="false" tabindex="-1">Lịch sử tích điểm</button>
+        </li>
+    }
 </ul>
 <div class="tab-content pt-2" id="myTabjustifiedContent">
     <!--Thông tin-->
@@ -32,7 +35,7 @@
                 <div class="row">
                     <label class="col-sm-5 col-form-label">Ngày tạo:</label>
                     <div class="col-sm-7">
-                        <label class="col-form-label">@Model.NgayTao</label>
+                        <label class="col-form-label">@Model.NgayTao.ToString("dd/MM/yyyy HH:mm")</label>
                     </div>
                 </div>
 
@@ -75,7 +78,7 @@
                         }
                         else
                         {
-                            <label class="col-form-label">@Model.NgayThanhToan</label>
+                            <label class="col-form-label">@Model.NgayThanhToan?.ToString("dd/MM/yyyy HH:mm")</label>
                         }
                     </div>
                 </div>
@@ -125,7 +128,7 @@
                     @foreach (var item in Model.listsp)
                     {
                         <tr>
-                            <td class="text-primary">@item.Id</td>
+                            <td class="text-primary">@item.MaCTSP</td>
                             <td>@item.Ten  /<span style="color:#f28322; font-size:14px">@item.PhanLoai</span></td>
                             <td class="text-end">@item.SoLuong</td>
                             <td class="text-end">@item.GiaGoc?.ToString("n0")</td>
@@ -170,24 +173,24 @@
                     </div>
                     @if (@Model.lstlstd.Count != 0)
                     {
-                    <div class="row  text-end">
-                        <label class="col-sm-6 col-form-label">Trừ tiêu điểm:</label>
-                        <div class="col-sm-6">
-                            <label class="col-sm-5 col-form-label">@Model.TruTieuDiem?.ToString("n0")</label>
+                        <div class="row  text-end">
+                            <label class="col-sm-6 col-form-label">Trừ tiêu điểm:</label>
+                            <div class="col-sm-6">
+                                <label class="col-sm-5 col-form-label">@Model.TruTieuDiem?.ToString("n0")</label>
+                            </div>
                         </div>
-                    </div>
                     }
 
                     @if (@Model.voucher != null)
                     {
-                    <div class="row  text-end">
-                        <label class="col-sm-6 col-form-label">Voucher hóa đơn:</label>
-                        <div class="col-sm-6">
-                            <label class="col-sm-5 col-form-label">
-                                @voucher.ToString("n0")
-                            </label>
+                        <div class="row  text-end">
+                            <label class="col-sm-6 col-form-label">Voucher hóa đơn:</label>
+                            <div class="col-sm-6">
+                                <label class="col-sm-5 col-form-label">
+                                    @voucher.ToString("n0")
+                                </label>
+                            </div>
                         </div>
-                    </div>
                     }
                     @if (@Model.LoaiHD == 0)
                     {
@@ -245,7 +248,7 @@
             </div>
 
             <div class="d-flex p-2">
-                <button id="exportPDF" class="btn btn-secondary fw-normal text-white"><i class="fa-solid fa-file-export fa-xs me-2" style="color: #ffffff;"></i> Xuất PDF</button>
+                <button type="button" onclick="location.href='@Url.Action("ExportPDF", "QuanLyHoaDon", new{idhd = @Model.Id})'" class="btn btn-secondary fw-normal text-white"><i class="fa-solid fa-file-export fa-xs me-2" style="color: #ffffff;"></i> Xuất PDF</button>
             </div>
 
             @if (@Model.TrangThai != 7)
@@ -288,55 +291,58 @@
         </div>
     }
     <!--Lịch sử tích điểm-->
-    <div class="tab-pane fade" id="lstd" role="tabpanel" aria-labelledby="profile-tab">
-        <div class="d-flex mt-2">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th scope="col">Mã tích điểm</th>
-                        <th scope="col">Điểm</th>
-                        <th scope="col">Loại</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (@Model.lstlstd.Count == 0)
-                    {
+    @if (@Model.KhachHang != "Khách lẻ")
+    {
+        <div class="tab-pane fade" id="lstd" role="tabpanel" aria-labelledby="profile-tab">
+            <div class="d-flex mt-2">
+                <table class="table table-bordered">
+                    <thead>
                         <tr>
-                            <td colspan=3>
-                                <p style="text-align:center">Không có lịch sử tích điểm nào</p>
-                            </td>
+                            <th scope="col">Mã tích điểm</th>
+                            <th scope="col">Điểm</th>
+                            <th scope="col">Loại</th>
                         </tr>
-                    }
-                    else
-                    {
-                        @foreach (var item in @Model.lstlstd)
+                    </thead>
+                    <tbody>
+                        @if (@Model.lstlstd.Count == 0)
                         {
-                            if (item.TrangThai == 1)
+                            <tr>
+                                <td colspan=3>
+                                    <p style="text-align:center">Không có lịch sử tích điểm nào</p>
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var item in @Model.lstlstd)
                             {
-                                <tr>
-                                    <td>@item.ID</td>
-                                    <td class="text-success">@item.Diem</td>
-                                    <td class="text-success">
-                                        Tích điểm
-                                    </td>
-                                </tr>
-                            }
-                            else
-                            {
-                                <tr>
-                                    <th scope="row">@item.ID</th>
-                                    <td class="text-danger">@item.Diem</td>
-                                    <td class="text-danger">
-                                        Tiêu điểm
-                                    </td>
-                                </tr>
+                                if (item.TrangThai == 1)
+                                {
+                                    <tr>
+                                        <td>@item.ID</td>
+                                        <td class="text-success">@item.Diem</td>
+                                        <td class="text-success">
+                                            Tích điểm
+                                        </td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <th scope="row">@item.ID</th>
+                                        <td class="text-danger">@item.Diem</td>
+                                        <td class="text-danger">
+                                            Tiêu điểm
+                                        </td>
+                                    </tr>
+                                }
                             }
                         }
-                    }
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
+    }
 </div>
 <script>
         $("#save").click(function(){
@@ -398,8 +404,8 @@
             url: "/QuanLyHoaDon/ExportPDF/" + id,
             type: "GET",
             success: function(response) {
-            var fileUrl = response.fileUrl;
-            window.open(fileUrl,'_blank');
+           @* var fileUrl = response.fileUrl;
+            window.open(fileUrl,'_blank');*@
             },
             error: function(err) {
             toastr.error('Lỗi xuất hóa đơn', "Error Alert", { timeOut: 300 });
@@ -407,7 +413,10 @@
         });
     });
 
-    function DoiTrangThai(tragthai){
+@*    $("#exportPDF").click(function(){
+        window.print();
+    })
+*@    function DoiTrangThai(tragthai){
         var ans = confirm("Cập nhật trạng thái hóa đơn này?");
         var id = "@Model.Id";
         if(ans){

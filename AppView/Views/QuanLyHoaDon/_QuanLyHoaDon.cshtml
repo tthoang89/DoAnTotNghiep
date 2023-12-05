@@ -352,8 +352,8 @@
         var end = moment();
 
         function cb(start, end) {
-            $('#bdau').text(start.format('DD/MM/YYYY HH:mm:ss'));
-            $('#ketthuc').text(end.format('DD/MM/YYYY HH:mm:ss'));
+            $('#bdau').text(start.format('DD/MM/YYYY HH:mm'));
+            $('#ketthuc').text(end.format('DD/MM/YYYY HH:mm'));
             $('#pagination-demo').twbsPagination('destroy');
             loadBill();
         }
@@ -367,7 +367,7 @@
             endDate: end,
             locale: {
               customRangeLabel: 'Điều chỉnh',
-              format: 'DD/MM/YYYY HH:mm:ss',
+              format: 'DD/MM/YYYY HH:mm',
               applyLabel: 'Áp dụng',
               cancelLabel: 'Thoát',
               daysOfWeek: ['H', 'B', 'T', 'N', 'S', 'B','CN'],
