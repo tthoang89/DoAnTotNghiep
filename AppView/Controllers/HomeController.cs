@@ -1070,7 +1070,7 @@ namespace AppView.Controllers
             if (responseDonMua.IsSuccessStatusCode)
             {
                 donMuaViewModels = JsonConvert.DeserializeObject<List<DonMuaViewModel>>(responseDonMua.Content.ReadAsStringAsync().Result);
-                donMuaViewModels = donMuaViewModels.OrderByDescending(p => p.NgayTao.Date).ThenBy(p => p.NgayTao.TimeOfDay).ToList();
+                donMuaViewModels = donMuaViewModels.OrderByDescending(p => p.NgayTao).ToList();
 
                 foreach (var item in donMuaViewModels)
                 {
