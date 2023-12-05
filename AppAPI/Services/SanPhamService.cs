@@ -123,7 +123,12 @@ namespace AppAPI.Services
                     chatLieu = new ChatLieu() { ID = Guid.NewGuid(), Ten = request.TenChatLieu, TrangThai = 1 };
                     await _context.AddAsync(chatLieu);
                 }
-                SanPham sanPham = new SanPham() { ID = Guid.NewGuid(), Ten = request.Ten, MoTa = request.MoTa, TrangThai = 1, TongDanhGia = 0, TongSoSao = 0, IDLoaiSP = loaiSPCon.ID, IDChatLieu = chatLieu.ID };
+                var max = 0;
+                if (_context.SanPhams.Any())
+                {
+                     max = _context.SanPhams.Max(x => Convert.ToInt32(x.Ma.Substring(2)));
+                }
+                SanPham sanPham = new SanPham() { ID = Guid.NewGuid(), Ten = request.Ten,Ma="SP"+(max+1),MoTa = request.MoTa, TrangThai = 1, TongDanhGia = 0, TongSoSao = 0, IDLoaiSP = loaiSPCon.ID, IDChatLieu = chatLieu.ID };
                 await _context.SanPhams.AddAsync(sanPham);
                 await _context.SaveChangesAsync();
                 foreach (var x in request.MauSacs)
@@ -133,7 +138,7 @@ namespace AppAPI.Services
                         lst.Add(CreateChiTietSanPhamFromSanPham(x, y).Result);
                     }
                 }
-                return new ChiTietSanPhamUpdateRequest() { IDSanPham = sanPham.ID, ChiTietSanPhams = lst };
+                return new ChiTietSanPhamUpdateRequest() { IDSanPham = sanPham.ID, ChiTietSanPhams = lst,Ma=sanPham.Ma };
             }
             catch { return new ChiTietSanPhamUpdateRequest(); }
         }
@@ -182,10 +187,6 @@ namespace AppAPI.Services
             ChiTietSanPhamViewModelHome chiTietSanPham = new ChiTietSanPhamViewModelHome();
             chiTietSanPham.IDSanPham = idSanPham;
             chiTietSanPham.Ten = sanPham.Ten;
-            //chiTietSanPham.Anhs = _context.Anhs.Where(x => x.IDSanPham == idSanPham).ToList();
-            //chiTietSanPham.ChiTietSanPhams = lstChiTietSanPham;
-            //chiTietSanPham.MauSacs = mauSacs.Distinct().ToList();
-            //chiTietSanPham.KichCos = kichCos.Distinct().ToList();
             chiTietSanPham.Anhs = new List<AnhRequest>();
             chiTietSanPham.MauSacs = new List<GiaTriViewModel>();
             chiTietSanPham.KichCos = new List<GiaTriViewModel>();
@@ -206,9 +207,6 @@ namespace AppAPI.Services
             {
                 chiTietSanPham.ChiTietSanPhams.Add(new ChiTietSanPhamViewModel() { ID = item.ID,Ten=sanPham.Ten,SoLuong = item.SoLuong, GiaBan = item.IDKhuyenMai == null ? item.GiaBan : item.GiaBan - GetKhuyenMai(item.IDKhuyenMai.Value, item.GiaBan), GiaGoc = item.GiaBan,MauSac=item.IDMauSac.ToString(),KichCo=item.IDKichCo.ToString(),TrangThai=item.TrangThai});
             }
-            //chiTietSanPham.ChiTietSanPhams = lstChiTietSanPham;
-            //chiTietSanPham.MauSacs = mauSacs.Distinct().ToList();
-            //chiTietSanPham.KichCos = kichCos.Distinct().ToList();
             chiTietSanPham.MoTa = sanPham.MoTa;
             var query = await (from sp in _context.SanPhams.Where(p => p.ID == idSanPham)
                                join ctsp in _context.ChiTietSanPhams on sp.ID equals ctsp.IDSanPham
@@ -270,7 +268,7 @@ namespace AppAPI.Services
                 var tempTrangThai = new Guid(request.TrangThai);
                 foreach (var x in request.ChiTietSanPhams)
                 {
-                    _context.ChiTietSanPhams.Add(new ChiTietSanPham() { ID = x.IDChiTietSanPham, SoLuong = x.SoLuong, GiaBan = x.GiaBan, NgayTao = DateTime.Now, TrangThai = x.IDChiTietSanPham == tempTrangThai ? 1 : 2, IDSanPham = request.IDSanPham, IDMauSac = x.IDMauSac, IDKichCo = x.IDKichCo });
+                    _context.ChiTietSanPhams.Add(new ChiTietSanPham() { ID = x.IDChiTietSanPham,SoLuong = x.SoLuong, GiaBan = x.GiaBan, NgayTao = DateTime.Now, TrangThai = x.IDChiTietSanPham == tempTrangThai ? 1 : 2, IDSanPham = request.IDSanPham, IDMauSac = x.IDMauSac, IDKichCo = x.IDKichCo,Ma=request.Ma+x.TenMauSac.Trim().ToUpper()+x.TenKichCo.ToUpper() });
                 }
                 _context.SaveChanges();
                 return true;

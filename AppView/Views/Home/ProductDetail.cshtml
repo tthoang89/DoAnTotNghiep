@@ -17,22 +17,23 @@
     .icon-hover:hover i {
         color: #3b71ca !important;
     }
-    #filter-color input[type="radio"], #filter-size input[type="radio"], #LoaiSpFilter input[type="radio"], #filter-material input[type="radio"] {
+
+    #filter-color input[type="radio"], #filter-size input[type="radio"], #LoaiSpFilter input[type="radio"], #filter-material input[type="radio"], #sizes input[type="radio"] {
         display: none;
     }
 
-    #filter-color label input[type="radio"]:checked ~ span, #filter-size label input[type="radio"]:checked ~ span, #LoaiSpFilter label input[type="radio"]:checked ~ span, #filter-material label input[type="radio"]:checked ~ span {
+    #filter-color label input[type="radio"]:checked ~ span, #filter-size label input[type="radio"]:checked ~ span, #LoaiSpFilter label input[type="radio"]:checked ~ span, #filter-material label input[type="radio"]:checked ~ span, #sizes label input[type="radio"]:checked~span {
         background: black;
         color: #e5e5e5;
     }
 
-    #filter-color label span, #filter-size label span, #filter-material label span, #LoaiSpFilter label span {
+    #filter-color label span, #filter-size label span, #filter-material label span, #LoaiSpFilter label span, #sizes label span {
         color: #111111;
         font-size: 15px;
         font-weight: 700;
         text-transform: uppercase;
         display: inline-block;
-        border: 1px solid #e5e5e5;
+        border: 1px solid black;
         padding: 6px 25px;
         margin-bottom: 10px;
         margin-right: 5px;
@@ -61,7 +62,7 @@
         visibility: visible
     }
 
-    #filter-color label span:hover, #filter-size label span:hover, #filter-material label span:hover, #LoaiSpFilter label span:hover {
+    #filter-color label span:hover, #filter-size label span:hover, #filter-material label span:hover, #LoaiSpFilter label span:hover, #sizes label span:hover {
         background: black;
         color: white;
     }
@@ -121,10 +122,11 @@
             <div class="col-md-6">
                 <div class="p-3 right-side">
                     <div class="d-flex justify-content-between align-items-center">
-                        Tên: <strong>@Model.Ten</strong>
+                        <h4>@Model.Ten</h4>
                         Mã: <strong id="maSP">@Model.ChiTietSanPhams.First(x=>x.TrangThai==1).ID</strong>
                     </div>
                     <h3>@Model.ChiTietSanPhams.First(x=>x.TrangThai==1).GiaBan.ToString("n0") VNĐ</h3>
+                    <span>Tình trạng:<strong id="trangthai"></strong></span>
                     <div class="mt-5">
                         <span class="fw-bold">Màu Sắc</span>
                         <div class="colors" id="filter-color">                            
@@ -145,7 +147,13 @@
                             <ul id="sizes" style="height:35px">
                                 @foreach (var item in Model.KichCos)
                                 {
-                                    <li style="width:70px;height:100%"><input type="button" value="@item.GiaTri" class="btn btn-light" style="border:1px solid gray!important;width:100%;height:100%" id="@item.GiaTri" onclick="getKichCo(this)" /></li>
+                                    @*<li style="width:70px;height:100%">
+                                        <input type="radio" value="@item.GiaTri" name="kichco" class="btn btn-light" style="border:1px solid gray!important;width:100%;height:100%" id="@item.GiaTri" onclick="getKichCo(this)" />
+                                    </li>*@
+                                    <label>
+                                        <input type="radio" class="btn-check" value="@item.GiaTri" id="rd_@item.GiaTri" autocomplete="off" name="kichco" onclick="getKichCo(this)" />
+                                        <span class="btn btn-outline-primary" for="rd_@item.GiaTri" id="label_@item.GiaTri">@item.GiaTri</span>
+                                    </label>
                                 }
                             </ul>
                         </div>
@@ -206,7 +214,7 @@
                                                     <b><span id="average_rating">0</span> / 5</b>
                                                 }else
                                                 {
-                                                    <b><span id="average_rating">@Model.SoSao</span> / 5</b>
+                                                    <b><span id="average_rating">@Math.Round(Model.SoSao,1)</span> / 5</b>
                                                 }
                                                 
                                             </h3>
@@ -311,8 +319,14 @@
         var chiTietSanPham = chiTietSanPhams.find(x => x.trangThai == 1);
         color = chiTietSanPham.mauSac;
         size = chiTietSanPham.kichCo;
+        console.log(kichCos);
         var anhMacDinh = anhs.find(x => x.maMau == color).duongDan;
         document.getElementById("main_product_image").src = "/img/product/" + anhMacDinh;
+        if (chiTietSanPham.soLuong > 0){
+            document.getElementById("trangthai").innerHTML = "Còn hàng"
+        }else{
+            document.getElementById("trangthai").innerHTML = "Hết hàng"
+        }
         loadDGsp();
     });
     function changeImage(element) {
@@ -322,7 +336,42 @@
     }
     function getMauSac(element) {
         color = element.value;
-        var chiTietSP = chiTietSanPhams.find(x => x.mauSac == element.value && x.kichCo == size);
+        //console.log(kichCos);
+        //console.log(chiTietSanPhams);
+        for(let i = 0; i< kichCos.length; i++){
+            var chiTietSP = chiTietSanPhams.find(x => x.mauSac == element.value && x.kichCo == kichCos[i].id);
+            console.log(chiTietSP);
+            if (typeof (chiTietSP) != "undefined") {
+                if (chiTietSP.soLuong > 0) {
+                    var giatrikichco = kichCos.find(x => x.id == chiTietSP.kichCo).giaTri;
+                    console.log(giatrikichco);
+                    document.getElementById("rd_" + giatrikichco).disabled = false;
+                    document.getElementById("rd_" + giatrikichco).checked = false;
+                    document.getElementById("trangthai").innerHTML = "Còn hàng"
+                    document.getElementById("label_" + giatrikichco).style.opacity = "1";
+                    document.getElementById("label_" + giatrikichco).style.cursor = "pointer";
+                } else {
+                    var giatrikichco = kichCos.find(x => x.id == chiTietSP.kichCo).giaTri;
+                    console.log(giatrikichco);
+                    document.getElementById("rd_" + giatrikichco).disabled = true;
+                    document.getElementById("rd_" + giatrikichco).checked = false;
+                    document.getElementById("label_" + giatrikichco).style.cursor = "no-drop";
+                    document.getElementById("label_" + giatrikichco).style.opacity = "0.5";
+                    document.getElementById("trangthai").innerHTML = "Hết hàng"
+                }
+            }else{
+                var giatrikichco = kichCos.find(x => x.id == kichCos[i].id).giaTri;
+                console.log(giatrikichco);
+                document.getElementById("rd_" + giatrikichco).disabled = true;
+                document.getElementById("rd_" + giatrikichco).checked = false;
+                document.getElementById("label_" + giatrikichco).style.cursor = "no-drop";
+                document.getElementById("label_" + giatrikichco).style.opacity = "0.5";
+                //document.getElementById("trangthai").innerHTML = "Hết hàng"
+            }
+            
+        }
+        var chiTietSP = chiTietSanPhams.find(x => x.mauSac == element.value);
+        //console.log(chiTietSP);
         var anh = anhs.find(x => x.maMau == element.value);
         var lstMauSacElement = document.getElementById("filter-color").children;
         for (let i = 0; i < lstMauSacElement.length;i++){
@@ -336,16 +385,19 @@
         document.getElementById("maSP").innerHTML = chiTietSP.id;
     }
     function getKichCo(element) {
-        size = kichCos.find(x=>x.ten==element.value).id;
-        var chiTietSP = chiTietSanPhams.find(x => x.idKichCo == size && x.idMauSac==color);
-        var lstKichCoElement = document.getElementById("sizes").children;
-        for (let i = 0; i < lstKichCoElement.length; i++) {
-            if (lstKichCoElement[i].children[0].style.border = "2px black solid") {
-                lstKichCoElement[i].children[0].style.border = "1px solid gray";
-            }
-        }
-        var ip = document.getElementById(element.value);
-        ip.style.border = "2px black solid";
+        size = kichCos.find(x=>x.giaTri==element.value).id;
+        var chiTietSP = chiTietSanPhams.find(x => x.kichCo == size && x.mauSac==color);
+        //if (document.getElementById("rd_" + size).checked = true) {
+        //    document.getElementById("label_" + size).style.color = "white";
+        //}
+        //var lstKichCoElement = document.getElementById("sizes").children;
+        //for (let i = 0; i < lstKichCoElement.length; i++) {
+        //    if (lstKichCoElement[i].children[0].style.border = "2px black solid") {
+        //        lstKichCoElement[i].children[0].style.border = "1px solid gray";
+        //    }
+        //}
+        //var ip = document.getElementById(element.value);
+        //ip.style.border = "2px black solid";
         document.getElementById("maSP").innerHTML = chiTietSP.id;
     }
     function addCart() {
@@ -382,7 +434,6 @@
                 }
             },
             error: function (response) {
-                console.log(response);
                 toastr.error(response.message, 'Error Alert', { timeOut: 300 });
             }
         });
@@ -421,7 +472,6 @@
                 }
             },
             error: function (response) {
-                console.log(response);
                 toastr.error(response.message, 'Error Alert', { timeOut: 300 });
             }
         });
@@ -454,7 +504,6 @@
     var pageIndex = 1;
     var pagesize = 5;
     var idSP = '@Model.IDSanPham';
-    console.log(idSP);
     function loadDGsp() {
         var request = { id: idSP, page: pageIndex, pageSize: pagesize };
         $.ajax({
@@ -462,7 +511,6 @@
             type: "GET",
             data: request,
             success: function (response) {
-                console.log(response);
                 $("#danhgia").empty();
                 $.each(response.data, function (i, item) {
                     if(item.sao === 1){
