@@ -126,7 +126,7 @@
                             @if (item.TrangThaiGiaoHang == 6 && item.TrangThaiDanhGia == 0)
                             {
                                 <td class="cart__price">
-                                    <div style="border: none; border-radius: 10px; color: white; background-color: black; text-align:center;">
+                                    <div style="border: none; color: white; background-color: black; text-align:center;">
                                         <a style="color:white;" asp-controller="Home" asp-action="ReviewProducts" asp-route-idCTHD="@item.IDCTHD" >Đánh giá sản phẩm</a>
                                     </div>
                                 </td>
@@ -279,7 +279,7 @@
         @if (trangthaiGiaoHang == 2)
         {
         <div style="text-align:-webkit-right ;">
-                <div style="border: none; border-radius: 10px; color: white; background-color: black; text-align:center;width: 150px; height: 50px; display: grid; align-items: center;">
+                <div style="border: none; color: white; background-color: black; text-align:center;width: 150px; height: 50px; display: grid; align-items: center;">
                     <a style="color:white;" asp-controller="Home" asp-action="HuyDonHang" asp-route-idHoaDon="@Model.First().ID">Hủy đơn hàng</a>
                 </div>
             </div>
@@ -287,14 +287,14 @@
         else if (trangthaiGiaoHang == 6 && DateTime.Now.Subtract(ngaythanhToan).TotalDays < 3 && trangthaiDanhGia == 0)
         {
             <div style="text-align:-webkit-right ;">
-                <div style="border: none; border-radius: 10px; color: white; background-color: black; text-align:center;width: 150px; height: 50px; display: grid; align-items: center;">
+                <div style="border: none; color: white; background-color: black; text-align:center;width: 150px; height: 50px; display: grid; align-items: center;">
                     <a style="color:white;" asp-controller="Home" asp-action="DoiTraHang" asp-route-idHoaDon="@Model.First().ID">Đổi trả hàng/Hoàn tiền</a>
                 </div>
             </div>
         }else if (trangthaiGiaoHang == 8)
         {
             <div style="text-align:-webkit-right ;">
-                <div style="border: none; border-radius: 10px; color: white; background-color: black; text-align:center;width: 150px; height: 50px; display: grid; align-items: center;">
+                <div style="border: none; color: white; background-color: black; text-align:center;width: 150px; height: 50px; display: grid; align-items: center;">
                     <a style="color:white;" asp-controller="Home" asp-action="HoanTacHuyDonHang" asp-route-idHoaDon="@Model.First().ID">Hoàn tác hủy đơn hàng</a>
                 </div>
             </div>
@@ -302,7 +302,7 @@
         else if (trangthaiGiaoHang == 9)
         {
             <div style="text-align:-webkit-right ;">
-                <div style="border: none; border-radius: 10px; color: white; background-color: black; text-align:center;width: 150px; height: 50px; display: grid; align-items: center;">
+                <div style="border: none; color: white; background-color: black; text-align:center;width: 150px; height: 50px; display: grid; align-items: center;">
                     <a style="color:white;" asp-controller="Home" asp-action="HoanTacDoiTraHang" asp-route-idHoaDon="@Model.First().ID">Hoàn tác trả hàng</a>
                 </div>
             </div>
@@ -310,7 +310,7 @@
         else if (trangthaiGiaoHang == 3)
         {
             <div style="text-align:-webkit-right ;">
-                <div style="border: none; border-radius: 10px; color: white; background-color: black; text-align:center;width: 150px; height: 50px; display: grid; align-items: center;">
+                <div style="border: none; color: white; background-color: black; text-align:center;width: 150px; height: 50px; display: grid; align-items: center;">
                     <a style="color:white;" asp-controller="Home" asp-action="XacNhanGHTC" asp-route-idHoaDon="@Model.First().ID">Xác nhận giao hàng thành công</a>
                 </div>
             </div>
