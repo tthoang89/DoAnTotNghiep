@@ -434,7 +434,6 @@
                 }
             },
             error: function (response) {
-                console.log(response);
                 toastr.error(response.message, 'Error Alert', { timeOut: 300 });
             }
         });
@@ -473,7 +472,6 @@
                 }
             },
             error: function (response) {
-                console.log(response);
                 toastr.error(response.message, 'Error Alert', { timeOut: 300 });
             }
         });
@@ -513,7 +511,6 @@
             type: "GET",
             data: request,
             success: function (response) {
-                console.log(response);
                 $("#danhgia").empty();
                 $.each(response.data, function (i, item) {
                     if(item.sao === 1){
