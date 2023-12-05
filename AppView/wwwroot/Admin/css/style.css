@@ -1867,6 +1867,13 @@ h6 {
 .formthanhtoan span{
    color:#000;
 }
+.formthanhtoan .badge {
+    border-radius: 0;
+    font-size: 14px;
+    line-height: 1;
+    padding: 0.3rem 0.5rem;
+    font-weight: normal;
+}
 /*Trang hóa đơn*/
 .tablehd td,
 .tablehd th {
@@ -2174,7 +2181,7 @@ tbody td {
 }
 
 #diemKHSD {
-    width: 130px;
+    width: 100px;
     text-align: right;
     border: none;
     border-bottom: 2px solid #2c384e;

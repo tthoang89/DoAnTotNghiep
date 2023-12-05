@@ -41,7 +41,8 @@ namespace AppAPI.Controllers
         public async Task<IActionResult> UpdateSL(Guid id, int sl)
         {
             var hdct = await _idchiTietHoaDon.UpdateSL(id,sl);
-            return Ok(hdct);
+            if( hdct == true) return Ok();
+            return BadRequest();
         }
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteLoaiSP(Guid id)

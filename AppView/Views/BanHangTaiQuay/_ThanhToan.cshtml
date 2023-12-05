@@ -33,7 +33,7 @@
             <div class="flex-fill text-end"> <span id="soLuong">@Model.TongSL</span></div>
         </div>
         <div class="d-flex flex-row lh-1">
-            <div class="flex-fill"><label for="inputEmail5" class="form-label">Tổng tiền hàng</label></div>
+            <div class="flex-fill"><label class="form-label">Tổng tiền hàng</label></div>
             <div class="flex-fill text-end"><span id="tongTienHang"></span></div>
         </div>
 
@@ -41,10 +41,22 @@
         {
             <div class="d-flex flex-row lh-1">
                 <div class="col-4">
-                    <div class="flex-fill"><label for="inputEmail5" class="form-label">Điểm</label></div>
+                    <div class="flex-fill">
+                        <label class="form-label">
+                            Điểm
+                            <label class="badge bg-success">
+                                Tối đa: <span class="text-white" id="dtoida"></span>
+                            </label>
+                        </label>
+                    </div>
                 </div>
-                <div class="col-4">
-                    <div class="flex-fill  me-auto text-end"><input type="number" placeholder="Nhập vào điểm" id="diemKHSD" /></div>
+                <div class="col-1">
+                    <div class="form-check form-switch swithTichdiem me-auto">
+                        <input class="form-check-input" type="checkbox">
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="flex-fill  me-auto text-end"><input type="number" min="0" placeholder="Nhập điểm" id="diemKHSD" /></div>
                 </div>
                 <div class="col-4">
                     <div class="flex-fill text-end"><span id="tientrutichdiem"></span></div>
@@ -58,7 +70,7 @@
             </div>
         </div>
         <div class="d-flex flex-row lh-1">
-            <div class="flex-fill"><label for="inputEmail5" class="form-label fw-bold">Khách cần trả</label></div>
+            <div class="flex-fill"><label class="form-label fw-bold">Khách cần trả</label></div>
             <div class="flex-fill text-end">
                 <span id="khachCanTra" style="font-size:20px;font-weight:bold"></span>
             </div>
@@ -103,54 +115,64 @@
     </div>
 </div>
 <script>
+    
     $(document).ready(function(){
-        $("#tichdiemhd").text(tdhd);
-        TinhTien();
-    })
-    var diemkh = @(Model.DiemKH);
-    var tienhang = @(Model.TongTien);
-    var tdhd = @(Model.DiemTichHD);
-        //Tính tiền
-       function TinhTien() {
-            var tt = @Model.TongTien;
-            $("#tongTienHang").text(tt.toLocaleString());
-            var trutd = $("#tientrutichdiem").text() === '' ? 0 : parseInt($("#tientrutichdiem").text().replace(/,/g, ""));
-            var voucher = $("#giatrivoucher").text() === '' ? 0 : parseInt($("#giatrivoucher").text().replace(/,/g, ""));
-            var tienkhachtra = tt - trutd - voucher;
-            $("#khachCanTra").text(tienkhachtra.toLocaleString().replace('.', ','));
+        $("#tichdiemhd").text(@(Model.DiemTichHD));
+        let diemtoida = (@(Model.TongTien)*0.3)/ @(ViewBag.TLTieu);
+        if(diemtoida >= @(Model.DiemKH)){
+            diemtoida = @(Model.DiemKH);
         }
+        $("#dtoida").text(diemtoida);
+         //Tự động áp điểm
+        $('.swithTichdiem input[type="checkbox"]').on('click', function(event, state){
+            if($(this).is(':checked')){
+               $('#diemKHSD').val(diemtoida);
+               $('#tientrutichdiem').text((diemtoida*@(ViewBag.TLTieu)).toLocaleString());
+            }else{
+                 $('#diemKHSD').val('');
+                $('#tientrutichdiem').text(0);
+            }
+            TinhTien();
+        })
+        TinhTien();
         //Áp dụng tích điểm
         $('#diemKHSD').on("input",function(){
+            var diem = $(this).val();
+            var tien = diem * @(ViewBag.TLTieu);
             if(@(ViewBag.LoaiQDD) === 1){ // Chỉ tích hoặc tiêu
                 if($(this).val() ===''){ // không nhập
-                    $('#tientrutichdiem').text('');
+                    $('#tientrutichdiem').text(0);
                     $("#tdhd").css('display', 'block');
-                    $("#tichdiemhd").text(tdhd);
-                }else if($(this).val() > diemkh){
+                    $("#tichdiemhd").text(@(Model.DiemTichHD));
+                }
+                else if($(this).val() > diemtoida){
+                    $('#tientrutichdiem').text();
+                    toastr.error('Số điểm vượt quá số điểm tối đa cho phép', "Error Alert", { timeOut: 1000 });
+                }else if($(this).val() > @(Model.DiemKH)){
                     toastr.error('Số điểm không đủ', "Error Alert", { timeOut: 1000 });
                 }else{
-                   if(tienhang !== 0){
-                       var diem = $(this).val();
-                       var tien = diem * @(ViewBag.TLTieu);
+                   if(@(Model.TongTien) !== 0){
                        $("tichdiemhd").text("");
                        $("#tdhd").css('display', 'none');
                        $('#tientrutichdiem').text(tien.toLocaleString());
                    }else{
-                       toastr.error('Chưa chọn sản phẩm mua hàng', "Error Alert", { timeOut: 1000 });
+                       toastr.error('Chưa có sản phẩm thanh toán', "Error Alert", { timeOut: 1000 });
                        $(this).val('');
                    }
                 }
-            }else if(@(ViewBag.LoaiQDD) === 2){
-                if(tienhang !== 0){
-                    if($(this).val() > diemkh){
+            }else if(@(ViewBag.LoaiQDD) === 2){ // Vừa tích vừa tiêu
+                if(@(Model.TongTien) !== 0){
+                    if($(this).val() > diemtoida){
+                        $('#tientrutichdiem').text(0);
+                        toastr.error('Số điểm vượt quá số điểm tối đa cho phép', "Error Alert", { timeOut: 1000 });
+                    }
+                    else if($(this).val() > @(Model.DiemKH)){
                         toastr.error('Số điểm không đủ', "Error Alert", { timeOut: 1000 });
                     }else{
-                           var diem = $(this).val();
-                           var tien = diem * @(ViewBag.TLTieu);
-                           $('#tientrutichdiem').text(tien.toLocaleString());
+                        $('#tientrutichdiem').text(tien.toLocaleString());
                     }
                 }else{
-                    toastr.error('Chưa chọn sản phẩm mua hàng', "Error Alert", { timeOut: 1000 });
+                    toastr.error('Chưa có sản phẩm thanh toán', "Error Alert", { timeOut: 1000 });
                 }
             }
             TinhTien();
@@ -208,4 +230,16 @@
                 });
             }
         })
+    })
+   
+
+        //Tính tiền
+       function TinhTien() {
+            var tt = @Model.TongTien;
+            $("#tongTienHang").text(tt.toLocaleString());
+            var trutd = $("#tientrutichdiem").text() === '' ? 0 : parseInt($("#tientrutichdiem").text().replace(/,/g, ""));
+            var voucher = $("#giatrivoucher").text() === '' ? 0 : parseInt($("#giatrivoucher").text().replace(/,/g, ""));
+            var tienkhachtra = tt - trutd - voucher;
+            $("#khachCanTra").text(tienkhachtra.toLocaleString());
+        }
 </script>

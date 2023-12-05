@@ -188,7 +188,7 @@ namespace AppView.Controllers
             {
                 var response = await _httpClient.PostAsync($"ChiTietHoaDon/UpdateSL?id={idhdct}&sl={sl}", null);
                 if (response.IsSuccessStatusCode) return Json(new { success = true, message = "Thêm số lượng thành công" });
-                else return Json(new { success = false, message = "Thêm số lượng thất bại" });
+                else return Json(new { success = false, message = "Sản phẩm hiễn tại không đủ số lượng" });
             }
             catch (Exception ex)
             {
@@ -254,7 +254,6 @@ namespace AppView.Controllers
                 IdNhanVien = request.IdNhanVien,
                 NgayThanhToan = DateTime.Now,
                 IdVoucher = request.IdVoucher == Guid.Empty ? Guid.Empty : request.IdVoucher,
-                //IdPTTT = request.IdPTTT,
                 PTTT = request.PTTT,
                 TongTien = request.TongTien,
                 DiemTichHD = request.DiemTichHD,
@@ -367,6 +366,7 @@ namespace AppView.Controllers
         {
             string apiURL = $"https://localhost:7095/api/Voucher";
             var listvc = await _httpClient.GetFromJsonAsync<List<Voucher>>(apiURL);
+            listvc = listvc.Where(c => c.NgayKetThuc > DateTime.Now).ToList();
             var vc = listvc.FirstOrDefault(c => c.Ten.ToUpper() == voucher.ToUpper());
             if (vc == null)
             {
