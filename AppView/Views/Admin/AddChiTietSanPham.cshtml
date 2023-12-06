@@ -4,46 +4,36 @@
     ViewData["Title"] = "Thêm số lượng và giá bán cho chi tiết sản phẩm";
 }
 
-<h1>AddChiTietSanPham</h1>
+<h1>Thêm chi tiết sản phẩm</h1>
 
-<h4>ChiTietSanPhamRequest</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="AddChiTietSanPham">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>            
-            <div class="form-group" id="mauSac">
+            <div class="form-group">
+                <label class="control-label">Màu sắc</label>
                 <table id="tbmausac">
-                    <thead>
-                        <tr>
-                            <td>Tên màu</td>
-                            <td>Mã màu</td>
-                        </tr>
-                    </thead>
                     <tbody class="table" id="tbbody">
                         <tr>
                             <td>
-@*                                 <input asp-for="MauSacs[0].Ten" class="form-control" />
- *@                            </td>
-                            <td>
-@*                                 <input asp-for="MauSacs[0].Ma" type="color" class="form-control" list="lstMauSac" />
- *@                            </td>
+                                <input name="MauSacs[0].Ten" class="form-control" list="mauSac" id="tenMau0" onchange="changeTenMau(0)" />
+                            </td>
+                            <td style="width:100px">
+                                <input name="MauSacs[0].Ma" type="color" class="form-control" value="#000000" id="maMau0" onchange="changeMaMau(0)" />
+                            </td>
                         </tr>
                     </tbody>
                 </table>
+                <input type="button" class="form-control" value="+" onclick="themMauSac(this)" />
+                <datalist id="mauSac"></datalist>
             </div>
-            <datalist id="lstMauSac"></datalist>
-            <div class="form-group">
-                <input type="button" id="addMauSac" value="Thêm màu sắc" class="btn btn-primary" />
+            <div class="form-group" id="lstKichCo">
+                <label class="control-label">Kích cỡ</label>
+                <input name="KichCos[0]" class="form-control" list="kichCo" />
+                <input type="button" class="form-control" value="+" onclick="themKichCo(1,this)" />
             </div>
-            <div class="form-group" id="kichCo">
-                <label class="control-label">Kích Cỡ</label>
-@*                 <input asp-for="KichCos[0]" class="form-control" list="lstKichCo"/>
- *@            </div>
-            <datalist id="lstKichCo"></datalist>
-            <div class="form-group">
-                <input type="button" id="addKichCo" value="Thêm kích cỡ" class="btn btn-primary" />
-            </div>
+            <datalist id="kichCo"></datalist>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -60,6 +50,8 @@
 }
 <script src="~/js/jquery-3.3.1.min.js"></script>
 <script>
+    var countMauSac = 1;
+    var lstMauSac = [];
     $(document).ready(function () {
         $.ajax({
             type: "GET",
@@ -67,8 +59,10 @@
             url: "/Admin/GetAllMauSac",
             success: function (response) {
                 for (var i = 0; i < response.length; i++) {
-                    var rows = "<option value='" + response[i].ma + "'>" + response[i].ma + "</option>";
-                    $('#lstMauSac').append(rows);
+                    response[i].ma = response[i].ma.toLowerCase();
+                    lstMauSac.push(response[i]);
+                    var rows = "<option value='" + response[i].ten + "'>" + response[i].ten + "</option>";
+                    $('#mauSac').append(rows);
                 }
             }
         });
@@ -79,20 +73,41 @@
             success: function (response) {
                 for (var i = 0; i < response.length; i++) {
                     var rows = "<option value='" + response[i].ten + "'>" + response[i].ten + "</option>";
-                    $('#lstKichCo').append(rows);
+                    $('#kichCo').append(rows);
                 }
             }
         });
     });
 
-    $("#addMauSac").click(function () { 
-        var count = $("#tbbody > tr").length;
-        $("#tbbody").append("<tr><td> <input name='MauSacs[" + count + "].Ten' class='form-control'/></td><td><input name='MauSacs[" + count + "].Ma' type='color' class='form-control' list='lstMauSac'/></td></tr>");
-        console.log("<tr><td> <input name='MauSacs[" + count + "].Ten' class='form-control'/></td><td><input name='MauSacs[" + count + "].Ma' type='color' class='form-control' list='lstMauSac'/></td></tr>");
-    });
-
-    $("#addKichCo").click(function () { 
-        var count = $("#kichCo > input").length;
-        $("#kichCo").append("<input name='KichCos[" + count + "]' class='form-control' ' list='lstKichCo'/>");
-    });
+    function themKichCo(count, element) {
+        if (element.value == "+") {
+            element.value = "-";
+            $("#lstKichCo").append("<input name='KichCos[" + count + "]' class='form-control' list='kichCo'/><input type='button' class='form-control' onclick='themKichCo(" + (count + 1) + ",this)' value='+' />");
+            element.remove();
+        }
+    }
+    function themMauSac(element) {
+        console.log("lo");
+        if (element.value == "+") {
+            $("#tbbody").append("<tr><td> <input name='MauSacs[" + countMauSac + "].Ten' class='form-control' list='mauSac' id='tenMau" + countMauSac + "' onchange='changeTenMau(" + countMauSac + ")'/></td><td><input name='MauSacs[" + countMauSac + "].Ma' type='color' onchange='changeMaMau(" + countMauSac + ")' class='form-control' id='maMau" + countMauSac + "' /></td></tr>");
+            countMauSac++;
+        }
+    }
+    function changeTenMau(count) {
+        var tenMau = $("#tenMau" + count).val();
+        var maMau = lstMauSac.find(x => x.ten == tenMau).ma;
+        document.getElementById("maMau" + count).value = maMau;
+    }
+    function changeMaMau(count) {
+        var maMau = $("#maMau" + count).val();
+        var tenMau = "";
+        var mauSac = lstMauSac.find(x => x.ma == maMau);
+        if (mauSac == null) {
+            tenMau = "";
+        }
+        else {
+            tenMau = mauSac.ten;
+        }
+        document.getElementById("tenMau" + count).value = tenMau;
+    }
 </script>
