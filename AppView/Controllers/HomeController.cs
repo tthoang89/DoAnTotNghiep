@@ -347,11 +347,18 @@ namespace AppView.Controllers
             //return View(lst);
         }
         [HttpGet]
-        public async Task<IActionResult> ProductDetail(string idSanPham, int? pages)
+        public async Task<IActionResult> ProductDetail(string idSanPham)
         {
             HttpResponseMessage response = await _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllChiTietSanPhamHome?idSanPham=" + idSanPham);
             var chiTietSanPham = JsonConvert.DeserializeObject<ChiTietSanPhamViewModelHome>(response.Content.ReadAsStringAsync().Result);
             return View(chiTietSanPham);
+        }
+        [HttpGet]
+        public async Task<IActionResult> ProductDetailFromCart(Guid idctsp)
+        {
+            HttpResponseMessage response = await _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetIDsanPhamByIdCTSP?idctsp=" + idctsp);
+            var idsanpham = JsonConvert.DeserializeObject<string>(response.Content.ReadAsStringAsync().Result);
+            return RedirectToAction("ProductDetail", "Home", new { idSanPham = idsanpham });
         }
         [HttpGet]
         public JsonResult ShowDanhGiabyIdSP(Guid id, int page, int pageSize)

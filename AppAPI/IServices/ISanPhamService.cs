@@ -20,6 +20,7 @@ namespace AppAPI.IServices
         Task<bool> AddAnhToSanPham(List<AnhRequest> request);
         List<Anh> GetAllAnhSanPham(Guid idSanPham);
         bool AddImageNoColor(Anh anh);
+        public Guid GetIDsanPhamByIdCTSP (Guid idctsp);
         #endregion
 
         #region LoaiSanPham

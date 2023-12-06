@@ -122,6 +122,11 @@ namespace AppAPI.Controllers
             var sanPham = await _sanPhamServices.GetAllChiTietSanPham();
             return Ok(sanPham);
         }
+        [HttpGet("GetIDsanPhamByIdCTSP")]
+        public Guid GetIDsanPhamByIdCTSP(Guid idctsp)
+        {
+            return _sanPhamServices.GetIDsanPhamByIdCTSP(idctsp);
+        }
         #endregion
 
         #region LoaiSP

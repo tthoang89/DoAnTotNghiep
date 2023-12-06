@@ -262,7 +262,7 @@ namespace AppAPI.Services
             }
             foreach (var item in lstChiTietSanPham)
             {
-                chiTietSanPham.ChiTietSanPhams.Add(new ChiTietSanPhamViewModel() { ID = item.ID,Ten=sanPham.Ten,SoLuong = item.SoLuong, GiaBan = item.IDKhuyenMai == null ? item.GiaBan : item.GiaBan - GetKhuyenMai(item.IDKhuyenMai.Value, item.GiaBan), GiaGoc = item.GiaBan,MauSac=item.IDMauSac.ToString(),KichCo=item.IDKichCo.ToString(),TrangThai=item.TrangThai});
+                chiTietSanPham.ChiTietSanPhams.Add(new ChiTietSanPhamViewModel() { ID = item.ID,MaCTSP = item.Ma,Ten=sanPham.Ten,SoLuong = item.SoLuong, GiaBan = item.IDKhuyenMai == null ? item.GiaBan : GetKhuyenMai(item.IDKhuyenMai.Value, item.GiaBan), GiaGoc = item.GiaBan,MauSac=item.IDMauSac.ToString(),KichCo=item.IDKichCo.ToString(),TrangThai=item.TrangThai});
             }
             chiTietSanPham.MoTa = sanPham.MoTa;
             var query = await (from sp in _context.SanPhams.Where(p => p.ID == idSanPham)
@@ -542,6 +542,12 @@ namespace AppAPI.Services
                               GiaGoc = ctsp.GiaBan,
                               GiaBan = km.TrangThai == null ? ctsp.GiaBan : (km.TrangThai == 0 ? ctsp.GiaBan - km.GiaTri : (ctsp.GiaBan * (100 - km.GiaTri) / 100)),
                           }).ToListAsync();
+        }
+
+        public Guid GetIDsanPhamByIdCTSP(Guid idctsp)
+        {
+            var ctsp = _context.ChiTietSanPhams.FirstOrDefault(p=>p.ID == idctsp);
+            return ctsp.IDSanPham;
         }
         #endregion
     }
