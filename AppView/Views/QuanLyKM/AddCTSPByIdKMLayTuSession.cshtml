@@ -12,47 +12,36 @@
     };
 }
 
-<table class="table">
+<table class="table" style="margin-left: 20px">
     <thead>
         <tr>
-            <th>
-                Chọn
-            </th>
-            <th>
-                STT
-            </th>
-            <th>
-                Mã CTSP
-            </th>
-            <th>
-                Ảnh
-            </th>
-            <th>
-                Tên Màu Sắc
-            </th>
-            <th>
-                Tên Kích Cỡ
-            </th>
-            <th>
-                Số lượng
-            </th>
+            <th style=" background-color: darkslategray;
+    color: white;">Chọn</th>
+            <th style=" background-color: darkslategray;
+    color: white;">STT</th>
+            <th style=" background-color: darkslategray;
+    color: white;">Mã CTSP</th>
+            <th style=" background-color: darkslategray;
+    color: white;">Ảnh</th>
+            <th style=" background-color: darkslategray;
+    color: white;">Tên màu sắc</th>
+            <th style=" background-color: darkslategray;
+    color: white;">Tên kích cỡ</th>
+            <th style=" background-color: darkslategray;
+    color: white;">Số lượng</th>
 
-            <th>
-                Giá Gốc
-            </th>
-            <th>
-                Giá Trị KM
-            </th>
-            <th>
-                Giá Khuyến Mãi
-            </th>
-            <th>
-                Ngày Tạo
-            </th>
-            <th>
-                Trạng Thái
-            </th>
-            <th></th>
+            <th style=" background-color: darkslategray;
+    color: white;">Giá gốc </th>
+            <th style=" background-color: darkslategray;
+    color: white;">Giá trị KM</th>
+            <th style=" background-color: darkslategray;
+    color: white;">Giá khuyến mãi</th>
+            <th style=" background-color: darkslategray;
+    color: white;">Ngày tạo</th>
+            <th style=" background-color: darkslategray;
+    color: white;">Trạng thái</th>
+            <th style=" background-color: darkslategray;
+    color: white;"></th>
         </tr>
     </thead>
     <tbody>
@@ -65,7 +54,7 @@
                     @stt
                 </td>
                 <td>
-                    <strong style="color:black">@item.MaCTSP</strong>
+                    <div style="color:black">@item.MaCTSP</div>
                 </td>
                 
                 <td>
@@ -90,7 +79,7 @@
                     }
                 </td>
                 <td>
-                    <strong style="color:red">@item.TenMauSac</strong>
+                    <div style="color:red">@item.TenMauSac</div>
                 </td>
                 <td>
                     @*@{
@@ -99,13 +88,13 @@
                 <strong style="color:green">@timkiemidbt.SoLuong</strong>
                 }
                 }*@
-                    <strong style="color:black">@item.TenKichCo</strong>
+                    <div style="color:black">@item.TenKichCo</div>
                 </td>
                 <td>
-                    <strong style="color:black">@item.SoLuong</strong>
+                    <div style="color:black">@item.SoLuong</div>
                 </td>
                 <td>
-                    <strong style="color:red"><del>@item.GiaGoc.ToString("n0") VND</del></strong>
+                    <div style="color:red"><del>@item.GiaGoc.ToString("n0") VND</del></div>
                 </td>
                 <td>
                     @{
@@ -116,21 +105,21 @@
                             {
                                 if (tk.TrangThai == 0)
                                 {
-                                    <strong style="color:green">@tk.GiaTri VND</strong>
+                                    <div style="color:green">@tk.GiaTri VND</div>
                                 }
                                 else
                                 {
-                                    <strong style="color:green">@tk.GiaTri %</strong>
+                                    <div style="color:green">@tk.GiaTri %</div>
                                 }
                             }
                             else if (tk.NgayKetThuc < DateTime.Now)
                             {
-                                <strong style="color:red"></strong>
+                                <div style="color:red"></div>
                             }
                         }
                         else
                         {
-                            <strong style="color:red"></strong>
+                            <div style="color:red"></div>
                         }
                     }
 
@@ -144,27 +133,27 @@
                             {
                                 if (tk.TrangThai == 0)
                                 {
-                                    <strong style="color:green">@(item.GiaGoc - tk.GiaTri) VND</strong>
+                                    <div style="color:green">@(item.GiaGoc - tk.GiaTri) VND</div>
                                 }
                                 else
                                 {
-                                    <strong style="color:green">$@(item.GiaGoc - item.GiaGoc * tk.GiaTri / 100) VND</strong>
+                                    <div style="color:green">$@(item.GiaGoc - item.GiaGoc * tk.GiaTri / 100) VND</div>
                                 }
                             }
                             else if (tk.NgayKetThuc < DateTime.Now)
                             {
-                                <strong style="color:red">$@item.GiaGoc.ToString("n0") VND</strong>
+                                <div style="color:red">$@item.GiaGoc.ToString("n0") VND</div>
                             }
                         }
                         else
                         {
-                            <strong style="color:red">$@item.GiaGoc.ToString("n0") VND</strong>
+                            <div style="color:red">$@item.GiaGoc.ToString("n0") VND</div>
                         }
                     }
 
                 </td>
                 <td>
-                    <strong style="color:green">@item.NgayTao</strong>
+                    <div style="color:green">@item.NgayTao</div>
 
                 </td>
 
@@ -173,11 +162,11 @@
 
                         if (item.TrangThai == 0)
                         {
-                            <strong style="color:red">Hết Hàng</strong>
+                            <div style="color:red">không sử dụng</div>
                         }
                         else
                         {
-                            <strong style="color:green">Còn Hàng</strong>
+                            <div style="color:green">Sử dụng</div>
                         }
                     }
 
@@ -193,14 +182,14 @@
 <div class="col-12">
     <nav>
         <ul class="pagination justify-content-center">
-            <li class="page-item disabled"><a class="page-link" href="#">Previous</span></a></li>
+           
             @for (int i = 1; i <= Model.PagingInfo.TotalPages; i++)
             {
                 <li class="page-item"><a class="page-link" href="/QuanLyKM/AddKHuyenMaiVoSP?ProductPage=@i">@i</a></li>
 
             }
 
-            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            
         </ul>
     </nav>
 </div>

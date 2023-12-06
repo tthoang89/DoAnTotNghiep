@@ -12,45 +12,38 @@
          ".png", ".jpg", ".jpeg", ".gif", ".tiff", ".pdf",".webp",".jfif"
     };
 }
-<button class="btn btn-dark">
-    <strong style="color:white">@Html.ActionLink("Thêm Sản Phẩm Vô KM", "GetSPNoKM")</strong>
-</button>
-<h1> Các Sản Phẩm</h1>
+<div class="col-8">
+    <a class="btn btn-primary" asp-action="GetSPNoKM">Thêm sản phẩm vô khuyến mãi</a>
+</div>
+<h1 style="text-align:center"><b> Các sản phẩm có trong khuyến mãi</b></h1>
 
 
-<table class="table">
+<table class="table" style="margin-left: 20px">
     <thead>
         <tr>
-            <th>
-                STT
-            </th>
-            <th>
-                Mã Sản Phẩm
-            </th>
-            <th>
-                Tên Sản Phẩm
-            </th>
-          
-           
-            <th>
-                Tên Ảnh
-            </th>
-           
+            <th style=" background-color: darkslategray;
+    color: white;">STT</th>
+            <th style=" background-color: darkslategray;
+    color: white;">Mã sản phẩm</th>
+            <th style=" background-color: darkslategray;
+    color: white;">Tên sản phẩm</th>
 
-            <th>
-                Giá Bán
-            </th>
-            <th>
-                Tên Loại SP
-            </th>
 
-            <th>
-                Tên Chất Liệu
-            </th>
-            <th>
-                Trạng Thái
-            </th>
-            <th>Hành Động</th>
+            <th style=" background-color: darkslategray;
+    color: white;">Tên ảnh</th>
+
+
+            <th style=" background-color: darkslategray;
+    color: white;">Giá bán</th>
+            <th style=" background-color: darkslategray;
+    color: white;">Tên loại sản phẩm</th>
+
+            <th style=" background-color: darkslategray;
+    color: white;">Tên chất liệu</th>
+            <th style=" background-color: darkslategray;
+    color: white;">Trạng thái</th>
+            <th style=" background-color: darkslategray;
+    color: white;"></th>
         </tr>
     </thead>
     <tbody>
@@ -61,10 +54,10 @@
                     <strong style="color:black">@stt</strong>
                 </td>
                 <td>
-                    <strong style="color:black">@item.MaSP</strong>
+                    <div style="color:black">@item.MaSP</div>
                 </td>
                 <td>
-                    <strong style="color:black">@item.Ten</strong>
+                    <div style="color:black">@item.Ten</div>
                 </td>
                 
                 <td>
@@ -91,7 +84,7 @@
                
 
                 <td>
-                    <strong style="color:black">@item.GiaBan</strong>
+                    <div style="color:black">@item.GiaBan.ToString("n0") VND</div>
                 </td>
 
 
@@ -100,7 +93,7 @@
                         var tenloaisp = Dbcontext.LoaiSPs.FirstOrDefault(x => x.ID == item.IDLoaiSP);
                         if (tenloaisp != null)
                         {
-                                <strong style="color:black">@tenloaisp.Ten</strong>
+                                <div style="color:black">@tenloaisp.Ten</div>
                         }
                     }
                 </td>
@@ -109,7 +102,7 @@
                         var tencl = Dbcontext.ChatLieus.FirstOrDefault(x => x.ID == item.IDChatLieu);
                         if (tencl != null)
                         {
-                                <strong style="color:black">@tencl.Ten</strong>
+                                <div style="color:black">@tencl.Ten</div>
                         }
                     }
                 </td>
@@ -117,11 +110,11 @@
                     @{
                         if (item.TrangThai == 0)
                         {
-                                <strong style="color:red">Hết Hàng</strong>
+                            <div style="color:red">không sử dụng </div>
                         }
                         else
                         {
-                                <strong style="color:green">Còn Hàng</strong>
+                            <div style="color:green">Sử dụng</div>
                         }
                     }
                 </td>
@@ -142,14 +135,14 @@
 <div class="col-12">
     <nav>
         <ul class="pagination justify-content-center">
-            <li class="page-item disabled"><a class="page-link" href="#">Previous</span></a></li>
+            
             @for (int i = 1; i <= Model.PagingInfo.TotalPages; i++)
             {
                 <li class="page-item"><a class="page-link" href="/QuanLyKM/GetAllQLKhuyenMaiSP?ProductPage=@i">@i</a></li>
 
             }
 
-            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            
         </ul>
     </nav>
 </div>

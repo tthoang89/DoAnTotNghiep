@@ -6,28 +6,29 @@
     int stt = 1;
 }
 
-<h3>Quản Lý Quy Đổi Điểm</h3>
+<h1 style="text-align:center">
+    <b>Quản lý quy đổi điểm</b>
 
-<button class="btn btn-dark">
-    <strong style="color:white">@Html.ActionLink("Thêm Quy Đổi Điểm", "Create")</strong>
-</button>
-<table class="table">
+</h1>
+
+<div class="col-8">
+    <a class="btn btn-primary" asp-action="Create">Thêm mới</a>
+</div>
+<br />
+<table class="table" style="margin-left: 20px">
     <thead>
         <tr>
-            <th>
-                STT
-            </th>
-          
-            <th>
-                Tỉ Lệ Tích Điểm
-            </th>
-            <th>
-               Tỷ Lệ Tiêu Điểm
-            </th>
-            <th>
-                Trạng Thái
-            </th>
-            <th></th>
+            <th style=" background-color: darkslategray;
+    color: white;">STT</th>
+
+            <th style=" background-color: darkslategray;
+    color: white;">Tỉ lệ tích điểm</th>
+            <th style=" background-color: darkslategray;
+    color: white;">Tỉ lệ tiêu điểm</th>
+            <th style=" background-color: darkslategray;
+    color: white;">Trạng thái </th>
+            <th style=" background-color: darkslategray;
+    color: white;"></th>
         </tr>
     </thead>
     <tbody>
@@ -38,20 +39,20 @@
             </td>
             
             <td>
-                <strong style="color:green">@item.TiLeTichDiem</strong>
+                <div style="color:green">@item.TiLeTichDiem</div>
             </td>
             <td>
-                    <strong style="color:green">@item.TiLeTieuDiem</strong>
+                    <div style="color:green">@item.TiLeTieuDiem</div>
             </td>
             <td>
                 @if(item.TrangThai==0){
-                        <strong style="color:red">Không sử dụng điểm</strong>
+                        <div style="color:red">Không sử dụng điểm</div>
                 }
                 else if(item.TrangThai==1){
-                        <strong style="color:green">Chỉ tích điểm hoặc tiêu điểm</strong>
+                        <div style="color:green">Chỉ tích điểm hoặc tiêu điểm</div>
                 }
                 else if(item.TrangThai==2){
-                        <strong style="color:green">Vừa tiêu điểm, vừa tích điểm</strong>
+                        <div style="color:green">Vừa tiêu điểm, vừa tích điểm</div>
                 }
             </td>
             <td>
@@ -73,14 +74,14 @@
 <div class="col-12">
     <nav>
         <ul class="pagination justify-content-center">
-            <li class="page-item disabled"><a class="page-link" href="#">Previous</span></a></li>
+           
             @for (int i = 1; i <= Model.PagingInfo.TotalPages; i++)
             {
                 <li class="page-item"><a class="page-link" href="/QuyDoiDiem/GetAllQuyDoiDiem?ProductPage=@i">@i</a></li>
 
             }
 
-            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            
         </ul>
     </nav>
 </div>
