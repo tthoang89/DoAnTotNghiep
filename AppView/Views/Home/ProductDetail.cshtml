@@ -214,7 +214,7 @@
                                                     <b><span id="average_rating">0</span> / 5</b>
                                                 }else
                                                 {
-                                                    <b><span id="average_rating">@Model.SoSao</span> / 5</b>
+                                                    <b><span id="average_rating">@Math.Round(Model.SoSao,1)</span> / 5</b>
                                                 }
                                                 
                                             </h3>
@@ -434,7 +434,7 @@
                 }
             },
             error: function (response) {
-                toastr.error(response.message, 'Error Alert', { timeOut: 300 });
+                
             }
         });
     }
@@ -472,7 +472,7 @@
                 }
             },
             error: function (response) {
-                toastr.error(response.message, 'Error Alert', { timeOut: 300 });
+                
             }
         });
     }

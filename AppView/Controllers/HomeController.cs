@@ -597,7 +597,7 @@ namespace AppView.Controllers
 
                         return Json(new { success = true, message = "Add to cart successfully",sl=cout });
                     }
-                    else return BadRequest();
+                    else return Json(new { error = true, message = "  Not Add to cart " });
                 }
                 else
                 {
@@ -628,7 +628,7 @@ namespace AppView.Controllers
                 else 
                 {
                     TempData["SoLuong"] = "0";
-                    return View(new List<GioHangRequest>());
+                    return Json(new { error = false, message = "  Not Add to cart " }); ;
                 } 
             }
         }
@@ -1070,7 +1070,7 @@ namespace AppView.Controllers
             if (responseDonMua.IsSuccessStatusCode)
             {
                 donMuaViewModels = JsonConvert.DeserializeObject<List<DonMuaViewModel>>(responseDonMua.Content.ReadAsStringAsync().Result);
-                donMuaViewModels = donMuaViewModels.OrderByDescending(p => p.NgayTao.Date).ThenBy(p => p.NgayTao.TimeOfDay).ToList();
+                donMuaViewModels = donMuaViewModels.OrderByDescending(p => p.NgayTao).ToList();
 
                 foreach (var item in donMuaViewModels)
                 {

@@ -126,7 +126,7 @@
                 </div>
                 <div class="cell-content">
                     <div class="cell-content-top">
-                        <div class="cell-code">Mã sản phẩm</div>
+                        <div class="cell-code text-primary" >@item.MaCTSP</div>
                         <div class="cell-name">@item.Ten <span class="badge bg-warning" style="color:#fff; font-weight:600">@item.PhanLoai</span></div>
                     </div>
                     <div class="cell-content-bottom">
@@ -322,7 +322,11 @@
                  sl: SL
              },
              success: function(response) {
-                 gethdct('@Model.Id');
+                 if(response.success === true){
+                    gethdct('@Model.Id');
+                 }else{
+                    toastr.error(response.message, 'Error Alert', { timeOut: 500 });
+                 }
              },
              error: function(response) {
                  toastr.error('Thêm sản phẩm thất bại', 'Error Alert', { timeOut: 300 });

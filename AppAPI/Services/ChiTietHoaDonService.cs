@@ -125,7 +125,7 @@ namespace AppAPI.Services
             return lsthdct;
         }
 
-        public async Task<ChiTietHoaDon> UpdateSL(Guid id, int sl)
+        public async  Task<bool> UpdateSL(Guid id, int sl)
         {
             try
             {
@@ -133,6 +133,7 @@ namespace AppAPI.Services
                 var ctsp = _context.ChiTietSanPhams.Find(cthd.IDCTSP);
 
                 var chenhlech = cthd.SoLuong - sl;
+                if (chenhlech < 0 && chenhlech * (-1) > ctsp.SoLuong) return false;
                 ctsp.SoLuong += chenhlech;
                 _context.ChiTietSanPhams.Update(ctsp);
                 await _context.SaveChangesAsync();
@@ -140,7 +141,7 @@ namespace AppAPI.Services
 
                 _context.ChiTietHoaDons.Update(cthd);
                 await _context.SaveChangesAsync();
-                return cthd;
+                return true;
             }
             catch (Exception ex)
             {
