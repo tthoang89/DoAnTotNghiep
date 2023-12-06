@@ -8,15 +8,15 @@
 
     int stt = 1;
 }
-<h2>Quản Lý Khuyến Mại</h2>
+<h1 style="text-align:center"><b>Quản lý khuyến mãi </b></h1>
 
-<button class="btn btn-dark">
-    <strong style="color:white">@Html.ActionLink("Thêm Khuyến Mãi", "Create")</strong>
-</button>
+<div class="col-8">
+    <a class="btn btn-primary" asp-action="Create">Thêm mới</a>
+</div>
 <br />
 <form asp-action="TimKiemTenKM" asp-controller="QuanLyKM" method="get" enctype="multipart/form-data">
     <div class="input-group">
-        <input type="text" name="TenKM" class="form-control" placeholder="Search for Khuyen Mai">
+        <input type="text" name="TenKM" class="form-control" placeholder="Tìm kiếm khuyến mãi theo mã">
         <div class="input-group-append">
             <span class="input-group-text bg-transparent text-primary">
                 <button type="submit" class="fa fa-search"></button>
@@ -24,32 +24,27 @@
         </div>
     </div>
 </form>
-<table class="table">
+<table class="table" style="margin-left: 20px">
     <thead>
         <tr>
-            <th>
-                STT
-            </th>
+            <th style=" background-color: darkslategray;
+    color: white;">STT</th>
 
-            <th>
-                Tên
-            </th>
-            <th>
-                Giá Trị
-            </th>
-            <th>
-                Ngày Áp Dụng
-            </th>
-            <th>
-                Ngày Kết Thúc
-            </th>
-            <th>
-                Mô Tả
-            </th>
-            <th>
-                Trạng Thái
-            </th>
-            <th></th>
+            <th style=" background-color: darkslategray;
+    color: white;">Mã</th>
+            <th style=" background-color: darkslategray;
+    color: white;">Giá trị</th>
+            <th style=" background-color: darkslategray;
+    color: white;">Ngày áp dụng</th>
+            <th style=" background-color: darkslategray;
+    color: white;">ngày kết thúc</th>
+            <th style=" background-color: darkslategray;
+    color: white;">Mô tả</th>
+            
+            <th style=" background-color: darkslategray;
+    color: white;">Trạng thái</th>
+            <th style=" background-color: darkslategray;
+    color: white;"></th>
         </tr>
     </thead>
     <tbody>
@@ -61,50 +56,52 @@
                 </td>
 
                 <td>
-                    <strong style="color:red">@item.Ten</strong>
+                    @item.Ten
                 </td>
                 <td>
                     @if(item.TrangThai==0){
-                        <strong style="color:red">@item.GiaTri.ToString("n0") VND</strong>
+                        <div style="color:red">@item.GiaTri.ToString("n0") VND</div>
                     }
                     else{
-                        <strong style="color:green">@item.GiaTri %</strong>
+                        <div style="color:green">@item.GiaTri %</div>
                     }
                 </td>
                 <td>
-                    <strong style="color:green">@item.NgayApDung</strong>
+                    <div style="color:green">@item.NgayApDung</div>
                 </td>
                 <td>
                     @if (item.NgayKetThuc >= DateTime.Now)
                     {
-                        <strong style="color:green">@item.NgayKetThuc</strong>
+                        <div style="color:green">@item.NgayKetThuc</div>
                     }
                     else
                     {
-                        <strong style="color:red">@item.NgayKetThuc</strong>
+                        <div style="color:red">@item.NgayKetThuc</div>
                     }
 
                 </td>
                 <td>
-                    <strong style="color:black">@item.MoTa</strong>
+                    <div style="color:black">@item.MoTa</div>
                 </td>
                 <td>
                     @{
                         if (item.NgayKetThuc >= DateTime.Now)
                         {
-                            <strong style="color:green">Còn khuyến mãi</strong>
+                            <div style="color:green">Còn khuyến mãi</div>
                         }
                         else
                         {
-                            <strong style="color:red">Hết Khuyến mãi</strong>
+                            <div style="color:red">Hết khuyến mãi</div>
                         }
                     }
 
                 </td>
+               
                 <td>
                     <button class="btn btn-success">
                         @Html.ActionLink("Sửa", "Update", new { id = item.ID }, new { @style = "color:white;" })
                     </button>
+
                     <button class="btn btn-primary">
                         @Html.ActionLink("Chi tiết", "GetSPByIdKM", new { id = item.ID }, new { @style = "color:white;" })
                     </button>
@@ -121,14 +118,14 @@
 <div class="col-12">
     <nav>
         <ul class="pagination justify-content-center">
-            <li class="page-item disabled"><a class="page-link" href="#">Previous</span></a></li>
+            
             @for (int i = 1; i <= Model.PagingInfo.TotalPages; i++)
             {
                 <li class="page-item"><a class="page-link" href="/QuanLyKM/GetAllKM?ProductPage=@i">@i</a></li>
 
             }
 
-            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+          
         </ul>
     </nav>
 </div>
