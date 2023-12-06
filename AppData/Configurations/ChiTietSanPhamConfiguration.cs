@@ -15,7 +15,7 @@ namespace AppData.Configurations
         {
             builder.ToTable("ChiTietSanPham");
             builder.HasKey(x => x.ID);
-            builder.Property(x => x.Ma).HasColumnType("nvarchar(10)");
+            builder.Property(x => x.Ma).HasColumnType("nvarchar(100)");
             builder.Property(x => x.SoLuong).HasColumnType("int");
             builder.Property(x => x.GiaBan).HasColumnType("int");
             builder.Property(x => x.NgayTao).HasColumnType("datetime");

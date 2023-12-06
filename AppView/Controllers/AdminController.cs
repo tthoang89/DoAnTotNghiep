@@ -131,16 +131,16 @@ namespace AppView.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> AddChiTietSanPham(ChiTietSanPhamUpdateRequest request)
+        public async Task<IActionResult> AddChiTietSanPham(ChiTietSanPhamAddRequest request)
         {
             string idSanPham = TempData.Peek("IDSanPham").ToString();
             request.IDSanPham = new Guid(idSanPham);
             var response = await _httpClient.PostAsJsonAsync(_httpClient.BaseAddress + "SanPham/AddChiTietSanPham", request);
             if (response.IsSuccessStatusCode)
             {
-                List<AnhRequest> lstAnhRequest = JsonConvert.DeserializeObject<List<AnhRequest>>(response.Content.ReadAsStringAsync().Result);
-                TempData["MauSacs"] = JsonConvert.SerializeObject(lstAnhRequest);
-                return RedirectToAction("AddAnhToMauSac");
+                TempData["UpdateChiTietSanPham"] = response.Content.ReadAsStringAsync().Result;
+
+                return RedirectToAction("UpdateChiTietSanPham");
             }
             else return BadRequest();
         }
@@ -156,6 +156,11 @@ namespace AppView.Controllers
             var request = JsonConvert.DeserializeObject<ChiTietSanPhamUpdateRequest>(TempData["UpdateChiTietSanPham"].ToString());
             TempData["SanPham"]=request.IDSanPham.ToString();
             TempData["MaSP"] = request.Ma;
+            if (request.MauSacs != null)
+            {
+                TempData["MauSac"] = JsonConvert.SerializeObject(request.MauSacs);
+            }
+            TempData["Location"] = request.Location.ToString();
             return View(request);
         }
         [HttpPost]
@@ -163,7 +168,8 @@ namespace AppView.Controllers
         {
             request.IDSanPham = new Guid(TempData.Peek("SanPham").ToString());
             request.Ma = TempData["MaSP"] as string;
-            var response = _httpClient.PostAsJsonAsync(_httpClient.BaseAddress+ "SanPham/AddChiTietSanPham",request).Result;
+            request.Location = Convert.ToInt32(TempData["Location"] as string);
+            var response = _httpClient.PostAsJsonAsync(_httpClient.BaseAddress+ "SanPham/AddChiTietSanPhamFromSanPham", request).Result;
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToAction("AddAnhToSanPham");

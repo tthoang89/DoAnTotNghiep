@@ -109,11 +109,18 @@ namespace AppAPI.Controllers
             var lstChiTietSanPham = await _sanPhamServices.GetAllChiTietSanPhamAdmin(idSanPham);
             return Ok(lstChiTietSanPham);
         }
-        [HttpPost("AddChiTietSanPham")]
-        public async Task<IActionResult> AddChiTietSanPham(ChiTietSanPhamUpdateRequest request)
+        [HttpPost("AddChiTietSanPhamFromSanPham")]
+        public async Task<IActionResult> AddChiTietSanPhamFromSanPham(ChiTietSanPhamUpdateRequest request)
         {
             if (request == null) return BadRequest();
             var response = await _sanPhamServices.AddChiTietSanPhamFromSanPham(request);
+            return Ok(response);
+        }
+        [HttpPost("AddChiTietSanPham")]
+        public async Task<IActionResult> AddChiTietSanPham(ChiTietSanPhamAddRequest request)
+        {
+            if (request == null) return BadRequest();
+            var response = await _sanPhamServices.AddChiTietSanPham(request);
             return Ok(response);
         }
         [HttpGet("GetAllChiTietSanPham")]

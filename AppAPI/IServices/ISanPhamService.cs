@@ -33,6 +33,7 @@ namespace AppAPI.IServices
         #endregion
 
         #region ChiTietSanPham
+        Task<ChiTietSanPhamUpdateRequest> AddChiTietSanPham(ChiTietSanPhamAddRequest request);
         ChiTietSanPhamViewModel GetChiTietSanPhamByID(Guid id);
         Task<List<ChiTietSanPham>> GetAllChiTietSanPham(Guid idSanPham);
         Task<ChiTietSanPhamViewModelHome> GetAllChiTietSanPhamHome(Guid idSanPham);

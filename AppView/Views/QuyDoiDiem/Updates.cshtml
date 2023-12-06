@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_LayoutForAdmin.cshtml";
 }
 
-<h1>Sửa Quy Đổi Điểm </h1>
+<h1>Sửa quy đổi điểm </h1>
 
 
 <hr />
@@ -35,7 +35,7 @@
             </div>*@
             @if(Model.TrangThai==0){
                 <div class="form-group">
-                    <label class="control-label">Trạng Thái</label>
+                    <label class="control-label">Trạng thái</label>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="trangthai" value="0" @(Model.TrangThai == 0 ? "checked" : "")>
                         <label class="form-check-label" for="flexRadioDefault1">
@@ -58,7 +58,7 @@
             }
             else{
                 <div class="form-group">
-                    <label class="control-label">Trạng Thái</label>
+                    <label class="control-label">Trạng thái</label>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="trangthai" value="0" @(Model.TrangThai == 0 ? "checked" : "")>
                         <label class="form-check-label" for="flexRadioDefault1">
@@ -81,14 +81,14 @@
             }
             
             <div class="form-group">
-                <input type="submit" value="Sửa Quy Đổi Điểm" class="btn btn-success" />
+                <input type="submit" value="Sửa quy đổi điểm" class="btn btn-success" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="GetAllQuyDoiDiem">Quay Lại</a>
+    <a asp-action="GetAllQuyDoiDiem">Quay lại</a>
 </div>
 
 @section Scripts {
