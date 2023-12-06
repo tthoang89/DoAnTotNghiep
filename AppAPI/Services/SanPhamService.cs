@@ -32,6 +32,50 @@ namespace AppAPI.Services
         {
             throw new NotImplementedException();
         }
+        public List<SanPhamViewModelAdmin> GetAllSanPhamAdmin()
+        {
+            try
+            {
+                var lstSanPham = (from a in _context.SanPhams
+                                       join b in _context.ChiTietSanPhams.Where(x => x.TrangThai == 1) on a.ID equals b.IDSanPham
+                                       join e in _context.LoaiSPs.Where(x => x.LoaiSPCha != null) on a.IDLoaiSP equals e.ID
+                                       select new
+                                       {
+                                           ID = a.ID,
+                                           Ten = a.Ten,
+                                           Ma = a.Ma,
+                                           TrangThai = a.TrangThai,
+                                           LoaiSP = _context.LoaiSPs.First(x=>x.ID == e.IDLoaiSPCha).Ten+"/"+e.Ten,
+                                           Image = _context.Anhs.First(x => x.IDMauSac == b.IDMauSac && x.IDSanPham == a.ID).DuongDan,
+                                           IDChatLieu = a.IDChatLieu,
+                                           GiaGoc = b.GiaBan,
+                                           SoLuong = b.SoLuong,
+                                           IDKhuyenMai = b.IDKhuyenMai,
+                                       }).ToList();
+                var response = new List<SanPhamViewModelAdmin>();
+                foreach (var item in lstSanPham)
+                {
+                    response.Add(new SanPhamViewModelAdmin()
+                    {
+                        ID = item.ID,
+                        Ten = item.Ten,
+                        Ma = item.Ma,
+                        Anh = item.Image,
+                        GiaGoc = item.GiaGoc,
+                        GiaBan = item.IDKhuyenMai == null ? item.GiaGoc : GetKhuyenMai(item.IDKhuyenMai, item.GiaGoc),
+                        SoLuong = item.SoLuong,
+                        ChatLieu = _context.ChatLieus.First(x=>x.ID==item.IDChatLieu).Ten,
+                        LoaiSP = item.LoaiSP,
+                        TrangThai = item.TrangThai,
+                    });
+                }
+                return response;
+            }
+            catch
+            {
+                return new List<SanPhamViewModelAdmin>();
+            }
+        }
         public async Task<List<SanPhamViewModel>> GetAllSanPham()
         {
             try
@@ -86,12 +130,14 @@ namespace AppAPI.Services
         {
             throw new NotImplementedException();
         }
-        public async Task<bool> DeleteSanPham(Guid id)
+        public async Task<bool> UpdateTrangThaiSanPham(Guid id, int trangThai)
         {
             try
             {
-                var sanPham = await _context.SanPhams.FindAsync(id);
-                sanPham.TrangThai = 0;
+                var sanPham = await _context.SanPhams.FirstAsync(x=>x.ID==id);
+                sanPham.TrangThai = trangThai;
+                _context.SanPhams.Update(sanPham);
+                await _context.SaveChangesAsync();
                 return true;
             }
             catch
@@ -162,6 +208,17 @@ namespace AppAPI.Services
         public List<Anh> GetAllAnhSanPham(Guid idSanPham)
         {
             return _context.Anhs.Where(x=>x.IDSanPham == idSanPham).ToList();
+        }
+
+        public bool AddImageNoColor(Anh anh)
+        {
+            try
+            {
+                _context.Anhs.Add(anh);
+                _context.SaveChanges();
+                return true;    
+
+            }catch { return false; }
         }
         #endregion
 

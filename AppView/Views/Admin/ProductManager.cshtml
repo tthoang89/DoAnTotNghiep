@@ -1,4 +1,4 @@
-﻿@model IEnumerable<AppData.ViewModels.SanPham.SanPhamViewModel>
+﻿@model IEnumerable<AppData.ViewModels.SanPham.SanPhamViewModelAdmin>
 
 @{
     ViewData["Title"] = "ProductManager";
@@ -14,28 +14,31 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Image)
+                Tên
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ID)
+                Mã
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Ten)
+                Ảnh
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TrangThai)
+                Giá gốc
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.LoaiSP)
+                Giá bán
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IdChiTietSanPham)
+                Số lượng 
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.GiaBan)
+                Chất liệu
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.GiaGoc)
+                Loại sản phẩm
+            </th>
+            <th>
+                Trạng thái
             </th>
             <th></th>
         </tr>
@@ -45,34 +48,49 @@
         {
             <tr>
                 <td>
-                    <img src="~/img/product/@item.Image" style="width:70px;height:70px"/>
-                </td>
-                <td>
-                    @item.ID
-                </td>
-                <td>
                     @item.Ten
                 </td>
                 <td>
-                    @item.TrangThai
+                    @item.Ma
                 </td>
                 <td>
-                    @item.LoaiSP
+                    <img src="~/img/product/@item.Anh" style="width:70px;height:70px" />
                 </td>
                 <td>
-                    @item.IdChiTietSanPham
+                    @item.GiaGoc
                 </td>
                 <td>
                     @item.GiaBan
                 </td>
                 <td>
-                    @item.GiaGoc
+                    @item.SoLuong
                 </td>
-                <td style="width:150px">
-                    @* @Html.ActionLink("Details", "ProductDetail", new {  idSanPham=item.ID  }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ }) *@
+                <td>
+                    @item.ChatLieu
+                </td>
+                <td>
+                    @item.LoaiSP
+                </td>
+                <td>
+                    @if (item.TrangThai == 1)
+                    {
+                        <span style="color:green">Hoạt động</span>
+                    }
+                    else if(item.TrangThai == 0)
+                    {
+                        <span style="color:red">Không hoạt động</span>
+                    }
+                </td>
+                <td style="width:200px">
                     <a asp-action="ProductDetail" class="btn btn-primary" asp-route-idSanPham="@item.ID">Chi tiết</a>
-                    <a asp-action="ProductDetail" class="btn btn-danger" asp-route-idSanPham="@item.ID">Xoá</a>
+                    @if (item.TrangThai == 1)
+                    {
+                        <a asp-action="UpdateTrangThaiSanPham" class="btn btn-danger" asp-route-idSanPham="@item.ID" asp-route-trangThai="0">Xoá</a>
+                    }
+                    else if (item.TrangThai == 0)
+                    {
+                        <a asp-action="UpdateTrangThaiSanPham" class="btn btn-success" asp-route-idSanPham="@item.ID" asp-route-trangThai="1">Hoàn tác</a>
+                    }
                 </td>
             </tr>
         }
