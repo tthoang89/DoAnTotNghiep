@@ -9,8 +9,8 @@ namespace AppData.ViewModels.SanPham
     public class ChiTietSanPhamRequest
     {
         public Guid IDChiTietSanPham { get; set; }
-        public Guid IDMauSac { get; set; }
-        public Guid IDKichCo { get; set; }
+        public Guid? IDMauSac { get; set; }
+        public Guid? IDKichCo { get; set; }
         public string? TenKichCo { get; set; }
         public string? TenMauSac { get; set; }
         public string? MaMau { get; set; }
