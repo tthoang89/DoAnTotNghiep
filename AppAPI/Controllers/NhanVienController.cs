@@ -29,7 +29,7 @@ namespace AppAPI.Controllers
         [HttpGet]
         public List<NhanVien> GetAllNhanVien(string? name)
         {
-            return _dbContext.NhanViens.Where(v => v.Ten.Contains(name)).ToList();
+            return _dbContext.NhanViens.Where(v => v.Ten.Contains(name) || v.SDT.Contains(name)).ToList();
 
 
         }

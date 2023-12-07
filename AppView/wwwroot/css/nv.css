@@ -93,15 +93,14 @@ h1 {
     background: linear-gradient(to right, #ECAD8F, #AF6E4E);
     text-decoration: none;
 }
-.tk1{
+.tk1 {
     padding: 5px 15px;
-    border-radius: 50px;
-    outline: 0;
+    border-radius: 0px;
     border-color: darkgrey;
     border: 1px solid;
-    border-style:double;
     background: #fff;
     font-weight: 400;
+    width: 290px;
 }
 .tk {
     padding: 5px 15px;
