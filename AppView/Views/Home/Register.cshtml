@@ -6,46 +6,46 @@
     <div class=col-4></div>
     <div class="col-4">
         <!-- Pills navs -->
-        <h3 style="text-align:center;margin-bottom:10px"><strong>REGISTER</strong></h3>
+        <h3 style="text-align:center;margin-bottom:10px"><strong>Đăng ký</strong></h3>
         <!-- Pills navs -->
         <!-- Pills content -->
         <div class="tab-content" style="border-radius: 1rem;">
             <div class="tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
                 <form method="post" onsubmit="register(event)" id="registerForm">
                     <div class="form-outline mb-4">
-                        <label class="form-label">Name</label>
+                        <label class="form-label">Tên</label>
                         <input asp-for="Name" type="text" id="name" class="form-control" />
                         <div class="invalid-feedback"> Không để trống tên</div>
                     </div>
                     <!-- Email input -->
                     <div class="form-outline mb-4">
-                        <label class="form-label">Email address</label>
-                        <input asp-for="Email" type="email" id="email" class="form-control" />
+                        <label class="form-label">Email </label>
+                        <input asp-for="Email" type="email" id="email" class="form-control" autocomplete="off" />
                         <div class="invalid-feedback"> Không để trống email </div>
                     </div>
                     <!-- PhoneNumber input -->
                     <div class="form-outline mb-4">
-                        <label class="form-label">Phone number</label>
+                        <label class="form-label">SDT</label>
                         <input asp-for="SDT" type="text" id="sdt" class="form-control" />
                         <div class="invalid-feedback"> Không để trống SDT </div>
                     </div>
                     <!-- Password input -->
                     <div class="form-outline mb-4">
-                        <label class="form-label">Password</label>
-                        <input asp-for="Password" type="password" id="password" class="form-control" />
+                        <label class="form-label">Mật khẩu</label>
+                        <input asp-for="Password" type="password" id="password" class="form-control" autocomplete="off" />
                         <div class="invalid-feedback"> Không để trống Password </div>
                     </div>
                     <!-- Password input -->
                     <div class="form-outline mb-4">
-                        <label class="form-label">Confirm Password</label>
+                        <label class="form-label">Nhập lại mất khẩu</label>
                         <input type="password" id="confirm" class="form-control" />
                         <div class="invalid-feedback"> Không để trống ConfirmPassword </div>
                     </div>
                     <!-- Submit button -->
-                    <button type="submit" class="btn btn-primary btn-block mb-4">Sign in</button>
+                    <button type="submit" class="btn btn-primary btn-block mb-4">Đăng ký</button>
                     <!-- Register buttons -->
                     <div class="text-center">
-                        <p>Have an account?<a asp-action="Login"> Go to Login</a></p>
+                        <p>Bạn đã có tài khoản<a asp-action="Login"> Đăng nhập</a></p>
                     </div>
                 </form>
             </div>

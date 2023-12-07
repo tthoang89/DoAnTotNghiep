@@ -11,8 +11,7 @@ namespace AppData.Models
         [Required]
         public string MoTa { get; set; }
         public int TrangThai { get; set; }
-        public int TongSoSao { get; set; }
-        public int TongDanhGia { get; set; }
+     
         public Guid IDLoaiSP { get; set; }
         public Guid IDChatLieu { get; set; }
         public virtual LoaiSP? LoaiSP { get; set; }

@@ -180,7 +180,7 @@ namespace AppAPI.Services
                 {
                      max = _context.SanPhams.Max(x => Convert.ToInt32(x.Ma.Substring(2)));
                 }
-                SanPham sanPham = new SanPham() { ID = Guid.NewGuid(), Ten = request.Ten,Ma="SP"+(max+1),MoTa = request.MoTa, TrangThai = 1, TongDanhGia = 0, TongSoSao = 0, IDLoaiSP = loaiSPCon.ID, IDChatLieu = chatLieu.ID };
+                SanPham sanPham = new SanPham() { ID = Guid.NewGuid(), Ten = request.Ten,Ma="SP"+(max+1),MoTa = request.MoTa, TrangThai = 1, IDLoaiSP = loaiSPCon.ID, IDChatLieu = chatLieu.ID };
                 await _context.SanPhams.AddAsync(sanPham);
                 await _context.SaveChangesAsync();
                 foreach (var x in request.MauSacs)
@@ -713,6 +713,12 @@ namespace AppAPI.Services
                               GiaGoc = ctsp.GiaBan,
                               GiaBan = km.TrangThai == null ? ctsp.GiaBan : (km.TrangThai == 0 ? ctsp.GiaBan - km.GiaTri : (ctsp.GiaBan * (100 - km.GiaTri) / 100)),
                           }).ToListAsync();
+        }
+
+        public Guid GetIDsanPhamByIdCTSP(Guid idctsp)
+        {
+            var ctsp = _context.ChiTietSanPhams.FirstOrDefault(p=>p.ID == idctsp);
+            return ctsp.IDSanPham;
         }
         #endregion
     }
