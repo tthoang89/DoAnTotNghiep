@@ -18,5 +18,6 @@ namespace AppData.ViewModels.SanPham
         public string ChatLieu { get; set; }
         public string LoaiSP { get; set; }
         public int TrangThai { get; set; }
+        public Guid? IDKhuyenMai { get; set; }
     }
 }

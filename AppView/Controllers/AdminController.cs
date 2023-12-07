@@ -150,6 +150,47 @@ namespace AppView.Controllers
             var lstAnhRequest = JsonConvert.DeserializeObject<List<AnhRequest>>(TempData["MauSacs"].ToString());
             return View(lstAnhRequest);
         }
+        [HttpPost]
+        public JsonResult UpdateSoluongChiTietSanPham(string id,int soLuong)
+        {
+            ChiTietSanPhamRequest request = new ChiTietSanPhamRequest() { IDChiTietSanPham = new Guid(id), SoLuong = soLuong};
+            var response = _httpClient.PutAsJsonAsync(_httpClient.BaseAddress + "SanPham/UpdateSoluongChiTietSanPham", request).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                return Json(new { Message = soLuong.ToString(), TrangThai = true });
+            }
+            else
+            {
+                return Json(new { Message = "Error",TrangThai = false });
+            }
+        }
+        [HttpPost]
+        public JsonResult UpdateGiaBanChiTietSanPham(string id, int giaBan)
+        {
+            ChiTietSanPhamRequest request = new ChiTietSanPhamRequest() { IDChiTietSanPham = new Guid(id), GiaBan = giaBan };
+            var response = _httpClient.PutAsJsonAsync(_httpClient.BaseAddress + "SanPham/UpdateGiaBanChiTietSanPham", request).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                return Json(new { Message = giaBan.ToString(), TrangThai = true });
+            }
+            else
+            {
+                return Json(new { Message = "Error", TrangThai = false });
+            }
+        }
+        [HttpPost]
+        public JsonResult UpdateTrangThaiChiTietSanPham(string id)
+        {
+            var response = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/UpdateTrangThaiChiTietSanPham?id="+id).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                return Json(new { TrangThai = true });
+            }
+            else
+            {
+                return Json(new { TrangThai = false });
+            }
+        }
         [HttpGet]
         public IActionResult UpdateChiTietSanPham()
         {

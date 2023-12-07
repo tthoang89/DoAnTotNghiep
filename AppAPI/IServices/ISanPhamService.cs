@@ -40,6 +40,9 @@ namespace AppAPI.IServices
         Task<List<ChiTietSanPhamViewModel>> GetAllChiTietSanPham();
         Task<List<ChiTietSanPhamViewModelAdmin>> GetAllChiTietSanPhamAdmin(Guid idSanPham);
         Task<bool> DeleteChiTietSanPham(Guid id);
+        Task<bool> UpdateSoluongChiTietSanPham(Guid id, int soLuong);
+        Task<bool> UpdateGiaBanChiTietSanPham(Guid id, int giaBan);
+        Task<bool> UpdateTrangThaiChiTietSanPham(Guid id);
         Task<bool> UpdateChiTietSanPham(ChiTietSanPham chiTietSanPham);
         public Task<bool> AddChiTietSanPhamFromSanPham(ChiTietSanPhamUpdateRequest request);
         //Task<List<AnhRequest>> AddChiTietSanPham(ChiTietSanPhamUpdateRequest chiTietSanPham);
