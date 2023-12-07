@@ -143,7 +143,7 @@ namespace AppData.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Ma")
-                        .HasColumnType("nvarchar(10)");
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("NgayTao")
                         .HasColumnType("datetime");

@@ -4,9 +4,8 @@
     ViewData["Title"] = "AddSanPham";
 }
 
-<h1>AddSanPham</h1>
+<h1>Thêm sản phẩm</h1>
 
-<h4>SanPhamRequest</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -156,23 +155,6 @@
         }
         document.getElementById("tenMau"+count).value = tenMau;
     }
-    // $("#tenMau").change(function () {
-    //     var tenMau = $("#tenMau").val();
-    //     var maMau = lstMauSac.find(x => x.ten == tenMau).ma;
-    //     document.getElementById("maMau").value = maMau;
-    // });
-    // $("#maMau").change(function () {
-    //     var maMau = $("#maMau").val();
-    //     var tenMau = "";
-    //     var mauSac = lstMauSac.find(x => x.ma == maMau);
-    //     if (mauSac == null) {
-    //         tenMau = "";
-    //     }
-    //     else { 
-    //         tenMau = mauSac.ten;
-    //     }
-    //     document.getElementById("tenMau").value = tenMau;
-    // });
     function themKichCo(count,element) {
         if (element.value == "+") {
             element.value = "-";

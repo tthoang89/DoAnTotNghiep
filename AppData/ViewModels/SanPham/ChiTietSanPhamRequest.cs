@@ -14,7 +14,7 @@ namespace AppData.ViewModels.SanPham
         public string? TenKichCo { get; set; }
         public string? TenMauSac { get; set; }
         public string? MaMau { get; set; }
-        public int SoLuong { get; set; }
-        public int GiaBan { get; set; }
+        public int? SoLuong { get; set; }
+        public int? GiaBan { get; set; }
     }
 }

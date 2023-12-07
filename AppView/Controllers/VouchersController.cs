@@ -9,9 +9,11 @@ namespace AppView.Controllers
     public class VouchersController : Controller
     {
         private readonly HttpClient _httpClient;
+        private readonly AssignmentDBContext dBContext;
         public VouchersController()
         {
             _httpClient = new HttpClient();
+            dBContext=new AssignmentDBContext();
         }
         public int PageSize = 8;
         // get all vocher
@@ -168,16 +170,47 @@ namespace AppView.Controllers
             return View();
         }
         // delete
-        public async Task<IActionResult> Delete(Guid id)
-        {
-            string apiURL = $"https://localhost:7095/api/Voucher/{id}";
+        //public async Task<IActionResult> Delete(Guid id)
+        //{
+        //    string apiURL = $"https://localhost:7095/api/Voucher/{id}";
 
-            var response = await _httpClient.DeleteAsync(apiURL);
-            if (response.IsSuccessStatusCode)
+        //    var response = await _httpClient.DeleteAsync(apiURL);
+        //    if (response.IsSuccessStatusCode)
+        //    {
+        //        return RedirectToAction("GetAllVoucher");
+        //    }
+        //    return View();
+        //}
+        
+        public async Task<IActionResult> SuDung(Guid id)
+        {
+            var timkiem = dBContext.Vouchers.FirstOrDefault(x => x.ID == id);
+            if (timkiem != null)
             {
+                timkiem.TrangThai = 1;
+                dBContext.Vouchers.Update(timkiem);
+                dBContext.SaveChanges();
                 return RedirectToAction("GetAllVoucher");
             }
-            return View();
+            else
+            {
+                return View();
+            }
+        }
+        public async Task<IActionResult> KoSuDung(Guid id)
+        {
+            var timkiem = dBContext.Vouchers.FirstOrDefault(x => x.ID == id);
+            if (timkiem != null)
+            {
+                timkiem.TrangThai = 0;
+                dBContext.Vouchers.Update(timkiem);
+                dBContext.SaveChanges();
+                return RedirectToAction("GetAllVoucher");
+            }
+            else
+            {
+                return View();
+            }
         }
     }
 }

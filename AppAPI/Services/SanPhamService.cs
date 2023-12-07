@@ -32,6 +32,50 @@ namespace AppAPI.Services
         {
             throw new NotImplementedException();
         }
+        public List<SanPhamViewModelAdmin> GetAllSanPhamAdmin()
+        {
+            try
+            {
+                var lstSanPham = (from a in _context.SanPhams
+                                       join b in _context.ChiTietSanPhams.Where(x => x.TrangThai == 1) on a.ID equals b.IDSanPham
+                                       join e in _context.LoaiSPs.Where(x => x.LoaiSPCha != null) on a.IDLoaiSP equals e.ID
+                                       select new
+                                       {
+                                           ID = a.ID,
+                                           Ten = a.Ten,
+                                           Ma = a.Ma,
+                                           TrangThai = a.TrangThai,
+                                           LoaiSP = _context.LoaiSPs.First(x=>x.ID == e.IDLoaiSPCha).Ten+"/"+e.Ten,
+                                           Image = _context.Anhs.First(x => x.IDMauSac == b.IDMauSac && x.IDSanPham == a.ID).DuongDan,
+                                           IDChatLieu = a.IDChatLieu,
+                                           GiaGoc = b.GiaBan,
+                                           SoLuong = b.SoLuong,
+                                           IDKhuyenMai = b.IDKhuyenMai,
+                                       }).ToList();
+                var response = new List<SanPhamViewModelAdmin>();
+                foreach (var item in lstSanPham)
+                {
+                    response.Add(new SanPhamViewModelAdmin()
+                    {
+                        ID = item.ID,
+                        Ten = item.Ten,
+                        Ma = item.Ma,
+                        Anh = item.Image,
+                        GiaGoc = item.GiaGoc,
+                        GiaBan = item.IDKhuyenMai == null ? item.GiaGoc : GetKhuyenMai(item.IDKhuyenMai, item.GiaGoc),
+                        SoLuong = item.SoLuong,
+                        ChatLieu = _context.ChatLieus.First(x=>x.ID==item.IDChatLieu).Ten,
+                        LoaiSP = item.LoaiSP,
+                        TrangThai = item.TrangThai,
+                    });
+                }
+                return response;
+            }
+            catch
+            {
+                return new List<SanPhamViewModelAdmin>();
+            }
+        }
         public async Task<List<SanPhamViewModel>> GetAllSanPham()
         {
             try
@@ -86,12 +130,14 @@ namespace AppAPI.Services
         {
             throw new NotImplementedException();
         }
-        public async Task<bool> DeleteSanPham(Guid id)
+        public async Task<bool> UpdateTrangThaiSanPham(Guid id, int trangThai)
         {
             try
             {
-                var sanPham = await _context.SanPhams.FindAsync(id);
-                sanPham.TrangThai = 0;
+                var sanPham = await _context.SanPhams.FirstAsync(x=>x.ID==id);
+                sanPham.TrangThai = trangThai;
+                _context.SanPhams.Update(sanPham);
+                await _context.SaveChangesAsync();
                 return true;
             }
             catch
@@ -103,7 +149,6 @@ namespace AppAPI.Services
         {
             try
             {
-                var first = true;
                 List<ChiTietSanPhamRequest> lst = new List<ChiTietSanPhamRequest>();
                 LoaiSP? loaiSPCon = _context.LoaiSPs.Where(x => x.IDLoaiSPCha != null).FirstOrDefault(x => x.Ten == request.TenLoaiSPCon);
                 ChatLieu? chatLieu = _context.ChatLieus.FirstOrDefault(x => x.Ten == request.TenChatLieu);
@@ -135,10 +180,10 @@ namespace AppAPI.Services
                 {
                     foreach (var y in request.KichCos)
                     {
-                        lst.Add(CreateChiTietSanPhamFromSanPham(x, y).Result);
+                        lst.Add(CreateChiTietSanPhamFromSanPham(x, y,null).Result);
                     }
                 }
-                return new ChiTietSanPhamUpdateRequest() { IDSanPham = sanPham.ID, ChiTietSanPhams = lst,Ma=sanPham.Ma };
+                return new ChiTietSanPhamUpdateRequest() { IDSanPham = sanPham.ID, ChiTietSanPhams = lst,Ma=sanPham.Ma, Location = 0};
             }
             catch { return new ChiTietSanPhamUpdateRequest(); }
         }
@@ -163,9 +208,47 @@ namespace AppAPI.Services
         {
             return _context.Anhs.Where(x=>x.IDSanPham == idSanPham).ToList();
         }
+
+        public bool AddImageNoColor(Anh anh)
+        {
+            try
+            {
+                _context.Anhs.Add(anh);
+                _context.SaveChanges();
+                return true;    
+
+            }catch { return false; }
+        }
         #endregion
 
         #region ChiTietSanPham
+        public async Task<ChiTietSanPhamUpdateRequest> AddChiTietSanPham(ChiTietSanPhamAddRequest request)
+        {
+            try
+            {
+                var lstChiTietSanPham = await _context.ChiTietSanPhams.Where(x=>x.IDSanPham==request.IDSanPham).ToListAsync();
+                List<ChiTietSanPhamRequest> lst = new List<ChiTietSanPhamRequest>();
+                List<MauSac> mauSac = new List<MauSac>();
+                ChiTietSanPhamRequest? chiTietSanPham;
+                foreach (var x in request.MauSacs)
+                {
+                    foreach (var y in request.KichCos)
+                    {
+                        chiTietSanPham = CreateChiTietSanPhamFromSanPham(x, y, lstChiTietSanPham).Result;
+                        if (chiTietSanPham != null)
+                        {
+                            lst.Add(chiTietSanPham);
+                        }
+                    }
+                    if (_context.Anhs.FirstOrDefault(item => item.IDSanPham == request.IDSanPham && item.IDMauSac == _context.MauSacs.First(z=>z.Ma==x.Ma).ID)== null)
+                    {
+                        mauSac.Add(x);
+                    }
+                }
+                return new ChiTietSanPhamUpdateRequest() { IDSanPham = request.IDSanPham, ChiTietSanPhams = lst, Location = 1,MauSacs = mauSac, Ma = _context.SanPhams.First(x=>x.ID==request.IDSanPham).Ma};
+            }
+            catch { return new ChiTietSanPhamUpdateRequest(); }
+        }
         public ChiTietSanPhamViewModel GetChiTietSanPhamByID(Guid id)
         {
             var temp = _context.ChiTietSanPhams.First(x => x.ID == id);
@@ -205,7 +288,7 @@ namespace AppAPI.Services
             }
             foreach (var item in lstChiTietSanPham)
             {
-                chiTietSanPham.ChiTietSanPhams.Add(new ChiTietSanPhamViewModel() { ID = item.ID,Ten=sanPham.Ten,SoLuong = item.SoLuong, GiaBan = item.IDKhuyenMai == null ? item.GiaBan : item.GiaBan - GetKhuyenMai(item.IDKhuyenMai.Value, item.GiaBan), GiaGoc = item.GiaBan,MauSac=item.IDMauSac.ToString(),KichCo=item.IDKichCo.ToString(),TrangThai=item.TrangThai});
+                chiTietSanPham.ChiTietSanPhams.Add(new ChiTietSanPhamViewModel() { ID = item.ID,MaCTSP = item.Ma,Ten=sanPham.Ten,SoLuong = item.SoLuong, GiaBan = item.IDKhuyenMai == null ? item.GiaBan : GetKhuyenMai(item.IDKhuyenMai.Value, item.GiaBan), GiaGoc = item.GiaBan,MauSac=item.IDMauSac.ToString(),KichCo=item.IDKichCo.ToString(),TrangThai=item.TrangThai});
             }
             chiTietSanPham.MoTa = sanPham.MoTa;
             var query = await (from sp in _context.SanPhams.Where(p => p.ID == idSanPham)
@@ -242,7 +325,8 @@ namespace AppAPI.Services
         {
             throw new NotImplementedException();
         }
-        public async Task<ChiTietSanPhamRequest> CreateChiTietSanPhamFromSanPham(MauSac mauSacRequest, string tenKichCo)
+
+        public async Task<ChiTietSanPhamRequest?> CreateChiTietSanPhamFromSanPham(MauSac mauSacRequest, string tenKichCo,List<ChiTietSanPham>? chiTietSanPhams)
         {
             var mauSac = _context.MauSacs.FirstOrDefault(x => x.Ma == mauSacRequest.Ma);
             if (mauSac == null)
@@ -258,22 +342,48 @@ namespace AppAPI.Services
 
             }
             _context.SaveChanges();
-            var chiTietSanPham = new ChiTietSanPhamRequest() { IDChiTietSanPham = Guid.NewGuid(), SoLuong = 0, GiaBan = 0, IDMauSac = mauSac.ID.Value, IDKichCo = kichCo.ID, MaMau = mauSac.Ma, TenMauSac = mauSac.Ten, TenKichCo = kichCo.Ten };
-            return chiTietSanPham;
+            if(chiTietSanPhams==null)
+            {
+                var chiTietSanPham = new ChiTietSanPhamRequest() { IDChiTietSanPham = Guid.NewGuid(), SoLuong = 0, GiaBan = 0, IDMauSac = mauSac.ID.Value, IDKichCo = kichCo.ID, MaMau = mauSac.Ma, TenMauSac = mauSac.Ten, TenKichCo = kichCo.Ten };
+                return chiTietSanPham;
+            }
+            else
+            {
+                var item = chiTietSanPhams.FirstOrDefault(x=>x.IDMauSac==mauSac.ID && x.IDKichCo==kichCo.ID);
+                if(item == null)
+                {
+                    var chiTietSanPham = new ChiTietSanPhamRequest() { IDChiTietSanPham = Guid.NewGuid(), SoLuong = 0, GiaBan = 0, IDMauSac = mauSac.ID.Value, IDKichCo = kichCo.ID, MaMau = mauSac.Ma, TenMauSac = mauSac.Ten, TenKichCo = kichCo.Ten };
+                    return chiTietSanPham;
+                }
+                else
+                {
+                    return null;
+                }
+            }
         }
         public async Task<bool> AddChiTietSanPhamFromSanPham(ChiTietSanPhamUpdateRequest request)
         {
             try
             {
-                var tempTrangThai = new Guid(request.TrangThai);
-                foreach (var x in request.ChiTietSanPhams)
+                if(request.TrangThai!=null)
                 {
-                    _context.ChiTietSanPhams.Add(new ChiTietSanPham() { ID = x.IDChiTietSanPham,SoLuong = x.SoLuong, GiaBan = x.GiaBan, NgayTao = DateTime.Now, TrangThai = x.IDChiTietSanPham == tempTrangThai ? 1 : 2, IDSanPham = request.IDSanPham, IDMauSac = x.IDMauSac, IDKichCo = x.IDKichCo,Ma=request.Ma+x.TenMauSac.Trim().ToUpper()+x.TenKichCo.ToUpper() });
+                    var tempTrangThai = new Guid(request.TrangThai);
+                    foreach (var x in request.ChiTietSanPhams)
+                    {
+                        _context.ChiTietSanPhams.Add(new ChiTietSanPham() { ID = x.IDChiTietSanPham, SoLuong = x.SoLuong.Value, GiaBan = x.GiaBan.Value, NgayTao = DateTime.Now, TrangThai = x.IDChiTietSanPham == tempTrangThai ? 1 : 2, IDSanPham = request.IDSanPham, IDMauSac = x.IDMauSac, IDKichCo = x.IDKichCo, Ma = request.Ma + x.TenMauSac.Trim().ToUpper() + x.TenKichCo.ToUpper() });
+                    }
+                }
+                else
+                {
+                    foreach (var x in request.ChiTietSanPhams)
+                    {
+                        _context.ChiTietSanPhams.Add(new ChiTietSanPham() { ID = x.IDChiTietSanPham, SoLuong = x.SoLuong.Value, GiaBan = x.GiaBan.Value, NgayTao = DateTime.Now, TrangThai = 2, IDSanPham = request.IDSanPham, IDMauSac = x.IDMauSac, IDKichCo = x.IDKichCo, Ma = request.Ma + x.TenMauSac.Replace(" ","").ToUpper() + x.TenKichCo.ToUpper() });
+                    }
                 }
                 _context.SaveChanges();
                 return true;
             }
-            catch
+            catch(Exception ex)
             {
                 return false;
             }
@@ -485,6 +595,12 @@ namespace AppAPI.Services
                               GiaGoc = ctsp.GiaBan,
                               GiaBan = km.TrangThai == null ? ctsp.GiaBan : (km.TrangThai == 0 ? ctsp.GiaBan - km.GiaTri : (ctsp.GiaBan * (100 - km.GiaTri) / 100)),
                           }).ToListAsync();
+        }
+
+        public Guid GetIDsanPhamByIdCTSP(Guid idctsp)
+        {
+            var ctsp = _context.ChiTietSanPhams.FirstOrDefault(p=>p.ID == idctsp);
+            return ctsp.IDSanPham;
         }
         #endregion
     }

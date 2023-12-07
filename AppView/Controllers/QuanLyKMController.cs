@@ -2,6 +2,7 @@
 using AppData.ViewModels;
 using AppView.PhanTrang;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Net.Http;
 
@@ -10,9 +11,11 @@ namespace AppView.Controllers
     public class QuanLyKMController : Controller
     {
         private readonly HttpClient _httpClient;
+        //private readonly AssignmentDBContext dBContext;
         public QuanLyKMController()
         {
             _httpClient = new HttpClient();
+            //dBContext = new AssignmentDBContext();
         }
         public int PageSize = 10;
         #region QL Khuyen Mai Cho SP
@@ -278,6 +281,36 @@ namespace AppView.Controllers
             }        
             return View();
         }
+        //public async Task<IActionResult> SuDung(Guid id)
+        //{
+        //    var timkiem = dBContext.KhuyenMais.FirstOrDefault(x => x.ID == id);
+        //    if (timkiem != null)
+        //    {
+        //        timkiem.TrangThai = 3;
+        //        dBContext.KhuyenMais.Update(timkiem);
+        //        dBContext.SaveChanges();
+        //        return RedirectToAction("GetAllKM");
+        //    }
+        //    else
+        //    {
+        //        return View();
+        //    }
+        //}
+        //public async Task<IActionResult> KoSuDung(Guid id)
+        //{
+        //    var timkiem = dBContext.KhuyenMais.FirstOrDefault(x => x.ID == id);
+        //    if (timkiem != null)
+        //    {
+        //        timkiem.TrangThai = 4;
+        //        dBContext.KhuyenMais.Update(timkiem);
+        //        dBContext.SaveChanges();
+        //        return RedirectToAction("GetAllKM");
+        //    }
+        //    else
+        //    {
+        //        return View();
+        //    }
+        //}
         public async Task<IActionResult> Delete(Guid id)
         {
             var url = $"https://localhost:7095/api/KhuyenMai/{id}";
@@ -330,13 +363,14 @@ namespace AppView.Controllers
             var response1 = await _httpClient.GetAsync(apiURL1);
             var apiData1 = await response1.Content.ReadAsStringAsync();
             var bienthes = JsonConvert.DeserializeObject<List<AllViewSp>>(apiData1);
+            
            
             
            
            
             return View(new PhanTrangAllQLKMSP
             {
-                listallsp = bienthes
+                listallsp = bienthes.Where(x=>x.TrangThai==1)
                         .Skip((ProductPage - 1) * PageSize).Take(PageSize),
                 PagingInfo = new PagingInfo
                 {
@@ -358,7 +392,7 @@ namespace AppView.Controllers
             var qlsanphams = JsonConvert.DeserializeObject<List<AllViewSp>>(apiData1);
             return View(new PhanTrangAllQLKMSP
             {
-                listallsp = qlsanphams.Where(x=>x.IdKhuyenMai!=idkhuyenmai)
+                listallsp = qlsanphams.Where(x=>x.IdKhuyenMai!=idkhuyenmai&&x.TrangThai==1)
                         .Skip((ProductPage - 1) * PageSize).Take(PageSize),
                 PagingInfo = new PagingInfo
                 {
@@ -381,7 +415,7 @@ namespace AppView.Controllers
             var qlsanphams = JsonConvert.DeserializeObject<List<AllViewSp>>(apiData1);
             return View("GetSPNoKM",new PhanTrangAllQLKMSP
             {
-                listallsp = qlsanphams.Where(x => x.IdKhuyenMai != idkhuyenmai)
+                listallsp = qlsanphams.Where(x => x.IdKhuyenMai != idkhuyenmai&&x.TrangThai==1)
                         .Skip((ProductPage - 1) * PageSize).Take(PageSize),
                 PagingInfo = new PagingInfo
                 {
