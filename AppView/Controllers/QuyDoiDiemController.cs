@@ -62,7 +62,7 @@ namespace AppView.Controllers
 
         public async Task<IActionResult> Create(QuyDoiDiem qdd)
         {
-            if (qdd.TiLeTichDiem ==0)
+            if (qdd.TiLeTichDiem ==0||qdd.TiLeTichDiem==null)
             {
                 ViewData["TiLeTichDiem"] = "Yêu cầu nhập dữ liệu ";
             }
@@ -70,7 +70,7 @@ namespace AppView.Controllers
             {
                 ViewData["TiLeTichDiem"] = "Yêu cầu nhập dữ liệu lớn hơn 0 ";
             }
-            if (qdd.TiLeTieuDiem ==0)
+            if (qdd.TiLeTieuDiem ==0||qdd.TiLeTieuDiem==null)
             {
                 ViewData["TiLeTieuDiem"] = "Yêu cầu nhập dữ liệu ";
             }
