@@ -1393,10 +1393,10 @@ ol {
 
 .shop__sidebar__accordion .card-heading a:after,
 .shop__sidebar__accordion .card-heading > a.active[aria-expanded=false]:after {
-    content: "";
+    content: "\F078";
     font-family: "FontAwesome";
     font-size: 24px;
-    font-weight: 700;
+    font-weight: 900;
     color: #111111;
     position: absolute;
     right: 0;
@@ -1405,10 +1405,10 @@ ol {
 }
 
 .shop__sidebar__accordion .card-heading.active a:after {
-    content: "";
+    content: "\F077";
     font-family: "FontAwesome";
     font-size: 24px;
-    font-weight: 700;
+    font-weight: 900;
     color: #111111;
     position: absolute;
     right: 0;

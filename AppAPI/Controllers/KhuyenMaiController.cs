@@ -48,6 +48,7 @@ namespace AppAPI.Controllers
                                      TenAnh = (from anh in _dbcontext.Anhs where sp.ID == anh.IDSanPham && mausac.ID == anh.IDMauSac select anh.DuongDan).FirstOrDefault(),
                                      IdKhuyenMai = (from km in _dbcontext.KhuyenMais where CTSP.IDKhuyenMai == km.ID select CTSP.IDKhuyenMai).FirstOrDefault(),
                                      TenMauSac = mausac.Ten,
+                                     MaMauSac=mausac.Ma,
                                      TenKichCo = size.Ten,
                                      GiaGoc = CTSP.GiaBan,
                                      GiaKhuyenMai = CTSP.GiaBan,
