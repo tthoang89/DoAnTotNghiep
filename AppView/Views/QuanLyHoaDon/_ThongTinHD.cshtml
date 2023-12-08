@@ -118,10 +118,10 @@
                     <tr style="background:#d9eafd">
                         <th scope="col">Mã hàng</th>
                         <th scope="col">Mặt hàng</th>
-                        <th scope="col">Số lượng</th>
-                        <th scope="col">Đơn giá</th>
-                        <th scope="col">Giá bán</th>
-                        <th scope="col">Thành tiền</th>
+                        <th scope="col" class="text-end">Số lượng</th>
+                        <th scope="col" class="text-end">Đơn giá</th>
+                        <th scope="col" class="text-end">Giá bán</th>
+                        <th scope="col" class="text-end">Thành tiền</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -245,12 +245,13 @@
             }
             <div class="d-flex p-2">
                 <button type="button" id="save" class="btn btn-success fw-normal text-white"><i class="fa-solid fa-floppy-disk fa-xs me-2" style="color: #ffffff;"></i> Lưu ghi chú</button>
+            </div>            
+            <div class="d-flex p-2">
+                <button type="button" onclick="InHD('@Model.Id')" class="btn btn-secondary fw-normal text-white me-2"><i class="ri-printer-line"></i> In Hóa đơn</button>
             </div>
-
             <div class="d-flex p-2">
                 <button type="button" onclick="location.href='@Url.Action("ExportPDF", "QuanLyHoaDon", new{idhd = @Model.Id})'" class="btn btn-secondary fw-normal text-white"><i class="fa-solid fa-file-export fa-xs me-2" style="color: #ffffff;"></i> Xuất PDF</button>
             </div>
-
             @if (@Model.TrangThai != 7)
             {
                 <div class="d-flex p-2">
@@ -329,7 +330,7 @@
                                 else
                                 {
                                     <tr>
-                                        <th scope="row">@item.ID</th>
+                                        <td>@item.ID</td>
                                         <td class="text-danger">@item.Diem</td>
                                         <td class="text-danger">
                                             Tiêu điểm
@@ -368,7 +369,27 @@
                 }
             });
         })
+        function InHD(idhd){
+            $.ajax({
+            url: "/QuanLyHoaDon/PrintHD/"+ idhd,
+            type: 'GET',
+            success: function (data) {
+                 // Tạo một iframe ẩn trong trang hiện tại
+            var iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
 
+            // Đặt nội dung của partial view vào iframe
+            var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+            iframeDoc.open();
+            iframeDoc.write(data);
+            iframeDoc.close();
+
+            // Kích hoạt hộp thoại in cho iframe
+            iframe.contentWindow.print();
+                }
+                });
+        }
         function huyDon(IDHD){
             var gc = $("#ghiChuinTTHD").val();
             if(gc ==='' || gc == '@Model.GhiChu'){
@@ -413,10 +434,7 @@
         });
     });
 
-@*    $("#exportPDF").click(function(){
-        window.print();
-    })
-*@    function DoiTrangThai(tragthai){
+        function DoiTrangThai(tragthai){
         var ans = confirm("Cập nhật trạng thái hóa đơn này?");
         var id = "@Model.Id";
         if(ans){

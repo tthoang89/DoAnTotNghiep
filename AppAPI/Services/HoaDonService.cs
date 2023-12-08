@@ -365,7 +365,8 @@ namespace AppAPI.Services
                               Id = hd.ID,
                               MaHD = hd.MaHD,
                               KhachHang = kh != null ? kh.Ten : "Khách lẻ",
-                              SDT = kh != null ? kh.SDT : null,
+                              SDTKH = kh !=null ? kh.SDT:null,
+                              SDTnhanhang = hd.SDT != null ? hd.SDT : "null",
                               PTTT = hd.PhuongThucThanhToan,
                               ThoiGian = hd.NgayTao,
 //                              GiamGia = (from vc in context.Vouchers

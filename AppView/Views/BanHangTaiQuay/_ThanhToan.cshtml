@@ -7,7 +7,7 @@
     <form class="row g-3 p-2 formthanhtoan">
         <div class="d-flex flex-row lh-1">
             <div class="flex-fill text-start"><span id="nhanVien"></span>NV: @Model.NhanVien</div>
-            <div class="flex-fill text-end"><span id="ngay"></span>@Model.NgayThanhToan</div>
+            <div class="flex-fill text-end"><span id="ngay"></span>@Model.NgayThanhToan?.ToString("dd/MM/yyyy HH:mm")</div>
         </div>
         <hr />
         <div class="d-flex flex-column lh-1">
@@ -44,6 +44,7 @@
                     <div class="flex-fill">
                         <label class="form-label">
                             Điểm
+                             <i class="bx bx-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Áp dụng tối đa 30% giá trị đơn hàng"></i>
                             <label class="badge bg-success">
                                 Tối đa: <span class="text-white" id="dtoida"></span>
                             </label>
@@ -115,7 +116,7 @@
     </div>
 </div>
 <script>
-    
+
     $(document).ready(function(){
         $("#tichdiemhd").text(@(Model.DiemTichHD));
         let diemtoida = (@(Model.TongTien)*0.3)/ @(ViewBag.TLTieu);
@@ -231,7 +232,7 @@
             }
         })
     })
-   
+
 
         //Tính tiền
        function TinhTien() {

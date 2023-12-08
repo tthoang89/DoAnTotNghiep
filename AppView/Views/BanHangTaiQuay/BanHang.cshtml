@@ -396,10 +396,13 @@
                 var idvoucher = $("#idvoucher").text();
                 var tichdiemhd = $("#tichdiemhd").text();
                 console.log(tichdiemhd);
-                var tichdiemsd = $('diemKHSD').val();
+                var tichdiemsd = $('#diemKHSD').val();
+                console.log(tichdiemsd);
+                 console.log(1);
                 if($('#tientrutichdiem').text() === 0 || $('#tientrutichdiem').text() ===''){
                     tichdiemsd= 0;
                 };
+                console.log(tichdiemsd);
                 var request= {Id: id, PTTT: pttt,IdNhanVien:'@loginInfor.Id', IdVoucher: idvoucher,TongTien: ttien, DiemTichHD: tichdiemhd, DiemSD: tichdiemsd};
                 console.log(request);
                 $.ajax({
@@ -411,6 +414,7 @@
                         success: function(response) {
                             $("#thanhtoan").modal("hide");
                             $("#partialGioHang").empty();
+                            InHD(id);
                             toastr.success('Thanh toán thành công', "Success Alert", {timeOut : 300});
                             loadHDCHO(function(){
                                 activeTab(0);
@@ -478,4 +482,26 @@
                },
             })
         });
+    //In hóa đơn
+     function InHD(idhd){
+            $.ajax({
+            url: "/QuanLyHoaDon/PrintHD/"+ idhd,
+            type: 'GET',
+            success: function (data) {
+                 // Tạo một iframe ẩn trong trang hiện tại
+            var iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
+
+            // Đặt nội dung của partial view vào iframe
+            var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+            iframeDoc.open();
+            iframeDoc.write(data);
+            iframeDoc.close();
+
+            // Kích hoạt hộp thoại in cho iframe
+            iframe.contentWindow.print();
+                }
+                });
+        }
 </script>

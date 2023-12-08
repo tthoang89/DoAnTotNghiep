@@ -9,6 +9,7 @@ namespace AppData.ViewModels.BanOffline
     public class SanPhamBanHang
     {
         public Guid Id { get; set; }
+        public string MaSP { get; set; }
         public string Anh { get; set; }
         public string Ten { get; set; }
         public int GiaBan { get; set; }

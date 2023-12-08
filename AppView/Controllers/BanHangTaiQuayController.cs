@@ -366,11 +366,11 @@ namespace AppView.Controllers
         {
             string apiURL = $"https://localhost:7095/api/Voucher";
             var listvc = await _httpClient.GetFromJsonAsync<List<Voucher>>(apiURL);
-            listvc = listvc.Where(c => c.NgayKetThuc > DateTime.Now).ToList();
+            listvc = listvc.Where(c => c.NgayKetThuc > DateTime.Now && c.SoLuong > 0).ToList();
             var vc = listvc.FirstOrDefault(c => c.Ten.ToUpper() == voucher.ToUpper());
             if (vc == null)
             {
-                return Json(new { success = false, message = "Voucher không hợp lệ" });
+                return Json(new { success = false, message = "Voucher hết hạn hoặc không hợp lệ" });
             }
             else if (vc.SoTienCan > ttien)
             {
