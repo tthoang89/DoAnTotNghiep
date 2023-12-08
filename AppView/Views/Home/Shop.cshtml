@@ -84,7 +84,6 @@
                     <div class="shop__sidebar__search">
                         <form id="search-filter">
                             <input type="text" oninput="LocSort()" placeholder="Tìm kiếm theo tên..." autocomplete="off" name="ten" id="search">
-                            <span class="icon_search"></span>
                         </form>
 
                     </div>
@@ -92,7 +91,7 @@
                         <div class="accordion" id="accordionExample">
                             <div class="card">
                                 <div class="card-heading">
-                                    <a data-toggle="collapse" data-target="#collapseOne">Categories</a>
+                                    <a data-toggle="collapse" data-target="#collapseOne">Danh mục</a>
                                 </div>
                                 <div id="collapseOne" class="collapse show" data-parent="#accordionExample">
                                     <div class="card-body" style="padding-left:20px">
@@ -172,70 +171,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="card">
-                                <div class="card-heading">
-                                    <a data-toggle="collapse" data-target="#collapseFive">Màu</a>
-                                </div>
-                                <div id="collapseFive" class="collapse show" data-parent="#accordionExample">
-                                    <div class="card-body">
-                                        <div @*class="shop__sidebar__color"*@ id="filter-color" onchange="LocSort()">
-                                            @foreach (var item in listMauSac)
-                                            {
-                                                <label id="tronMau">
-                                                    <input type="checkbox" class="btn-check" id="btn-check-outlined_@item.Ten" autocomplete="off" val="@item.ID">
-                                                    <label for="btn-check-outlined_@item.Ten" style="background-color:@item.Ma">
-                                                        @if (item.Ma == "#000000")
-                                                        {
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" color="white" class="bi bi-check-circle" viewBox="0 0 16 16">
-                                                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                                                                <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z" />
-                                                            </svg>
-                                                        }
-                                                        else
-                                                        {
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
-                                                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                                                                <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z" />
-                                                            </svg>
-                                                        }
-
-                                                    </label>
-                                                </label>
-
-                                            }
-                                            @*<label class="c-1" for="sp-1" style="background-color:red">
-                                            <input type="checkbox" id="sp-1">
-                                            </label>*@
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <div class="card-heading">
-                                    <a data-toggle="collapse" data-target="#collapseSix">Tags</a>
-                                </div>
-                                <div id="collapseSix" class="collapse show" data-parent="#accordionExample">
-                                    <div class="card-body">
-                                        <div class="shop__sidebar__tags" id="filter-material" onchange="LocSort()">
-                                            @foreach (var item in listChatLieu)
-                                            {
-                                                <label>
-                                                    <input type="checkbox" class="btn-check" id="btn-check-outlined_@item.Ten" autocomplete="off" val="@item.ID">
-                                                    <span class="btn btn-outline-primary" for="btn-check-outlined_@item.Ten">@item.Ten</span>
-                                                </label>
-
-                                            }
-                                            @*<a href="#">Product</a>
-                                            <a href="#">Bags</a>
-                                            <a href="#">Shoes</a>
-                                            <a href="#">Fashio</a>
-                                            <a href="#">Clothing</a>
-                                            <a href="#">Hats</a>
-                                            <a href="#">Accessories</a>*@
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            
+                            
                         </div>
                     </div>
                 </div>

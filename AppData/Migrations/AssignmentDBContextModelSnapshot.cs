@@ -143,7 +143,7 @@ namespace AppData.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Ma")
-                        .HasColumnType("nvarchar(10)");
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("NgayTao")
                         .HasColumnType("datetime");
@@ -319,7 +319,6 @@ namespace AppData.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("MoTa")
-                        .IsRequired()
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime>("NgayApDung")
@@ -520,12 +519,6 @@ namespace AppData.Migrations
                         .HasMaxLength(40)
                         .HasColumnType("nvarchar(40)");
 
-                    b.Property<int>("TongDanhGia")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TongSoSao")
-                        .HasColumnType("int");
-
                     b.Property<int>("TrangThai")
                         .HasColumnType("int");
 
@@ -569,7 +562,6 @@ namespace AppData.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("MoTa")
-                        .IsRequired()
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime>("NgayApDung")

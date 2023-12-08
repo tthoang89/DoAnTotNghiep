@@ -46,7 +46,7 @@
                                 <tr>
                                     <td class="product__cart__item">
                                         <div class="product__cart__item__pic">
-                                            <img style="height:128px;width:100px" src="/img/product/@item.Anh" alt="">
+                                            <a asp-controller="Home" asp-action="ProductDetailFromCart" asp-route-idctsp="@item.IDChiTietSanPham"><img style="height:128px;width:100px" src="/img/product/@item.Anh" alt=""></a>
                                         </div>
                                         <div class="product__cart__item__text">
                                             <h6>@item.Ten</h6>
@@ -71,7 +71,7 @@
                     <div class="row">
                         <div class="col-lg-6 col-md-6 col-sm-6">
                             <div class="continue__btn">
-                                <a href="#">Tiếp tục mua sắm</a>
+                                <a href="https://localhost:5001/Home/Shop">Tiếp tục mua sắm</a>
                             </div>
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-6">

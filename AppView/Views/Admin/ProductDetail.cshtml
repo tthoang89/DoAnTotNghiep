@@ -7,66 +7,148 @@
 
 <h1>Chi tiết sản phẩm</h1>
 
-<form>
-    <table class="table">
-        <thead>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Mã
+            </th>
+            <th>
+                Tên màu
+            </th>
+            <th>
+                Mã màu
+            </th>
+            <th>
+                Size
+            </th>
+            <th>
+                Số lượng
+            </th>
+            <th>
+                Giá gốc
+            </th>
+            <th>
+                Giá bán
+            </th>
+            <th>
+                Giá trị khuyến mãi
+            </th>
+            <th>
+                Mặc định
+            </th>
+            <th>
+                Trạng thái
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
             <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.MaMauSac)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.TenKichCo)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.SoLuong)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.GiaBan)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.NgayTao)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.TenKhuyenMai)
-                </th>
-                <th></th>
+                <td>
+                    @item.Ma
+                </td>
+                <td>
+                    @item.TenMauSac
+                </td>
+                <td>
+                    <input type="color" value="@item.MaMauSac" style="border:none;width:27px;height:25px" disabled>
+                </td>
+                <td>
+                    @item.TenKichCo
+                </td>
+                <td>
+                    <input type="number" value="@item.SoLuong" style="border:none" id="soLuong_@item.ID" onchange="changeSoLuong('@item.ID')">
+                </td>
+                <td>
+                    <input type="number" value="@item.GiaGoc" style="border:none" id="giaGoc_@item.ID" onchange="changeGiaBan('@item.ID')">
+                </td>
+                <td>
+                    @item.GiaBan
+                </td>
+                <td>
+                    @item.GiaTriKhuyenMai
+                </td>
+                <td>
+                    @if (item.TrangThai == 1)
+                    {
+                        <input type="radio" name="macDinh" checked id="trangThai_@item.ID" onclick="changeTrangThai('@item.ID')"/>
+                    }
+                    else
+                    {
+                        <input type="radio" name="macDinh" id="trangThai_@item.ID" onclick="changeTrangThai('@item.ID')" />
+                    }
+                </td>
+                <td>
+                    @if (item.TrangThai == 0)
+                    {
+                        <span style="color:red">Không hoạt động</span>
+                    }
+                    else
+                    {
+                        <span style="color:green">Hoạt động</span>
+                    }
+                </td>
+                <td>
+                    <a asp-action="AddChiTietSanPham" asp-route-idSanPham="@idSanPham" class="btn btn-secondary">Tạo mã QR</a>
+                    <a asp-action="AddChiTietSanPham" asp-route-idSanPham="@idSanPham" class="btn btn-danger">Xóa</a>
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @item.MaMauSac
-                    </td>
-                    <td>
-                        @item.TenKichCo
-                    </td>
-                    <td>
-                        @item.SoLuong
-                    </td>
-                    <td>
-                        @item.GiaBan
-                    </td>
-                    <td>
-                        @item.NgayTao
-                    </td>
-                    <td>
-                        @item.TenKhuyenMai
-                    </td>
-                    <td>
-                        <a asp-action="AddChiTietSanPham" asp-route-idSanPham="@idSanPham" class="btn btn-secondary">Tạo mã QR</a>
-                        <a asp-action="AddChiTietSanPham" asp-route-idSanPham="@idSanPham" class="btn btn-danger">Xóa</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</form>
+        }
+    </tbody>
+</table>
+
 <div class="d-flex justify-content-end">
     <a asp-action="AddChiTietSanPham" asp-route-idSanPham="@idSanPham" class="btn btn-secondary">Tạo mã QR</a>
     <a asp-action="QuanLyAnh" asp-route-idSanPham="@idSanPham" class="btn btn-success" style="margin-left:5px">Quản lý ảnh</a>
     <a asp-action="AddChiTietSanPham" asp-route-idSanPham="@idSanPham" class="btn btn-primary" style="margin-left:5px">Thêm chi tiết sản phẩm</a>
 </div>
+
+<script src="~/js/jquery-3.3.1.min.js"></script>
+<script>
+    function changeSoLuong(idSP){
+        var ip = document.getElementById("soLuong_" + idSP);
+        $.ajax({
+            async: true,
+            type: 'POST',
+            dataType: "json",
+            data: { id: idSP, soLuong: ip.value },
+            url: '/Admin/UpdateSoluongChiTietSanPham',
+            success: function (response) {
+                ip.innerHTML = response.message;
+            },
+            error: function (response) {
+                ip.innerHTML = 'Error';
+            }
+        });
+    }
+    function changeGiaBan(idSP) {
+        var ip = document.getElementById("giaGoc_" + idSP);
+        $.ajax({
+            async: true,
+            type: 'POST',
+            dataType: "json",
+            data: { id: idSP, giaBan: ip.value },
+            url: '/Admin/UpdateGiaBanChiTietSanPham',
+            success: function (response) {
+                ip.innerHTML = response.message;
+            },
+            error: function (response) {
+                ip.innerHTML = 'Error';
+            }
+        });
+    }
+    function changeTrangThai(idSP) {
+        $.ajax({
+            async: true,
+            type: 'POST',
+            dataType: "json",
+            data: { id: idSP},
+            url: '/Admin/UpdateTrangThaiChiTietSanPham'
+        });
+    }
+</script>
 
 

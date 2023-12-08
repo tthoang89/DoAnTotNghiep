@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "QuanLyAnh";
+    string? id = ViewData["IDSanPham"] as string;
 }
 
 <h1>Quản lý ảnh</h1>
@@ -32,29 +33,30 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.ID)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DuongDan)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TrangThai)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IDMauSac)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IDSanPham)
-            </td>
-            <td>
-                @Html.ActionLink("Sửa", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Xóa", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DuongDan)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TrangThai)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IDMauSac)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IDSanPham)
+                </td>
+                <td style="width:200px!important">
+                    <a asp-action="UpdateImage" class="btn btn-success" asp-route-idSanPham="@item.ID">Sửa</a>
+                    <a asp-action="DeleteImage" class="btn btn-danger" asp-route-idSanPham="@item.ID">Xoá</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 <script src="/js/jquery-3.3.1.min.js"></script>
@@ -63,9 +65,11 @@
         var value = event.target.files[0];
         var formData = new FormData();
         formData.append("file", value);
+        formData.append("idSanPham", '@id');
         fetch("/Admin/AddAnhNoColor", {
             method: 'POST',
-            body:formData
+            body: formData
         });
+        setTimeout("location.reload(true);", 600);
     };
 </script>

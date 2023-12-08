@@ -8,16 +8,19 @@ namespace AppAPI.IServices
     public interface ISanPhamService
     {
         #region SanPham
+        List<SanPhamViewModelAdmin> GetAllSanPhamAdmin();
         Task<List<SanPhamViewModel>> GetAllSanPham();
         Task<List<SanPhamViewModel>> TimKiemSanPham(SanPhamTimKiemNangCao sp);
         Task<SanPhamDetail> GetSanPhamById(Guid id);
         Task<List<SanPhamViewModel>> GetSanPhamByIdDanhMuc(Guid idloaisp);
         Task<ChiTietSanPhamUpdateRequest> AddSanPham(SanPhamRequest request);
         Task<bool> UpdateSanPham(SanPhamRequest request);
-        Task<bool> DeleteSanPham(Guid id);
+        Task<bool> UpdateTrangThaiSanPham(Guid id,int trangThai);
         bool CheckTrungTenSP(SanPhamRequest lsp);
         Task<bool> AddAnhToSanPham(List<AnhRequest> request);
         List<Anh> GetAllAnhSanPham(Guid idSanPham);
+        bool AddImageNoColor(Anh anh);
+        public Guid GetIDsanPhamByIdCTSP (Guid idctsp);
         #endregion
 
         #region LoaiSanPham
@@ -30,12 +33,16 @@ namespace AppAPI.IServices
         #endregion
 
         #region ChiTietSanPham
+        Task<ChiTietSanPhamUpdateRequest> AddChiTietSanPham(ChiTietSanPhamAddRequest request);
         ChiTietSanPhamViewModel GetChiTietSanPhamByID(Guid id);
         Task<List<ChiTietSanPham>> GetAllChiTietSanPham(Guid idSanPham);
         Task<ChiTietSanPhamViewModelHome> GetAllChiTietSanPhamHome(Guid idSanPham);
         Task<List<ChiTietSanPhamViewModel>> GetAllChiTietSanPham();
         Task<List<ChiTietSanPhamViewModelAdmin>> GetAllChiTietSanPhamAdmin(Guid idSanPham);
         Task<bool> DeleteChiTietSanPham(Guid id);
+        Task<bool> UpdateSoluongChiTietSanPham(Guid id, int soLuong);
+        Task<bool> UpdateGiaBanChiTietSanPham(Guid id, int giaBan);
+        Task<bool> UpdateTrangThaiChiTietSanPham(Guid id);
         Task<bool> UpdateChiTietSanPham(ChiTietSanPham chiTietSanPham);
         public Task<bool> AddChiTietSanPhamFromSanPham(ChiTietSanPhamUpdateRequest request);
         //Task<List<AnhRequest>> AddChiTietSanPham(ChiTietSanPhamUpdateRequest chiTietSanPham);

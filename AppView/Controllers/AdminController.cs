@@ -24,9 +24,22 @@ namespace AppView.Controllers
         }
         public IActionResult ProductManager()
         {
-            var response = _httpClient.GetAsync(_httpClient.BaseAddress+ "SanPham/getAll").Result;
-            var lstSanPham = JsonConvert.DeserializeObject<List<SanPhamViewModel>>(response.Content.ReadAsStringAsync().Result);
-            return View(lstSanPham);
+            var response = _httpClient.GetAsync(_httpClient.BaseAddress+ "SanPham/GetAllSanPhamAdmin").Result;
+            if (response.IsSuccessStatusCode)
+            {
+                var lstSanPham = JsonConvert.DeserializeObject<List<SanPhamViewModelAdmin>>(response.Content.ReadAsStringAsync().Result);
+                return View(lstSanPham);
+            }
+            else return BadRequest();
+        }
+        public IActionResult UpdateTrangThaiSanPham(string idSanPham,int trangThai)
+        {
+            var response = _httpClient.DeleteAsync(_httpClient.BaseAddress + "SanPham/UpdateTrangThaiSanPham?id=" + idSanPham+"&trangThai="+trangThai).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("ProductManager");
+            }
+            else return BadRequest();
         }
         public JsonResult GetLoaiSPCha()
         {
@@ -94,14 +107,22 @@ namespace AppView.Controllers
             if (response.IsSuccessStatusCode)
             {
                 var lstAnh = JsonConvert.DeserializeObject<List<Anh>>(response.Content.ReadAsStringAsync().Result);
-                return View(lstAnh);
+                ViewData["IDSanPham"] = idSanPham.ToString();
+                return View("QuanLyAnh", lstAnh);
             }
             else return BadRequest();
         }
         [HttpPost]
-        public IActionResult AddAnhNoColor(IFormFile file)
+        public IActionResult AddAnhNoColor(IFormFile file,string idSanPham)
         {
-            return View();
+            string wwwrootPath = _hostEnvironment.WebRootPath;
+            var anh = new Anh() { ID = Guid.NewGuid(),DuongDan = _iFileService.AddFile(file,wwwrootPath).Result,IDSanPham = new Guid(idSanPham),TrangThai =1};
+            var response = _httpClient.PostAsJsonAsync(_httpClient.BaseAddress + "SanPham/AddImageNoColor", anh).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("QuanLyAnh", new { idSanPham });
+            }
+            else return BadRequest();
         }
         [HttpGet]
         public IActionResult AddChiTietSanPham(string idSanPham)
@@ -110,16 +131,16 @@ namespace AppView.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> AddChiTietSanPham(ChiTietSanPhamUpdateRequest request)
+        public async Task<IActionResult> AddChiTietSanPham(ChiTietSanPhamAddRequest request)
         {
             string idSanPham = TempData.Peek("IDSanPham").ToString();
             request.IDSanPham = new Guid(idSanPham);
             var response = await _httpClient.PostAsJsonAsync(_httpClient.BaseAddress + "SanPham/AddChiTietSanPham", request);
             if (response.IsSuccessStatusCode)
             {
-                List<AnhRequest> lstAnhRequest = JsonConvert.DeserializeObject<List<AnhRequest>>(response.Content.ReadAsStringAsync().Result);
-                TempData["MauSacs"] = JsonConvert.SerializeObject(lstAnhRequest);
-                return RedirectToAction("AddAnhToMauSac");
+                TempData["UpdateChiTietSanPham"] = response.Content.ReadAsStringAsync().Result;
+
+                return RedirectToAction("UpdateChiTietSanPham");
             }
             else return BadRequest();
         }
@@ -129,12 +150,58 @@ namespace AppView.Controllers
             var lstAnhRequest = JsonConvert.DeserializeObject<List<AnhRequest>>(TempData["MauSacs"].ToString());
             return View(lstAnhRequest);
         }
+        [HttpPost]
+        public JsonResult UpdateSoluongChiTietSanPham(string id,int soLuong)
+        {
+            ChiTietSanPhamRequest request = new ChiTietSanPhamRequest() { IDChiTietSanPham = new Guid(id), SoLuong = soLuong};
+            var response = _httpClient.PutAsJsonAsync(_httpClient.BaseAddress + "SanPham/UpdateSoluongChiTietSanPham", request).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                return Json(new { Message = soLuong.ToString(), TrangThai = true });
+            }
+            else
+            {
+                return Json(new { Message = "Error",TrangThai = false });
+            }
+        }
+        [HttpPost]
+        public JsonResult UpdateGiaBanChiTietSanPham(string id, int giaBan)
+        {
+            ChiTietSanPhamRequest request = new ChiTietSanPhamRequest() { IDChiTietSanPham = new Guid(id), GiaBan = giaBan };
+            var response = _httpClient.PutAsJsonAsync(_httpClient.BaseAddress + "SanPham/UpdateGiaBanChiTietSanPham", request).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                return Json(new { Message = giaBan.ToString(), TrangThai = true });
+            }
+            else
+            {
+                return Json(new { Message = "Error", TrangThai = false });
+            }
+        }
+        [HttpPost]
+        public JsonResult UpdateTrangThaiChiTietSanPham(string id)
+        {
+            var response = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/UpdateTrangThaiChiTietSanPham?id="+id).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                return Json(new { TrangThai = true });
+            }
+            else
+            {
+                return Json(new { TrangThai = false });
+            }
+        }
         [HttpGet]
         public IActionResult UpdateChiTietSanPham()
         {
             var request = JsonConvert.DeserializeObject<ChiTietSanPhamUpdateRequest>(TempData["UpdateChiTietSanPham"].ToString());
             TempData["SanPham"]=request.IDSanPham.ToString();
             TempData["MaSP"] = request.Ma;
+            if (request.MauSacs != null)
+            {
+                TempData["MauSac"] = JsonConvert.SerializeObject(request.MauSacs);
+            }
+            TempData["Location"] = request.Location.ToString();
             return View(request);
         }
         [HttpPost]
@@ -142,7 +209,8 @@ namespace AppView.Controllers
         {
             request.IDSanPham = new Guid(TempData.Peek("SanPham").ToString());
             request.Ma = TempData["MaSP"] as string;
-            var response = _httpClient.PostAsJsonAsync(_httpClient.BaseAddress+ "SanPham/AddChiTietSanPham",request).Result;
+            request.Location = Convert.ToInt32(TempData["Location"] as string);
+            var response = _httpClient.PostAsJsonAsync(_httpClient.BaseAddress+ "SanPham/AddChiTietSanPhamFromSanPham", request).Result;
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToAction("AddAnhToSanPham");

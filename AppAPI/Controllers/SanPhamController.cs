@@ -25,11 +25,18 @@ namespace AppAPI.Controllers
             return Ok(listSP);
         }
 
+        [HttpGet("GetAllSanPhamAdmin")]
+        public List<SanPhamViewModelAdmin> GetAllSanPhamAdmin()
+        {
+            var listSP = _sanPhamServices.GetAllSanPhamAdmin();
+            return listSP;
+        }
+
         [HttpGet("getById/{id}")]
         public async Task<IActionResult> GetSanPhamById(Guid id)
         {
             var sanPham = await _sanPhamServices.GetSanPhamById(id);
-            if(sanPham == null) return NotFound();
+            if (sanPham == null) return NotFound();
             return Ok(sanPham);
         }
         [HttpGet("getByIdLsp/{idLsp}")]
@@ -58,10 +65,10 @@ namespace AppAPI.Controllers
             var response = await _sanPhamServices.AddSanPham(request);
             return Ok(response);
         }
-        [HttpDelete("delete/{id}")]
-        public async Task<IActionResult> DeleteSanPham(Guid id)
+        [HttpDelete("UpdateTrangThaiSanPham")]
+        public async Task<IActionResult> UpdateTrangThaiSanPham(Guid id, int trangThai)
         {
-            var sanPham = await _sanPhamServices.DeleteSanPham(id);
+            await _sanPhamServices.UpdateTrangThaiSanPham(id, trangThai);
             return Ok();
         }
         [HttpPost("AddAnh")]
@@ -74,6 +81,12 @@ namespace AppAPI.Controllers
         public List<Anh> GetAllAnhSanPham(Guid idSanPham)
         {
             return _sanPhamServices.GetAllAnhSanPham(idSanPham);
+        }
+
+        [HttpPost("AddImageNoColor")]
+        public bool AddImageNoColor(Anh anh)
+        {
+            return _sanPhamServices.AddImageNoColor(anh);
         }
         #endregion
 
@@ -96,12 +109,45 @@ namespace AppAPI.Controllers
             var lstChiTietSanPham = await _sanPhamServices.GetAllChiTietSanPhamAdmin(idSanPham);
             return Ok(lstChiTietSanPham);
         }
-        [HttpPost("AddChiTietSanPham")]
-        public async Task<IActionResult> AddChiTietSanPham(ChiTietSanPhamUpdateRequest request)
+        [HttpPost("AddChiTietSanPhamFromSanPham")]
+        public async Task<IActionResult> AddChiTietSanPhamFromSanPham(ChiTietSanPhamUpdateRequest request)
         {
             if (request == null) return BadRequest();
             var response = await _sanPhamServices.AddChiTietSanPhamFromSanPham(request);
             return Ok(response);
+        }
+        [HttpPost("AddChiTietSanPham")]
+        public async Task<IActionResult> AddChiTietSanPham(ChiTietSanPhamAddRequest request)
+        {
+            if (request == null) return BadRequest();
+            var response = await _sanPhamServices.AddChiTietSanPham(request);
+            return Ok(response);
+        }
+        [HttpPut("UpdateSoluongChiTietSanPham")]
+        public bool UpdateSoluongChiTietSanPham(ChiTietSanPhamRequest request)
+        {
+            if (request.SoLuong == null) return false;
+            else
+            {
+                var response = _sanPhamServices.UpdateSoluongChiTietSanPham(request.IDChiTietSanPham, request.SoLuong.Value).Result;
+                return response;
+            }
+        }
+        [HttpPut("UpdateGiaBanChiTietSanPham")]
+        public bool UpdateGiaBanChiTietSanPham(ChiTietSanPhamRequest request)
+        {
+            if (request.GiaBan == null) return false;
+            else
+            {
+                var response = _sanPhamServices.UpdateGiaBanChiTietSanPham(request.IDChiTietSanPham, request.GiaBan.Value).Result;
+                return response;
+            }
+        }
+        [HttpGet("UpdateTrangThaiChiTietSanPham")]
+        public bool UpdateTrangThaiChiTietSanPham(string id)
+        {
+            var response = _sanPhamServices.UpdateTrangThaiChiTietSanPham(new Guid(id)).Result;
+            return response;
         }
         [HttpGet("GetAllChiTietSanPham")]
         public async Task<IActionResult> GetAllChiTietSanPham()
@@ -109,11 +155,16 @@ namespace AppAPI.Controllers
             var sanPham = await _sanPhamServices.GetAllChiTietSanPham();
             return Ok(sanPham);
         }
+        [HttpGet("GetIDsanPhamByIdCTSP")]
+        public Guid GetIDsanPhamByIdCTSP(Guid idctsp)
+        {
+            return _sanPhamServices.GetIDsanPhamByIdCTSP(idctsp);
+        }
         #endregion
 
         #region LoaiSP
         [HttpGet("GetAllLoaiSPCha")]
-        public async Task<IActionResult> GetAllLoaiSPCha() 
+        public async Task<IActionResult> GetAllLoaiSPCha()
         {
             var listLsp = await _sanPhamServices.GetAllLoaiSPCha();
             return Ok(listLsp);

@@ -100,6 +100,37 @@
         font-weight: 900;
         color: #f8ce0b;
     }
+
+    .thumbnail_images ul {
+        overflow-x: auto;
+        display: -webkit-inline-box;
+        margin-left:70px;
+        margin-right: 70px;
+    }
+
+    .thumbnail_images ul::-webkit-scrollbar{
+        display:none;
+    }
+    .thumbnail_images{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .slide-button{
+        position: absolute;
+        transform: translateY(180%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width:25px;
+        height:25px;
+        color:white;
+        border:none;
+        outline:none;
+        background:black;
+        cursor:pointer;
+        border-radius:50%;
+    }
 </style>
 <div class="container mt-5 mb-5">
     <div class="card">
@@ -110,12 +141,24 @@
                         <img src="" id="main_product_image" width="350">
                     </div>
                     <div class="thumbnail_images">
+                        
                         <ul id="thumbnail">
+                            <button id="prev-slide" class="slide-button" style="left: 50px">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z" />
+                                </svg>
+                            </button>
                             @foreach (var x in Model.Anhs)
                             {
-                                <li><img onclick="changeImage(this)" src="~/img/product/@x.DuongDan" width="70"></li>
+                                <li><img class="image-list" onclick="changeImage(this)" src="~/img/product/@x.DuongDan" width="70"></li>
                             }
+                            <button id="next-slide" class="slide-button" style="right:50px;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z" />
+                                </svg>
+                            </button>
                         </ul>
+                        
                     </div>
                 </div>
             </div>
@@ -123,7 +166,10 @@
                 <div class="p-3 right-side">
                     <div class="d-flex justify-content-between align-items-center">
                         <h4>@Model.Ten</h4>
-                        Mã: <strong id="maSP">@Model.ChiTietSanPhams.First(x=>x.TrangThai==1).ID</strong>
+                        <div>
+                            Mã: <strong id="maSP">@Model.ChiTietSanPhams.First(x=>x.TrangThai==1).MaCTSP</strong>
+                        </div>
+                        
                     </div>
                     <h3>@Model.ChiTietSanPhams.First(x=>x.TrangThai==1).GiaBan.ToString("n0") VNĐ</h3>
                     <span>Tình trạng:<strong id="trangthai"></strong></span>
@@ -319,7 +365,7 @@
         var chiTietSanPham = chiTietSanPhams.find(x => x.trangThai == 1);
         color = chiTietSanPham.mauSac;
         size = chiTietSanPham.kichCo;
-        console.log(kichCos);
+        console.log(chiTietSanPhams);
         var anhMacDinh = anhs.find(x => x.maMau == color).duongDan;
         document.getElementById("main_product_image").src = "/img/product/" + anhMacDinh;
         if (chiTietSanPham.soLuong > 0){
@@ -327,8 +373,26 @@
         }else{
             document.getElementById("trangthai").innerHTML = "Hết hàng"
         }
+        if (anhs.length <= 5) {
+            document.getElementById("next-slide").style.display = "none";
+            document.getElementById("prev-slide").style.display = "none";
+        }
+        document.getElementById("maSP").innerHTML = chiTietSanPham.maCTSP;
         loadDGsp();
+        initslider();
     });
+    const initslider = () =>{
+        const imageList = document.querySelector("#thumbnail");
+        const slideButton = document.querySelectorAll(".slide-button");
+        //
+        slideButton.forEach(button => {
+            button.addEventListener("click",()=>{
+                const direction = button.id === "prev-slide" ? - 1 : 1;
+                const scrollAmount = imageList.clientWidth * direction;
+                imageList.scrollBy({left:scrollAmount,behavior:"smooth"});
+            });
+        });
+    }
     function changeImage(element) {
 
         var main_prodcut_image = document.getElementById('main_product_image');
@@ -382,7 +446,7 @@
         var label = document.getElementById("label_" + element.value);
         label.style.border = "2px black solid";
         document.getElementById("main_product_image").src = "/img/product/" + anh.duongDan;
-        document.getElementById("maSP").innerHTML = chiTietSP.id;
+        document.getElementById("maSP").innerHTML = chiTietSP.maCTSP;
     }
     function getKichCo(element) {
         size = kichCos.find(x=>x.giaTri==element.value).id;
@@ -398,83 +462,114 @@
         //}
         //var ip = document.getElementById(element.value);
         //ip.style.border = "2px black solid";
-        document.getElementById("maSP").innerHTML = chiTietSP.id;
+        document.getElementById("maSP").innerHTML = chiTietSP.maCTSP;
+    }
+    function KichCo() {
+        var checkboxes = $('#sizes input[type="radio"]:checked')
+        var value = []
+        checkboxes.each(function () {
+            value.push($(this).attr('value'))
+        })
+        return value
+    }
+    function MauSac() {
+        var checkboxes = $('#filter-color input[type="radio"]:checked')
+        var value = []
+        checkboxes.each(function () {
+            value.push($(this).attr('value'))
+        })
+        return value
     }
     function addCart() {
-        $.ajax({
-            async: true,
-            type: 'POST',
-            dataType: "json",
-            data: { id: document.getElementById("maSP").innerHTML, sl: document.getElementById("sl").value },
-            url: '/Home/AddToCart',
-            success: function (response) {
-                if (response.success == true) {
-                    toastr.success(response.message, 'Success Alert', { timeOut: 300 });
-                    
-                } else {
+        var idctsp = chiTietSanPhams.find(p => p.maCTSP == document.getElementById("maSP").innerHTML).id;
+        var kichco = KichCo();
+        var mausac = MauSac();
+        if(mausac.length != 0 && kichco.length!=0){
+            $.ajax({
+                async: true,
+                type: 'POST',
+                dataType: "json",
+                data: { id: idctsp, sl: document.getElementById("sl").value },
+                url: '/Home/AddToCart',
+                success: function (response) {
+                    if (response.success == true) {
+                        toastr.success(response.message, 'Success Alert', { timeOut: 300 });
+
+                    } else {
+                        toastr.error(response.message, 'Error Alert', { timeOut: 300 });
+                    }
+                },
+                error: function (response) {
                     toastr.error(response.message, 'Error Alert', { timeOut: 300 });
                 }
-            },
-            error: function (response) {
-                toastr.error(response.message, 'Error Alert', { timeOut: 300 });
-            }
-        });
-        $.ajax({
-            async: true,
-            type: 'POST',
-            dataType: "json",
-            data: { sl: document.getElementById("sl").value },
-            url: '/Home/TongSoLuong',
-            success: function (response) {
-                if (response.success == true) {
-                    $('#tongsoluong').text(response.sl);
+            });
+            $.ajax({
+                async: true,
+                type: 'POST',
+                dataType: "json",
+                data: { sl: document.getElementById("sl").value },
+                url: '/Home/TongSoLuong',
+                success: function (response) {
+                    if (response.success == true) {
+                        $('#tongsoluong').text(response.sl);
 
-                } else {
+                    } else {
+
+                    }
+                },
+                error: function (response) {
 
                 }
-            },
-            error: function (response) {
-                
-            }
-        });
+            });
+        }else{
+            toastr.error('Vui lòng chọn biến thể', 'Error Alert', { timeOut: 300 });
+        }
+        
     }
     function buyNow() {
-        $.ajax({
-            async: true,
-            type: 'POST',
-            dataType: "json",
-            data: { id: document.getElementById("maSP").innerHTML, soLuong: document.getElementById("sl").value },
-            url: '/Home/BuyNow',
-            success: function (response) {
-                if (response.success == true) {
-                    window.location = 'https://localhost:5001/Home/ShoppingCart';
-                  
-                } else {
+        var idctsp = chiTietSanPhams.find(p => p.maCTSP == document.getElementById("maSP").innerHTML).id;
+        var kichco = KichCo();
+        var mausac = MauSac();
+        if (mausac.length != 0 && kichco.length != 0) {
+            $.ajax({
+                async: true,
+                type: 'POST',
+                dataType: "json",
+                data: { id: idctsp, soLuong: document.getElementById("sl").value },
+                url: '/Home/BuyNow',
+                success: function (response) {
+                    if (response.success == true) {
+                        window.location = 'https://localhost:5001/Home/ShoppingCart';
+
+                    } else {
+                        toastr.error(response.message, 'Error Alert', { timeOut: 300 });
+                    }
+                },
+                error: function (response) {
                     toastr.error(response.message, 'Error Alert', { timeOut: 300 });
                 }
-            },
-            error: function (response) {
-                toastr.error(response.message, 'Error Alert', { timeOut: 300 });
-            }
-        });
-        $.ajax({
-            async: true,
-            type: 'POST',
-            dataType: "json",
-            data: { sl: document.getElementById("sl").value },
-            url: '/Home/TongSoLuong',
-            success: function (response) {
-                if (response.success == true) {
-                    $('#tongsoluong').text(response.sl);
+            });
+            $.ajax({
+                async: true,
+                type: 'POST',
+                dataType: "json",
+                data: { sl: document.getElementById("sl").value },
+                url: '/Home/TongSoLuong',
+                success: function (response) {
+                    if (response.success == true) {
+                        $('#tongsoluong').text(response.sl);
 
-                } else {
+                    } else {
+
+                    }
+                },
+                error: function (response) {
 
                 }
-            },
-            error: function (response) {
-                
-            }
-        });
+            });
+        } else {
+            toastr.error('Vui lòng chọn biến thể', 'Error Alert', { timeOut: 300 });
+        }
     }
     //----
     
