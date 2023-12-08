@@ -26,6 +26,8 @@
             <th style=" background-color: darkslategray;
     color: white;">Tên màu sắc</th>
             <th style=" background-color: darkslategray;
+    color: white;">Mã màu sắc</th>
+            <th style=" background-color: darkslategray;
     color: white;">Tên kích cỡ</th>
             <th style=" background-color: darkslategray;
     color: white;">Số lượng</th>
@@ -61,7 +63,10 @@
                     <img src="~/img/product/@item.TenAnh" style="width:70px;height:70px" />
                 </td>
                 <td>
-                    <div style="color:red">@item.TenMauSac</div>
+                    <div style="color:black">@item.TenMauSac</div>
+                </td>
+                <td>
+                    <input type="color" value="@item.MaMauSac" style="border:none;width:27px;height:25px" disabled>
                 </td>
                 <td>
                     @*@{

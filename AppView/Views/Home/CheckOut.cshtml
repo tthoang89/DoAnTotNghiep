@@ -367,7 +367,6 @@
                 url: '/Home/Order',
                 data: objHoaDon,
                 success: function (response) {
-                    console.log(response);
                     location.href = response;
                 },
                 error: function (response) {
@@ -384,19 +383,23 @@
             type: 'GET',
             dataType: 'json',
             url: '/Home/UseVoucher',
-            data: { ma: voucher },
+            data: { ma: voucher, tongTien : @tongtien},
             success: function (response) {
-                console.log(response);
-                if (response.hinhThuc == 1) {
-                    tienVoucher = (@tongtien * response.giaTri) / 100;
+                if (response.trangThai == true) {
+                    if (response.hinhThuc == 1) {
+                        tienVoucher = (@tongtien * response.giaTri) / 100;
+                    }
+                    else if (response.hinhThuc == 0) {
+                        tienVoucher = response.giaTri;
+                    }
+                    var ipVoucher = document.getElementById("moneyvoucher");
+                    ipVoucher.hidden = false;
+                    ipVoucher.innerHTML = "Số tiền giảm (Voucher)<span>" + tienVoucher + " VNĐ</span>";
+                    document.getElementById("total").innerHTML = (tienShip + @tongtien-tienVoucher - tienDiem) + "VNĐ";
                 }
-                else if (response.hinhThuc == 0){
-                    tienVoucher = response.giaTri;
+                else {
+                    alert(response.loi);
                 }
-                var ipVoucher = document.getElementById("moneyvoucher");
-                ipVoucher.hidden = false;
-                ipVoucher.innerHTML = "Số tiền giảm (Voucher)<span>" + tienVoucher + " VNĐ</span>";
-                document.getElementById("total").innerHTML = (tienShip + @tongtien-tienVoucher - tienDiem) + "VNĐ";
             },
             error: function (response) {
                 alert("Error");
@@ -405,20 +408,23 @@
     }
     function usediem() {
         diemTich = $("#diemTich").val();
-        console.log();
         $.ajax({
             async: true,
             type: 'GET',
             dataType: 'json',
             url: '/Home/UseDiemTich',
-            data: { diem: diemTich,id:'@loginInfor.Id' },
+            data: { diem: diemTich,id:'@loginInfor.Id', tongTien : @tongtien },
             success: function (response) {
-                console.log(response);
-                var ipDiem = document.getElementById("moneyscore");
-                ipDiem.hidden = false;
-                tienDiem = response;
-                ipDiem.innerHTML = "Số tiền giảm (Điểm)<span>" + tienDiem + " VNĐ</span>";
-                document.getElementById("total").innerHTML = (tienShip + @tongtien-tienVoucher-tienDiem) + "VNĐ";
+                if (response.trangThai == true) {
+                    var ipDiem = document.getElementById("moneyscore");
+                    ipDiem.hidden = false;
+                    tienDiem = response.soTienGiam;
+                    ipDiem.innerHTML = "Số tiền giảm (Điểm)<span>" + tienDiem + " VNĐ</span>";
+                    document.getElementById("total").innerHTML = (tienShip + @tongtien-tienVoucher - tienDiem) + "VNĐ";
+                }
+                else {
+                    alert(response.loi);
+                }                
             },
             error: function (response) {
                 alert("Error");
