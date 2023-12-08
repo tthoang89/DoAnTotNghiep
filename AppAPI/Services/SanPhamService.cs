@@ -317,7 +317,7 @@ namespace AppAPI.Services
                 {
                     giaBan = item.GiaBan;
                 }
-                chiTietSanPham.ChiTietSanPhams.Add(new ChiTietSanPhamViewModel() { ID = item.ID,Ten=sanPham.Ten,SoLuong = item.SoLuong, GiaBan = giaBan, GiaGoc = item.GiaBan,MauSac=item.IDMauSac.ToString(),KichCo=item.IDKichCo.ToString(),TrangThai=item.TrangThai});
+                chiTietSanPham.ChiTietSanPhams.Add(new ChiTietSanPhamViewModel() { ID = item.ID,MaCTSP = item.Ma,Ten=sanPham.Ten,SoLuong = item.SoLuong, GiaBan = giaBan, GiaGoc = item.GiaBan,MauSac=item.IDMauSac.ToString(),KichCo=item.IDKichCo.ToString(),TrangThai=item.TrangThai});
             }
             chiTietSanPham.MoTa = sanPham.MoTa;
             var query = await (from sp in _context.SanPhams.Where(p => p.ID == idSanPham)
