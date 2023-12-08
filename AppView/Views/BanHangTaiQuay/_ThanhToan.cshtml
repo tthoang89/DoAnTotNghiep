@@ -128,10 +128,16 @@
         $('.swithTichdiem input[type="checkbox"]').on('click', function(event, state){
             if($(this).is(':checked')){
                $('#diemKHSD').val(diemtoida);
+                $("tichdiemhd").text("");
+                $("#tdhd").css('display', 'none');
                $('#tientrutichdiem').text((diemtoida*@(ViewBag.TLTieu)).toLocaleString());
             }else{
                  $('#diemKHSD').val('');
+                  $("#tdhd").css('display', 'block');
+                    $("#tichdiemhd").text(@(Model.DiemTichHD));
+                    $("#tichdiemhd").text(@(Model.DiemTichHD));
                 $('#tientrutichdiem').text(0);
+
             }
             TinhTien();
         })

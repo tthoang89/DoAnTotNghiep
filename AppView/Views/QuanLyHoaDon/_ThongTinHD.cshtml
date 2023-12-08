@@ -225,16 +225,22 @@
         </div>
         <hr />
         <div class="d-flex flex-row justify-content-end">
+             @if (@Model.TrangThai == 9)
+            {
+                <div class="d-flex p-2">
+                    <button type="button" onclick="DoiTrangThai('4')" class="btn btn-danger fw-normal text-white"><i class="fa-solid fa-check fa-xs me-2" style="color: #ffffff;"></i> Xác nhận hoàn/trả hàng</button>
+                </div>
+            }
+            @if (@Model.TrangThai == 4)
+            {
+                <div class="d-flex p-2">
+                    <button type="button" onclick="DoiTrangThai('5')" class="btn btn-danger fw-normal text-white"><i class="fa-solid fa-check fa-xs me-2" style="color: #ffffff;"></i>Hoàn hàng thành công</button>
+                </div>
+            }
             @if (@Model.TrangThai == 3)
             {
                 <div class="d-flex p-2">
                     <button type="button" onclick="DoiTrangThai('6')" class="btn btn-primary fw-normal text-white"><i class="fa-solid fa-check fa-xs me-2" style="color: #ffffff;"></i>Giao hàng thành công</button>
-                </div>
-            }
-            @if (@Model.TrangThai == 9)
-            {
-                <div class="d-flex p-2">
-                    <button type="button" onclick="DoiTrangThai('4')" class="btn btn-danger fw-normal text-white"><i class="fa-solid fa-check fa-xs me-2" style="color: #ffffff;"></i> Xác nhận trả hàng</button>
                 </div>
             }
             @if (@Model.TrangThai == 2)

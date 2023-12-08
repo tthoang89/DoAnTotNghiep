@@ -218,7 +218,7 @@ namespace AppView.Controllers
                 //Lấy tên kh
                 var kh = await _httpClient.GetFromJsonAsync<KhachHang>($"KhachHang/GetById?id={lstd.IDKhachHang}");
                 khachHang = kh.Ten;
-                dtkh = kh.DiemTich;
+                dtkh = kh.DiemTich == null ? 0 : kh.DiemTich;
             }
             var loginInfor = new LoginViewModel();
             string? session = HttpContext.Session.GetString("LoginInfor");
