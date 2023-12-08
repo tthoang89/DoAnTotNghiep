@@ -27,7 +27,7 @@ namespace AppData.ViewModels
         
         public int SoLuong { get; set; }
         [Required(ErrorMessage = "mời bạn nhập Mô Tả")]
-        public string MoTa { get; set; }
+        public string? MoTa { get; set; }
         
         public int TrangThai { get; set; }
     }

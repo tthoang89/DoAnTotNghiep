@@ -260,9 +260,9 @@ namespace AppAPI.Services
         {
             var temp = _context.ChiTietSanPhams.First(x => x.ID == id);
             var anh = _context.Anhs.FirstOrDefault(x => x.IDMauSac == temp.IDMauSac && x.IDSanPham == temp.IDSanPham);
-            ChiTietSanPhamViewModel chiTietSanPham = new ChiTietSanPhamViewModel() { ID = temp.ID, Ten = _context.SanPhams.First(x => x.ID == temp.IDSanPham).Ten, SoLuong = temp.SoLuong, /*GiaBan = temp.IDKhuyenMai == null ? temp.GiaBan : GetKhuyenMai(temp.IDKhuyenMai.Value,temp.GiaBan)*/ GiaGoc = temp.GiaBan, TrangThai = temp.TrangThai, Anh = anh!=null?anh.DuongDan:null, MauSac = _context.MauSacs.First(x => x.ID == temp.IDMauSac).Ten, KichCo = _context.KichCos.First(x => x.ID == temp.IDKichCo).Ten };
+            ChiTietSanPhamViewModel chiTietSanPham = new ChiTietSanPhamViewModel() { ID = temp.ID, Ten = _context.SanPhams.First(x => x.ID == temp.IDSanPham).Ten, SoLuong = temp.SoLuong,GiaGoc = temp.GiaBan, TrangThai = temp.TrangThai, Anh = anh!=null?anh.DuongDan:null, MauSac = _context.MauSacs.First(x => x.ID == temp.IDMauSac).Ten, KichCo = _context.KichCos.First(x => x.ID == temp.IDKichCo).Ten };
             var khuyenMai = _context.KhuyenMais.FirstOrDefault(x => x.ID == temp.IDKhuyenMai && x.NgayKetThuc>DateTime.Now);
-            chiTietSanPham.GiaBan = GetKhuyenMai(khuyenMai.GiaTri, chiTietSanPham.GiaGoc, khuyenMai.TrangThai);
+            chiTietSanPham.GiaBan = khuyenMai != null? GetKhuyenMai(khuyenMai.GiaTri, chiTietSanPham.GiaGoc, khuyenMai.TrangThai):chiTietSanPham.GiaGoc;
             return chiTietSanPham;
         }
         public async Task<ChiTietSanPhamViewModelHome> GetAllChiTietSanPhamHome(Guid idSanPham)
@@ -317,7 +317,7 @@ namespace AppAPI.Services
                 {
                     giaBan = item.GiaBan;
                 }
-                chiTietSanPham.ChiTietSanPhams.Add(new ChiTietSanPhamViewModel() { ID = item.ID,Ten=sanPham.Ten,SoLuong = item.SoLuong, GiaBan = giaBan, GiaGoc = item.GiaBan,MauSac=item.IDMauSac.ToString(),KichCo=item.IDKichCo.ToString(),TrangThai=item.TrangThai});
+                chiTietSanPham.ChiTietSanPhams.Add(new ChiTietSanPhamViewModel() { ID = item.ID,MaCTSP = item.Ma,Ten=sanPham.Ten,SoLuong = item.SoLuong, GiaBan = giaBan, GiaGoc = item.GiaBan,MauSac=item.IDMauSac.ToString(),KichCo=item.IDKichCo.ToString(),TrangThai=item.TrangThai});
             }
             chiTietSanPham.MoTa = sanPham.MoTa;
             var query = await (from sp in _context.SanPhams.Where(p => p.ID == idSanPham)
@@ -451,8 +451,8 @@ namespace AppAPI.Services
         {
             try
             {
-                var chiTietSanPhamOld = _context.ChiTietSanPhams.First(x => x.TrangThai == 1);
                 var chiTietSanPhamNew = _context.ChiTietSanPhams.First(x => x.ID == id);
+                var chiTietSanPhamOld = _context.ChiTietSanPhams.First(x => x.TrangThai == 1 && x.IDSanPham==chiTietSanPhamNew.IDSanPham);
                 chiTietSanPhamOld.TrangThai = 2;
                 chiTietSanPhamNew.TrangThai = 1;
                 _context.ChiTietSanPhams.Update(chiTietSanPhamOld);

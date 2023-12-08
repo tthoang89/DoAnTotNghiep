@@ -59,11 +59,12 @@ namespace AppAPI.Controllers
                                      Id=LSTD.ID,
                                      IDKhachHang = kh.IDKhachHang,
                                      IDHoaDon = hd.ID,
+                                     MaHD=hd.MaHD,
                                      IDQuyDoiDiem = qdd.ID,
                                      NgayTichOrTieuDiem = hd.NgayThanhToan,
                                      TenKhachHang = kh.Ten,
                                      SDT = kh.SDT,
-                                    //SoDiemTichOrTieu = qdd.SoDiem,
+                                     //SoDiemTichOrTieu = qdd.SoDiem,
                                      DiemTichKH = kh.DiemTich,
                                     
                                      TrangThai = LSTD.TrangThai

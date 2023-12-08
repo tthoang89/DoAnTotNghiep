@@ -11,11 +11,11 @@ namespace AppView.Controllers
     public class QuanLyKMController : Controller
     {
         private readonly HttpClient _httpClient;
-        //private readonly AssignmentDBContext dBContext;
+        private readonly AssignmentDBContext dBContext;
         public QuanLyKMController()
         {
             _httpClient = new HttpClient();
-            //dBContext = new AssignmentDBContext();
+            dBContext = new AssignmentDBContext();
         }
         public int PageSize = 10;
         #region QL Khuyen Mai Cho SP
@@ -280,6 +280,52 @@ namespace AppView.Controllers
                 return View();
             }        
             return View();
+        }
+        public async Task<IActionResult> SuDung(Guid id)
+        {
+            var timkiem = dBContext.KhuyenMais.FirstOrDefault(x => x.ID == id);
+            if (timkiem != null)
+            {
+                if (timkiem.TrangThai == 2)
+                {
+                    timkiem.TrangThai = 0;
+                    dBContext.KhuyenMais.Update(timkiem);
+                }
+                if (timkiem.TrangThai == 3)
+                {
+                    timkiem.TrangThai = 1;
+                    dBContext.KhuyenMais.Update(timkiem);
+                }
+                dBContext.SaveChanges();
+                return RedirectToAction("GetAllKM");
+            }
+            else
+            {
+                return View();
+            }
+        }
+        public async Task<IActionResult> KoSuDung(Guid id)
+        {
+            var timkiem = dBContext.KhuyenMais.FirstOrDefault(x => x.ID == id);
+            if (timkiem != null)
+            {
+                if (timkiem.TrangThai == 0)
+                {
+                    timkiem.TrangThai = 2;
+                    dBContext.KhuyenMais.Update(timkiem);
+                }
+                if (timkiem.TrangThai == 1)
+                {
+                    timkiem.TrangThai = 3;
+                    dBContext.KhuyenMais.Update(timkiem);
+                }
+                dBContext.SaveChanges();
+                return RedirectToAction("GetAllKM");
+            }
+            else
+            {
+                return View();
+            }
         }
         //public async Task<IActionResult> SuDung(Guid id)
         //{

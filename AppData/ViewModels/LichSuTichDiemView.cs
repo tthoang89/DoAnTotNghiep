@@ -11,6 +11,7 @@ namespace AppData.ViewModels
         public Guid Id { get; set; }
         public Guid IDKhachHang { get; set; }
         public Guid IDHoaDon { get; set; }
+        public string MaHD { get; set; }
         public Guid IDQuyDoiDiem { get; set; }
         public DateTime? NgayTichOrTieuDiem { get; set; }
         public string TenKhachHang { get; set; }

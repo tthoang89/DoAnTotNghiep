@@ -15,6 +15,7 @@ namespace AppData.ViewModels
         public string TenAnh { get; set; }
         public Guid? IdKhuyenMai { get; set; }
         public string TenMauSac { get; set; }
+        public string? MaMauSac { get; set; }
         public string TenKichCo { get; set; }
         public int SoLuong { get; set; }
         public int GiaGoc { get; set; }

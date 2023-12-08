@@ -37,6 +37,29 @@ namespace AppView.Controllers
 
             });
         }
+        [HttpGet]
+        public async Task<IActionResult> GetAllLSTDByIDKH(Guid id, int ProductPage = 1)
+        {
+           
+            string apiURL = $"https://localhost:7095/api/LichSuTichDiem/GetLSTDByIdKH?idkh={id}";
+            var response = await httpClients.GetAsync(apiURL);
+            var apiData = await response.Content.ReadAsStringAsync();
+            var roles = JsonConvert.DeserializeObject<List<LichSuTichDiemView>>(apiData);
+            return View(new PhanTrangLSTD
+            {
+                listLSTDs = roles
+                        .Skip((ProductPage - 1) * PageSize).Take(PageSize),
+                PagingInfo = new PagingInfo
+                {
+                    ItemsPerPage = PageSize,
+                    CurrentPage = ProductPage,
+                    TotalItems = roles.Count()
+                }
+
+            }
+                );
+
+        }
         // tim kiem KH theo Ten Hoac SDT
         [HttpGet]
         public async Task<IActionResult> GetAllKHTheoTimKiem(string? Ten, string? SDT,int ProductPage = 1)

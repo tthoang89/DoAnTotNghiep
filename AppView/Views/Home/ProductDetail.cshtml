@@ -171,7 +171,7 @@
                         </div>
                         
                     </div>
-                    <h3>@Model.ChiTietSanPhams.First(x=>x.TrangThai==1).GiaBan.ToString("n0") VNĐ</h3>
+                    <h3 id="giaCTSP">@Model.ChiTietSanPhams.First(x=>x.TrangThai==1).GiaBan.ToString("n0") VNĐ</h3>
                     <span>Tình trạng:<strong id="trangthai"></strong></span>
                     <div class="mt-5">
                         <span class="fw-bold">Màu Sắc</span>
@@ -378,6 +378,7 @@
             document.getElementById("prev-slide").style.display = "none";
         }
         document.getElementById("maSP").innerHTML = chiTietSanPham.maCTSP;
+        document.getElementById("giaCTSP").innerHTML = Intl.NumberFormat().format(chiTietSanPham.giaBan) + " " + "VNĐ";
         loadDGsp();
         initslider();
     });
@@ -447,6 +448,7 @@
         label.style.border = "2px black solid";
         document.getElementById("main_product_image").src = "/img/product/" + anh.duongDan;
         document.getElementById("maSP").innerHTML = chiTietSP.maCTSP;
+        document.getElementById("giaCTSP").innerHTML = Intl.NumberFormat().format(chiTietSP.giaBan) + " " + "VNĐ";
     }
     function getKichCo(element) {
         size = kichCos.find(x=>x.giaTri==element.value).id;
@@ -463,6 +465,7 @@
         //var ip = document.getElementById(element.value);
         //ip.style.border = "2px black solid";
         document.getElementById("maSP").innerHTML = chiTietSP.maCTSP;
+        document.getElementById("giaCTSP").innerHTML = Intl.NumberFormat().format(chiTietSP.giaBan) + " " + "VNĐ";
     }
     function KichCo() {
         var checkboxes = $('#sizes input[type="radio"]:checked')
@@ -607,26 +610,29 @@
             data: request,
             success: function (response) {
                 $("#danhgia").empty();
-                $.each(response.data, function (i, item) {
-                    if(item.sao === 1){
-                        $("#danhgia").append("<div class='container' style='border-top: 1px solid #dee2e6;padding-top: 15px;'> <div class='row' style='border-bottom:1px solid #dee2e6; padding-bottom: 20px; padding-top: 20px;'> <div class='col-2'> <h4 style='text-align: center; width: 60px; height: 60px; vertical-align: middle; background-color: gray; border-radius: 50%; display: table-cell;'>" + item.tenKH.substring(0, 1).toUpperCase() + "</h4> </div> <div class='col-10'> <div> <span>" + item.tenKH + "</span> </div><div><i class='fas fa-star text-warning'></i> <i class='fas fa-star star-light mr-1 main_star'></i><i class='fas fa-star star-light mr-1 main_star'></i><i class='fas fa-star star-light mr-1 main_star'></i><i class='fas fa-star star-light mr-1 main_star'></i></div> <div style='margin-top: 6px;' > <span style='color:gray'> " + item.ngayDanhGia + " </span> </div > <div style='margin-top: 6px; ' > <span style='color:gray' > Chất liệu: </span>" + item.chatLieu + " </div > <div style='margin-top: 6px;' > <span style='color:gray' > Màu sắc: </span>" + item.mauSac + " </div > <div style='margin-top: 6px;' > <span style='color:gray' > Kích cỡ: </span>" + item.kichCo + " </div > <div style='margin-top: 6px; ' > <span>" + item.binhLuan + " </span> </div > </div> </div > </div>");
-                    } else if (item.sao === 2) {
-                        $("#danhgia").append("<div class='container' style='border-top: 1px solid #dee2e6;padding-top: 15px;'> <div class='row' style='border-bottom:1px solid #dee2e6; padding-bottom: 20px; padding-top: 20px;'> <div class='col-2'> <h4 style='text-align: center; width: 60px; height: 60px; vertical-align: middle; background-color: gray; border-radius: 50%; display: table-cell;'>" + item.tenKH.substring(0, 1).toUpperCase() + "</h4> </div> <div class='col-10'> <div> <span>" + item.tenKH + "</span> </div><div><i class='fas fa-star text-warning'></i> <i class='fas fa-star text-warning'></i> <i class='fas fa-star star-light mr-1 main_star'></i><i class='fas fa-star star-light mr-1 main_star'></i><i class='fas fa-star star-light mr-1 main_star'></i> </div> <div style='margin-top: 6px;' > <span style='color:gray'> " + item.ngayDanhGia + " </span> </div > <div style='margin-top: 6px; ' > <span style='color:gray' > Chất liệu: </span>" + item.chatLieu + " </div > <div style='margin-top: 6px;' > <span style='color:gray' > Màu sắc: </span>" + item.mauSac + " </div > <div style='margin-top: 6px;' > <span style='color:gray' > Kích cỡ: </span>" + item.kichCo + " </div > <div style='margin-top: 6px; ' > <span>" + item.binhLuan + " </span> </div > </div> </div > </div>");
-                    }
-                    else if(item.sao === 3){
-                        $("#danhgia").append("<div class='container' style='border-top: 1px solid #dee2e6;padding-top: 15px;'> <div class='row' style='border-bottom:1px solid #dee2e6; padding-bottom: 20px; padding-top: 20px;'> <div class='col-2'> <h4 style='text-align: center; width: 60px; height: 60px; vertical-align: middle; background-color: gray; border-radius: 50%; display: table-cell;'>" + item.tenKH.substring(0, 1).toUpperCase() + "</h4> </div> <div class='col-10'> <div> <span>" + item.tenKH + "</span> </div><div><i class='fas fa-star text-warning'></i> <i class='fas fa-star text-warning'></i> <i class='fas fa-star text-warning'></i> <i class='fas fa-star star-light mr-1 main_star'></i><i class='fas fa-star star-light mr-1 main_star'></i></div> <div style='margin-top: 6px;' > <span style='color:gray'> " + item.ngayDanhGia + " </span> </div > <div style='margin-top: 6px; ' > <span style='color:gray' > Chất liệu: </span>" + item.chatLieu + " </div > <div style='margin-top: 6px;' > <span style='color:gray' > Màu sắc: </span>" + item.mauSac + " </div > <div style='margin-top: 6px;' > <span style='color:gray' > Kích cỡ: </span>" + item.kichCo + " </div > <div style='margin-top: 6px; ' > <span>" + item.binhLuan + " </span> </div > </div> </div > </div>");
-                    } 
-                    else if (item.sao === 4){
-                        $("#danhgia").append("<div class='container' style='border-top: 1px solid #dee2e6;padding-top: 15px;'> <div class='row' style='border-bottom:1px solid #dee2e6; padding-bottom: 20px; padding-top: 20px;'> <div class='col-2'> <h4 style='text-align: center; width: 60px; height: 60px; vertical-align: middle; background-color: gray; border-radius: 50%; display: table-cell;'>" + item.tenKH.substring(0, 1).toUpperCase() + "</h4> </div> <div class='col-10'> <div> <span>" + item.tenKH + "</span> </div><div><i class='fas fa-star text-warning'></i> <i class='fas fa-star text-warning'></i> <i class='fas fa-star text-warning'></i> <i class='fas fa-star text-warning'></i> <i class='fas fa-star star-light mr-1 main_star'></i></div> <div style='margin-top: 6px;' > <span style='color:gray'> " + item.ngayDanhGia + " </span> </div > <div style='margin-top: 6px; ' > <span style='color:gray' > Chất liệu: </span>" + item.chatLieu + " </div > <div style='margin-top: 6px;' > <span style='color:gray' > Màu sắc: </span>" + item.mauSac + " </div > <div style='margin-top: 6px;' > <span style='color:gray' > Kích cỡ: </span>" + item.kichCo + " </div > <div style='margin-top: 6px; ' > <span>" + item.binhLuan + " </span> </div > </div> </div > </div>");
-                    }
-                    else if (item.sao === 5) {
-                        $("#danhgia").append("<div class='container' style='border-top: 1px solid #dee2e6;padding-top: 15px;'> <div class='row' style='border-bottom:1px solid #dee2e6; padding-bottom: 20px; padding-top: 20px;'> <div class='col-2'> <h4 style='text-align: center; width: 60px; height: 60px; vertical-align: middle; background-color: gray; border-radius: 50%; display: table-cell;'>" + item.tenKH.substring(0, 1).toUpperCase() + "</h4> </div> <div class='col-10'> <div> <span>" + item.tenKH + "</span> </div><div><i class='fas fa-star text-warning'></i> <i class='fas fa-star text-warning'></i> <i class='fas fa-star text-warning'></i> <i class='fas fa - star text - warning'></i> <i class='fas fa-star text-warning'></i> <i class='fas fa-star text-warning'></i> </div> <div style='margin-top: 6px;' > <span style='color:gray'> " + item.ngayDanhGia + " </span> </div > <div style='margin-top: 6px; ' > <span style='color:gray' > Chất liệu: </span>" + item.chatLieu + " </div > <div style='margin-top: 6px;' > <span style='color:gray' > Màu sắc: </span>" + item.mauSac + " </div > <div style='margin-top: 6px;' > <span style='color:gray' > Kích cỡ: </span>" + item.kichCo + " </div > <div style='margin-top: 6px; ' > <span>" + item.binhLuan + " </span> </div > </div> </div > </div>");
-                    }
-                    
-                });
-                pagingsp(response.total, function () {
-                    loadDGsp();
-                });
+                console.log(response.data.length != 0);
+                if(response.data.length != 0){
+                    $.each(response.data, function (i, item) {
+                        if (item.sao === 1) {
+                            $("#danhgia").append("<div class='container' style='border-top: 1px solid #dee2e6;padding-top: 15px;'> <div class='row' style='border-bottom:1px solid #dee2e6; padding-bottom: 20px; padding-top: 20px;'> <div class='col-2'> <h4 style='text-align: center; width: 60px; height: 60px; vertical-align: middle; background-color: gray; border-radius: 50%; display: table-cell;'>" + item.tenKH.substring(0, 1).toUpperCase() + "</h4> </div> <div class='col-10'> <div> <span>" + item.tenKH + "</span> </div><div><i class='fas fa-star text-warning'></i> <i class='fas fa-star star-light mr-1 main_star'></i><i class='fas fa-star star-light mr-1 main_star'></i><i class='fas fa-star star-light mr-1 main_star'></i><i class='fas fa-star star-light mr-1 main_star'></i></div> <div style='margin-top: 6px;' > <span style='color:gray'> " + item.ngayDanhGia + " </span> </div > <div style='margin-top: 6px; ' > <span style='color:gray' > Chất liệu: </span>" + item.chatLieu + " </div > <div style='margin-top: 6px;' > <span style='color:gray' > Màu sắc: </span>" + item.mauSac + " </div > <div style='margin-top: 6px;' > <span style='color:gray' > Kích cỡ: </span>" + item.kichCo + " </div > <div style='margin-top: 6px; ' > <span>" + item.binhLuan + " </span> </div > </div> </div > </div>");
+                        } else if (item.sao === 2) {
+                            $("#danhgia").append("<div class='container' style='border-top: 1px solid #dee2e6;padding-top: 15px;'> <div class='row' style='border-bottom:1px solid #dee2e6; padding-bottom: 20px; padding-top: 20px;'> <div class='col-2'> <h4 style='text-align: center; width: 60px; height: 60px; vertical-align: middle; background-color: gray; border-radius: 50%; display: table-cell;'>" + item.tenKH.substring(0, 1).toUpperCase() + "</h4> </div> <div class='col-10'> <div> <span>" + item.tenKH + "</span> </div><div><i class='fas fa-star text-warning'></i> <i class='fas fa-star text-warning'></i> <i class='fas fa-star star-light mr-1 main_star'></i><i class='fas fa-star star-light mr-1 main_star'></i><i class='fas fa-star star-light mr-1 main_star'></i> </div> <div style='margin-top: 6px;' > <span style='color:gray'> " + item.ngayDanhGia + " </span> </div > <div style='margin-top: 6px; ' > <span style='color:gray' > Chất liệu: </span>" + item.chatLieu + " </div > <div style='margin-top: 6px;' > <span style='color:gray' > Màu sắc: </span>" + item.mauSac + " </div > <div style='margin-top: 6px;' > <span style='color:gray' > Kích cỡ: </span>" + item.kichCo + " </div > <div style='margin-top: 6px; ' > <span>" + item.binhLuan + " </span> </div > </div> </div > </div>");
+                        }
+                        else if (item.sao === 3) {
+                            $("#danhgia").append("<div class='container' style='border-top: 1px solid #dee2e6;padding-top: 15px;'> <div class='row' style='border-bottom:1px solid #dee2e6; padding-bottom: 20px; padding-top: 20px;'> <div class='col-2'> <h4 style='text-align: center; width: 60px; height: 60px; vertical-align: middle; background-color: gray; border-radius: 50%; display: table-cell;'>" + item.tenKH.substring(0, 1).toUpperCase() + "</h4> </div> <div class='col-10'> <div> <span>" + item.tenKH + "</span> </div><div><i class='fas fa-star text-warning'></i> <i class='fas fa-star text-warning'></i> <i class='fas fa-star text-warning'></i> <i class='fas fa-star star-light mr-1 main_star'></i><i class='fas fa-star star-light mr-1 main_star'></i></div> <div style='margin-top: 6px;' > <span style='color:gray'> " + item.ngayDanhGia + " </span> </div > <div style='margin-top: 6px; ' > <span style='color:gray' > Chất liệu: </span>" + item.chatLieu + " </div > <div style='margin-top: 6px;' > <span style='color:gray' > Màu sắc: </span>" + item.mauSac + " </div > <div style='margin-top: 6px;' > <span style='color:gray' > Kích cỡ: </span>" + item.kichCo + " </div > <div style='margin-top: 6px; ' > <span>" + item.binhLuan + " </span> </div > </div> </div > </div>");
+                        }
+                        else if (item.sao === 4) {
+                            $("#danhgia").append("<div class='container' style='border-top: 1px solid #dee2e6;padding-top: 15px;'> <div class='row' style='border-bottom:1px solid #dee2e6; padding-bottom: 20px; padding-top: 20px;'> <div class='col-2'> <h4 style='text-align: center; width: 60px; height: 60px; vertical-align: middle; background-color: gray; border-radius: 50%; display: table-cell;'>" + item.tenKH.substring(0, 1).toUpperCase() + "</h4> </div> <div class='col-10'> <div> <span>" + item.tenKH + "</span> </div><div><i class='fas fa-star text-warning'></i> <i class='fas fa-star text-warning'></i> <i class='fas fa-star text-warning'></i> <i class='fas fa-star text-warning'></i> <i class='fas fa-star star-light mr-1 main_star'></i></div> <div style='margin-top: 6px;' > <span style='color:gray'> " + item.ngayDanhGia + " </span> </div > <div style='margin-top: 6px; ' > <span style='color:gray' > Chất liệu: </span>" + item.chatLieu + " </div > <div style='margin-top: 6px;' > <span style='color:gray' > Màu sắc: </span>" + item.mauSac + " </div > <div style='margin-top: 6px;' > <span style='color:gray' > Kích cỡ: </span>" + item.kichCo + " </div > <div style='margin-top: 6px; ' > <span>" + item.binhLuan + " </span> </div > </div> </div > </div>");
+                        }
+                        else if (item.sao === 5) {
+                            $("#danhgia").append("<div class='container' style='border-top: 1px solid #dee2e6;padding-top: 15px;'> <div class='row' style='border-bottom:1px solid #dee2e6; padding-bottom: 20px; padding-top: 20px;'> <div class='col-2'> <h4 style='text-align: center; width: 60px; height: 60px; vertical-align: middle; background-color: gray; border-radius: 50%; display: table-cell;'>" + item.tenKH.substring(0, 1).toUpperCase() + "</h4> </div> <div class='col-10'> <div> <span>" + item.tenKH + "</span> </div><div><i class='fas fa-star text-warning'></i> <i class='fas fa-star text-warning'></i> <i class='fas fa-star text-warning'></i> <i class='fas fa - star text - warning'></i> <i class='fas fa-star text-warning'></i> <i class='fas fa-star text-warning'></i> </div> <div style='margin-top: 6px;' > <span style='color:gray'> " + item.ngayDanhGia + " </span> </div > <div style='margin-top: 6px; ' > <span style='color:gray' > Chất liệu: </span>" + item.chatLieu + " </div > <div style='margin-top: 6px;' > <span style='color:gray' > Màu sắc: </span>" + item.mauSac + " </div > <div style='margin-top: 6px;' > <span style='color:gray' > Kích cỡ: </span>" + item.kichCo + " </div > <div style='margin-top: 6px; ' > <span>" + item.binhLuan + " </span> </div > </div> </div > </div>");
+                        }
+
+                    });
+                    pagingsp(response.total, function () {
+                        loadDGsp();
+                    });
+                }
             },
             error: function (err) {
                 console.log('Error:', err);
