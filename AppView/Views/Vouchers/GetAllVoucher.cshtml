@@ -105,7 +105,7 @@
                 </td>
                 <td>
                     @{
-                        if (item.NgayKetThuc >= DateTime.Now)
+                        if (item.NgayKetThuc >= DateTime.Now&&item.SoLuong>0)
                         {
                             <div style="color:green">Còn khuyến mãi</div>
                         }

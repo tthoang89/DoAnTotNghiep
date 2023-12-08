@@ -21,7 +21,7 @@ namespace AppData.ViewModels
       
         public DateTime NgayKetThuc { get; set; }
         [Required(ErrorMessage = "mời bạn nhập mô tả")]
-        public string MoTa { get; set; }
+        public string? MoTa { get; set; }
       
         public int TrangThai { get; set; }
     }
