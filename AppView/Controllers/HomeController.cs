@@ -1285,15 +1285,22 @@ namespace AppView.Controllers
 
         #region CheckOut
         [HttpGet]
-        public JsonResult UseDiemTich(int diem, string id)
+        public JsonResult UseDiemTich(int diem, string id, int tongTien)
         {
             var response = _httpClient.GetAsync(_httpClient.BaseAddress + $"QuanLyNguoiDung/UseDiemTich?diem={diem}&id={id}").Result;
             if (response.IsSuccessStatusCode)
             {
-                var soTienGiam = response.Content.ReadAsStringAsync().Result;
-                return Json(soTienGiam);
+                var soTienGiam = Convert.ToInt32(response.Content.ReadAsStringAsync().Result);
+                if (soTienGiam < (tongTien/2))
+                {
+                    return Json(new { SoTienGiam = soTienGiam, TrangThai = true });
+                }
+                else
+                {
+                    return Json(new { Loi = "Số tiền giảm khi sử dụng điểm phải nhỏ hơn 50% giá trị đơn hàng", TrangThai = false });
+                }
             }
-            else return Json(0);
+            else return Json(new {Loi = "Không kết nối được với server",TrangThai = false});
         }
         [HttpGet]
         public IActionResult CheckOut()
@@ -1457,7 +1464,7 @@ namespace AppView.Controllers
             return View();
         }
         [HttpGet]
-        public async Task<JsonResult> UseVoucher(string ma)
+        public async Task<JsonResult> UseVoucher(string ma, int tongTien)
         {
             HttpResponseMessage response = await _httpClient.GetAsync(_httpClient.BaseAddress + "Voucher/GetVoucherByMa?ma=" + ma);
             if (response.IsSuccessStatusCode)
@@ -1465,11 +1472,32 @@ namespace AppView.Controllers
                 var voucher = JsonConvert.DeserializeObject<Voucher>(await response.Content.ReadAsStringAsync());
                 if (voucher != null)
                 {
-                    return Json(new { HinhThuc = voucher.HinhThucGiamGia, GiaTri = voucher.GiaTri });
+                    if(voucher.NgayKetThuc>DateTime.Now && voucher.NgayApDung < DateTime.Now)
+                    {
+                        if (voucher.SoLuong > 0)
+                        {
+                            if (voucher.SoTienCan < tongTien)
+                            {
+                                return Json(new { HinhThuc = voucher.HinhThucGiamGia, GiaTri = voucher.GiaTri, TrangThai = true });
+                            }
+                            else
+                            {
+                                return Json(new { Loi = "Voucher chưa đạt đủ điều kiện: Tổng tiền sản phẩm lớn hơn "+voucher.SoTienCan.ToString("n0")+" VNĐ", TrangThai = false });
+                            }
+                        }
+                        else
+                        {
+                            return Json(new { Loi = "Voucher đã sử dụng hết", TrangThai = false });
+                        }
+                    }
+                    else
+                    {
+                        return Json(new { Loi = "Mã voucher hết hạn", TrangThai = false });
+                    }
                 }
                 else
                 {
-                    return Json(new { HinhThuc = "Ko tim thay voucher", GiaTri = 0 });
+                    return Json(new { Loi = "Không tìm thấy voucher", TrangThai=false });
                 }
             }
             else return Json(new { HinhThuc = false, GiaTri = 0 });
