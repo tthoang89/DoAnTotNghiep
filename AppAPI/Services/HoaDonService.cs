@@ -206,8 +206,6 @@ namespace AppAPI.Services
                                 };
                                 reposLichSuTichDiem.Add(lichSuTichDiem);
                                 //tiều điểm
-                                khachHang.DiemTich = khachHang.DiemTich - hoaDon.Diem;
-                                reposKhachHang.Update(khachHang);
                                 if (khachHang.DiemTich >= hoaDon.Diem && hoaDon.Diem != 0 || hoaDon.Diem != null)
                                 {
                                     khachHang.DiemTich = khachHang.DiemTich - hoaDon.Diem;

@@ -980,6 +980,7 @@ namespace AppView.Controllers
             var response = _httpClient.PutAsJsonAsync(_httpClient.BaseAddress + "QuanLyNguoiDung/UpdateProfile", khachhang).Result;
             if (response.IsSuccessStatusCode)
             {
+
                 return Json(new { success = true, message = "Cập nhật thông tin cá nhân thành công" });
             }
             else
