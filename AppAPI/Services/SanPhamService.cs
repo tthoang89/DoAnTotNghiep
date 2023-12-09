@@ -645,14 +645,16 @@ namespace AppAPI.Services
             return await (from sp in _context.SanPhams.AsNoTracking()
                           let anh = _context.Anhs.AsNoTracking().Where(c => c.IDSanPham == sp.ID && c.DuongDan != null).FirstOrDefault()
                           let gia = _context.ChiTietSanPhams.AsNoTracking().Where(x => x.IDSanPham == sp.ID && x.GiaBan != null).FirstOrDefault()
+                          where sp.TrangThai == 1
                           select new SanPhamBanHang()
                           {
                               Id = sp.ID,
                               Ten = sp.Ten,
+                              MaSP = sp.Ma,
                               Anh = anh != null ? anh.DuongDan : null,
                               GiaBan = gia != null ? gia.GiaBan : 0,
                               IdLsp = sp.IDLoaiSP,
-                          }).ToListAsync();
+                          }).OrderBy(c=> c.MaSP).ToListAsync();
         }
 
         public async Task<ChiTietSanPhamBanHang> GetChiTietSPBHById(Guid idsp)
@@ -712,7 +714,7 @@ namespace AppAPI.Services
                                      select a).FirstOrDefault().DuongDan,
                               GiaGoc = ctsp.GiaBan,
                               GiaBan = km.TrangThai == null ? ctsp.GiaBan : (km.TrangThai == 0 ? ctsp.GiaBan - km.GiaTri : (ctsp.GiaBan * (100 - km.GiaTri) / 100)),
-                          }).ToListAsync();
+                          }).OrderByDescending(c=>c.ChiTiet).ToListAsync();
         }
 
         public Guid GetIDsanPhamByIdCTSP(Guid idctsp)

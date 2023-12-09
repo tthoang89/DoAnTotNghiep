@@ -52,13 +52,14 @@ namespace AppView.Controllers
             {
                 if (filter.loaitk == 1)
                 {
-                    listhdql = listhdql.Where(c => c.MaHD.ToLower().Contains(filter.keyWord.ToLower())).ToList();
+                    listhdql = listhdql.Where(c => c.MaHD.ToLower().Contains(filter.keyWord.ToLower()) || c.SDTnhanhang != null && c.SDTnhanhang.Contains(filter.keyWord)).ToList();
                 }
-                else
+                else if (filter.loaitk == 2)
                 {
-                    listhdql = listhdql.Where(c => c.KhachHang.ToLower().Contains(filter.keyWord.ToLower()) || c.SDT.Contains(filter.keyWord)).ToList();
+                    listhdql = listhdql.Where(c => c.KhachHang.ToLower().Contains(filter.keyWord.ToLower()) || c.SDTKH != null && c.SDTKH.Contains(filter.keyWord)).ToList();
                 }
             }
+            //Trả hàng
             //Lọc kênh
             if (filter.loaiHD != null)
             {
@@ -95,7 +96,7 @@ namespace AppView.Controllers
             var hd = await _httpClient.GetFromJsonAsync<ChiTietHoaDonQL>($"HoaDon/ChiTietHoaDonQL/{idhd}");
             return PartialView("_ThongTinHD", hd);
         }
-        
+
         //Hủy hóa đơn
         [HttpGet("/QuanLyHoaDon/HuyHD")]
         public async Task<IActionResult> HuyHD(Guid idhd, string ghichu)
@@ -116,7 +117,7 @@ namespace AppView.Controllers
             return Json(new { success = false, message = "Cập nhật trạng thái thất bại" });
         }
         // Cập nhật trạng thái
-        public async Task<IActionResult> DoiTrangThai(Guid idhd,int trangthai)
+        public async Task<IActionResult> DoiTrangThai(Guid idhd, int trangthai)
         {
             var loginInfor = new LoginViewModel();
             string? session = HttpContext.Session.GetString("LoginInfor");
@@ -134,7 +135,8 @@ namespace AppView.Controllers
             }
             return Json(new { success = false, message = "Cập nhật trạng thái thất bại" });
         }
-        
+        //Xuất PDF
+
         [HttpGet("/Admin/QuanLyHoaDon/ExportPDF/{idhd}")]
         public async Task<IActionResult> ExportPDF(Guid idhd)
         {
@@ -147,6 +149,12 @@ namespace AppView.Controllers
             };
             return view;
         }
-
+        //In hóa đơn
+        [HttpGet("/QuanLyHoaDon/PrintHD/{idhd}")]
+        public async Task<IActionResult> PrintHD(Guid idhd)
+        {
+            var cthd = await _httpClient.GetFromJsonAsync<ChiTietHoaDonQL>($"HoaDon/ChiTietHoaDonQL/{idhd}");
+            return View("ExportHD", cthd);
+        }
     }
 }
