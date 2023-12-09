@@ -5,6 +5,7 @@ using AppData.Repositories;
 using AppData.ViewModels;
 using AppData.ViewModels.QLND;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Asn1.Ocsp;
 using System.Net;
 using System.Net.Mail;
 
@@ -185,6 +186,9 @@ namespace AppAPI.Services
                     Ten = kh.Ten,
                     SDT = kh.SDT,
                     DiemTich = kh.DiemTich,
+                    DiaChi = kh.DiaChi,
+                    GioiTinh = kh.GioiTinh,
+                    NgaySinh = kh.NgaySinh,
                     vaiTro = 1
                 };
             }
@@ -283,6 +287,27 @@ namespace AppAPI.Services
             {
                 return diem * quyDoiDiem.TiLeTieuDiem;
             }
+        }
+
+        public async Task<bool> UpdateProfile(LoginViewModel loginViewModel)
+        {
+            var kh = await context.KhachHangs.FirstOrDefaultAsync(h => h.IDKhachHang == loginViewModel.Id);
+            if (kh != null)
+            {
+                
+                kh.Ten = loginViewModel.Ten;
+                kh.SDT = loginViewModel.SDT;
+                kh.DiaChi = loginViewModel.DiaChi;
+                kh.NgaySinh = loginViewModel.NgaySinh;
+                kh.GioiTinh = loginViewModel.GioiTinh;
+                kh.Email = loginViewModel.Email;
+                //context.KhachHangs.Update(kh);
+                context.SaveChangesAsync();
+                return true;
+                
+            }
+            
+            return false;
         }
         //End
     }

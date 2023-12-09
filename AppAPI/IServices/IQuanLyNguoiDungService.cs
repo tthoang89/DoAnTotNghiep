@@ -12,7 +12,7 @@ namespace AppAPI.IServices
         Task<bool> ChangePassword(string email, string password, string newPassword);
         Task<bool> ChangePassword(ChangePasswordRequest request);
         Task<bool> ForgetPassword(string email);
-
+        Task<bool> UpdateProfile(LoginViewModel loginViewModel);
         Task<bool> ResetPassword(ResetPasswordRequest model);
         public Task<int> UseDiemTich(int diem, string id);
 
