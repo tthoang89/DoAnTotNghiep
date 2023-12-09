@@ -960,6 +960,28 @@ namespace AppView.Controllers
         {
             return PartialView("ChangePassword");
         }
+        [HttpPut]
+        public ActionResult UpdateProfile(string ten,string email,string sdt,int? gioitinh,DateTime? ngaysinh,string? diachi)
+        {
+            var session = HttpContext.Session.GetString("LoginInfor");
+            LoginViewModel khachhang = new LoginViewModel();
+            khachhang.Id = JsonConvert.DeserializeObject<LoginViewModel>(session).Id;
+            khachhang.Ten = ten;
+            khachhang.Email = email;
+            khachhang.SDT = sdt;
+            khachhang.GioiTinh = gioitinh;
+            khachhang.NgaySinh = ngaysinh;
+            khachhang.DiaChi = diachi;
+            var response = _httpClient.PutAsJsonAsync(_httpClient.BaseAddress + "QuanLyNguoiDung/UpdateProfile", khachhang).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                return Json(new { success = true, message = "Cập nhật thông tin cá nhân thành công" });
+            }
+            else
+            {
+                return Json(new { success = false, message = "Cập nhật thông tin cá nhân thất bại" });
+            }
+        }
         public IActionResult PurchaseOrder()
         {
             var session = HttpContext.Session.GetString("LoginInfor");

@@ -195,7 +195,6 @@ namespace AppAPI.Services
                             {
                                 //tích điểm
                                 khachHang.DiemTich += subtotal / quyDoiDiem.TiLeTichDiem;
-                                reposKhachHang.Update(khachHang);
                                 LichSuTichDiem lichSuTichDiem = new LichSuTichDiem()
                                 {
                                     ID = Guid.NewGuid(),
@@ -208,6 +207,7 @@ namespace AppAPI.Services
                                 reposLichSuTichDiem.Add(lichSuTichDiem);
                                 //tiều điểm
                                 khachHang.DiemTich = khachHang.DiemTich - hoaDon.Diem;
+                                reposKhachHang.Update(khachHang);
                                 if (khachHang.DiemTich >= hoaDon.Diem && hoaDon.Diem != 0 || hoaDon.Diem != null)
                                 {
                                     khachHang.DiemTich = khachHang.DiemTich - hoaDon.Diem;
@@ -365,7 +365,8 @@ namespace AppAPI.Services
                               Id = hd.ID,
                               MaHD = hd.MaHD,
                               KhachHang = kh != null ? kh.Ten : "Khách lẻ",
-                              SDT = kh != null ? kh.SDT : null,
+                              SDTKH = kh !=null ? kh.SDT:null,
+                              SDTnhanhang = hd.SDT != null ? hd.SDT : "null",
                               PTTT = hd.PhuongThucThanhToan,
                               ThoiGian = hd.NgayTao,
 //                              GiamGia = (from vc in context.Vouchers

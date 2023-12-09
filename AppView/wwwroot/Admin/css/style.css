@@ -1549,6 +1549,7 @@ h6 {
 
     .product-item:hover {
         border: 2px solid #4154f1;
+        box-shadow: 0 1px 8px rgba(102,115,143,0.5);
         border-radius: 5px;
     }
 
@@ -2069,16 +2070,11 @@ tbody td {
     background-color: #c8cbcf;
 }
 #ctspitem {
-    border: 1px solid transparent;
-    border-radius: 5px;
     width: 25%;
     height: 300px;
     font-size: 14px;
 }
-    #ctspitem:hover{
-        border: 2px solid #4154f1;
-        border-radius: 5px;
-    }
+   
 /*Search HD*/
 .searchhd {
     display: flex;
