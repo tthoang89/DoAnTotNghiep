@@ -324,11 +324,32 @@ namespace AppView.Controllers
 
         //Tam
         [HttpGet]
-        public async Task<IActionResult> ThongKeAdmin()
+        public async Task<IActionResult> ThongKeAdmin(string startDate, string endDate)
         {
-            var response = await _httpClient.GetAsync("https://localhost:7095/api/ThongKe/ThongKe");
-            return View(JsonConvert.DeserializeObject<ThongKeViewModel>(response.Content.ReadAsStringAsync().Result));
-        }  
+            if(startDate == null || endDate == null)
+            {
+                startDate = DateTime.Now.AddDays(-7).ToString();
+                endDate = DateTime.Now.ToString();
+            }
+            var response = await _httpClient.GetAsync("https://localhost:7095/api/ThongKe/ThongKe?startDate=" + startDate + "&endDate=" + endDate);
+            var lst = JsonConvert.DeserializeObject<ThongKeViewModel>(response.Content.ReadAsStringAsync().Result);
+            return View(lst);
+            //return View();
+        }
+        //[HttpGet]
+        //public async Task<JsonResult> GetChart(string startDate, string endDate)
+        //{
+        //    var response = await _httpClient.GetAsync("https://localhost:7095/api/ThongKe/ThongKe?startDate="+startDate+ "&endDate="+endDate);
+        //    if (response.IsSuccessStatusCode)
+        //    {
+        //        var thongKe = JsonConvert.DeserializeObject<ThongKeViewModel>(response.Content.ReadAsStringAsync().Result);
+        //        return Json(new { Cot = thongKe.BieuDoCot, Duong = thongKe.BieuDoDuong, Tron = thongKe.BieuDoTron });
+        //    }
+        //    else
+        //    {
+        //        return Json(new { Cot = new List<ThongKeCotViewModel>(), Duong = new List<ThongKeDuongViewModel>(), Tron = new List<ThongKeTronViewModel>() });
+        //    }
+        //}
         //End
     }
 }

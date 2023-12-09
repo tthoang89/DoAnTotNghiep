@@ -9,6 +9,6 @@ namespace AppAPI.IServices
         decimal DoanhThuNgay(DateTime date);
         decimal DoanhThuThang(int month, int year);
         decimal DoanhThuNam(int year);
-        ThongKeViewModel ThongKe();
+        ThongKeViewModel ThongKe(string startDate, string endDate);
     }
 }

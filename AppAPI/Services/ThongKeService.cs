@@ -36,17 +36,19 @@ namespace AppAPI.Services
             return total;
         }
 
-        public ThongKeViewModel ThongKe()
+        public ThongKeViewModel ThongKe(string startDate, string endDate)
         {
             //Lấy 3 cột đầu
             var soLuongThanhVien = context.KhachHangs.Count();
             var soLuongDonHangCho = context.HoaDons.Where(x => x.TrangThaiGiaoHang == 2).Count();
             var soLuongSanPham = context.ChiTietSanPhams.Sum(x => x.SoLuong);
             List<ChiTietHoaDon> lstChiTietHoaDon = new List<ChiTietHoaDon>();
-            var nam = DateTime.Now.Year;
-            var thang = DateTime.Now.Month;
-            List<HoaDon> lstHoaDon = context.HoaDons.Where(x => x.TrangThaiGiaoHang == 6 && x.NgayThanhToan.Value.Year == nam).ToList();
-            var lstHoaDonTron = lstHoaDon.Where(x => (x.TrangThaiGiaoHang == 6 || x.TrangThaiGiaoHang == 5 || x.TrangThaiGiaoHang == 7) && x.NgayThanhToan.Value.Month == thang).ToList();
+            //var nam = DateTime.Now.Year;
+            //var thang = DateTime.Now.Month;
+            var start = Convert.ToDateTime(startDate);
+            var end = Convert.ToDateTime(endDate);
+            List<HoaDon> lstHoaDon = context.HoaDons.Where(x => (x.TrangThaiGiaoHang == 6 || x.TrangThaiGiaoHang==5 || x.TrangThaiGiaoHang==7) && x.NgayThanhToan >= start && x.NgayThanhToan<=end).ToList();
+            var lstHoaDonTron = lstHoaDon.Where(x => (x.TrangThaiGiaoHang == 6 || x.TrangThaiGiaoHang == 5 || x.TrangThaiGiaoHang == 7) && x.NgayThanhToan >= start && x.NgayThanhToan<=end).ToList();
             var tongHoaDonTron = lstHoaDonTron.Count();
             //Lấy biểu đồ cột
             foreach (var hoaDon in lstHoaDon)
@@ -73,21 +75,14 @@ namespace AppAPI.Services
                 item.TenSP = sanPham.Ten+"_"+mauSac.Ten+"_"+kichCo.Ten;
             }
             //Lấy biểu đồ đường
-            List<ThongKeDuongViewModel> thongKeDuong = new List<ThongKeDuongViewModel>()
+            List<ThongKeDuongViewModel> thongKeDuong = new List<ThongKeDuongViewModel>();
+            //{
+            //    new ThongKeDuongViewModel() { Ngay = start,SoLuongDon = context.HoaDons.Where(x => x.TrangThaiGiaoHang == 6 && x.NgayThanhToan==start).Count() }
+            //};
+            for (var i = start; i <= end; i=i.AddDays(1))
             {
-                new ThongKeDuongViewModel() { Nam = nam,SoLuongDon = context.HoaDons.Where(x => x.TrangThaiGiaoHang == 6 && x.NgayThanhToan.Value.Year == nam).Count() }
-            };
-            for (var i = nam - 1; i > nam - 5; i--)
-            {
-                thongKeDuong.Add(new ThongKeDuongViewModel() { Nam = i, SoLuongDon = context.HoaDons.Where(x => x.TrangThaiGiaoHang == 6 && x.NgayThanhToan.Value.Year == i).Count() });
+                thongKeDuong.Add(new ThongKeDuongViewModel() { Ngay = i.Date, SoLuongDon = context.HoaDons.Where(x => x.TrangThaiGiaoHang == 6 && x.NgayThanhToan.Value.Date == i.Date).Count() });
             }
-            //List<ThongKeDuongViewModel> thongKeDuong = (from a in lstHoaDon
-            //                                            group a by a.NgayThanhToan.Value.Year into g
-            //                                            select new ThongKeDuongViewModel()
-            //                                            {
-            //                                                Nam = g.Key,
-            //                                                SoLuongDon = g.Count(),
-            //                                            }).OrderBy(x => x.Nam).ToList();
             //Lấy biểu đồ tròn
             List<ThongKeTronViewModel> thongKeTron = (from a in lstHoaDonTron
                                                       group a by a.TrangThaiGiaoHang into g
@@ -96,7 +91,7 @@ namespace AppAPI.Services
                                                           TrangThaiHoaDon = g.Key == 6 ? "Thành công" : g.Key == 5 ? "Hoàn/Trả hàng" : "Hủy",
                                                           PhanTram = (tongHoaDonTron * 100) / g.Count(),
                                                       }).ToList();
-            return new ThongKeViewModel() { SoLuongThanhVien = soLuongThanhVien, SoLuongDonHang = soLuongDonHangCho, SoLuongSanPham = soLuongSanPham, BieuDoCot = thongKeCot, BieuDoDuong = thongKeDuong.OrderBy(x=>x.Nam).ToList(), BieuDoTron = thongKeTron };
+            return new ThongKeViewModel() { SoLuongThanhVien = soLuongThanhVien, SoLuongDonHang = soLuongDonHangCho, SoLuongSanPham = soLuongSanPham, BieuDoCot = thongKeCot, BieuDoDuong = thongKeDuong.OrderBy(x=>x.Ngay).ToList(), BieuDoTron = thongKeTron };
         }
     }
 }
