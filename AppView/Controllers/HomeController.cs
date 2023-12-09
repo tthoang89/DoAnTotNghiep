@@ -294,7 +294,6 @@ namespace AppView.Controllers
                         {
                             lstSanPhamfnR.Add(item);
                         }
-
                     }
                     else
                     {
@@ -341,10 +340,6 @@ namespace AppView.Controllers
                 ViewData["listChatLieu"] = JsonConvert.DeserializeObject<List<ChatLieu>>(responseChatLieu.Content.ReadAsStringAsync().Result);
             }
             return View();
-
-            //int pageNumber = page == null || page < 0 ? 1 : page.Value;
-            //PagedList<SanPhamViewModel> lst = new PagedList<SanPhamViewModel>(lstSanpham, pageNumber, pageSize);
-            //return View(lst);
         }
         [HttpGet]
         public async Task<IActionResult> ProductDetail(string idSanPham)
