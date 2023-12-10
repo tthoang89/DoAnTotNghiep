@@ -215,6 +215,19 @@ namespace AppAPI.Controllers
                 return Ok("Đổi mật khẩu  thành công");
             }
         }
+        [HttpPut("UpdateProfile")]
+        public async Task<IActionResult> UpdateProfile(LoginViewModel request)
+        {
+            var dmk = await service.UpdateProfile(request);
+            if (!dmk)
+            {
+                return BadRequest("Đổi thông tin người dùng không  thành công");
+            }
+            else
+            {
+                return Ok("Đổi thông tin người dùng thành công");
+            }
+        }
         [HttpGet("UseDiemTich")]
         public async Task<int> UseDiemTich(int diem, string id)
         {

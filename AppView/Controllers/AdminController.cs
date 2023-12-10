@@ -1,4 +1,5 @@
 ﻿using AppData.Models;
+using AppData.ViewModels;
 using AppData.ViewModels.SanPham;
 using AppView.IServices;
 using Microsoft.AspNetCore.Mvc;
@@ -24,13 +25,36 @@ namespace AppView.Controllers
         }
         public IActionResult ProductManager()
         {
-            var response = _httpClient.GetAsync(_httpClient.BaseAddress+ "SanPham/GetAllSanPhamAdmin").Result;
+            //var response = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllSanPhamAdmin").Result;
+            //if (response.IsSuccessStatusCode)
+            //{
+            //    var lstSanPham = JsonConvert.DeserializeObject<List<SanPhamViewModelAdmin>>(response.Content.ReadAsStringAsync().Result);
+            //    return View(lstSanPham);
+            //}
+            //else return BadRequest();
+            return View();
+        }
+        [HttpGet]
+        public JsonResult ShowProduct(FilterData filter)
+        {
+            var response = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllSanPhamAdmin").Result;
+            List<SanPhamViewModelAdmin> lstSanpham = new List<SanPhamViewModelAdmin>();
             if (response.IsSuccessStatusCode)
             {
-                var lstSanPham = JsonConvert.DeserializeObject<List<SanPhamViewModelAdmin>>(response.Content.ReadAsStringAsync().Result);
-                return View(lstSanPham);
+                lstSanpham = JsonConvert.DeserializeObject<List<SanPhamViewModelAdmin>>(response.Content.ReadAsStringAsync().Result);
+                if (filter.search != null)
+                {
+                    lstSanpham = lstSanpham.Where(x=>x.Ten.Contains(filter.search)).ToList();
+                }
+                var model = lstSanpham.Skip((filter.page - 1) * filter.pageSize).Take(filter.pageSize).ToList();
+                return Json(new
+                {
+                    data = model,
+                    total = lstSanpham.Count,
+                    status = true
+                });
             }
-            else return BadRequest();
+            else return Json(new { status = false });           
         }
         public IActionResult UpdateTrangThaiSanPham(string idSanPham,int trangThai)
         {
