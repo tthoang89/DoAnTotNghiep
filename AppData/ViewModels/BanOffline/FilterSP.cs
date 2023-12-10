@@ -9,6 +9,7 @@ namespace AppData.ViewModels.BanOffline
     public class FilterSP
     {
         public List<Guid> lstDM { get; set; }
+        public int khoangGia { get; set; }
         public int page { get; set; }
         public int pageSize { get; set; }   
     }

@@ -60,21 +60,21 @@
             <div class="modal-body">
                 <form class="row g-3">
                     <div class="col-md-12">
-                        <label for="inputName5">Tên khách hàng</label>
-                        <input type="text" class="form-control" id="inputTenKhachHang" required>
+                        <label for="inputName5">Tên khách hàng <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="inputTenKhachHang" placeholder="Nhập tên khách hàng"  autocomplete="off">
                     </div>
                     <div class="col-md-12">
-                        <label for="inputPassword5">Điện thoại</label>
-                        <input type="number" class="form-control" id="inputSDT" required>
+                        <label for="inputPassword5">Điện thoại <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="inputSDT" placeholder="Nhập số điện thoại"  required>
                     </div>
                     <div class="col-md-12">
                         <label for="inputEmail5">Email</label>
-                        <input type="email" class="form-control" id="inputEmail">
+                        <input type="email" class="form-control" id="inputEmail" placeholder="Nhập email"  autocomplete="off">
                     </div>
 
                     <div class="col-12">
                         <label for="inputAddress5">Địa chỉ</label>
-                        <input type="text" class="form-control" id="inputDiaChi" placeholder="">
+                        <input type="text" class="form-control" id="inputDiaChi" placeholder="Nhập địa chỉ"  autocomplete="off">
                     </div>
                     <div class="col-6">
                         <label for="inputCity">Ngày sinh</label>
@@ -97,6 +97,9 @@
                                 </label>
                             </div>
                         </fieldset>
+                    </div>
+                    <div class="alert alert-danger" role="alert" id="validatekh" style="display:none">
+
                     </div>
                     <div class="d-flex flex-row text-center">
                         <button type="button" class="btn btn-secondary w-50 btn-block m-2" data-bs-dismiss="modal">Bỏ qua</button>
@@ -232,22 +235,34 @@
          var dob = $("#inputNgaySinh").val();
          var gtinh = $('input[name="gioitinh"]:checked').val();
          var idhd = $("#IDHD").val();
-         var khachHang = {IDKhachHang: idhd, Ten: tenkh, GioiTinh: gtinh, NgaySinh: dob, Email: email, DiaChi: dchi, SDT: sdt, Password: 123456};
-         $.ajax({
-             url: "/BanHangTaiQuay/AddKhachHang",
-             async: false,
-             type: 'POST',
-             dataType: 'json',
-             data:khachHang,
-             success: function(response) {
-                 gethdct(idhd);
-                 $("#themkhachhang").modal("hide");
-                 toastr.success('Thêm khách hàng thành công', "Success Alert", {timeOut : 300});
-             },
-             error: function(response) {
-                 toastr.error('Thêm khách hàng thất bại', 'Error Alert', { timeOut: 300 });
-             }
-         });
+         if(tenkh === ''){
+            $("#validatekh").css('display','block');
+            $("#validatekh").text('Tên khách hàng không được để trống');
+         }else if(sdt ===''){
+            $("#validatekh").css('display','block');
+            $("#validatekh").text('Số điện thoại không được để trống');
+         }else{
+              var khachHang = {IDKhachHang: idhd, Ten: tenkh, GioiTinh: gtinh, NgaySinh: dob, Email: email, DiaChi: dchi, SDT: sdt, Password: 123456};
+             console.log(khachHang);
+             $.ajax({
+                 url: "/BanHangTaiQuay/AddKhachHang",
+                 async: false,
+                 type: 'POST',
+                 dataType: 'json',
+                 data:khachHang,
+                 success: function(response) {
+                    if(response.success == true){
+                    gethdct(idhd);
+                    $("#themkhachhang").modal("hide");
+                        toastr.success(response.message, "Success Alert", {timeOut : 300});
+                    }else{
+                        $("#validatekh").text(response.message);
+                    }
+                 },
+                 error: function(response) {
+                    toastr.error(response.message, 'Error Alert', { timeOut: 300 });                 }
+             });
+         }
      })
         // Mở modal thanh toán
     $("#btnThanhToan").on("click", function() {

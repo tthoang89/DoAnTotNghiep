@@ -16,6 +16,7 @@ namespace AppAPI.IServices
         public List<HoaDon> LichSuGiaoDich(Guid idNguoiDung);
         //Nhinh sửa
         public bool HuyHD(Guid idhd, Guid idnv, string Ghichu);
+        public bool TraHD(Guid idhd, Guid idnv, string Ghichu);
         public bool CreateHoaDonOffline(Guid idnhanvien);
         public bool DeleteHoaDon(Guid id);
         public bool UpdateHoaDon(HoaDonThanhToanRequest hoaDon);

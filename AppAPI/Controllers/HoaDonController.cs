@@ -106,6 +106,12 @@ namespace AppAPI.Controllers
             var result = _iHoaDonService.HuyHD(idhd,idnv,Ghichu);
             return Ok(result);
         }
+        [HttpPut("TraHD")]
+        public IActionResult TraHD(Guid idhd, Guid idnv, string Ghichu)
+        {
+            var result = _iHoaDonService.TraHD(idhd, idnv, Ghichu);
+            return Ok(result);
+        }
 
         [HttpPut("UpdateGhichu")]
         public bool UpdateGhiChuHD(Guid idhd, Guid idnv, string ghichu)

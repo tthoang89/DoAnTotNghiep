@@ -69,6 +69,33 @@ namespace AppView.Controllers
             {
                 listSP = listSP.Where(c => filter.lstDM.Contains(c.IdLsp)).ToList();
             }
+            //Lọc giá
+            if(filter.khoangGia != 0)
+            {
+                switch (filter.khoangGia)
+                {
+                    case 1:
+                        listSP = listSP.Where(c => c.GiaBan < 100000).ToList();
+                        break;
+                    case 2:
+                        listSP = listSP.Where(c => c.GiaBan >= 100000 && c.GiaBan < 200000).ToList();
+                        break;
+                    case 3:
+                        listSP = listSP.Where(c => c.GiaBan >= 200000 && c.GiaBan < 300000).ToList();
+                        break;
+                    case 4:
+                        listSP = listSP.Where(c => c.GiaBan >= 300000 && c.GiaBan < 400000).ToList();
+                        break;
+                    case 5:
+                        listSP = listSP.Where(c => c.GiaBan >= 400000 && c.GiaBan < 500000).ToList();
+                        break;
+                    case 6:
+                        listSP = listSP.Where(c => c.GiaBan >= 500000).ToList();
+                        break;
+                    default:
+                        break;
+                }
+            }
             //Phân trang
             var model = listSP.Skip((filter.page - 1) * filter.pageSize).Take(filter.pageSize).ToList();
             int totalRow = listSP.Count;
@@ -271,6 +298,15 @@ namespace AppView.Controllers
         {
             try
             {
+                var lstkh = await _httpClient.GetFromJsonAsync<List<KhachHang>>("KhachHang");
+                if (lstkh.Any(c => c.SDT.Equals(request.SDT)))
+                {
+                    return Json(new { success = false, message = "Số điện thoại đã được sử dụng" });
+                }
+                if(request.Email != null && lstkh.Any(c => c.Email.Equals(request.Email)))
+                {
+                    return Json(new { success = false, message = "Email đã được sử dụng" });
+                }
                 var response = await _httpClient.PostAsJsonAsync("KhachHang/PostKHView/", request);
                 if (response.IsSuccessStatusCode) // Thêm khách hàng thành công -> tạo lịch sử tích điểm
                 {
@@ -288,11 +324,11 @@ namespace AppView.Controllers
                     string apiUrl = $"https://localhost:7095/api/LichSuTichDiem?diem=0&trangthai=1&IdKhachHang={kh.IDKhachHang}&IdQuyDoiDiem={idqdd}&IdHoaDon={IDHD}";
                     var lstdresponse = await _httpClient.PostAsync(apiUrl, null);
                 }
-                return Json(new { success = true });
+                return Json(new { success = true, message = "Thêm khách hàng thành công" });
             }
             catch (Exception ex)
             {
-                return Json(new { success = false });
+                return Json(new { success = false, message = "Thêm khách hàng thất bại"});
             }
         }
 
@@ -324,7 +360,7 @@ namespace AppView.Controllers
         }
         //Xóa khách hàng
         [HttpGet("/BanHangTaiQuay/DeleteKHinHD/{idhd}")]
-        public async Task<IActionResult> DeleteKHinHD(string idhd)
+        public async Task<IActionResult> DelefteKHinHD(string idhd)
         {
             try
             {

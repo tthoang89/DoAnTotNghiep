@@ -225,10 +225,16 @@
         </div>
         <hr />
         <div class="d-flex flex-row justify-content-end">
-             @if (@Model.TrangThai == 9)
+             @if (@Model.LoaiHD == 1)
             {
                 <div class="d-flex p-2">
-                    <button type="button" onclick="DoiTrangThai('4')" class="btn btn-danger fw-normal text-white"><i class="fa-solid fa-check fa-xs me-2" style="color: #ffffff;"></i> Xác nhận hoàn/trả hàng</button>
+                    <button type="button" onclick="traDon('@Model.Id')" class="btn btn-danger fw-normal text-white"><i class="fa-solid fa-check fa-xs me-2" style="color: #ffffff;"></i> Trả hàng</button>
+                </div>
+            }
+             @if (@Model.TrangThai == 9 )
+            {
+                <div class="d-flex p-2">
+                    <button type="button" onclick="traDon('@Model.Id')" class="btn btn-danger fw-normal text-white"><i class="fa-solid fa-check fa-xs me-2" style="color: #ffffff;"></i> Xác nhận hoàn/trả hàng</button>
                 </div>
             }
             @if (@Model.TrangThai == 4)
@@ -398,7 +404,7 @@
         }
         function huyDon(IDHD){
             var gc = $("#ghiChuinTTHD").val();
-            if(gc ==='' || gc == '@Model.GhiChu'){
+            if(gc ===''|| gc == '@Model.GhiChu'){
                 toastr.error('Vui lòng nhập ghi chú hóa đơn', "Error Alert", { timeOut: 1000 });
             }else{
                 var ans = confirm("Bạn có chắc chắn hủy Hóa đơn này?");
@@ -425,14 +431,42 @@
                 }
             }
         }
+        function traDon(IDHD){
+            var gc = $("#ghiChuinTTHD").val();
+            if(gc ===''|| gc == '@Model.GhiChu'){
+                toastr.error('Vui lòng nhập ghi chú hóa đơn', "Error Alert", { timeOut: 1000 });
+            }else{
+                var ans = confirm("Bạn có chắc chắn muốn Trả hàng hóa đơn này?");
+                if(ans){
+                    $.ajax({
+                        url: "/QuanLyHoaDon/TraHD",
+                        type: "GET",
+                        dataType: 'json',
+                        data:{
+                            idhd: IDHD,
+                            ghichu: gc,
+                        },
+                        contentType: 'application/json',
+                        success: function(response) {
+                            toastr.success(response.message, "Success Alert", { timeOut: 300 });
+                            billDetail(IDHD);
+                            loadBill();
+                        },
+                        error: function(err) {
+                            toastr.error('Thay đổi trạng thái thất bại', "Error Alert", { timeOut: 300 });
+                        }
+                    });
+
+                }
+            }
+        }
     $("#exportPDF").click(function(){
         var id = "@Model.Id"
         $.ajax({
             url: "/QuanLyHoaDon/ExportPDF/" + id,
             type: "GET",
             success: function(response) {
-           @* var fileUrl = response.fileUrl;
-            window.open(fileUrl,'_blank');*@
+          
             },
             error: function(err) {
             toastr.error('Lỗi xuất hóa đơn', "Error Alert", { timeOut: 300 });
