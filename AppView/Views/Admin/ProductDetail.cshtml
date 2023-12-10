@@ -92,7 +92,7 @@
                     }
                 </td>
                 <td>
-                    <a asp-action="AddChiTietSanPham" asp-route-idSanPham="@idSanPham" class="btn btn-secondary">Tạo mã QR</a>
+                    <a asp-action="GenerateQRCode" asp-route-id="@item.ID" class="btn btn-secondary" asp-route-ma="@item.Ma">Tạo mã QR</a>
                     <a asp-action="AddChiTietSanPham" asp-route-idSanPham="@idSanPham" class="btn btn-danger">Xóa</a>
                 </td>
             </tr>
@@ -101,7 +101,6 @@
 </table>
 
 <div class="d-flex justify-content-end">
-    <a asp-action="AddChiTietSanPham" asp-route-idSanPham="@idSanPham" class="btn btn-secondary">Tạo mã QR</a>
     <a asp-action="QuanLyAnh" asp-route-idSanPham="@idSanPham" class="btn btn-success" style="margin-left:5px">Quản lý ảnh</a>
     <a asp-action="AddChiTietSanPham" asp-route-idSanPham="@idSanPham" class="btn btn-primary" style="margin-left:5px">Thêm chi tiết sản phẩm</a>
 </div>

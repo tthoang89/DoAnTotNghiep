@@ -956,10 +956,10 @@ namespace AppView.Controllers
             LoginViewModel loginViewModel = JsonConvert.DeserializeObject<LoginViewModel>(loginInfor);
             return View(loginViewModel);
         }
-        public IActionResult ChangePassword()
-        {
-            return PartialView("ChangePassword");
-        }
+        //public IActionResult ChangePassword()
+        //{
+        //    return PartialView("ChangePassword");
+        //}
         [HttpPut]
         public ActionResult UpdateProfile(string ten,string email,string sdt,int? gioitinh,DateTime? ngaysinh,string? diachi)
         {
@@ -1233,6 +1233,28 @@ namespace AppView.Controllers
         [HttpPost]
         public IActionResult ChangeForgotPassword(string password, string confirmPassword)
         {
+            if (string.IsNullOrEmpty(password))
+            {
+                ViewData["PasswordError"] = "Mật khẩu không được bỏ trống";
+                return View();
+            }
+            else if (password.Length < 8)
+            {
+                ViewData["PasswordError"] = "Mật khẩu phải lớn hơn 8 ký tự";
+                return View();
+            }
+
+            if (string.IsNullOrEmpty(confirmPassword))
+            {
+                ViewData["ConfirmPasswordError"] = "Xác nhận mật khẩu không được bỏ trống";
+                return View();
+            }
+            else if (password != confirmPassword)
+            {
+                ViewData["ConfirmPasswordError"] = "Mật khẩu và xác nhận mật khẩu không khớp";
+                return View();
+            }
+
             if (password == confirmPassword)
             {
                 string[] submit = HttpContext.Session.GetString("ForgotPassword").Split(":");
@@ -1242,9 +1264,17 @@ namespace AppView.Controllers
                 {
                     return RedirectToAction("Login");
                 }
-                else return BadRequest();
+                else
+                {
+                    ViewData["ErrorMessage"] = "Không thể đặt lại mật khẩu. Vui lòng kiểm tra lại thông tin.";
+                    return View();
+                }
             }
-            else return BadRequest();
+            else
+            {
+                ViewData["ErrorMessage"] = "Không thể đặt lại mật khẩu. Vui lòng kiểm tra lại thông tin.";
+                return View();
+            }
 
         }
 
