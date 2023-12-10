@@ -38,7 +38,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="col-6">
                     <div class="p-3">
                         <div class="form-group">
@@ -48,7 +47,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-6">
+                @*<div class="col-6">
                     <div class="p-3">
                         <div class="form-group">
                             <label asp-for="TrangThai" class="control-label">Trạng thái</label>
@@ -63,7 +62,7 @@
                             <span asp-validation-for="TrangThai" class="text-danger"></span>
                         </div>
                     </div>
-                </div>
+                </div>*@<input type="hidden" asp-for="TrangThai" value="0" />
                 <div class="col-6">
                     <div class="p-3">
                         <div class="form-group">
@@ -74,16 +73,15 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="col-6">
                     <div class="p-3">
                         <div class="form-group">
                             <lable>Tên Vai Trò</lable>
                             <div>
                                 <select class="form-control" name="IDVaiTro">
-                                    @foreach (var VaiTro in dBContext.VaiTros.ToList())
+                                    @foreach (var vaiTro in dBContext.VaiTros.Where(v => v.ID != Guid.Parse("90400702-e49c-4871-a831-fcca96f33c41")).ToList())
                                     {
-                                        <option value="@VaiTro.ID">@VaiTro.Ten</option>
+                                        <option value="@vaiTro.ID">@vaiTro.Ten</option>
                                     }
                                 </select>
                             </div>
@@ -104,7 +102,6 @@
                     <div class="p-3">
                         <div class="form-group" style="margin-left:300px; margin-top: 30px">
                             <input type="submit" value="Create" class="btn btn-primary" />
-
                         </div>
                     </div>
                 </div>

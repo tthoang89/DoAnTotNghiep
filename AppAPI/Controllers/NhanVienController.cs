@@ -45,7 +45,7 @@ namespace AppAPI.Controllers
 
         // POST api/<NhanVienController>
         [HttpPost("DangKyNhanVien")]
-        public bool Add(string ten, string email, string password, string sdt, string diachi, int trangthai, Guid idvaitro)
+        public bool Add(string ten, string email, string password, string sdt, string diachi)
         {
             NhanVien nv = new NhanVien();
             nv.ID = Guid.NewGuid();
@@ -54,8 +54,8 @@ namespace AppAPI.Controllers
             nv.PassWord = password;
             nv.SDT = sdt;
             nv.DiaChi = diachi;
-            nv.TrangThai = trangthai;
-            nv.IDVaiTro = idvaitro;
+            nv.TrangThai = 0;
+            nv.IDVaiTro = Guid.Parse("952c1a5d-74ff-4daf-ba88-135c5440809c");
             _dbContext.NhanViens.Add(nv);
             _dbContext.SaveChanges();
             return true;

@@ -43,9 +43,9 @@ namespace AppAPI.Controllers
             return Ok(total);
         }
         [HttpGet("ThongKe")]
-        public ThongKeViewModel ThongKe()
+        public ThongKeViewModel ThongKe(string startDate, string endDate)
         {
-            return thongKeService.ThongKe();
+            return thongKeService.ThongKe(startDate,endDate);
         }
     }
 }

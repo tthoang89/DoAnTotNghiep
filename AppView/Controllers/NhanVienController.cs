@@ -18,7 +18,7 @@ namespace AppView.Controllers
             _httpClient = new HttpClient();
             dBContext = new AssignmentDBContext();
         }
-        public int PageSize = 10;
+        public int PageSize = 8;
 
         public async Task<IActionResult> Show(int ProductPage = 1)
         {
@@ -77,9 +77,14 @@ namespace AppView.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(NhanVien nhanVien)
         {
+            nhanVien.TrangThai = 0;
             if (ModelState.IsValid)
             {
-                string apiUrl = $"https://localhost:7095/api/NhanVien/DangKyNhanVien?ten={nhanVien.Ten}&email={nhanVien.Email}&sdt={nhanVien.SDT}&diachi={nhanVien.DiaChi}&idVaiTro={nhanVien.IDVaiTro}&trangthai={nhanVien.TrangThai}&password={nhanVien.PassWord}";
+                if (nhanVien.IDVaiTro == Guid.Empty)
+                {
+                    nhanVien.IDVaiTro = Guid.Parse("952c1a5d-74ff-4daf-ba88-135c5440809c");
+                }
+                string apiUrl = $"https://localhost:7095/api/NhanVien/DangKyNhanVien?ten={nhanVien.Ten}&email={nhanVien.Email}&password={nhanVien.PassWord}&sdt={nhanVien.SDT}&diachi={nhanVien.DiaChi}";
                 var reponsen = await _httpClient.PostAsync(apiUrl, null);
                 if (reponsen.IsSuccessStatusCode)
                 {
@@ -146,24 +151,34 @@ namespace AppView.Controllers
 
             //return View("DeleteError");
         }
+        public async Task<IActionResult> Sua(Guid id)
+        {
+            var timkiem = dBContext.NhanViens.FirstOrDefault(x => x.ID == id);
+            if (timkiem != null)
+            {
+                timkiem.TrangThai = timkiem.TrangThai == 0 ? 1 : 0;
+                dBContext.NhanViens.Update(timkiem);
+                dBContext.SaveChanges();
+                return RedirectToAction("Show");
+            }
+            else
+            {
+                return View();
+            }
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Next(int ProductPage = 1)
         {
-            // Chuyển sang trang tiếp theo
             ProductPage++;
-
-            // Gọi phương thức Show() để hiển thị trang tiếp theo
             return await Show(ProductPage);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Previous(int ProductPage = 1)
         {
-            // Giảm trang hiện tại
             ProductPage--;
-
-            // Gọi phương thức Show() để hiển thị trang trước đó
             return await Show(ProductPage);
         }
 

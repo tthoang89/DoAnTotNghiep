@@ -72,15 +72,15 @@ namespace AppView.Controllers
 
         public async Task<IActionResult> Create(VoucherView voucher)
         {
-            if (voucher.SoTienCan == null || voucher.SoTienCan == 0)
+            if (voucher.SoTienCan == null || voucher.SoTienCan <= 0)
             {
                 ViewData["SoTienCan"] = "Mời bạn nhập số tiền cần";
             }
-            if (voucher.GiaTri == null || voucher.GiaTri == 0)
+            if (voucher.GiaTri == null || voucher.GiaTri <= 0)
             {
                 ViewData["GiaTri"] = "Mời bạn nhập giá trị ";
             }
-            if (voucher.SoLuong == null || voucher.SoLuong == 0)
+            if (voucher.SoLuong == null || voucher.SoLuong <= 0)
             {
                 ViewData["SoLuong"] = "Mời bạn nhập số lượng ";
             }
