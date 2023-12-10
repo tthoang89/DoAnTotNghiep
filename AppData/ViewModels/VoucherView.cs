@@ -16,19 +16,22 @@ namespace AppData.ViewModels
         public string Ten { get; set; }
         [Required(ErrorMessage = "mời bạn chọn hình thức giảm giá ")]
         public int HinhThucGiamGia { get; set; }//0 là giảm theo %, 1 là giảm thẳng giá tiền
-       
+        [Required(ErrorMessage = "mời bạn nhập dữ liệu")]
+        [Range(1, int.MaxValue, ErrorMessage = "mời bạn nhập số tiền lớn hơn 0")]
         public int SoTienCan { get; set; }
-        
+        [Required(ErrorMessage = "mời bạn nhập dữ liệu")]
+        [Range(1, int.MaxValue, ErrorMessage = "mời bạn nhập giá trị lớn hơn 0")]
         public int GiaTri { get; set; }
-        
+        [Required(ErrorMessage = "mời bạn nhập dữ liệu")]
         public DateTime NgayApDung { get; set; }
-        
+        [Required(ErrorMessage = "mời bạn nhập dữ liệu")]
         public DateTime NgayKetThuc { get; set; }
-        
+        [Required(ErrorMessage = "mời bạn nhập dữ liệu")]
+        [Range(1,int.MaxValue,ErrorMessage ="mời bạn nhập số lượng lớn hơn 0")]
         public int SoLuong { get; set; }
-        [Required(ErrorMessage = "mời bạn nhập Mô Tả")]
-        public string? MoTa { get; set; }
         
+        public string? MoTa { get; set; }
+        [Required(ErrorMessage = "mời bạn nhập dữ liệu")]
         public int TrangThai { get; set; }
     }
 }
