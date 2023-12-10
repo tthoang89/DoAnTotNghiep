@@ -289,7 +289,7 @@ namespace AppAPI.Services
             }
         }
 
-        public async Task<bool> UpdateProfile(LoginViewModel loginViewModel)
+        public async Task<LoginViewModel> UpdateProfile(LoginViewModel loginViewModel)
         {
             var kh = await context.KhachHangs.FirstOrDefaultAsync(h => h.IDKhachHang == loginViewModel.Id);
             if (kh != null)
@@ -303,11 +303,21 @@ namespace AppAPI.Services
                 kh.Email = loginViewModel.Email;
                 //context.KhachHangs.Update(kh);
                 context.SaveChangesAsync();
-                return true;
+                return new LoginViewModel {
+                    Id = loginViewModel.Id,
+                    Email = loginViewModel.Email,
+                    Ten = loginViewModel.Ten,
+                    SDT = loginViewModel.SDT,
+                    DiemTich = kh.DiemTich,
+                    GioiTinh = loginViewModel.GioiTinh,
+                    NgaySinh = loginViewModel.NgaySinh,
+                    DiaChi = loginViewModel.DiaChi,
+                    vaiTro = loginViewModel.vaiTro,
+                };
                 
             }
             
-            return false;
+            return null;
         }
         //End
     }

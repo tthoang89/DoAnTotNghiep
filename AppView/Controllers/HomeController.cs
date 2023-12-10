@@ -972,10 +972,12 @@ namespace AppView.Controllers
             khachhang.GioiTinh = gioitinh;
             khachhang.NgaySinh = ngaysinh;
             khachhang.DiaChi = diachi;
+            khachhang.DiemTich = JsonConvert.DeserializeObject<LoginViewModel>(session).DiemTich;
+            khachhang.vaiTro = JsonConvert.DeserializeObject<LoginViewModel>(session).vaiTro;
             var response = _httpClient.PutAsJsonAsync(_httpClient.BaseAddress + "QuanLyNguoiDung/UpdateProfile", khachhang).Result;
             if (response.IsSuccessStatusCode)
             {
-
+                HttpContext.Session.SetString("LoginInfor", response.Content.ReadAsStringAsync().Result);
                 return Json(new { success = true, message = "Cập nhật thông tin cá nhân thành công" });
             }
             else
