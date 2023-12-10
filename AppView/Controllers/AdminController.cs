@@ -4,6 +4,9 @@ using AppData.ViewModels.SanPham;
 using AppView.IServices;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using QRCoder;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace AppView.Controllers
 {
@@ -260,6 +263,20 @@ namespace AppView.Controllers
             HttpResponseMessage response = _httpClient.PostAsJsonAsync(_httpClient.BaseAddress + "SanPham/AddAnh", lstAnhRequest).Result;
             if (response.IsSuccessStatusCode) return RedirectToAction("ProductManager");
             else return BadRequest();
+        }
+        public FileResult GenerateQRCode(string id,string ma)
+        {
+            QRCodeGenerator qRCodeGenerator = new QRCodeGenerator();
+            QRCodeData qRCodeData = qRCodeGenerator.CreateQrCode(id, QRCodeGenerator.ECCLevel.Q);
+            QRCode qRCode = new QRCode(qRCodeData);
+            using(MemoryStream stream = new MemoryStream())
+            {
+                using(Bitmap bitmap = qRCode.GetGraphic(20)) 
+                { 
+                    bitmap.Save(stream,ImageFormat.Png);
+                    return File(stream.ToArray(), "image/png", ma+".png");
+                }
+            }
         }
     }
 }
