@@ -59,12 +59,12 @@
                         <label class="col-form-label">
                             @{
                                 @(Model.TrangThai == 2 ? "Chờ xác nhận" :
-                            (Model.TrangThai == 3 ? "Đang giao hàng" :
-                            (Model.TrangThai == 4 ? "Đang hoàn hàng" :
-                            (Model.TrangThai == 5 ? "Hoàn hàng thành công" :
-                            (Model.TrangThai == 6 ? "Thành công" :
-                            (Model.TrangThai == 7 ? "Đơn hủy" :
-                            (Model.TrangThai == 8 ? "Chờ xác nhận hủy" : "Chờ xác nhận đổi trả hàng")))))))
+                                (Model.TrangThai == 3 ? "Đang giao hàng" :
+                                (Model.TrangThai == 4 ? "Đang hoàn hàng" :
+                                (Model.TrangThai == 5 ? "Hoàn hàng thành công" :
+                                (Model.TrangThai == 6 ? "Thành công" :
+                                (Model.TrangThai == 7 ? "Đơn hủy" :
+                                (Model.TrangThai == 8 ? "Chờ xác nhận hủy" : "Chờ xác nhận đổi trả hàng")))))))
                             }
                         </label>
                     </div>
@@ -404,6 +404,9 @@
         }
         function huyDon(IDHD){
             var gc = $("#ghiChuinTTHD").val();
+            if(@Model.TrangThai === 4){
+                toastr.error('Đơn hàng trong trạng thái hoàn, không thể hủy', "Error Alert", { timeOut: 1000 });
+            }
             if(gc ===''|| gc == '@Model.GhiChu'){
                 toastr.error('Vui lòng nhập ghi chú hóa đơn', "Error Alert", { timeOut: 1000 });
             }else{
