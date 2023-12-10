@@ -37,7 +37,7 @@
                     </div>
                     <!-- Password input -->
                     <div class="form-outline mb-4">
-                        <label class="form-label">Nhập lại mất khẩu</label>
+                        <label class="form-label">Nhập lại mật khẩu</label>
                         <input type="password" id="confirm" class="form-control" />
                         <div class="invalid-feedback"> Không để trống ConfirmPassword </div>
                     </div>
@@ -95,6 +95,10 @@
         if (password.trim().length === 0) {
             $('#password').addClass('is-invalid');
             $('#password').next('.invalid-feedback').text('Không để trống password');
+            hasError = true;
+        } else if(password.trim().length < 8){
+            $('#password').addClass('is-invalid');
+            $('#password').next('.invalid-feedback').text('Password phải lớn hơn 8 kí tự');
             hasError = true;
         }
 

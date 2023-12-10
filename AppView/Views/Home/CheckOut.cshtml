@@ -13,7 +13,7 @@
     Layout = "_Layout";
 }
 <style>
-    a:hover{
+    a:hover {
         text-decoration: none;
         outline: none;
         color: black;
@@ -128,7 +128,7 @@
                                         <p style="margin-bottom: 0px;padding-left: 10px;">Chuyển khoản qua VNPay</p>
                                     </div>
                                 </div>
-                                <div id="pttt-error" style="display:none;color:red">Vui lòng chọn phương thức thanh toán</div>
+                                <div id="pttt-error" style="display:none;color:red; font-size:12px;">Vui lòng chọn phương thức thanh toán</div>
                             </div>
                         </div>
                     </div>
@@ -157,6 +157,7 @@
                                 <input type="text" placeholder="Nhập số điểm" style="font-size:14px;color:#b7b7b7;height: 50px;width: 100%;border: 1px solid #e1e1e1;padding-left: 20px;" id="diemTich">
                                 <button onclick="usediem()" type="submit" style="font-size: 14px;color: #ffffff;font-weight: 700;letter-spacing: 2px;text-transform: uppercase;background: #111111;padding: 0 30px;border: none;position: absolute;right: 0;top: 0;height: 100%;">Áp dụng</button>
                             </div>
+                            <span id="error-message" style="color: red; font-size: 12px;"></span>
                             <p>Bạn hiện tại có: @loginInfor.DiemTich điểm</p>
                         }
                         else
@@ -367,7 +368,7 @@
         if (hasError) {
             alert("Vui long dien day du thong tin");
         }
-        else{
+        else {
             var objHoaDon = { Ten: ten, Email: email, SDT: sdt, DiaChi: diachi + ", " + xa + ", " + huyen + ", " + tinh, TienShip: tienShip, PhuongThucThanhToan: pttt, TongTien: tienShip + @tongtien-tienVoucher - tienDiem, TenVoucher: voucher, Diem: diemTich };
             $.ajax({
                 async: false,
@@ -384,7 +385,7 @@
             });
         }
     }
-        
+
     function usevoucher() {
         voucher = $("#voucher").val();
         $.ajax({
@@ -392,7 +393,7 @@
             type: 'GET',
             dataType: 'json',
             url: '/Home/UseVoucher',
-            data: { ma: voucher, tongTien : @tongtien},
+            data: { ma: voucher, tongTien: @tongtien},
             success: function (response) {
                 if (response.trangThai == true) {
                     if (response.hinhThuc == 1) {
@@ -417,12 +418,21 @@
     }
     function usediem() {
         diemTich = $("#diemTich").val();
+        if (isNaN(diemTich)) {
+            $("#error-message").text("Số điểm không hợp lệ. Vui lòng nhập số nguyên.");
+            return;
+        }
+        if (diemTich < 0) {
+            $("#error-message").text("Số điểm không thể âm.");
+            return;
+        }
+        $("#error-message").text("");
         $.ajax({
             async: true,
             type: 'GET',
             dataType: 'json',
             url: '/Home/UseDiemTich',
-            data: { diem: diemTich,id:'@loginInfor.Id', tongTien : @tongtien },
+            data: { diem: diemTich, id: '@loginInfor.Id', tongTien: @tongtien },
             success: function (response) {
                 if (response.trangThai == true) {
                     var ipDiem = document.getElementById("moneyscore");
@@ -433,7 +443,7 @@
                 }
                 else {
                     alert(response.loi);
-                }                
+                }
             },
             error: function (response) {
                 alert("Error");

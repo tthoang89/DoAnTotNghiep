@@ -62,8 +62,8 @@ namespace AppAPI.Services
                 PassWord = password,
                 SDT = sdt,
                 DiaChi = diachi,
-                TrangThai = trangthai,
-                IDVaiTro = idvaitro,
+                TrangThai = 0,
+                IDVaiTro = Guid.Parse("952c1a5d-74ff-4daf-ba88-135c5440809c"),
             };
             _dbContext.NhanViens.Add(nv);
             _dbContext.SaveChanges();
