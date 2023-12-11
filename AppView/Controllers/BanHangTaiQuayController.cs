@@ -70,7 +70,7 @@ namespace AppView.Controllers
                 listSP = listSP.Where(c => filter.lstDM.Contains(c.IdLsp)).ToList();
             }
             //Lọc giá
-            if(filter.khoangGia != 0)
+            if (filter.khoangGia != 0)
             {
                 switch (filter.khoangGia)
                 {
@@ -179,21 +179,28 @@ namespace AppView.Controllers
         {
             try
             {
-                HoaDonChiTietRequest hdct = new HoaDonChiTietRequest()
+                var ctsp = await _httpClient.GetFromJsonAsync<ChiTietSanPhamViewModel>($"SanPham/GetChiTietSanPhamByID?id={request.IdChiTietSanPham}");
+                if (ctsp != null && request.SoLuong > ctsp.SoLuong)
                 {
-                    Id = new Guid(),
-                    IdChiTietSanPham = request.IdChiTietSanPham,
-                    IdHoaDon = request.IdHoaDon,
-                    SoLuong = request.SoLuong,
-                    //DonGia = request.DonGia,//Thanh toán rồi mới lưu
-                };
-                var response = await _httpClient.PostAsJsonAsync("ChiTietHoaDon/saveHDCT/", hdct);
-                if (response.IsSuccessStatusCode) return Json(new { success = true });
-                return Json(new { success = false });
+                    return Json(new { success = false, message = "Sản phẩm đã hết hàng" });
+                }
+                else
+                {
+                    HoaDonChiTietRequest hdct = new HoaDonChiTietRequest()
+                    {
+                        Id = new Guid(),
+                        IdChiTietSanPham = request.IdChiTietSanPham,
+                        IdHoaDon = request.IdHoaDon,
+                        SoLuong = request.SoLuong,
+                    };
+                    var response = await _httpClient.PostAsJsonAsync("ChiTietHoaDon/saveHDCT/", hdct);
+                    if (response.IsSuccessStatusCode) return Json(new { success = true, message = "Thêm sản phẩm thành công" });
+                }
+                return Json(new { success = false, message = "Thêm sản phẩm thất bại" });
             }
             catch
             {
-                return Json(new { success = false });
+                return Json(new { success = false, message = "Thêm sản phẩm thất bại" });
             }
         }
         //Xóa chi tiết hóa đơn
@@ -214,12 +221,12 @@ namespace AppView.Controllers
             try
             {
                 var response = await _httpClient.PostAsync($"ChiTietHoaDon/UpdateSL?id={idhdct}&sl={sl}", null);
-                if (response.IsSuccessStatusCode) return Json(new { success = true, message = "Thêm số lượng thành công" });
-                else return Json(new { success = false, message = "Sản phẩm hiễn tại không đủ số lượng" });
+                if (response.IsSuccessStatusCode) return Json(new { success = true, message = "Cập nhật số lượng thành công" });
+                else return Json(new { success = false, message = "Số lượng sản phẩm không đủ" });
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = "Thêm số lượng thất bại" });
+                return Json(new { success = false, message = "Cập nhật số lượng thất bại" });
             }
         }
         //Load Modal Thanh Tóan
@@ -234,6 +241,7 @@ namespace AppView.Controllers
             var qddActive = qdd.FirstOrDefault(c => c.TrangThai != 0);
             //Kiểm tra là hóa đơn của khách có tài khoản không?
             var khachHang = "Khách lẻ";
+            Guid idkh = Guid.Empty;
             int? dtkh = 0;
             var response = await _httpClient.GetFromJsonAsync<bool>($"HoaDon/CheckLSGDHD/{id}");
             if (response == true)
@@ -245,6 +253,7 @@ namespace AppView.Controllers
                 //Lấy tên kh
                 var kh = await _httpClient.GetFromJsonAsync<KhachHang>($"KhachHang/GetById?id={lstd.IDKhachHang}");
                 khachHang = kh.Ten;
+                idkh = kh.IDKhachHang;
                 dtkh = kh.DiemTich == null ? 0 : kh.DiemTich;
             }
             var loginInfor = new LoginViewModel();
@@ -261,6 +270,7 @@ namespace AppView.Controllers
                 MaHD = hd.MaHD,
                 NgayThanhToan = DateTime.Now,
                 KhachHang = khachHang,
+                IdKhachHang = idkh,
                 TongSL = soluong,
                 TongTien = ttien,
                 DiemKH = dtkh,
@@ -303,7 +313,7 @@ namespace AppView.Controllers
                 {
                     return Json(new { success = false, message = "Số điện thoại đã được sử dụng" });
                 }
-                if(request.Email != null && lstkh.Any(c => c.Email.Equals(request.Email)))
+                if (request.Email != null && lstkh.Any(c => c.Email.Equals(request.Email)))
                 {
                     return Json(new { success = false, message = "Email đã được sử dụng" });
                 }
@@ -328,7 +338,7 @@ namespace AppView.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = "Thêm khách hàng thất bại"});
+                return Json(new { success = false, message = "Thêm khách hàng thất bại" });
             }
         }
 
@@ -398,12 +408,22 @@ namespace AppView.Controllers
         //Check voucher
 
         [HttpGet]
-        public async Task<IActionResult> CheckVoucher(string voucher, int ttien)
+        public async Task<IActionResult> CheckVoucher(string voucher, int ttien, Guid idkh)
         {
             string apiURL = $"https://localhost:7095/api/Voucher";
             var listvc = await _httpClient.GetFromJsonAsync<List<Voucher>>(apiURL);
-            listvc = listvc.Where(c => c.NgayKetThuc > DateTime.Now && c.SoLuong > 0).ToList();
+            listvc = listvc.Where(c => c.NgayKetThuc > DateTime.Now && c.SoLuong > 0 && c.TrangThai != 0).ToList();
             var vc = listvc.FirstOrDefault(c => c.Ten.ToUpper() == voucher.ToUpper());
+            
+            if (vc !=null && idkh != Guid.Empty)
+            {
+                var response = await _httpClient.GetFromJsonAsync<bool>($"HoaDon/CheckCustomerUseVoucher?idkh={idkh}&idvoucher={vc.ID}");
+                if(response == true)
+                {
+                    return Json(new { success = false, message = "Khách hàng đã sử dụng voucher này" });
+                }
+            }
+
             if (vc == null)
             {
                 return Json(new { success = false, message = "Voucher hết hạn hoặc không hợp lệ" });

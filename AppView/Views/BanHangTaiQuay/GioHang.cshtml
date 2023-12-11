@@ -339,12 +339,16 @@
              success: function(response) {
                  if(response.success === true){
                     gethdct('@Model.Id');
+                    
                  }else{
+                    gethdct('@Model.Id');
                     toastr.error(response.message, 'Error Alert', { timeOut: 500 });
                  }
              },
              error: function(response) {
-                 toastr.error('Thêm sản phẩm thất bại', 'Error Alert', { timeOut: 300 });
+                 gethdct('@Model.Id');
+                 toastr.error(response.message, 'Error Alert', { timeOut: 300 });
+                 
              }
          });
      }

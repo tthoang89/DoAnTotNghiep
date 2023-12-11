@@ -64,7 +64,7 @@
                                 (Model.TrangThai == 5 ? "Hoàn hàng thành công" :
                                 (Model.TrangThai == 6 ? "Thành công" :
                                 (Model.TrangThai == 7 ? "Đơn hủy" :
-                                (Model.TrangThai == 8 ? "Chờ xác nhận hủy" : "Chờ xác nhận đổi trả hàng")))))))
+                                (Model.TrangThai == 8 ? "Chờ xác nhận hủy" : "Chờ xác nhận hoàn hàng")))))))
                             }
                         </label>
                     </div>
@@ -225,16 +225,10 @@
         </div>
         <hr />
         <div class="d-flex flex-row justify-content-end">
-             @if (@Model.LoaiHD == 1)
-            {
-                <div class="d-flex p-2">
-                    <button type="button" onclick="traDon('@Model.Id')" class="btn btn-danger fw-normal text-white"><i class="fa-solid fa-check fa-xs me-2" style="color: #ffffff;"></i> Trả hàng</button>
-                </div>
-            }
              @if (@Model.TrangThai == 9 )
             {
                 <div class="d-flex p-2">
-                    <button type="button" onclick="traDon('@Model.Id')" class="btn btn-danger fw-normal text-white"><i class="fa-solid fa-check fa-xs me-2" style="color: #ffffff;"></i> Xác nhận hoàn/trả hàng</button>
+                    <button type="button" onclick="traDon('@Model.Id')" class="btn btn-danger fw-normal text-white"><i class="fa-solid fa-check fa-xs me-2" style="color: #ffffff;"></i> Xác nhận hoàn hàng</button>
                 </div>
             }
             @if (@Model.TrangThai == 4)
@@ -255,9 +249,15 @@
                     <button type="button" onclick="DoiTrangThai('3')" class="btn btn-success fw-normal text-white"><i class="fa-solid fa-check fa-xs me-2" style="color: #ffffff;"></i> Xác nhận hóa đơn</button>
                 </div>
             }
+
             <div class="d-flex p-2">
                 <button type="button" id="save" class="btn btn-success fw-normal text-white"><i class="fa-solid fa-floppy-disk fa-xs me-2" style="color: #ffffff;"></i> Lưu ghi chú</button>
-            </div>            
+            </div>
+
+             <div class="d-flex p-2">
+                <button type="button" onclick="location.href='@Url.Action("CopyHD", "QuanLyHoaDon", new{idhd = @Model.Id})'" class="btn btn-success fw-normal text-white"><i class="ri-file-copy-line me-2"></i> Sao chép</button>
+            </div>
+
             <div class="d-flex p-2">
                 <button type="button" onclick="InHD('@Model.Id')" class="btn btn-secondary fw-normal text-white me-2"><i class="ri-printer-line"></i> In Hóa đơn</button>
             </div>
@@ -434,7 +434,27 @@
                 }
             }
         }
-        function traDon(IDHD){
+        @*function copyDon(IDHD){            
+            $.ajax({
+                url: "/QuanLyHoaDon/HuyHD",
+                type: "GET",
+                dataType: 'json',
+                data:{
+                    idhd: IDHD,
+                    ghichu: gc,
+                },
+                contentType: 'application/json',
+                success: function(response) {
+                    toastr.success(response.message, "Success Alert", { timeOut: 300 });
+                    billDetail(IDHD);
+                    loadBill();
+                },
+                error: function(err) {
+                    toastr.error('Thay đổi trạng thái thất bại', "Error Alert", { timeOut: 300 });
+                }
+            });              
+        }*@
+@*        function traDon(IDHD){
             var gc = $("#ghiChuinTTHD").val();
             if(gc ===''|| gc == '@Model.GhiChu'){
                 toastr.error('Vui lòng nhập ghi chú hóa đơn', "Error Alert", { timeOut: 1000 });
@@ -463,19 +483,20 @@
                 }
             }
         }
-    $("#exportPDF").click(function(){
-        var id = "@Model.Id"
-        $.ajax({
-            url: "/QuanLyHoaDon/ExportPDF/" + id,
-            type: "GET",
-            success: function(response) {
+*@
+        $("#exportPDF").click(function(){
+                var id = "@Model.Id"
+                $.ajax({
+                    url: "/QuanLyHoaDon/ExportPDF/" + id,
+                    type: "GET",
+                    success: function(response) {
           
-            },
-            error: function(err) {
-            toastr.error('Lỗi xuất hóa đơn', "Error Alert", { timeOut: 300 });
-            }
+                    },
+                    error: function(err) {
+                    toastr.error('Lỗi xuất hóa đơn', "Error Alert", { timeOut: 300 });
+                    }
+                });
         });
-    });
 
         function DoiTrangThai(tragthai){
         var ans = confirm("Cập nhật trạng thái hóa đơn này?");

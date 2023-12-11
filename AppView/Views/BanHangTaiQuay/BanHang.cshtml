@@ -48,13 +48,26 @@
                             var index = 1;
                             foreach (var item in lsthdcho)
                             {
-                                <li class="tab" onclick="gethdct('@item.ID')">
-                                    <span value="@item.ID">
-                                        <a>Hoá đơn @index</a>
-                                        <a style="padding-left: 10px;" onclick="deleteHDCho('@item.ID')"><i class="fas fa-times"></i></a>
-                                    </span>
-                                </li>
-                                index++;
+                                if (item.TrangThaiGiaoHang == 1)
+                                {
+                                    <li class="tab" onclick="gethdct('@item.ID')">
+                                        <span value="@item.ID">
+                                            <a>Hoá đơn @index</a>
+                                            <a style="padding-left: 10px;" onclick="deleteHDCho('@item.ID')"><i class="fas fa-times"></i></a>
+                                        </span>
+                                    </li>
+                                    index++;
+                                }
+                                else
+                                {
+                                    <li class="tab" onclick="gethdct('@item.ID')">
+                                        <span value="@item.ID">
+                                            <a>@item.GhiChu</a>
+                                            <a style="padding-left: 10px;" onclick="deleteHDCho('@item.ID')"><i class="fas fa-times"></i></a>
+                                        </span>
+                                    </li>
+                                }
+
                             }
                         }
                     </ul>
@@ -115,11 +128,11 @@
             </div>
             <!--Sắp xếp-->
             @*<div class="d-flex flex-column justify-content-center p-1 w-100" style="font-size:14px; ">
-            <div class="form-check form-switch bg-white rounded-5">
-            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-            <label class="form-check-label" for="flexSwitchCheckDefault">Tăng</label>
-            </div>
-            </div>*@
+                <div class="form-check form-switch bg-white rounded-5">
+                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                <label class="form-check-label" for="flexSwitchCheckDefault">Tăng</label>
+                </div>
+                </div>*@
         </div>
         <!--Hiển thị sản phẩm-->
         <div class="d-flex flex-column p-2  mt-3 border-0 rounded-3 bg-white" style="height:640px">
@@ -156,9 +169,9 @@
     <div class="modal-dialog" id="modalthanhtoan">
         <div class="modal-content" id="modalthanhtoan-content">
             @* <div class="modal-header bg-primary">
-            <h5 class="modal-title fw-700 text-white align-center">THANH TOÁN </h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>*@
+                <h5 class="modal-title fw-700 text-white align-center">THANH TOÁN </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>*@
             <div class="modal-body" id="thanhtoanbody">
             </div>
         </div>
@@ -286,7 +299,9 @@
                 const item = data[i];
                 const itemID = item.id;
                 const index = i + 1;
-                $(".tabs-box").append(`
+                console.log(item);
+                if(item.trangThaiGiaoHang === 1){
+                    $(".tabs-box").append(`
                         <li class="tab" onclick="gethdct('${itemID}')">
                             <span value="${itemID}">
                             <a>Hoá đơn ${index}</a>
@@ -294,6 +309,16 @@
                             </span>
                         </li>
                         `);
+                }else{
+                    $(".tabs-box").append(`
+                        <li class="tab" onclick="gethdct('${itemID}')">
+                            <span value="${itemID}">
+                            <a>${item.ghiChu}</a>
+                            <a style="padding-left: 10px;" onclick="deleteHDCho('${itemID}')" title="Xóa"><i class="fas fa-times"></i></a>
+                            </span>
+                        </li>
+                        `);
+                };
             }
             setTimeout(callback, 50);
         } catch (error) {
@@ -340,10 +365,10 @@
         }
     }
     //Thêm SP vào Hóa đơn
-    function addCTSP(idctsp, dongia) {
+    function addCTSP(idctsp) {
         var activeTab = $(".tabs-box .tab").filter(".active");
         var elementValue = activeTab.find("span").attr("value");
-        var request = { IdHoaDon: elementValue, IdChiTietSanPham: idctsp, DonGia: dongia, SoLuong: 1 }
+        var request = { IdHoaDon: elementValue, IdChiTietSanPham: idctsp,  SoLuong: 1 }
         $.ajax({
             url: "/BanHangTaiQuay/addHdct",
             async: false,
@@ -351,16 +376,16 @@
             dataType: 'json',
             data: request,
             success: function (response) {
-                if (response.success == true) {
-                    toastr.success('Thêm thành công', "Success Alert", { timeOut: 300 });
+                if (response.success === true) {
+                    toastr.success(response.message, "Success Alert", { timeOut: 1000 });
                     gethdct(request.IdHoaDon);
                     FilterPL();
                 } else {
-                    toastr.error('Thêm thất bại', 'Error Alert', { timeOut: 300 });
+                    toastr.error(response.message, 'Error Alert', { timeOut: 1000 });
                 }
             },
             error: function (response) {
-                toastr.error('Thêm thất bại', 'Error Alert', { timeOut: 300 });
+                toastr.error(response.message, 'Error Alert', { timeOut: 1000 });
             }
         });
     }
@@ -395,11 +420,11 @@
     //Thanh toán chuyển trạng thái
     function thanhToan(id) {
         var ttien = parseInt($("#khachCanTra").text().replace(/,/g, ""));
-        if (ttien <= 0) {
+        if (ttien < 0) {
             toastr.error('Số tiền thanh toán không hợp lệ', 'Error Alert', { timeOut: 300 });
         }
         if (ttien === 0) {
-            toastr.error('Chưa có sản phẩm để thanh toán', 'Error Alert', { timeOut: 300 });
+            toastr.error('Phiếu hàng đang trống', 'Error Alert', { timeOut: 300 });
         } else {
             var pttt = $('input[name="pttt"]:checked').val();
             var idvoucher = $("#idvoucher").text();
@@ -435,7 +460,6 @@
     }
     //Mở modal scan QRcode
     function scanQRCode() {
-        console.log("lo");
         $("#scanqrcodebody").load("/BanHangTaiQuay/ScanQRCode");
         $("#scanqrcode").modal("show");
     }

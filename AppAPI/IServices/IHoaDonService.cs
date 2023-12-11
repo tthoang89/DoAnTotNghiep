@@ -16,7 +16,7 @@ namespace AppAPI.IServices
         public List<HoaDon> LichSuGiaoDich(Guid idNguoiDung);
         //Nhinh sửa
         public bool HuyHD(Guid idhd, Guid idnv, string Ghichu);
-        public bool TraHD(Guid idhd, Guid idnv, string Ghichu);
+        Task<bool> CopyHD(Guid idhd, Guid idnv);
         public bool CreateHoaDonOffline(Guid idnhanvien);
         public bool DeleteHoaDon(Guid id);
         public bool UpdateHoaDon(HoaDonThanhToanRequest hoaDon);
@@ -27,6 +27,7 @@ namespace AppAPI.IServices
         public HoaDonViewModelBanHang GetHDBanHang(Guid id);
         public List<HoaDonQL> GetAllHDQly();
         public ChiTietHoaDonQL GetCTHDByID(Guid idhd);
+        public bool CheckCusUseVoucher (Guid idkh, Guid idvoucher);
             //Phương thức thanh toán
         //public List<PhuongThucThanhToan> GetAllPTTT();
         //public bool CreatePTTT(PhuongThucThanhToan pttt);
