@@ -298,14 +298,19 @@ namespace AppAPI.Services
             {
                 chiTietSanPham.KichCos.Add(new GiaTriViewModel() { GiaTri = item.Ten, ID = item.ID });
             }
+            
             foreach (var item in lstChiTietSanPham)
             {
+                int? TrangThaiKM = null;
+                int? giaTriKM = null;
                 if (item.IDKhuyenMai != null)
                 {
                     khuyenMai = khuyenMais.FirstOrDefault(x => x.ID == item.IDKhuyenMai);
                     if (khuyenMai != null)
                     {
                         giaBan = GetKhuyenMai(khuyenMai.GiaTri, item.GiaBan, khuyenMai.TrangThai);
+                        TrangThaiKM = khuyenMai.TrangThai;
+                        giaTriKM = khuyenMai.GiaTri;
                     }
                     else
                     {
@@ -317,7 +322,7 @@ namespace AppAPI.Services
                 {
                     giaBan = item.GiaBan;
                 }
-                chiTietSanPham.ChiTietSanPhams.Add(new ChiTietSanPhamViewModel() { ID = item.ID,MaCTSP = item.Ma,Ten=sanPham.Ten,SoLuong = item.SoLuong, GiaBan = giaBan, GiaGoc = item.GiaBan,MauSac=item.IDMauSac.ToString(),KichCo=item.IDKichCo.ToString(),TrangThai=item.TrangThai});
+                chiTietSanPham.ChiTietSanPhams.Add(new ChiTietSanPhamViewModel() { ID = item.ID,MaCTSP = item.Ma,Ten=sanPham.Ten,SoLuong = item.SoLuong, GiaBan = giaBan, GiaGoc = item.GiaBan,MauSac=item.IDMauSac.ToString(),KichCo=item.IDKichCo.ToString(),TrangThai=item.TrangThai,TrangThaiKM = TrangThaiKM != null ? TrangThaiKM : null, GiaTriKM = giaTriKM!= null?giaTriKM:null});
             }
             chiTietSanPham.MoTa = sanPham.MoTa;
             var query = await (from sp in _context.SanPhams.Where(p => p.ID == idSanPham)

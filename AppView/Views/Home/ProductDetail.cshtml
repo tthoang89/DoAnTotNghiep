@@ -131,6 +131,24 @@
         cursor:pointer;
         border-radius:50%;
     }
+
+    #giaTKM{
+        display: inline-block;
+        min-width: 36px;
+        padding: 4px 10px;
+        margin-left: 15px;
+        background: #ff0000;
+        color: #fff;
+        text-transform: uppercase;
+        text-align: center;
+        font-weight: 600;
+        font-size: 10px;
+        letter-spacing: 0.5px;
+        border-radius: 10px;
+        vertical-align: text-bottom;
+        line-height: 1.5;
+        white-space: nowrap;
+    }
 </style>
 <div class="container mt-5 mb-5">
     <div class="card">
@@ -171,7 +189,11 @@
                         </div>
                         
                     </div>
-                    <h3 id="giaCTSP">@Model.ChiTietSanPhams.First(x=>x.TrangThai==1).GiaBan.ToString("n0") VNĐ</h3>
+                    <div style="display:flex;align-items:center;">
+                        <h3 id="giaCTSP">@Model.ChiTietSanPhams.First(x=>x.TrangThai==1).GiaBan.ToString("n0") VNĐ</h3>
+                        <del style="color: #9e9e9e; margin-left:15px;"><h3 id="giaGoc" style="color: #9e9e9e;">@*@Model.ChiTietSanPhams.First(x=>x.TrangThai==1).GiaGoc.ToString("n0") VNĐ*@</h3></del>
+                        <span id="giaTKM">@*- @Model.ChiTietSanPhams.First(x=>x.TrangThai==1).GiaTriKM*@</span>
+                    </div>
                     <span>Tình trạng:<strong id="trangthai"></strong></span>
                     <div class="mt-5">
                         <span class="fw-bold">Màu Sắc</span>
@@ -379,6 +401,19 @@
         }
         document.getElementById("maSP").innerHTML = chiTietSanPham.maCTSP;
         document.getElementById("giaCTSP").innerHTML = Intl.NumberFormat().format(chiTietSanPham.giaBan) + " " + "VNĐ";
+        if (chiTietSanPham.giaTriKM != null) {
+            document.getElementById("giaTKM").style.display = "block";
+            document.getElementById("giaGoc").innerHTML = Intl.NumberFormat().format(chiTietSanPham.giaGoc) + " " + "VNĐ";
+            if (chiTietSanPham.trangThaiKM == 0) {
+                document.getElementById("giaTKM").innerHTML ="-" + Intl.NumberFormat().format(chiTietSanPham.giaTriKM) + " " + "VNĐ";
+            }else if(chiTietSanPham.trangThaiKM == 1){
+                document.getElementById("giaTKM").innerHTML = "-"+chiTietSanPham.giaTriKM +"%";
+            }
+        }
+        else{
+            document.getElementById("giaTKM").style.display = "none";
+        }
+
         loadDGsp();
         initslider();
     });
@@ -415,6 +450,7 @@
                     document.getElementById("trangthai").innerHTML = "Còn hàng"
                     document.getElementById("label_" + giatrikichco).style.opacity = "1";
                     document.getElementById("label_" + giatrikichco).style.cursor = "pointer";
+                    
                 } else {
                     var giatrikichco = kichCos.find(x => x.id == chiTietSP.kichCo).giaTri;
                     console.log(giatrikichco);
@@ -422,7 +458,8 @@
                     document.getElementById("rd_" + giatrikichco).checked = false;
                     document.getElementById("label_" + giatrikichco).style.cursor = "no-drop";
                     document.getElementById("label_" + giatrikichco).style.opacity = "0.5";
-                    document.getElementById("trangthai").innerHTML = "Hết hàng"
+                    document.getElementById("trangthai").innerHTML = "Hết hàng";
+                    
                 }
             }else{
                 var giatrikichco = kichCos.find(x => x.id == kichCos[i].id).giaTri;
@@ -449,6 +486,20 @@
         document.getElementById("main_product_image").src = "/img/product/" + anh.duongDan;
         document.getElementById("maSP").innerHTML = chiTietSP.maCTSP;
         document.getElementById("giaCTSP").innerHTML = Intl.NumberFormat().format(chiTietSP.giaBan) + " " + "VNĐ";
+        if (chiTietSP.giaTriKM != null) {
+            document.getElementById("giaTKM").style.display = "block";
+            document.getElementById("giaGoc").style.display = "block";
+            document.getElementById("giaGoc").innerHTML = Intl.NumberFormat().format(chiTietSP.giaGoc) + " " + "VNĐ";
+            if (chiTietSP.trangThaiKM == 0) {
+                document.getElementById("giaTKM").innerHTML = "-" + Intl.NumberFormat().format(chiTietSP.giaTriKM) + " " + "VNĐ";
+            } else if (chiTietSP.trangThaiKM == 1) {
+                document.getElementById("giaTKM").innerHTML = "-" + chiTietSP.giaTriKM + "%";
+            }
+        }
+        else {
+            document.getElementById("giaTKM").style.display = "none";
+            document.getElementById("giaGoc").style.display = "none";
+        }
     }
     function getKichCo(element) {
         size = kichCos.find(x=>x.giaTri==element.value).id;
@@ -466,6 +517,20 @@
         //ip.style.border = "2px black solid";
         document.getElementById("maSP").innerHTML = chiTietSP.maCTSP;
         document.getElementById("giaCTSP").innerHTML = Intl.NumberFormat().format(chiTietSP.giaBan) + " " + "VNĐ";
+        if (chiTietSP.giaTriKM != null) {
+            document.getElementById("giaTKM").style.display = "block";
+            document.getElementById("giaGoc").style.display = "block";
+            document.getElementById("giaGoc").innerHTML = Intl.NumberFormat().format(chiTietSP.giaGoc) + " " + "VNĐ";
+            if (chiTietSP.trangThaiKM == 0) {
+                document.getElementById("giaTKM").innerHTML = "-" + Intl.NumberFormat().format(chiTietSP.giaTriKM) + " " + "VNĐ";
+            } else if (chiTietSP.trangThaiKM == 1) {
+                document.getElementById("giaTKM").innerHTML = "-" + chiTietSP.giaTriKM + "%";
+            }
+        }
+        else {
+            document.getElementById("giaTKM").style.display = "none";
+            document.getElementById("giaGoc").style.display = "none";
+        }
     }
     function KichCo() {
         var checkboxes = $('#sizes input[type="radio"]:checked')

@@ -3,6 +3,7 @@ using AppData.IRepositories;
 using AppData.Models;
 using AppData.Repositories;
 using AppData.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace AppAPI.Services
 {
@@ -30,7 +31,10 @@ namespace AppAPI.Services
 
         public List<NhanVien> GetAll()
         {
-            return _dbContext.NhanViens.ToList();
+            return _dbContext.NhanViens
+        .Include(u => u.VaiTro)
+        .Where(u => u.VaiTro.Ten == "Nhân viên").OrderBy(u=>u.TrangThai)
+        .ToList();
         }
 
         public bool Update(Guid id, string ten, string email, string password, string sdt, string diachi, int trangthai, Guid idvaitro)

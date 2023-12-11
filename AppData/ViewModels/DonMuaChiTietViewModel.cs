@@ -33,6 +33,7 @@ namespace AppData.ViewModels
         public int? HinhThucGiamGia { get; set; }
         public int TiLeTieuDiem { get; set; }
         public int TiLeTichDiem { get; set; }
+        public int LoaiHoaDon { get; set; }
         public List<LichSuTichDiem>? lichSuTichDiems { get; set; }
     }
 }
