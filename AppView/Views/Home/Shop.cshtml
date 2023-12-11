@@ -102,10 +102,10 @@
                                                 {
                                                     <div class="card">
                                                         <div class="card-heading">
-                                                            <a data-toggle="collapse" data-target="#collapse_@item.Ten">@item.Ten</a>
+                                                            <a data-toggle="collapse" data-target="#collapse_@item.ID">@item.Ten</a>
                                                         </div>
 
-                                                        <div id="collapse_@item.Ten" class="collapse">
+                                                        <div id="collapse_@item.ID" class="collapse">
                                                             <div class="card-body">
                                                                 <div id="LoaiSpFilter" onchange="LocSort()">
                                                                     @foreach (var x in listLoaiSP.Where(p => p.IDLoaiSPCha == item.ID).ToList())
@@ -271,7 +271,7 @@
         $("#pagination-demo").twbsPagination({
             totalPages: totalgages,
             visiblePages: 7,
-            startPage: 1,
+           
             first:'Đầu',
             last:'Cuối',
             prev:'Trước',
