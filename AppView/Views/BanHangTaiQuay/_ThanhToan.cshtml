@@ -163,7 +163,7 @@
                        $("#tdhd").css('display', 'none');
                        $('#tientrutichdiem').text(tien.toLocaleString());
                    }else{
-                       toastr.error('Chưa có sản phẩm thanh toán', "Error Alert", { timeOut: 1000 });
+                       //toastr.error('Chưa có sản phẩm thanh toán', "Error Alert", { timeOut: 1000 });
                        $(this).val('');
                    }
                 }
@@ -179,7 +179,7 @@
                         $('#tientrutichdiem').text(tien.toLocaleString());
                     }
                 }else{
-                    toastr.error('Chưa có sản phẩm thanh toán', "Error Alert", { timeOut: 1000 });
+                    //toastr.error('Chưa có sản phẩm thanh toán', "Error Alert", { timeOut: 1000 });
                 }
             }
             TinhTien();
@@ -214,6 +214,7 @@
                 data:{
                 voucher: value,
                 ttien:tongtien,
+                idkh: '@Model.IdKhachHang',
                 },
                 dataType: "json",
                 success: function(response) {

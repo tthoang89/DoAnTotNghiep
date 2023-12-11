@@ -46,48 +46,18 @@
                             <span asp-validation-for="Email" class="text-danger"></span>
                         </div>
                     </div>
-                </div>
-                @*<div class="col-6">
-                    <div class="p-3">
-                        <div class="form-group">
-                            <label asp-for="TrangThai" class="control-label">Trạng thái</label>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name = "TrangThai"asp-for="TrangThai" value="0">
-                                <label class="form-check-label" asp-for="TrangThai">Đang làm</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="TrangThai"  asp-for="TrangThai" value="1">
-                                <label class="form-check-label" asp-for="TrangThai">Nghỉ làm</label>
-                            </div>
-                            <span asp-validation-for="TrangThai" class="text-danger"></span>
-                        </div>
-                    </div>
-                </div>*@<input type="hidden" asp-for="TrangThai" value="0" />
+                </div><input type="hidden" asp-for="TrangThai" value="0" />
                 <div class="col-6">
                     <div class="p-3">
                         <div class="form-group">
-                            <label asp-for="PassWord" class="control-label">Password</label>
+                            <label asp-for="PassWord" class="control-label">Mật khẩu</label>
                             <input asp-for="PassWord" class="form-control" />
                             <span asp-validation-for="PassWord" class="text-danger"></span>
                             <span class="text-danger" id="passwordErrorMessage"></span>
                         </div>
                     </div>
                 </div>
-                <div class="col-6">
-                    <div class="p-3">
-                        <div class="form-group">
-                            <lable>Tên Vai Trò</lable>
-                            <div>
-                                <select class="form-control" name="IDVaiTro">
-                                    @foreach (var vaiTro in dBContext.VaiTros.Where(v => v.ID != Guid.Parse("90400702-e49c-4871-a831-fcca96f33c41")).ToList())
-                                    {
-                                        <option value="@vaiTro.ID">@vaiTro.Ten</option>
-                                    }
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <input type="hidden" asp-for="IDVaiTro" value="@Guid.Parse("952c1a5d-74ff-4daf-ba88-135c5440809c")" />
                 <div class="col-6">
                     <div class="p-3">
                         <div class="form-group">
@@ -101,7 +71,7 @@
                 <div class="col-6">
                     <div class="p-3">
                         <div class="form-group" style="margin-left:300px; margin-top: 30px">
-                            <input type="submit" value="Create" class="btn btn-primary" />
+                            <input type="submit" value="Lưu" class="btn btn-primary" />
                         </div>
                     </div>
                 </div>

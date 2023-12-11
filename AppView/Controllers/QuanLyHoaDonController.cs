@@ -116,6 +116,46 @@ namespace AppView.Controllers
             }
             return Json(new { success = false, message = "Cập nhật trạng thái thất bại" });
         }
+        //Sao chép hóa đơn
+        [HttpGet("/QuanLyHoaDon/CopyHD")]
+        public async Task<IActionResult> CopyHD(string idhd)
+        {
+            var loginInfor = new LoginViewModel();
+            string? session = HttpContext.Session.GetString("LoginInfor");
+            if (session != null)
+            {
+                loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
+            }
+            var idnv = loginInfor.Id;
+
+            string url = $"HoaDon/CopyHD?idhd={idhd}&idnv={idnv}";
+            var response = await _httpClient.PutAsync(url, null);
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("BanHang","BanHangTaiQuay");
+            }
+            return Json(new { success = false, message = "Sao chép hóa đơn thất bại" });
+        }
+
+        //// Trả hàng
+        //[HttpGet("/QuanLyHoaDon/TraHD")]
+        //public async Task<IActionResult> TraHD(Guid idhd, string ghichu)
+        //{
+        //    var loginInfor = new LoginViewModel();
+        //    string? session = HttpContext.Session.GetString("LoginInfor");
+        //    if (session != null)
+        //    {
+        //        loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
+        //    }
+        //    var idnv = loginInfor.Id;
+        //    string url = $"HoaDon/TraHD?idhd={idhd}&idnv={idnv}&Ghichu={ghichu}";
+        //    var response = await _httpClient.PutAsync(url, null);
+        //    if (response.IsSuccessStatusCode)
+        //    {
+        //        return RedirectToAction("BanHang", "BanHangTaiQuay", new { area = "Admin" });
+        //    }
+        //    return Json(new { success = false, message = "Cập nhật trạng thái thất bại" });
+        //}
         // Cập nhật trạng thái
         public async Task<IActionResult> DoiTrangThai(Guid idhd, int trangthai)
         {
@@ -126,7 +166,6 @@ namespace AppView.Controllers
                 loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
             }
             var idnv = loginInfor.Id;
-
             string url = $"HoaDon?idhoadon={idhd}&trangthai={trangthai}&idnhanvien={idnv}";
             var response = await _httpClient.PutAsync(url, null);
             if (response.IsSuccessStatusCode)

@@ -55,6 +55,11 @@ namespace AppAPI.Controllers
         {
             return _iHoaDonService.CheckHDHasLSGD(idhd);
         }
+        [HttpGet("CheckCustomerUseVoucher")]
+        public bool CheckKHUseVoucher(Guid idkh, Guid idvoucher)
+        {
+            return _iHoaDonService.CheckCusUseVoucher(idkh, idvoucher);
+        }
         [HttpPost]
         public bool CreateHoaDon(HoaDonViewModel hoaDon)
         {
@@ -104,6 +109,12 @@ namespace AppAPI.Controllers
         public IActionResult HuyHD(Guid idhd, Guid idnv, string Ghichu)
         {
             var result = _iHoaDonService.HuyHD(idhd,idnv,Ghichu);
+            return Ok(result);
+        }
+        [HttpPut("CopyHD")]
+        public IActionResult TraHD(Guid idhd, Guid idnv)
+        {
+            var result = _iHoaDonService.CopyHD(idhd, idnv);
             return Ok(result);
         }
 

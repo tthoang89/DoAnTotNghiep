@@ -20,5 +20,7 @@ namespace AppData.ViewModels
         public string? MauSac { get; set; }
         public string KichCo { get; set; }
         public string? MaCTSP { get; set; }
+        public int? GiaTriKM { get; set; }
+        public int? TrangThaiKM { get; set; }
     }
 }
