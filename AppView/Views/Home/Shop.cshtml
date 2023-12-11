@@ -271,6 +271,11 @@
         $("#pagination-demo").twbsPagination({
             totalPages: totalgages,
             visiblePages: 7,
+            startPage: 1,
+            first:'Đầu',
+            last:'Cuối',
+            prev:'Trước',
+            next:'Tiếp',
             onPageClick: function (event, page) {
                 pageIndex = page;
                 setTimeout(callback, 200);

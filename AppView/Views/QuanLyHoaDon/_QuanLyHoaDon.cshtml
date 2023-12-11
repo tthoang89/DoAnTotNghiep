@@ -56,9 +56,21 @@
                 </li>
                 <li class="item">
                     <span class="checkbox">
+                        <i class="fa-solid fa-check check-icon" data-value="8"></i>
+                    </span>
+                    <span class="item-text">Chờ xác nhận hủy</span>
+                </li>
+                <li class="item">
+                    <span class="checkbox">
                         <i class="fa-solid fa-check check-icon" data-value="7"></i>
                     </span>
                     <span class="item-text">Đơn hủy</span>
+                </li>
+                <li class="item">
+                    <span class="checkbox">
+                        <i class="fa-solid fa-check check-icon" data-value="9"></i>
+                    </span>
+                    <span class="item-text">Chờ xác nhận hoàn hàng</span>
                 </li>
                 <li class="item">
                     <span class="checkbox">
@@ -71,18 +83,6 @@
                         <i class="fa-solid fa-check check-icon" data-value="5"></i>
                     </span>
                     <span class="item-text">Hoàn hàng thành công</span>
-                </li>
-                <li class="item">
-                    <span class="checkbox">
-                        <i class="fa-solid fa-check check-icon" data-value="8"></i>
-                    </span>
-                    <span class="item-text">Chờ xác nhận hủy</span>
-                </li>
-                <li class="item">
-                    <span class="checkbox">
-                        <i class="fa-solid fa-check check-icon" data-value="9"></i>
-                    </span>
-                    <span class="item-text">Chờ xác nhận đổi trả</span>
                 </li>
             </ul>
         </div>
@@ -138,7 +138,7 @@
             </div>
         </div>
         <div class="d-flex flex-column mt-2">
-            <table class="table table-hover table-bordered table-striped tbbills" align=center cellpadding=10>
+            <table class="table table-hover table-bordered tbbills" align=center cellpadding=10>
                 <thead>
                     <tr>
                         <th scope="col">Mã hóa đơn</th>
@@ -182,10 +182,14 @@
      var itemkb = document.querySelectorAll('.kb .item');
 
      $(document).ready(function() {
+         LoadPage();
+     });
+     // Load trang
+     function LoadPage(){
          $('#pagination-demo').twbsPagination('destroy');
          loadBill();
-     });
-     //Tìm kiếm hóa đơn
+     }
+     //Chọn loại tìm kiếm hóa đơn
      var defaultOption = document.querySelector('.defaultOption');
         var ul = document.querySelector('.ul');
         defaultOption.onclick = function(){
@@ -220,15 +224,13 @@
      itemtt.forEach(item =>{
          item.addEventListener("click", () =>{
              item.classList.toggle("checked");
-             $('#pagination-demo').twbsPagination('destroy');
-             loadBill();
+             LoadPage();
          })
      })
      itemkb.forEach(item =>{
          item.addEventListener("click", () =>{
              item.classList.toggle("checked");
-             $('#pagination-demo').twbsPagination('destroy');
-             loadBill();
+             LoadPage();
          })
      })
     function getCheckedValues(checkboxes) {
@@ -244,17 +246,16 @@
      }
      //TimKiemHD
      function timKiemHD(){
-         $('#pagination-demo').twbsPagination('destroy');
-         loadBill();
+         LoadPage();
      }
      // Load danh sách hóa đơn
       function loadBill() {
          let lsttt = getCheckedValues(itemtt);
          let lstkb = getCheckedValues(itemkb);
-         let keyWord = $("#inputhd").val();
-         let loaitimkiem = 1;
          let tgbd = $("#bdau").text();
          let tgkt = $("#ketthuc").text();
+         let keyWord = $("#inputhd").val();
+         let loaitimkiem = 1;
          if($("#searchtype").text() == "Khách hàng"){
              loaitimkiem = 2;
          };
@@ -292,12 +293,12 @@
                                <td>
                                    ${response.data[i].trangThai === 2 ? '<label class="badge bg-info">Chờ xác nhận</label>' :
                                    response.data[i].trangThai === 3 ? '<label class="badge bg-primary">Đang giao hàng</label>' :
-                                   response.data[i].trangThai === 4 ? '<label class="badge bg-danger">Hoàn hàng</label>' :
+                                   response.data[i].trangThai === 4 ? '<label class="badge bg-danger">Đang hoàn hàng</label>' :
                                    response.data[i].trangThai === 5 ? '<label class="badge bg-warning">Hoàn hàng thành công</label>' :
                                    response.data[i].trangThai === 6 ? '<label class="badge bg-success">Thành công</label>' :
                                    response.data[i].trangThai === 7 ? '<label class="badge bg-dark">Đơn hủy</label>' :
                                    response.data[i].trangThai === 8 ? '<label class="badge bg-dark">Chờ xác nhận hủy</label>' :
-                                   '<label class="badge bg-secondary">Chờ xác nhận đổi trả hàng</label>'}
+                                   '<label class="badge bg-secondary">Chờ xác nhận hoàn hàng</label>'}
                                </td>
                                <td class="text-end">${response.data[i].tongTienHang.toLocaleString()}</td>
                                <td class="text-end">${response.data[i].khachDaTra.toLocaleString()}</td>
@@ -357,8 +358,7 @@
         function cb(start, end) {
             $('#bdau').text(start.format('DD/MM/YYYY HH:mm'));
             $('#ketthuc').text(end.format('DD/MM/YYYY HH:mm'));
-            $('#pagination-demo').twbsPagination('destroy');
-            loadBill();
+            LoadPage();
         }
 
         $('#timepicker1').daterangepicker({

@@ -1,5 +1,5 @@
 ﻿<div id="qr-result"></div>
-<h1>scan qr html</h1>
+<h3>Quét mã sản phẩm</h3>
 <div style="display: flex;justify-content: center;">
     <div id="qr-reader" style="width:500px;">
     </div>
@@ -21,9 +21,8 @@
                 //Xu ly khi quet ma thanh cong
                 ++countResults;
                 lastResult = decodeText;
-                alert("QR Result: " + decodeText, decodeResult);
-                console.log(decodeResult);
-                console.log(decodeText);
+                //alert("QR Result: " + decodeText, decodeResult);
+                addCTSP(decodeText);
                 myqr.innerHTML = `You scan ${countResults}: ${decodeText}`;
             }
         }
