@@ -54,7 +54,6 @@
     <None Include="Views\LoaiSP\Edit.cshtml" />
     <None Include="Views\LoaiSP\Show.cshtml" />
     <None Include="Views\NhanVien\Create.cshtml" />
-    <None Include="Views\NhanVien\Delete.cshtml" />
     <None Include="Views\NhanVien\Details.cshtml" />
     <None Include="Views\NhanVien\Edit.cshtml" />
     <None Include="Views\NhanVien\Show.cshtml" />
