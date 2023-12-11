@@ -47,5 +47,10 @@ namespace AppAPI.Controllers
         {
             return thongKeService.ThongKe(startDate,endDate);
         }
+        [HttpGet("ThongKeSanPham")]
+        public List<ThongKeCotViewModel> ThongKeSanPham()
+        {
+            return thongKeService.ThongKeSanPham();
+        }
     }
 }

@@ -430,5 +430,11 @@ namespace AppView.Controllers
         {
             return PartialView("_QuanLyHoaDon");
         }
+        //Tam
+        public IActionResult ScanQRCode()
+        {
+            return PartialView("ScanQRCode");
+        }
+        //End
     }
 }
