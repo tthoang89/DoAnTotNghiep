@@ -204,6 +204,7 @@
                         document.getElementById("Luu").style.display = "none";
                         document.getElementById("ShowNgaySinh").innerHTML = document.getElementById("chonNgaySinh").value;
                         document.getElementById("tenanh").innerHTML = document.getElementById("ten").value;
+                        document.getElementById("helloTen").innerHTML = "Hello: " + document.getElementById("ten").value;
                     } else {
                         toastr.error(response.message, 'Error Alert', { timeOut: 300 });
                     }

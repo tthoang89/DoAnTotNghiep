@@ -145,6 +145,7 @@ namespace AppAPI.Services
                                          HinhThucGiamGia = a.IDVoucher == null ? null : (context.Vouchers.First(x=>x.ID == a.IDVoucher)).HinhThucGiamGia,
                                          GiaTri = a.IDVoucher == null ? null : (context.Vouchers.First(x => x.ID == a.IDVoucher)).GiaTri,
                                          TrangThaiDanhGia = d.TrangThai,
+                                         LoaiHoaDon = a.LoaiHD,
                                          lichSuTichDiems = context.LichSuTichDiems.Where(p=>p.IDHoaDon == a.ID).ToList(),
                                          TiLeTieuDiem = context.QuyDoiDiems.FirstOrDefault(p=>p.ID == context.LichSuTichDiems.FirstOrDefault(p => p.IDHoaDon == a.ID).IDQuyDoiDiem).TiLeTieuDiem,
                                          TiLeTichDiem = context.QuyDoiDiems.FirstOrDefault(p => p.ID == context.LichSuTichDiems.FirstOrDefault(p => p.IDHoaDon == a.ID).IDQuyDoiDiem).TiLeTichDiem,
