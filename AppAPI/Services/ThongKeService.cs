@@ -48,7 +48,7 @@ namespace AppAPI.Services
             var start = Convert.ToDateTime(startDate);
             var end = Convert.ToDateTime(endDate);
             //Sua
-            List<HoaDon> lstHoaDon = context.HoaDons.Where(x => (x.TrangThaiGiaoHang == 6 || x.TrangThaiGiaoHang==5 || x.TrangThaiGiaoHang==7) && x.NgayThanhToan >= start && x.NgayThanhToan<=end).ToList();
+            List<HoaDon> lstHoaDon = context.HoaDons.Where(x => (x.TrangThaiGiaoHang == 6 || x.TrangThaiGiaoHang==7) && x.NgayThanhToan >= start && x.NgayThanhToan<=end).ToList();
             //var lstHoaDonTron = lstHoaDon.Where(x => (x.TrangThaiGiaoHang == 6 || x.TrangThaiGiaoHang == 5 || x.TrangThaiGiaoHang == 7) && x.NgayThanhToan >= start && x.NgayThanhToan<=end).ToList();
             //End
             var tongHoaDonTron = lstHoaDon.Count();
@@ -86,12 +86,12 @@ namespace AppAPI.Services
                 thongKeDuong.Add(new ThongKeDuongViewModel() { Ngay = i.Date, SoLuongDon = context.HoaDons.Where(x => x.TrangThaiGiaoHang == 6 && x.NgayThanhToan.Value.Date == i.Date).Count() });
             }
             //Lấy biểu đồ tròn
-            List<ThongKeTronViewModel> thongKeTron = (from a in lstHoaDon
+            List<ThongKeTronViewModel> thongKeTron = (from a in lstHoaDon.Where(x=>x.TrangThaiGiaoHang==6 || x.TrangThaiGiaoHang == 7)
                                                       group a by a.TrangThaiGiaoHang into g
                                                       select new ThongKeTronViewModel()
                                                       {
-                                                          TrangThaiHoaDon = g.Key == 6 ? "Thành công" : g.Key == 5 ? "Hoàn/Trả hàng" : "Hủy",
-                                                          PhanTram = (tongHoaDonTron * 100) / g.Count(),
+                                                          TrangThaiHoaDon = g.Key == 6 ? "Thành công" : "Hủy",
+                                                          PhanTram = (g.Count() * 100) / tongHoaDonTron,
                                                       }).ToList();
             return new ThongKeViewModel() { SoLuongThanhVien = soLuongThanhVien, SoLuongDonHang = soLuongDonHangCho, SoLuongSanPham = soLuongSanPham, BieuDoCot = thongKeCot, BieuDoDuong = thongKeDuong.OrderBy(x=>x.Ngay).ToList(), BieuDoTron = thongKeTron };
         }
