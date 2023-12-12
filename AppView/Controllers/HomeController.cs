@@ -1123,27 +1123,27 @@ namespace AppView.Controllers
         [HttpPost]
         public string Order(HoaDonViewModel hoaDon)
         {
+            List<ChiTietHoaDonViewModel> lstChiTietHoaDon = new List<ChiTietHoaDonViewModel>();
+            string temp = TempData["ListBienThe"] as string;
+            string trangThai = TempData["TrangThai"] as string;
+            foreach (var item in JsonConvert.DeserializeObject<List<GioHangRequest>>(temp))
+            {
+                ChiTietHoaDonViewModel chiTietHoaDon = new ChiTietHoaDonViewModel();
+                chiTietHoaDon.IDChiTietSanPham = item.IDChiTietSanPham;
+                chiTietHoaDon.SoLuong = item.SoLuong;
+                chiTietHoaDon.DonGia = item.DonGia.Value;
+                lstChiTietHoaDon.Add(chiTietHoaDon);
+            }
+            hoaDon.ChiTietHoaDons = lstChiTietHoaDon;
+            hoaDon.TrangThai = Convert.ToBoolean(trangThai);
+            var session = HttpContext.Session.GetString("LoginInfor");
+            if (session != null)
+            {
+                hoaDon.IDNguoiDung = JsonConvert.DeserializeObject<LoginViewModel>(session).Id;
+            }
+            TempData.Remove("TongTien");
             if (hoaDon.PhuongThucThanhToan == "COD")
             {
-                List<ChiTietHoaDonViewModel> lstChiTietHoaDon = new List<ChiTietHoaDonViewModel>();
-                string temp = TempData["ListBienThe"] as string;
-                string trangThai = TempData["TrangThai"] as string;
-                foreach (var item in JsonConvert.DeserializeObject<List<GioHangRequest>>(temp))
-                {
-                    ChiTietHoaDonViewModel chiTietHoaDon = new ChiTietHoaDonViewModel();
-                    chiTietHoaDon.IDChiTietSanPham = item.IDChiTietSanPham;
-                    chiTietHoaDon.SoLuong = item.SoLuong;
-                    chiTietHoaDon.DonGia = item.DonGia.Value;
-                    lstChiTietHoaDon.Add(chiTietHoaDon);
-                }
-                hoaDon.ChiTietHoaDons = lstChiTietHoaDon;
-                hoaDon.TrangThai = Convert.ToBoolean(trangThai);
-                var session = HttpContext.Session.GetString("LoginInfor");
-                if (session != null)
-                {
-                    hoaDon.IDNguoiDung = JsonConvert.DeserializeObject<LoginViewModel>(session).Id;
-                }
-                TempData.Remove("TongTien");
                 HttpResponseMessage response = _httpClient.PostAsJsonAsync("HoaDon", hoaDon).Result;
                 if (response.IsSuccessStatusCode)
                 {
@@ -1237,23 +1237,15 @@ namespace AppView.Controllers
                     {
                         //Thanh toan thanh cong
                         var hoaDon = JsonConvert.DeserializeObject<HoaDonViewModel>(TempData["HoaDon"].ToString());
-                        List<ChiTietHoaDonViewModel> lstChiTietHoaDon = new List<ChiTietHoaDonViewModel>();
-                        string temp = TempData["ListBienThe"] as string;
-                        foreach (var item in JsonConvert.DeserializeObject<List<GioHangRequest>>(temp))
-                        {
-                            ChiTietHoaDonViewModel chiTietHoaDon = new ChiTietHoaDonViewModel();
-                            chiTietHoaDon.IDChiTietSanPham = item.IDChiTietSanPham;
-                            chiTietHoaDon.SoLuong = item.SoLuong;
-                            chiTietHoaDon.DonGia = item.DonGia.Value;
-                            lstChiTietHoaDon.Add(chiTietHoaDon);
-                        }
-                        hoaDon.ChiTietHoaDons = lstChiTietHoaDon;
-                        hoaDon.Diem = 0;
                         hoaDon.NgayThanhToan = DateTime.Now;
                         HttpResponseMessage response = _httpClient.PostAsJsonAsync("HoaDon", hoaDon).Result;
                         if (response.IsSuccessStatusCode)
                         {
-                            Response.Cookies.Delete("Cart");
+
+                            if (!hoaDon.TrangThai) Response.Cookies.Delete("Cart");
+                            // lam them
+                            TempData["SoLuong"] = "0";
+                            // lam end
                             return RedirectToAction("CheckOutSuccess");
                         }
                         else return BadRequest();
