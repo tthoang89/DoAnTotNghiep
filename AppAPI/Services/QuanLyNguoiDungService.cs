@@ -164,17 +164,28 @@ namespace AppAPI.Services
 
         public async Task<LoginViewModel> Login(string lg, string password)
         {
-            var nv = await  context.NhanViens.FirstOrDefaultAsync(a => (a.Email == lg || a.SDT == lg) && a.PassWord == password);
-            if(nv != null)
+            var nv = await  context.NhanViens.FirstOrDefaultAsync(a => (a.Email == lg || a.SDT == lg) && a.PassWord == password );
+            if (nv != null)
             {
-                return new LoginViewModel 
-                { 
-                    Id = nv.ID,
-                    Email = nv.Email, 
-                    Ten = nv.Ten,
-                    SDT = nv.SDT,
-                    vaiTro = 0
-                };
+                if (nv.TrangThai == 0)
+                {
+                    return new LoginViewModel
+                    {
+                        Id = nv.ID,
+                        Email = nv.Email,
+                        Ten = nv.Ten,
+                        SDT = nv.SDT,
+                        vaiTro = 0
+                    };
+                }
+                else if (nv.TrangThai == 1) // Check for locked account
+                {
+                    return new LoginViewModel
+                    {
+                        IsAccountLocked = true,
+                        Message = "Bạn không có quyền truy cập vào tài khoản này."
+                    };
+                }
             }
             var kh = await context.KhachHangs.FirstOrDefaultAsync(x => (x.Email == lg || x.SDT == lg) && x.Password == password);
             if(kh != null)
@@ -192,7 +203,10 @@ namespace AppAPI.Services
                     vaiTro = 1
                 };
             }
-            return null;
+            return new LoginViewModel
+            {
+                Message = "Email hoặc password không chính xác"
+            };
         }
 
         //public async Task<object> Login(string email, string password)
