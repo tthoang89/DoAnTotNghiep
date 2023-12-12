@@ -24,5 +24,7 @@ namespace AppData.ViewModels.SanPham
         public int GiaBan { get; set; }//Của biến thể mặc định sau khi nhân vs khuyến mãi
         public int? GiaGoc { get; set; }//Của biến thể mặc định
         public Guid? IDKhuyenMai { get; set; }//Của biến thể mặc định
+        public int? TrangThaiKM { get; set; }
+        public int? GiaTriKM { get; set; }
     }
 }

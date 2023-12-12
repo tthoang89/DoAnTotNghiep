@@ -729,16 +729,19 @@ namespace AppView.Controllers
             if (response.IsSuccessStatusCode)
             {
                 HttpContext.Session.SetString("LoginInfor", response.Content.ReadAsStringAsync().Result);
-                string? actionName = TempData["ActionName"].ToString();
-                // lam them
-
-                //lam end
-
+                string actionName = TempData["ActionName"].ToString();
                 return RedirectToAction(actionName);
             }
-           
-            ViewBag.ErrorMessage = "Email hoặc password không chính xác.";
-            return View();
+            else if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                ViewBag.ErrorMessage = "Bạn không có quyền truy cập vào tài khoản này.";
+                return View();
+            }
+            else
+            {
+                ViewBag.ErrorMessage = "Email hoặc password không chính xác.";
+                return View();
+            }
         }
         public IActionResult Register()
         {

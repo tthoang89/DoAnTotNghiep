@@ -203,12 +203,14 @@
                                 </td>
                                 <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: 130px;padding-right: 70px; text-align: right;">@giaSP.ToString("n0") VNĐ</td>
                             </tr>
-                            <tr>
-                                <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;">
-                                    Phí vận chuyển
-                                </td>
-                                <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: 130px;padding-right: 70px; text-align: right;">+ @tienShip.ToString("n0") VNĐ</td>
-                            </tr>
+                            @if(loaiHD == 0){
+                                <tr>
+                                    <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;">
+                                        Phí vận chuyển
+                                    </td>
+                                    <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: 130px;padding-right: 70px; text-align: right;">+ @tienShip.ToString("n0") VNĐ</td>
+                                </tr>
+                            }
                             @if (hinhThucGiamGia == 1)
                             {
                                 <tr>
@@ -308,7 +310,7 @@
         {
             <div style="text-align:-webkit-right ;">
                 <div style="border: none; color: white; background-color: black; text-align:center;width: 150px; height: 50px; display: grid; align-items: center;">
-                    <a style="color:white;" asp-controller="Home" asp-action="DoiTraHang" asp-route-idHoaDon="@Model.First().ID">Đổi trả hàng/Hoàn tiền</a>
+                    <a style="color:white;" asp-controller="Home" asp-action="DoiTraHang" asp-route-idHoaDon="@Model.First().ID">Hoàn hàng</a>
                 </div>
             </div>
         }else if (trangthaiGiaoHang == 8)
@@ -323,7 +325,7 @@
         {
             <div style="text-align:-webkit-right ;">
                 <div style="border: none; color: white; background-color: black; text-align:center;width: 150px; height: 50px; display: grid; align-items: center;">
-                    <a style="color:white;" asp-controller="Home" asp-action="HoanTacDoiTraHang" asp-route-idHoaDon="@Model.First().ID">Hoàn tác trả hàng</a>
+                    <a style="color:white;" asp-controller="Home" asp-action="HoanTacDoiTraHang" asp-route-idHoaDon="@Model.First().ID">Hoàn tác hoàn hàng</a>
                 </div>
             </div>
         }
