@@ -1494,6 +1494,9 @@ namespace AppView.Controllers
                         if (response.IsSuccessStatusCode)
                         {
                             Response.Cookies.Delete("Cart");
+                            // lâm thêm
+                            TempData["SoLuong"] = "0";
+                            // lâm end 
                             return RedirectToAction("CheckOutSuccess");
                         }
                         else return BadRequest();

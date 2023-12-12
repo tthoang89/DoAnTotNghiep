@@ -90,9 +90,10 @@
     </div>
 </div>
 
-<div>
-    <a asp-action="GetAllVoucher">Quay lại</a>
-</div>
+<br />
+<button class="btn btn-primary">
+    <a asp-action="GetAllVoucher" style="color:white;">Quay lại</a>
+</button>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

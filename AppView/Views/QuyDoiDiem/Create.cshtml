@@ -53,9 +53,10 @@
     </div>
 </div>
 
-<div>
-    <a asp-action="GetAllQuyDoiDiem">Quay lại</a>
-</div>
+<br />
+<button class="btn btn-primary">
+    <a asp-action="GetAllQuyDoiDiem" style="color:white;">Quay lại</a>
+</button>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

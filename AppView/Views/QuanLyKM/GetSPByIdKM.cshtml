@@ -75,7 +75,7 @@
                         var tenloaisp = Dbcontext.LoaiSPs.FirstOrDefault(x => x.ID == item.IDLoaiSP);
                         if (tenloaisp != null)
                         {
-                                <div style="color:black">@tenloaisp.Ten</div>
+                                        <div style="color:black">@tenloaisp.Ten</div>
                         }
                     }
                 </td>
@@ -84,7 +84,7 @@
                         var tencl = Dbcontext.ChatLieus.FirstOrDefault(x => x.ID == item.IDChatLieu);
                         if (tencl != null)
                         {
-                                <div style="color:black">@tencl.Ten</div>
+                                        <div style="color:black">@tencl.Ten</div>
                         }
                     }
                 </td>
@@ -92,11 +92,11 @@
                     @{
                         if (item.TrangThai == 0)
                         {
-                            <div style="color:red">không sử dụng </div>
+                                    <div style="color:red">không sử dụng </div>
                         }
                         else
                         {
-                            <div style="color:green">Sử dụng</div>
+                                    <div style="color:green">Sử dụng</div>
                         }
                     }
                 </td>
@@ -128,3 +128,7 @@
         </ul>
     </nav>
 </div>
+<br />
+<button class="btn btn-primary">
+   <a asp-action="GetAllKM" style="color:white;">Quay lại</a>
+</button>
