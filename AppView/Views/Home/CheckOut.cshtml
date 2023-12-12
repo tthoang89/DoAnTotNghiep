@@ -306,6 +306,7 @@
         var diachi = $("#address").val();
         var pttt = $('input[name="pttt"]:checked').val();
         var diachi = $("#address").val();
+        var ghiChu = $("#note").val();
 
         $('.invalid-feedback').text('');
         $('.is-invalid').removeClass('is-invalid');
@@ -369,7 +370,7 @@
             alert("Vui long dien day du thong tin");
         }
         else {
-            var objHoaDon = { Ten: ten, Email: email, SDT: sdt, DiaChi: diachi + ", " + xa + ", " + huyen + ", " + tinh, TienShip: tienShip, PhuongThucThanhToan: pttt, TongTien: tienShip + @tongtien-tienVoucher - tienDiem, TenVoucher: voucher, Diem: diemTich };
+            var objHoaDon = { Ten: ten, Email: email, SDT: sdt, DiaChi: diachi + ", " + xa + ", " + huyen + ", " + tinh, TienShip: tienShip, PhuongThucThanhToan: pttt, TongTien: tienShip + @tongtien-tienVoucher - tienDiem, TenVoucher: voucher, Diem: diemTich, GhiChu: ghiChu};
             $.ajax({
                 async: false,
                 type: 'POST',

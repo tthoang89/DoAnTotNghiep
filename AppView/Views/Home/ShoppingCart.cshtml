@@ -46,11 +46,15 @@
                                 <tr>
                                     <td class="product__cart__item">
                                         <div class="product__cart__item__pic">
-                                            <a asp-controller="Home" asp-action="ProductDetailFromCart" asp-route-idctsp="@item.IDChiTietSanPham"><img style="height:128px;width:100px" src="/img/product/@item.Anh" alt=""></a>
+                                            <a asp-controller="Home" asp-action="ProductDetailFromCart" asp-route-idctsp="@item.IDChiTietSanPham"><img style="height:100px;width:100px" src="/img/product/@item.Anh" alt=""></a>
                                         </div>
                                         <div class="product__cart__item__text">
                                             <h6>@item.Ten</h6>
                                             <h5>@item.MauSac/@item.KichCo</h5>
+                                            @if (!item.HetHang.Value)
+                                            {
+                                                <p style="color:red;font-size:12px">Số lượng không thể đáp ứng</p>
+                                            }
                                         </div>
                                     </td>
                                     <td class="cart__price">@item.DonGia.Value.ToString("n0") </td>
@@ -87,7 +91,7 @@
                         <ul>
                             <li>Tổng <span>@tongTien VNĐ</span></li>
                         </ul>
-                    <a href="CheckOut" class="primary-btn" >Mua hàng</a>
+                    <a onclick="CheckCart()" href="#" class="primary-btn" >Mua hàng</a>
                     </div>
                 </div>
             </div>
@@ -121,8 +125,18 @@
                 }
             });
             }
-        
 
+        function CheckCart(){
+            if(@Model.Count == 0){
+                alert("Vui lòng thêm sản phẩm vào giỏ hàng");
+            }
+            else if(@Model.Where(x=>!x.HetHang.Value).Any().ToString().ToLower()){
+                alert("Yêu cầu không thể đáp ứng");
+            }
+            else{
+                location.href = 'CheckOut';
+            }
+        }
     </script>
     <!-- Shopping Cart Section End -->
 

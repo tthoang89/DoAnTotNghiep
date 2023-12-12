@@ -15,5 +15,6 @@ namespace AppData.ViewModels.SanPham
         public string? MauSac { get; set; }
         public string? KichCo { get; set; }
         public string? Anh { get; set; }
+        public bool? HetHang { get; set; }
     }
 }

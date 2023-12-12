@@ -56,13 +56,14 @@ namespace AppAPI.Controllers
             }
             else return new KhachHangViewModel();
         }
-        [HttpPost("ChangeForgotPassword")]
-        public async Task<bool> ChangeForgotPassword(KhachHangViewModel khachHang)
+        [HttpGet("ChangeForgotPassword")]
+        public async Task<bool> ChangeForgotPassword(string id, string password)
         {
             try
             {
-                var temp = _dbcontext.KhachHangs.First(x => x.IDKhachHang == khachHang.Id);
-                temp.Password = khachHang.Password;
+                var tempID = new Guid(id);  
+                var temp = _dbcontext.KhachHangs.First(x => x.IDKhachHang == tempID);
+                temp.Password = password;
                 _dbcontext.Update(temp);
                 await _dbcontext.SaveChangesAsync();
                 return true;
