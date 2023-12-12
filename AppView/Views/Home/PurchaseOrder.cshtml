@@ -225,7 +225,7 @@
                                 <td>${response.data[i].ngaytao1}</td>
                                 <td>${response.data[i].ngaythanhtoan1 === null ? 'Chờ xử lý' : response.data[i].ngaythanhtoan1}</td>
                                 <td>${response.data[i].ngaynhanhang1 === null ? 'Chờ xử lý' : response.data[i].ngaynhanhang1}</td>
-                            <td>${response.data[i].tongTien} VNĐ</td>
+                                <td>${Intl.NumberFormat().format(response.data[i].tongTien)} VNĐ</td>
                             <td>
                                 ${response.data[i].trangThaiGiaoHang === 2 ? '<label>Chờ xác nhận</label>' :
                                     response.data[i].trangThaiGiaoHang === 3 ? '<label>Đang giao hàng</label>' :
@@ -234,7 +234,7 @@
                                     response.data[i].trangThaiGiaoHang === 6 ? '<label>Hoàn thành</label>' :
                                     response.data[i].trangThaiGiaoHang === 7 ? '<label>Đơn hủy</label>' :
                                     response.data[i].trangThaiGiaoHang === 8 ? '<label>Chờ xác nhận hủy</label>' :
-                                    '<label>Chờ xác nhận đổi trả hàng</label>'}
+                                    '<label>Chờ xác nhận hoàn hàng</label>'}
                             </td>
                             <td>${response.data[i].loaiHoaDon === 0 ? '<label>Mua hàng online</label>' : '<label>Mua hàng tại quầy</label>'}</td>
                         </tr>`);

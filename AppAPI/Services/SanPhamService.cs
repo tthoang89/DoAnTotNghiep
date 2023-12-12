@@ -114,7 +114,8 @@ namespace AppAPI.Services
                         if (khuyenMai != null)
                         {
                             item.GiaBan = GetKhuyenMai(khuyenMai.GiaTri, item.GiaGoc.Value, khuyenMai.TrangThai);
-
+                            item.TrangThaiKM = khuyenMai.TrangThai;
+                            item.GiaTriKM = khuyenMai.GiaTri;
                         }
                         else
                         {
