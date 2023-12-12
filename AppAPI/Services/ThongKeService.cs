@@ -43,13 +43,10 @@ namespace AppAPI.Services
             var soLuongDonHangCho = context.HoaDons.Where(x => x.TrangThaiGiaoHang == 2).Count();
             var soLuongSanPham = context.ChiTietSanPhams.Sum(x => x.SoLuong);
             List<ChiTietHoaDon> lstChiTietHoaDon = new List<ChiTietHoaDon>();
-            //var nam = DateTime.Now.Year;
-            //var thang = DateTime.Now.Month;
             var start = Convert.ToDateTime(startDate);
             var end = Convert.ToDateTime(endDate);
             //Sua
             List<HoaDon> lstHoaDon = context.HoaDons.Where(x => (x.TrangThaiGiaoHang == 6 || x.TrangThaiGiaoHang==7) && x.NgayThanhToan >= start && x.NgayThanhToan<=end).ToList();
-            //var lstHoaDonTron = lstHoaDon.Where(x => (x.TrangThaiGiaoHang == 6 || x.TrangThaiGiaoHang == 5 || x.TrangThaiGiaoHang == 7) && x.NgayThanhToan >= start && x.NgayThanhToan<=end).ToList();
             //End
             var tongHoaDonTron = lstHoaDon.Count();
             //Lấy biểu đồ cột
@@ -78,9 +75,6 @@ namespace AppAPI.Services
             }
             //Lấy biểu đồ đường
             List<ThongKeDuongViewModel> thongKeDuong = new List<ThongKeDuongViewModel>();
-            //{
-            //    new ThongKeDuongViewModel() { Ngay = start,SoLuongDon = context.HoaDons.Where(x => x.TrangThaiGiaoHang == 6 && x.NgayThanhToan==start).Count() }
-            //};
             for (var i = start; i <= end; i=i.AddDays(1))
             {
                 thongKeDuong.Add(new ThongKeDuongViewModel() { Ngay = i.Date, SoLuongDon = context.HoaDons.Where(x => x.TrangThaiGiaoHang == 6 && x.NgayThanhToan.Value.Date == i.Date).Count() });

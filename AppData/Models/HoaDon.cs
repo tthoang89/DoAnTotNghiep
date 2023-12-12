@@ -23,10 +23,12 @@
          * 2-Chờ xác nhận
          * 3-Đang giao hàng//ko đc hủy
          * 6-thành công //nhận hàng thành công// đc đánh giá // đc hủy nếu ngày thanh toán < 3
-         --Đổi trả
-         * 9-chờ xác nhận đổi trả/hoàn hàng
-         * 4-Đã bàn giao-Đang hoàn hàng
+         
+         --Hoàn hàng
+         * 9-chờ xác nhận hoàn hàng
+         * 4-đang hoàn hàng
          * 5-Hoàn hàng thành công
+
          --Hủy khi chưa giao
          * 7-Đơn hủy
          * 8-Chờ xác nhận hủy
