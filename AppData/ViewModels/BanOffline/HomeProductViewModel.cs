@@ -6,14 +6,16 @@ using System.Threading.Tasks;
 
 namespace AppData.ViewModels.BanOffline
 {
-    public class SanPhamBanHang
+    public class HomeProductViewModel
     {
         public Guid Id { get; set; }
-        public string MaSP { get; set; }
-        public string Anh { get; set; }
         public string Ten { get; set; }
+        public string Anh { get; set; }
         public int GiaBan { get; set; }
-        public Guid IdLsp { get; set; }
         public int GiaGoc { get; set; }
+        public int? KhuyenMai { get; set; }
+        public int SLBan { get; set; }
+        public DateTime NgayTao { get; set; }
+        public double? SoSao { get; set; }
     }
 }
