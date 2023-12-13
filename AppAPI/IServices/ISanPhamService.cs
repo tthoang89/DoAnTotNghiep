@@ -52,6 +52,7 @@ namespace AppAPI.IServices
         Task<List<ChatLieu>> GetAllChatLieu();
         //Nhinh thêm
         #region SanPhamBanHang
+        Task<List<HomeProductViewModel>> GetAllSanPhamTrangChu();
         Task<List<SanPhamBanHang>> GetAllSanPhamTaiQuay();
         Task<ChiTietSanPhamBanHang> GetChiTietSPBHById(Guid idsp); // Sản phẩm và list màu, list size
         Task<List<ChiTietCTSPBanHang>> GetChiTietCTSPBanHang(Guid idsp); // Chitet sp 

@@ -215,6 +215,12 @@ namespace AppAPI.Controllers
             var listSP = await _sanPhamServices.GetAllSanPhamTaiQuay();
             return Ok(listSP);
         }
+        [HttpGet("getAllSPTrangChu")]
+        public async Task<IActionResult> GetAllSanPhamTrangChu()
+        {
+            var listSP = await _sanPhamServices.GetAllSanPhamTrangChu();
+            return Ok(listSP);
+        }
         [HttpGet("getChiTietSPBHById/{idsp}")]
         public async Task<IActionResult> GetChiTietSPBHById(Guid idsp)
         {
@@ -228,5 +234,6 @@ namespace AppAPI.Controllers
             return Ok(listCTSP);
         }
         #endregion
+
     }
 }
