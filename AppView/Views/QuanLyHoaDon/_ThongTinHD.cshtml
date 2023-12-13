@@ -59,12 +59,12 @@
                         <label class="col-form-label">
                             @{
                                 @(Model.TrangThai == 2 ? "Chờ xác nhận" :
-                                (Model.TrangThai == 3 ? "Đang giao hàng" :
-                                (Model.TrangThai == 4 ? "Đang hoàn hàng" :
-                                (Model.TrangThai == 5 ? "Hoàn hàng thành công" :
-                                (Model.TrangThai == 6 ? "Thành công" :
-                                (Model.TrangThai == 7 ? "Đơn hủy" :
-                                (Model.TrangThai == 8 ? "Chờ xác nhận hủy" : "Chờ xác nhận hoàn hàng")))))))
+                            (Model.TrangThai == 3 ? "Đang giao hàng" :
+                            (Model.TrangThai == 4 ? "Đang hoàn hàng" :
+                            (Model.TrangThai == 5 ? "Hoàn hàng thành công" :
+                            (Model.TrangThai == 6 ? "Thành công" :
+                            (Model.TrangThai == 7 ? "Đơn hủy" :
+                            (Model.TrangThai == 8 ? "Chờ xác nhận hủy" : "Chờ xác nhận hoàn hàng")))))))
                             }
                         </label>
                     </div>
@@ -225,16 +225,19 @@
         </div>
         <hr />
         <div class="d-flex flex-row justify-content-end">
-             @if (@Model.TrangThai == 9 )
+            @if (@Model.TrangThai == 6 && @Model.KhachHang == "Khách lẻ" && @Model.LoaiHD == 0)
             {
                 <div class="d-flex p-2">
-                    <button type="button" onclick="traDon('@Model.Id')" class="btn btn-danger fw-normal text-white"><i class="fa-solid fa-check fa-xs me-2" style="color: #ffffff;"></i> Xác nhận hoàn hàng</button>
+                    <button type="button" onclick="DoiTrangThai('5')" class="btn btn-danger fw-normal text-white"><i class="bi bi-reply-all-fill me-2" style="color: #ffffff;"></i> Hoàn hàng</button>
                 </div>
             }
-            @if (@Model.TrangThai == 4)
+            @if (@Model.TrangThai == 2)
             {
                 <div class="d-flex p-2">
-                    <button type="button" onclick="DoiTrangThai('5')" class="btn btn-danger fw-normal text-white"><i class="fa-solid fa-check fa-xs me-2" style="color: #ffffff;"></i>Hoàn hàng thành công</button>
+                    <button type="button" onclick="DoiTrangThai('3')" class="btn btn-primary fw-normal text-white"><i class="fa-solid fa-check fa-xs me-2" style="color: #ffffff;"></i> Xác nhận hóa đơn</button>
+                </div>
+                <div class="d-flex p-2">
+                    <button type="button" class="btn btn-dark fw-normal text-white" onclick="huyDon('@Model.Id')"><i class="fa-solid fa-trash fa-xs me-2" style="color: #ffffff;"></i>Hủy bỏ</button>
                 </div>
             }
             @if (@Model.TrangThai == 3)
@@ -243,18 +246,35 @@
                     <button type="button" onclick="DoiTrangThai('6')" class="btn btn-primary fw-normal text-white"><i class="fa-solid fa-check fa-xs me-2" style="color: #ffffff;"></i>Giao hàng thành công</button>
                 </div>
             }
-            @if (@Model.TrangThai == 2)
+            @if (@Model.TrangThai == 4)
             {
                 <div class="d-flex p-2">
-                    <button type="button" onclick="DoiTrangThai('3')" class="btn btn-success fw-normal text-white"><i class="fa-solid fa-check fa-xs me-2" style="color: #ffffff;"></i> Xác nhận hóa đơn</button>
+                    <button type="button" onclick="DoiTrangThai('5')" class="btn btn-danger fw-normal text-white"><i class="fa-solid fa-check fa-xs me-2" style="color: #ffffff;"></i>Hoàn hàng thành công</button>
                 </div>
             }
-
+            @if (@Model.TrangThai == 6 && @Model.LoaiHD == 1)
+            {
+                <div class="d-flex p-2">
+                    <button type="button" onclick="DoiTrangThai('5')" class="btn btn-danger fw-normal text-white"><i class="bi bi-reply-all-fill me-2" style="color: #ffffff;"></i> Hoàn hàng</button>
+                </div>
+            }
+            @if (@Model.TrangThai == 8)
+            {
+                <div class="d-flex p-2">
+                    <button type="button" class="btn btn-secondary fw-normal text-white" onclick="huyDon('@Model.Id')"><i class="fa-solid fa-check fa-xs me-2" style="color: #ffffff;"></i> Xác nhận hủy</button>
+                </div>
+            }
+            @if (@Model.TrangThai == 9)
+            {
+                <div class="d-flex p-2">
+                    <button type="button" onclick="DoiTrangThai('4')" class="btn btn-danger fw-normal text-white"><i class="fa-solid fa-check fa-xs me-2" style="color: #ffffff;"></i> Xác nhận hoàn hàng</button>
+                </div>
+            }
             <div class="d-flex p-2">
                 <button type="button" id="save" class="btn btn-success fw-normal text-white"><i class="fa-solid fa-floppy-disk fa-xs me-2" style="color: #ffffff;"></i> Lưu ghi chú</button>
             </div>
 
-             <div class="d-flex p-2">
+            <div class="d-flex p-2">
                 <button type="button" onclick="location.href='@Url.Action("CopyHD", "QuanLyHoaDon", new{idhd = @Model.Id})'" class="btn btn-success fw-normal text-white"><i class="ri-file-copy-line me-2"></i> Sao chép</button>
             </div>
 
@@ -264,13 +284,6 @@
             <div class="d-flex p-2">
                 <button type="button" onclick="location.href='@Url.Action("ExportPDF", "QuanLyHoaDon", new{idhd = @Model.Id})'" class="btn btn-secondary fw-normal text-white"><i class="fa-solid fa-file-export fa-xs me-2" style="color: #ffffff;"></i> Xuất PDF</button>
             </div>
-            @if (@Model.TrangThai != 7)
-            {
-                <div class="d-flex p-2">
-                    <button type="button" class="btn btn-danger fw-normal text-white" onclick="huyDon('@Model.Id')"><i class="fa-solid fa-trash fa-xs me-2" style="color: #ffffff;"></i>Hủy bỏ</button>
-                </div>
-            }
-
             <div class="d-flex p-2">
                 <button type="button" class="btn btn-secondary fw-normal text-white" data-bs-dismiss="modal"><i class="fa-solid fa-x fa-xs me-2" style="color: #ffffff;"></i> Đóng</button>
             </div>
@@ -358,167 +371,138 @@
     }
 </div>
 <script>
-        $("#save").click(function(){
-            var inputValue = $("#ghiChuinTTHD").val();
-            if(inputValue === ''){
-                inputValue = null;
-            }
-            $.ajax({
-                url: "/BanHangTaiQuay/UpdateGhichu",
-                type: "PUT",
-                dataType: "json",
-                data:{
-                    idhd: '@Model.Id',
-                    ghichu: inputValue,
-                },
-                success: function() {
-                    toastr.success(response.message, "Lưu ghi chú thành công", { timeOut: 300 });
-                        billDetail(id);
-                        loadBill();
-                },
-                error: function(response) {
-                    toastr.error('Lưu ghi chú thất bại', 'Error Alert', { timeOut: 300 });
+            $("#save").click(function(){
+                var inputValue = $("#ghiChuinTTHD").val();
+                if(inputValue === ''){
+                    inputValue = null;
                 }
-            });
-        })
-        function InHD(idhd){
-            $.ajax({
-            url: "/QuanLyHoaDon/PrintHD/"+ idhd,
-            type: 'GET',
-            success: function (data) {
-                 // Tạo một iframe ẩn trong trang hiện tại
-            var iframe = document.createElement('iframe');
-            iframe.style.display = 'none';
-            document.body.appendChild(iframe);
-
-            // Đặt nội dung của partial view vào iframe
-            var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-            iframeDoc.open();
-            iframeDoc.write(data);
-            iframeDoc.close();
-
-            // Kích hoạt hộp thoại in cho iframe
-            iframe.contentWindow.print();
-                }
-                });
-        }
-        function huyDon(IDHD){
-            var gc = $("#ghiChuinTTHD").val();
-            if(@Model.TrangThai === 4){
-                toastr.error('Đơn hàng trong trạng thái hoàn, không thể hủy', "Error Alert", { timeOut: 1000 });
-            }
-            if(gc ===''|| gc == '@Model.GhiChu'){
-                toastr.error('Vui lòng nhập ghi chú hóa đơn', "Error Alert", { timeOut: 1000 });
-            }else{
-                var ans = confirm("Bạn có chắc chắn hủy Hóa đơn này?");
-                if(ans){
-                    $.ajax({
-                        url: "/QuanLyHoaDon/HuyHD",
-                        type: "GET",
-                        dataType: 'json',
-                        data:{
-                            idhd: IDHD,
-                            ghichu: gc,
-                        },
-                        contentType: 'application/json',
-                        success: function(response) {
-                            toastr.success(response.message, "Success Alert", { timeOut: 300 });
-                            billDetail(IDHD);
-                            loadBill();
-                        },
-                        error: function(err) {
-                            toastr.error('Thay đổi trạng thái thất bại', "Error Alert", { timeOut: 300 });
-                        }
-                    });
-
-                }
-            }
-        }
-        @*function copyDon(IDHD){            
-            $.ajax({
-                url: "/QuanLyHoaDon/HuyHD",
-                type: "GET",
-                dataType: 'json',
-                data:{
-                    idhd: IDHD,
-                    ghichu: gc,
-                },
-                contentType: 'application/json',
-                success: function(response) {
-                    toastr.success(response.message, "Success Alert", { timeOut: 300 });
-                    billDetail(IDHD);
-                    loadBill();
-                },
-                error: function(err) {
-                    toastr.error('Thay đổi trạng thái thất bại', "Error Alert", { timeOut: 300 });
-                }
-            });              
-        }*@
-@*        function traDon(IDHD){
-            var gc = $("#ghiChuinTTHD").val();
-            if(gc ===''|| gc == '@Model.GhiChu'){
-                toastr.error('Vui lòng nhập ghi chú hóa đơn', "Error Alert", { timeOut: 1000 });
-            }else{
-                var ans = confirm("Bạn có chắc chắn muốn Trả hàng hóa đơn này?");
-                if(ans){
-                    $.ajax({
-                        url: "/QuanLyHoaDon/TraHD",
-                        type: "GET",
-                        dataType: 'json',
-                        data:{
-                            idhd: IDHD,
-                            ghichu: gc,
-                        },
-                        contentType: 'application/json',
-                        success: function(response) {
-                            toastr.success(response.message, "Success Alert", { timeOut: 300 });
-                            billDetail(IDHD);
-                            loadBill();
-                        },
-                        error: function(err) {
-                            toastr.error('Thay đổi trạng thái thất bại', "Error Alert", { timeOut: 300 });
-                        }
-                    });
-
-                }
-            }
-        }
-*@
-        $("#exportPDF").click(function(){
-                var id = "@Model.Id"
                 $.ajax({
-                    url: "/QuanLyHoaDon/ExportPDF/" + id,
-                    type: "GET",
-                    success: function(response) {
-          
+                    url: "/BanHangTaiQuay/UpdateGhichu",
+                    type: "PUT",
+                    dataType: "json",
+                    data:{
+                        idhd: '@Model.Id',
+                        ghichu: inputValue,
                     },
-                    error: function(err) {
-                    toastr.error('Lỗi xuất hóa đơn', "Error Alert", { timeOut: 300 });
+                    success: function() {
+                        toastr.success(response.message, "Lưu ghi chú thành công", { timeOut: 300 });
+                            billDetail(id);
+                            loadBill();
+                    },
+                    error: function(response) {
+                        toastr.error('Lưu ghi chú thất bại', 'Error Alert', { timeOut: 300 });
                     }
                 });
-        });
-
-        function DoiTrangThai(tragthai){
-        var ans = confirm("Cập nhật trạng thái hóa đơn này?");
-        var id = "@Model.Id";
-        if(ans){
+            })
+            function InHD(idhd){
                 $.ajax({
-                url: "/QuanLyHoaDon/DoiTrangThai",
-                type: "POST",
-                data:{
-                    trangthai:tragthai,
-                    idhd: id,
-                },
-                success: function(response) {
-                    toastr.success(response.message, "Success Alert", { timeOut: 300 });
-                    billDetail(id);
-                    loadBill();
-                },
-                error: function(err) {
-                    toastr.error('Thay đổi trạng thái thất bại', "Error Alert", { timeOut: 300 });
+                url: "/QuanLyHoaDon/PrintHD/"+ idhd,
+                type: 'GET',
+                success: function (data) {
+                     // Tạo một iframe ẩn trong trang hiện tại
+                var iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                document.body.appendChild(iframe);
+
+                // Đặt nội dung của partial view vào iframe
+                var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                iframeDoc.open();
+                iframeDoc.write(data);
+                iframeDoc.close();
+
+                // Kích hoạt hộp thoại in cho iframe
+                iframe.contentWindow.print();
+                    }
+                    });
+            }
+            function huyDon(IDHD){
+                var gc = $("#ghiChuinTTHD").val();
+                if(@Model.TrangThai === 4){
+                    toastr.error('Đơn hàng trong trạng thái hoàn, không thể hủy', "Error Alert", { timeOut: 1000 });
                 }
-            });
+                if(gc ===''|| gc == '@Model.GhiChu'){
+                    toastr.error('Vui lòng nhập ghi chú hóa đơn', "Error Alert", { timeOut: 1000 });
+                }else{
+                    var ans = confirm("Bạn có chắc chắn hủy Hóa đơn này?");
+                    if(ans){
+                        $.ajax({
+                            url: "/QuanLyHoaDon/HuyHD",
+                            type: "GET",
+                            dataType: 'json',
+                            data:{
+                                idhd: IDHD,
+                                ghichu: gc,
+                            },
+                            contentType: 'application/json',
+                            success: function(response) {
+                                toastr.success(response.message, "Success Alert", { timeOut: 300 });
+                                billDetail(IDHD);
+                                loadBill();
+                            },
+                            error: function(err) {
+                                toastr.error('Thay đổi trạng thái thất bại', "Error Alert", { timeOut: 300 });
+                            }
+                        });
+
+                    }
+                }
+            }
+    @*function copyDon(IDHD){
+        $.ajax({
+        url: "/QuanLyHoaDon/HuyHD",
+        type: "GET",
+        dataType: 'json',
+        data:{
+        idhd: IDHD,
+        ghichu: gc,
+        },
+        contentType: 'application/json',
+        success: function(response) {
+        toastr.success(response.message, "Success Alert", { timeOut: 300 });
+        billDetail(IDHD);
+        loadBill();
+        },
+        error: function(err) {
+        toastr.error('Thay đổi trạng thái thất bại', "Error Alert", { timeOut: 300 });
         }
-    }
+        });
+        }*@
+
+            $("#exportPDF").click(function(){
+                    var id = "@Model.Id"
+                    $.ajax({
+                        url: "/QuanLyHoaDon/ExportPDF/" + id,
+                        type: "GET",
+                        success: function(response) {
+
+                        },
+                        error: function(err) {
+                        toastr.error('Lỗi xuất hóa đơn', "Error Alert", { timeOut: 300 });
+                        }
+                    });
+            });
+
+            function DoiTrangThai(tragthai){
+            var ans = confirm("Cập nhật trạng thái hóa đơn này?");
+            var id = "@Model.Id";
+            if(ans){
+                    $.ajax({
+                    url: "/QuanLyHoaDon/DoiTrangThai",
+                    type: "POST",
+                    data:{
+                        trangthai:tragthai,
+                        idhd: id,
+                    },
+                    success: function(response) {
+                        toastr.success(response.message, "Success Alert", { timeOut: 300 });
+                        billDetail(id);
+                        loadBill();
+                    },
+                    error: function(err) {
+                        toastr.error('Thay đổi trạng thái thất bại', "Error Alert", { timeOut: 300 });
+                    }
+                });
+            }
+        }
 
 </script>

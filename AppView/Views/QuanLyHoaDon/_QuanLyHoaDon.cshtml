@@ -294,11 +294,11 @@
                                    ${response.data[i].trangThai === 2 ? '<label class="badge bg-info">Chờ xác nhận</label>' :
                                    response.data[i].trangThai === 3 ? '<label class="badge bg-primary">Đang giao hàng</label>' :
                                    response.data[i].trangThai === 4 ? '<label class="badge bg-danger">Đang hoàn hàng</label>' :
-                                   response.data[i].trangThai === 5 ? '<label class="badge bg-warning">Hoàn hàng thành công</label>' :
+                                   response.data[i].trangThai === 5 ? '<label class="badge bg-danger">Hoàn hàng thành công</label>' :
                                    response.data[i].trangThai === 6 ? '<label class="badge bg-success">Thành công</label>' :
                                    response.data[i].trangThai === 7 ? '<label class="badge bg-dark">Đơn hủy</label>' :
-                                   response.data[i].trangThai === 8 ? '<label class="badge bg-dark">Chờ xác nhận hủy</label>' :
-                                   '<label class="badge bg-secondary">Chờ xác nhận hoàn hàng</label>'}
+                                   response.data[i].trangThai === 8 ? '<label class="badge bg-secondary">Chờ xác nhận hủy</label>' :
+                                   '<label class="badge bg-danger">Chờ xác nhận hoàn hàng</label>'}
                                </td>
                                <td class="text-end">${response.data[i].tongTienHang.toLocaleString()}</td>
                                <td class="text-end">${response.data[i].khachDaTra.toLocaleString()}</td>

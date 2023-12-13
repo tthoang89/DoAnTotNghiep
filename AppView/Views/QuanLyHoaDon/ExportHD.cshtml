@@ -40,6 +40,7 @@
         .total {
             font-weight: bold;
         }
+
         .invoice-info-container {
             font-size: 0.875em;
         }
@@ -116,9 +117,23 @@
         }
     </style>
 }
-<div class="logo-container">
-    <h2>Reputation</h1>
-</div>
+<table class="invoice-info-container">
+    <tr>
+        <td rowspan="3" class="client-name">
+            <div class="logo-container">
+                <h2>Reputation</h2>
+            </div>
+        </td>
+        <td rowspan="3">
+            Địa chỉ: Số 313 Trường Chinh,<br />
+            quận Thanh Xuân, Hà Nội <br />
+            Điện thoại: 0964942121<br />
+            Email: cskh@reputation.vn
+        </td>
+    </tr>
+</table>
+
+
 <table class="invoice-info-container">
     <tr>
         <td rowspan="2" class="client-name">
@@ -130,6 +145,7 @@
                 var ngayxuat = (DateTime.Now).ToString("dd/MM/yyyy HH:mm");
                 <div>Ngày xuất: @ngayxuat</div>
             }
+        </td>
     </tr>
 </table>
 
@@ -141,7 +157,7 @@
             <th>Tên mặt hàng</th>
             <th style="text-align:right">Số lượng</th>
             <th style="text-align:right">Đơn giá*</th>
-            <th >Thành tiền</th>
+            <th>Thành tiền</th>
         </tr>
     </thead>
     <tbody>
