@@ -21,5 +21,7 @@ namespace AppData.ViewModels
         //0 - Nhan Vien
         //1 - Khach Hang
         public int? vaiTro { get; set; }
+        public bool IsAccountLocked { get; set; } // New property for locked account
+        public string Message { get; set; }
     }
 }

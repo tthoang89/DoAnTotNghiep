@@ -125,6 +125,8 @@ namespace AppView.Controllers
             var response1 = await _httpClient.GetAsync(apiURL1);
             var apiData1 = await response1.Content.ReadAsStringAsync();
             var bienthes = JsonConvert.DeserializeObject<List<AllViewCTSP>>(apiData1);
+            var idkhuyenmai = Guid.Parse(HttpContext.Session.GetString("IdKhuyenMai"));
+            ViewBag.IdKhuyenMai = idkhuyenmai;
             return View(new PhanTrangCTSPBySP
             {
                 listallctspbysp = bienthes
@@ -145,6 +147,7 @@ namespace AppView.Controllers
             // lay IdkhuyenMai Tu session
             var idkhuyenmai = Guid.Parse(HttpContext.Session.GetString("IdKhuyenMai"));
             var response = await _httpClient.PutAsJsonAsync($"https://localhost:7095/api/KhuyenMai/AddKmVoBT?IdKhuyenMai={idkhuyenmai}", bienthes);
+         
             if (response.IsSuccessStatusCode) return Json(new { success = true, message = "Cập nhật thành công!" });
             return Json(new { success = false });
         }
@@ -430,7 +433,8 @@ namespace AppView.Controllers
         [HttpGet]
         public async Task<IActionResult> GetSPNoKM(int ProductPage = 1)
         {
-            var idkhuyenmai = Guid.Parse(HttpContext.Session.GetString("IdKhuyenMai"));
+            var idkhuyenmai = Guid.Parse(HttpContext.Session.GetString("IdKhuyenMai"));          
+            ViewBag.IdKhuyenMai = idkhuyenmai;
             // // list AllViewsp
             string apiURL1 = $"https://localhost:7095/api/KhuyenMai/GetAllSPNoKM?id={idkhuyenmai}";
             var response1 = await _httpClient.GetAsync(apiURL1);

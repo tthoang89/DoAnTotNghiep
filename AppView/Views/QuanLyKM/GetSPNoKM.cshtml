@@ -5,6 +5,7 @@
     Layout = "~/Views/Shared/_LayoutForAdmin.cshtml";
     AppData.Models.AssignmentDBContext Dbcontext = new AppData.Models.AssignmentDBContext();
     int stt = 1;
+    var idkm = ViewBag.IdKhuyenMai;
     List<string> imageExtensions = new List<string>()
     {
          ".png", ".jpg", ".jpeg", ".gif", ".tiff", ".pdf",".webp",".jfif"
@@ -155,7 +156,7 @@
         </ul>
     </nav>
 </div>
-<div>
-    <a asp-action="GetAllKM">Quay Lại</a>
-</div>
+<button class="btn btn-primary">
+    @Html.ActionLink("Quay lại", "GetSPByIdKM", new { ID= idkm }, new { @style = "color:white;" })
+</button>
 

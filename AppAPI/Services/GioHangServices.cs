@@ -74,6 +74,7 @@ namespace AppAPI.Services
                 item.MauSac = chiTietSanPham.MauSac;
                 item.KichCo = chiTietSanPham.KichCo;
                 item.Anh = chiTietSanPham.Anh;
+                item.HetHang = chiTietSanPham.SoLuong < item.SoLuong ? false : true;
                 tongTien += item.DonGia.Value * item.SoLuong;
             }
             response.GioHangs = request;
@@ -90,7 +91,7 @@ namespace AppAPI.Services
             foreach (var item in lstChiTietGioHang)
             {
                 chiTietSanPham = _iSanPhamService.GetChiTietSanPhamByID(item.IDCTSP);
-                lst.Add(new GioHangRequest() { IDChiTietSanPham = chiTietSanPham.ID, SoLuong = item.SoLuong, DonGia = chiTietSanPham.GiaBan, Ten = chiTietSanPham.Ten, MauSac = chiTietSanPham.MauSac, KichCo = chiTietSanPham.KichCo, Anh = chiTietSanPham.Anh });
+                lst.Add(new GioHangRequest() { IDChiTietSanPham = chiTietSanPham.ID, SoLuong = item.SoLuong, DonGia = chiTietSanPham.GiaBan, Ten = chiTietSanPham.Ten, MauSac = chiTietSanPham.MauSac, KichCo = chiTietSanPham.KichCo, Anh = chiTietSanPham.Anh , HetHang = chiTietSanPham.SoLuong < item.SoLuong ? false : true});
                 tongTien += chiTietSanPham.GiaBan * item.SoLuong;
             }
             response.GioHangs = lst;
