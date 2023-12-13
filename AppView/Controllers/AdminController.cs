@@ -2,6 +2,7 @@
 using AppData.ViewModels;
 using AppData.ViewModels.SanPham;
 using AppView.IServices;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using QRCoder;
@@ -28,13 +29,6 @@ namespace AppView.Controllers
         }
         public IActionResult ProductManager()
         {
-            //var response = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllSanPhamAdmin").Result;
-            //if (response.IsSuccessStatusCode)
-            //{
-            //    var lstSanPham = JsonConvert.DeserializeObject<List<SanPhamViewModelAdmin>>(response.Content.ReadAsStringAsync().Result);
-            //    return View(lstSanPham);
-            //}
-            //else return BadRequest();
             return View();
         }
         [HttpGet]
@@ -118,14 +112,49 @@ namespace AppView.Controllers
         [HttpGet]
         public IActionResult ProductDetail(string idSanPham)
         {
-            var response = _httpClient.GetAsync(_httpClient.BaseAddress+ "SanPham/GetAllChiTietSanPhamAdmin?idSanPham=" + idSanPham).Result;
+            TempData["IDSanPham"] = idSanPham;
+            return View();
+
+        }
+        [HttpGet]
+        public JsonResult ShowProductDetail(string id, int page, int pageSize, string? searchMa)
+        {
+            //var response = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllSanPhamAdmin").Result;
+            //List<SanPhamViewModelAdmin> lstSanpham = new List<SanPhamViewModelAdmin>();
+            //if (response.IsSuccessStatusCode)
+            //{
+            //    lstSanpham = JsonConvert.DeserializeObject<List<SanPhamViewModelAdmin>>(response.Content.ReadAsStringAsync().Result);
+            //    if (filter.search != null)
+            //    {
+            //        lstSanpham = lstSanpham.Where(x => x.Ten.Contains(filter.search)).ToList();
+            //    }
+            //    var model = lstSanpham.Skip((filter.page - 1) * filter.pageSize).Take(filter.pageSize).ToList();
+            //    return Json(new
+            //    {
+            //        data = model,
+            //        total = lstSanpham.Count,
+            //        status = true
+            //    });
+            //}
+            //else return Json(new { status = false });
+
+            var response = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllChiTietSanPhamAdmin?idSanPham=" + id).Result;
             if (response.IsSuccessStatusCode)
             {
                 var lstSanPham = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModelAdmin>>(response.Content.ReadAsStringAsync().Result);
-                TempData["IDSanPham"] = idSanPham;
-                return View(lstSanPham);
+                if (searchMa != null)
+                {
+                    lstSanPham = lstSanPham.Where(x => x.Ma.Contains(searchMa)).ToList();
+                }
+                var model = lstSanPham.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+                return Json(new
+                {
+                    data = model,
+                    total = lstSanPham.Count,
+                    status = true
+                }); ;
             }
-            else return BadRequest();
+            else return Json(new { status = false });
         }
         [HttpGet]
         public IActionResult QuanLyAnh(Guid idSanPham)
@@ -276,6 +305,36 @@ namespace AppView.Controllers
                     bitmap.Save(stream,ImageFormat.Png);
                     return File(stream.ToArray(), "image/png", ma+".png");
                 }
+            }
+        }
+        [HttpGet]
+        public async Task<JsonResult> DeleteProductDetail(string id)
+        {
+            var response = await _httpClient.GetAsync("SanPham/DeleteChiTietSanPham?id=" + id);
+            if (response.IsSuccessStatusCode)
+            {
+                var ketQua = Convert.ToBoolean(await response.Content.ReadAsStringAsync());
+                if (ketQua)
+                {
+                    return Json(new { TrangThai = true });
+                }
+                else return Json(new { TrangThai = false, Loi = "Không thể xóa sản phẩm mặc định" });
+            }
+            else {
+                return Json(new { TrangThai = false , Loi = "Error"});
+            }
+        }
+        [HttpGet]
+        public async Task<JsonResult> UndoProductDetail(string id)
+        {
+            var response = await _httpClient.GetAsync("SanPham/UndoChiTietSanPham?id=" + id);
+            if (response.IsSuccessStatusCode)
+            {
+                return Json(true);
+            }
+            else
+            {
+                return Json(false);
             }
         }
     }

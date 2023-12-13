@@ -160,6 +160,16 @@ namespace AppAPI.Controllers
         {
             return _sanPhamServices.GetIDsanPhamByIdCTSP(idctsp);
         }
+        [HttpGet("DeleteChiTietSanPham")]
+        public bool DeleteChiTietSanPham(Guid id)
+        {
+            return _sanPhamServices.DeleteChiTietSanPham(id).Result;
+        }
+        [HttpGet("UndoChiTietSanPham")]
+        public bool UndoChiTietSanPham(Guid id)
+        {
+            return _sanPhamServices.UndoChiTietSanPham(id).Result;
+        }
         #endregion
 
         #region LoaiSP
@@ -205,6 +215,12 @@ namespace AppAPI.Controllers
             var listSP = await _sanPhamServices.GetAllSanPhamTaiQuay();
             return Ok(listSP);
         }
+        [HttpGet("getAllSPTrangChu")]
+        public async Task<IActionResult> GetAllSanPhamTrangChu()
+        {
+            var listSP = await _sanPhamServices.GetAllSanPhamTrangChu();
+            return Ok(listSP);
+        }
         [HttpGet("getChiTietSPBHById/{idsp}")]
         public async Task<IActionResult> GetChiTietSPBHById(Guid idsp)
         {
@@ -218,5 +234,6 @@ namespace AppAPI.Controllers
             return Ok(listCTSP);
         }
         #endregion
+
     }
 }

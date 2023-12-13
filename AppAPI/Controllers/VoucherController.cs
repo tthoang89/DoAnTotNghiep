@@ -68,7 +68,7 @@ namespace AppAPI.Controllers
             }
         }
         [HttpGet("GetVoucherByMa")]
-        public Voucher GetVoucherByMa(string ma)
+        public Voucher? GetVoucherByMa(string ma)
         {
             return _services.GetVoucherByMa(ma);
         }

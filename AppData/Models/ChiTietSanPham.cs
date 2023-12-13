@@ -14,6 +14,9 @@ namespace AppData.Models
         public int GiaBan { get; set; }
         public DateTime NgayTao { get; set; }
         public int TrangThai { get; set; }
+        // 1 - mặc định
+        // 2 - ko mặc định
+        // 0 - xóa
         public Guid IDSanPham { get; set; }
         public Guid? IDKhuyenMai { get; set; }
         public Guid IDMauSac { get; set; }
