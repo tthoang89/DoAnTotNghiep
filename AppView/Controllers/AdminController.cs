@@ -119,25 +119,6 @@ namespace AppView.Controllers
         [HttpGet]
         public JsonResult ShowProductDetail(string id, int page, int pageSize, string? searchMa)
         {
-            //var response = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllSanPhamAdmin").Result;
-            //List<SanPhamViewModelAdmin> lstSanpham = new List<SanPhamViewModelAdmin>();
-            //if (response.IsSuccessStatusCode)
-            //{
-            //    lstSanpham = JsonConvert.DeserializeObject<List<SanPhamViewModelAdmin>>(response.Content.ReadAsStringAsync().Result);
-            //    if (filter.search != null)
-            //    {
-            //        lstSanpham = lstSanpham.Where(x => x.Ten.Contains(filter.search)).ToList();
-            //    }
-            //    var model = lstSanpham.Skip((filter.page - 1) * filter.pageSize).Take(filter.pageSize).ToList();
-            //    return Json(new
-            //    {
-            //        data = model,
-            //        total = lstSanpham.Count,
-            //        status = true
-            //    });
-            //}
-            //else return Json(new { status = false });
-
             var response = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllChiTietSanPhamAdmin?idSanPham=" + id).Result;
             if (response.IsSuccessStatusCode)
             {
