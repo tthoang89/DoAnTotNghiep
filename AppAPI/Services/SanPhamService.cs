@@ -297,7 +297,7 @@ namespace AppAPI.Services
             {
                 chiTietSanPham.MauSacs.Add(new GiaTriViewModel() { GiaTri = item.Ma, ID = item.ID.Value });
             }
-            foreach (var item in kichCos.Distinct().ToList())
+            foreach (var item in kichCos.Distinct().OrderByDescending(x=>x.Ten).ToList())
             {
                 chiTietSanPham.KichCos.Add(new GiaTriViewModel() { GiaTri = item.Ten, ID = item.ID });
             }
@@ -523,7 +523,7 @@ namespace AppAPI.Services
                         item.GiaBan = item.GiaGoc;
                     }
                 }
-                return lstChiTietSanPham;
+                return lstChiTietSanPham.OrderBy(x=>x.Ma).ToList();
             }
             catch
             {

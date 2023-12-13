@@ -124,6 +124,7 @@ namespace AppAPI.Services
                     hoaDon1.TrangThaiGiaoHang = 2;
                     //hoaDon1.ThueVAT = 10;
                     hoaDon1.TongTien = hoaDon.TongTien;
+                    hoaDon1.GhiChu = hoaDon.GhiChu;
                     if (reposHoaDon.Add(hoaDon1))
                     {
                         foreach (var x in chiTietHoaDons)

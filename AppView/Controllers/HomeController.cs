@@ -741,9 +741,15 @@ namespace AppView.Controllers
             HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + $"QuanLyNguoiDung/DangNhap?lg={login}&password={password}").Result;
             if (response.IsSuccessStatusCode)
             {
-                HttpContext.Session.SetString("LoginInfor", response.Content.ReadAsStringAsync().Result);
-                string actionName = TempData["ActionName"].ToString();
-                return RedirectToAction(actionName);
+                string result = await response.Content.ReadAsStringAsync();
+                HttpContext.Session.SetString("LoginInfor", result);
+                var user = JsonConvert.DeserializeObject<LoginViewModel>(result);
+                if (user.vaiTro == 1)
+                {
+                    string actionName = TempData["ActionName"].ToString();
+                    return RedirectToAction(actionName);
+                }
+                else return RedirectToAction("BanHang", "BanHangTaiQuay");
             }
             else if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
