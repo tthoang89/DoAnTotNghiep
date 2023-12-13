@@ -616,6 +616,9 @@ namespace AppView.Controllers
                     CookieOptions cookie = new CookieOptions();
                     cookie.Expires = DateTime.Now.AddDays(30);
                     Response.Cookies.Append("Cart", JsonConvert.SerializeObject(chiTietSanPhams), cookie);
+                    var response = _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCart?request=" + JsonConvert.SerializeObject(chiTietSanPhams)).Result;
+                    var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response.Content.ReadAsStringAsync().Result);
+                    TempData["TongTien"] = temp.TongTien.ToString();
                     return Json(new { success = true, message = "Cập nhật giỏ hàng thành công" });
                 }
                 else
@@ -628,6 +631,9 @@ namespace AppView.Controllers
                             Guid id = Guid.Parse(item.Substring(0, 36));
                             int sl = Convert.ToInt32(item.Substring(36, item.Length - 36));
                             var response = _httpClient.PutAsync(_httpClient.BaseAddress + $"GioHang/UpdateCart?idctsp={id}&soluong={sl}&idNguoiDung={loginInfor.Id}", null).Result;
+                            var responses = _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCartLogin?idNguoiDung=" + loginInfor.Id).Result;
+                            var temp = JsonConvert.DeserializeObject<GioHangViewModel>(responses.Content.ReadAsStringAsync().Result);
+                            TempData["TongTien"] = temp.TongTien.ToString();
                         }
                         return Json(new { success = true, message = "Cập nhật giỏ hàng thành công" });
                     }

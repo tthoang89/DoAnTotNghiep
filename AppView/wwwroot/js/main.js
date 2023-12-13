@@ -191,11 +191,19 @@
             // Don't allow decrementing below zero
             if (oldValue > 1) {
                 var newVal = parseFloat(oldValue) - 1;
+                
             } else {
                 newVal = 1;
             }
         }
         $button.parent().find('input').val(newVal);
+        var cartPrice = $button.parent().parent().parent().parent().find('td.cart__price').html();
+        cartPrice = cartPrice.replaceAll(".", "");
+        cartPrice = cartPrice.replaceAll(",", "");
+        var cartPriceSub = parseInt(cartPrice) * newVal;
+        console.log(cartPriceSub);
+        var cartPrice = $button.parent().parent().parent().parent().find('td.cart__price__sub').text(Intl.NumberFormat().format(cartPriceSub));
+        UpdateCart();
     });
 
     /*------------------
