@@ -9,6 +9,35 @@
     Layout = "_Layout";
 }
 <style>
+    .stars-outer {
+        position: relative;
+        display: inline-block;
+    }
+
+    .stars-inner {
+        position: absolute;
+        top: 0;
+        left: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        width: auto;
+    }
+
+    .stars-outer::before {
+        content: "\f005 \f005 \f005 \f005 \f005";
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        font-size: 14px;
+        color: #ccc;
+    }
+
+    .stars-inner::before {
+        content: "\f005 \f005 \f005 \f005 \f005";
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        color: #f7941d;
+        font-size: 14px;
+    }
     #filter-color input[type="checkbox"], #filter-size input[type="checkbox"], #LoaiSpFilter input[type="radio"], #filter-material input[type="checkbox"] {
         display: none;
     }
@@ -220,6 +249,7 @@
                         </div>
                     } *@
                 </div>
+                
                 <div class="row">
                     <div class="col-lg-12">
                         <ul id="pagination-demo" class="pagination"></ul>
@@ -237,6 +267,12 @@
     $(document).ready(function () {
         loadsp();
     });
+    const starsTotal = 5;
+    function getRatings(id, ratings) {
+        const starPercentage = (ratings / starsTotal) * 100;
+        const starPercentageRounded = `${Math.round(starPercentage / 10) * 10}%`;
+        $(`.${id} .stars-inner`).css('width', starPercentageRounded);
+    }
     function loadsp() {
         var PriceRange = Filter();
         var searchfilter = Search();
@@ -254,15 +290,15 @@
                 $("#filtered-products").empty();
                 console.log(response);
                 $.each(response.data, function (i, item) {
-                    console.log(item.trangThaiKM);
+                    const id = item.id.substring(0, 8);
                     if (item.trangThaiKM == 0) {
-                        $("#filtered-products").append("<div class='col-lg-4 col-md-6 col-sm-6'><div class='product__item'><div class='product__item__pic set-bg' style='height:265px!important'><span style='background-color:black;color:white;'class='label'>" + '-' + Intl.NumberFormat().format(item.giaTriKM) + ' ' + 'VNĐ' + "</span><a href='/Home/ProductDetail?idSanPham=" + item.id + "' > <img style='width:260px;height:265px;' src='/img/product/" + item.image + "'></a></div><div class='product__item__text'><h6>" + item.ten + "</h6><a onclick=\"addCart('" + item.idChiTietSanPham + "')\" class='add-cart' style='cursor:pointer'> + Thêm vào giỏ hàng </a><h5 style='color:red'> " + Intl.NumberFormat().format(item.giaBan) + ' ' + 'VNĐ' + " </h5></div></div></div>");
+                        $("#filtered-products").append("<div class='col-lg-4 col-md-6 col-sm-6'><div class='product__item "+id+"'><div class='product__item__pic set-bg' style='height:265px!important'><span style='background-color:black;color:white;'class='label'>" + '-' + Intl.NumberFormat().format(item.giaTriKM) + ' ' + 'VNĐ' + "</span><a href='/Home/ProductDetail?idSanPham=" + item.id + "' > <img style='width:260px;height:265px;' src='/img/product/" + item.image + "'></a></div><div class='product__item__text'><h6>" + item.ten + "</h6><a onclick=\"addCart('" + item.idChiTietSanPham + "')\" class='add-cart' style='cursor:pointer'> + Thêm vào giỏ hàng </a><div class='stars-outer'> <div class='stars-inner'></div> <span class='number-rating'></span> </div><h5> " + Intl.NumberFormat().format(item.giaBan) + ' ' + 'VNĐ' + " </h5><span style='font - size: 14px; color:#3a3b3c; '> <del>" + Intl.NumberFormat().format(item.giaGoc) + ' ' + 'VNĐ' + "</del> </span></div></div></div>");
                     } else if (item.trangThaiKM == 1) {
-                        $("#filtered-products").append("<div class='col-lg-4 col-md-6 col-sm-6'><div class='product__item'><div class='product__item__pic set-bg' style='height:265px!important'><span style='background-color:black;color:white;'class='label'>" + '-' + item.giaTriKM + '%' + "</span><a href='/Home/ProductDetail?idSanPham=" + item.id + "' > <img style='width:260px;height:265px;' src='/img/product/" + item.image + "'></a></div><div class='product__item__text'><h6>" + item.ten + "</h6><a onclick=\"addCart('" + item.idChiTietSanPham + "')\" class='add-cart' style='cursor:pointer'> + Thêm vào giỏ hàng </a><h5 style='color:red'> " + Intl.NumberFormat().format(item.giaBan) + ' ' + 'VNĐ' + " </h5></div></div></div>");
+                        $("#filtered-products").append("<div class='col-lg-4 col-md-6 col-sm-6'><div class='product__item "+id+"'><div class='product__item__pic set-bg' style='height:265px!important'><span style='background-color:black;color:white;'class='label'>" + '-' + item.giaTriKM + '%' + "</span><a href='/Home/ProductDetail?idSanPham=" + item.id + "' > <img style='width:260px;height:265px;' src='/img/product/" + item.image + "'></a></div><div class='product__item__text'><h6>" + item.ten + "</h6><a onclick=\"addCart('" + item.idChiTietSanPham + "')\" class='add-cart' style='cursor:pointer'> + Thêm vào giỏ hàng </a><div class='stars-outer'> <div class='stars-inner'></div> <span class='number-rating'></span> </div><h5> " + Intl.NumberFormat().format(item.giaBan) + ' ' + 'VNĐ' + " </h5><span style='font - size: 14px; color:#3a3b3c; '> <del>" + Intl.NumberFormat().format(item.giaGoc) + ' ' + 'VNĐ' + "</del> </span></div></div></div>");
                     }else{
-                        $("#filtered-products").append("<div class='col-lg-4 col-md-6 col-sm-6'><div class='product__item'><div class='product__item__pic set-bg' style='height:265px!important'><a href='/Home/ProductDetail?idSanPham=" + item.id + "' > <img style='width:260px;height:265px;' src='/img/product/" + item.image + "'></a></div><div class='product__item__text'><h6>" + item.ten + "</h6><a onclick=\"addCart('" + item.idChiTietSanPham + "')\" class='add-cart' style='cursor:pointer'> + Thêm vào giỏ hàng </a><h5 style='color:red'> " + Intl.NumberFormat().format(item.giaBan) + ' ' + 'VNĐ' + " </h5></div></div></div>");
+                        $("#filtered-products").append("<div class='col-lg-4 col-md-6 col-sm-6'><div class='product__item "+id+"'><div class='product__item__pic set-bg' style='height:265px!important'><a href='/Home/ProductDetail?idSanPham=" + item.id + "' > <img style='width:260px;height:265px;' src='/img/product/" + item.image + "'></a></div><div class='product__item__text'><h6>" + item.ten + "</h6><a onclick=\"addCart('" + item.idChiTietSanPham + "')\" class='add-cart' style='cursor:pointer'> + Thêm vào giỏ hàng </a><div class='stars-outer'> <div class='stars-inner'></div> <span class='number-rating'></span> </div><h5> " + Intl.NumberFormat().format(item.giaBan) + ' ' + 'VNĐ' + " </h5></div></div></div>");
                     }
-                    
+                    getRatings(id, item.soSao);
                 });
                 pagingsp(response.total, function () {
                     loadsp();

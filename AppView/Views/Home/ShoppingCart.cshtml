@@ -113,6 +113,7 @@
                 url: '/Home/UpdateCart',
                 success: function (response) {
                     if (response.success == true) {
+                        console.log(response);
                     var subCart = document.getElementsByClassName("cart__price__sub");
                     var tongtien = 0;
                     for (var i = 0; i < subCart.length; i++) {

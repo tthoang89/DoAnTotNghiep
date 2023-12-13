@@ -104,6 +104,13 @@ namespace AppAPI.Services
                                             IDKichCo = b.IDKichCo,
                                             IDChatLieu = a.IDChatLieu,
                                             GiaGoc = b.GiaBan,
+                                            soSao = (from cthd in _context.ChiTietHoaDons.AsNoTracking()
+                                                     join ctsp in _context.ChiTietSanPhams.AsNoTracking()
+                                                     on cthd.IDCTSP equals ctsp.ID
+                                                     join dg in _context.DanhGias.AsNoTracking()
+                                                     on cthd.ID equals dg.ID
+                                                     where ctsp.IDSanPham == a.ID
+                                                     select dg).AsEnumerable().ToList().Average(c => c.Sao),
                                             IDKhuyenMai = b.IDKhuyenMai,
                                             NgayTao = b.NgayTao
                                         }).ToListAsync();

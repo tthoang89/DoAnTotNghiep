@@ -635,7 +635,7 @@ namespace AppView.Controllers
                             var temp = JsonConvert.DeserializeObject<GioHangViewModel>(responses.Content.ReadAsStringAsync().Result);
                             TempData["TongTien"] = temp.TongTien.ToString();
                         }
-                        return Json(new { success = true, message = "Cập nhật giỏ hàng thành công" });
+                        return Json(new { success = true, message = "Cập nhật giỏ hàng thành công"});
                     }
                     else return Json(new { success = false, message = "Chỉ khách hàng mới thêm được vào giỏ hàng" });
                 }

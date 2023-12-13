@@ -26,5 +26,6 @@ namespace AppData.ViewModels.SanPham
         public Guid? IDKhuyenMai { get; set; }//Của biến thể mặc định
         public int? TrangThaiKM { get; set; }
         public int? GiaTriKM { get; set; }
+        public double? soSao { get;set; }
     }
 }
