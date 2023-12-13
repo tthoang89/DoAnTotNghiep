@@ -385,6 +385,7 @@ namespace AppView.Controllers
                 if (Request.Cookies["Cart"] != null)
                 {
                     lstGioHang = JsonConvert.DeserializeObject<List<GioHangRequest>>(Request.Cookies["Cart"]);
+                   
                 }
                 // laam them
                 int cout = lstGioHang.Sum(c => c.SoLuong)+sl.Value;
@@ -404,11 +405,12 @@ namespace AppView.Controllers
                     }
                     else return Json(new { error = true, message = "  Not Add to cart " });
                 }
-                else
-                {
-                    TempData["SoLuong"] = "0";
-                    return View(new List<GioHangRequest>());
-                }
+                 return Json(new { success = true, message = "Add to cart successfully", sl = cout });
+                //else
+                //{
+                //    TempData["SoLuong"] = cout.ToString();
+                //    return View(new List<GioHangRequest>());
+                //}
             }
             else
             {
@@ -419,6 +421,11 @@ namespace AppView.Controllers
                     if (response.IsSuccessStatusCode)
                     {
                         var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response.Content.ReadAsStringAsync().Result);
+                        if (temp.GioHangs.Sum(x=>x.SoLuong)==0)
+                        {
+                            TempData["SoLuong"]= sl.Value.ToString();
+                            return Json(new { success = true, message = "Add to cart successfully", sl = TempData["SoLuong"] });
+                        }
 
                         // lam them
                         int cout = temp.GioHangs.Sum(c => c.SoLuong) + sl.Value;
@@ -433,7 +440,7 @@ namespace AppView.Controllers
                 else 
                 {
                     TempData["SoLuong"] = "0";
-                    return Json(new { error = false, message = "  Not Add to cart " }); ;
+                    return Json(new { error = false, message = "  Not Add to cart " }); 
                 } 
             }
         }
