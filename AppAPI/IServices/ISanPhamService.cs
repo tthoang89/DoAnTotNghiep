@@ -45,9 +45,7 @@ namespace AppAPI.IServices
         Task<bool> UpdateTrangThaiChiTietSanPham(Guid id);
         Task<bool> UpdateChiTietSanPham(ChiTietSanPham chiTietSanPham);
         public Task<bool> AddChiTietSanPhamFromSanPham(ChiTietSanPhamUpdateRequest request);
-        //Task<List<AnhRequest>> AddChiTietSanPham(ChiTietSanPhamUpdateRequest chiTietSanPham);
-        //AnhRequest? AddChiTietSanPham(MauSac mauSac, string tenKichCo,Guid idSanPham);
-        //Task<bool> IsExistChiTietSanPham(string maMauSac, string tenKichCo);
+        Task<bool> UndoChiTietSanPham(Guid id);
         #endregion
         Task<List<MauSac>> GetAllMauSac();
         Task<List<KichCo>> GetAllKichCo();

@@ -160,6 +160,16 @@ namespace AppAPI.Controllers
         {
             return _sanPhamServices.GetIDsanPhamByIdCTSP(idctsp);
         }
+        [HttpGet("DeleteChiTietSanPham")]
+        public bool DeleteChiTietSanPham(Guid id)
+        {
+            return _sanPhamServices.DeleteChiTietSanPham(id).Result;
+        }
+        [HttpGet("UndoChiTietSanPham")]
+        public bool UndoChiTietSanPham(Guid id)
+        {
+            return _sanPhamServices.UndoChiTietSanPham(id).Result;
+        }
         #endregion
 
         #region LoaiSP

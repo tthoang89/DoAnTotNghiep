@@ -1,6 +1,4 @@
-﻿@model IEnumerable<AppData.ViewModels.SanPham.ChiTietSanPhamViewModelAdmin>
-
-@{
+﻿@{
     ViewData["Title"] = "ProductDetail";
     string idSanPham = TempData["IDSanPham"] as string;
 }
@@ -43,60 +41,7 @@
             <th></th>
         </tr>
     </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @item.Ma
-                </td>
-                <td>
-                    @item.TenMauSac
-                </td>
-                <td>
-                    <input type="color" value="@item.MaMauSac" style="border:none;width:27px;height:25px" disabled>
-                </td>
-                <td>
-                    @item.TenKichCo
-                </td>
-                <td style="width:100px">
-                    <input type="number" value="@item.SoLuong" style="border:none;width:100%" id="soLuong_@item.ID" onchange="changeSoLuong('@item.ID')">
-                </td>
-                <td style="width:100px">
-                    <input type="number" value="@item.GiaGoc" style="border:none;width:100%" id="giaGoc_@item.ID" onchange="changeGiaBan('@item.ID')">
-                </td>
-                <td>
-                    @item.GiaBan
-                </td>
-                <td>
-                    @item.GiaTriKhuyenMai
-                </td>
-                <td>
-                    @if (item.TrangThai == 1)
-                    {
-                        <input type="radio" name="macDinh" checked id="trangThai_@item.ID" onclick="changeTrangThai('@item.ID')"/>
-                    }
-                    else
-                    {
-                        <input type="radio" name="macDinh" id="trangThai_@item.ID" onclick="changeTrangThai('@item.ID')" />
-                    }
-                </td>
-                <td>
-                    @if (item.TrangThai == 0)
-                    {
-                        <span style="color:red">Không hoạt động</span>
-                    }
-                    else
-                    {
-                        <span style="color:green">Hoạt động</span>
-                    }
-                </td>
-                <td>
-                    <a asp-action="GenerateQRCode" asp-route-id="@item.ID" class="btn btn-secondary" asp-route-ma="@item.Ma">Tạo mã QR</a>
-                    <a asp-action="AddChiTietSanPham" asp-route-idSanPham="@idSanPham" class="btn btn-danger">Xóa</a>
-                </td>
-            </tr>
-        }
+    <tbody id="list_productdetails">
     </tbody>
 </table>
 
@@ -104,10 +49,70 @@
     <a asp-action="QuanLyAnh" asp-route-idSanPham="@idSanPham" class="btn btn-success" style="margin-left:5px">Quản lý ảnh</a>
     <a asp-action="AddChiTietSanPham" asp-route-idSanPham="@idSanPham" class="btn btn-primary" style="margin-left:5px">Thêm chi tiết sản phẩm</a>
 </div>
+<div class="row">
+    <div class="col-lg-12 d-flex justify-content-center">
+        <ul id="pagination-demo" class="pagination"></ul>
+    </div>
+</div>
 
 <script src="~/js/jquery-3.3.1.min.js"></script>
 <script>
-    function changeSoLuong(idSP){
+    var pageIndex = 1;
+    var pagesize = 10;
+    var idSanPham = '@idSanPham';
+    $(document).ready(function () {
+        loadsp();
+    });
+    function loadsp() {
+        // var searchName = SearchName();
+        var request = { page: pageIndex, pageSize: pagesize, id: idSanPham };
+        $.ajax({
+            url: "/Admin/ShowProductDetail",
+            type: "GET",
+            data: request,
+            success: function (response) {
+                $("#list_productdetails").empty();
+                $.each(response.data, function (i, item) {
+                    if (item.trangThai == 1) {
+                        $("#list_productdetails").append(`<tr><td>${item.ma}</td><td>${item.tenMauSac}</td><td><input type="color" value="${item.maMauSac}" style="border:none;width:27px;height:25px" disabled></td><td>${item.tenKichCo}</td><td style="width:100px"><input type="number" value="${item.soLuong}" style="border:none;width:100%" id="soLuong_${item.id}" onchange="changeSoLuong('${item.id}')"></td><td style="width:100px"><input type="number" value="${item.giaGoc}" style="border:none;width:100%" id="giaGoc_${item.id}" onchange="changeGiaBan('${item.id}')"></td><td>${item.giaBan}</td><td>${item.giaTriKhuyenMai}</td><td><input type="radio" name="macDinh" checked id="trangThai_${item.id}" onclick="changeTrangThai('${item.id}')" /></td><td id="hoatDong_${item.id}" style="width:90px"><span style="color:green">Hoạt động</span></td><td id="xoa_${item.id}" style="width:150px"><a href="/Admin/GenerateQRCode?id=${item.id}&ma=${item.ma}" class="btn btn-secondary">Tạo mã QR</a><button type="button" class="btn btn-danger" onclick="xoa('${item.id}')">Xóa</button></td></tr>`);
+                    }
+                    else if (item.trangThai == 2) {
+                        $("#list_productdetails").append(`<tr><td>${item.ma}</td><td>${item.tenMauSac}</td><td><input type="color" value="${item.maMauSac}" style="border:none;width:27px;height:25px" disabled></td><td>${item.tenKichCo}</td><td style="width:100px"><input type="number" value="${item.soLuong}" style="border:none;width:100%" id="soLuong_${item.id}" onchange="changeSoLuong('${item.id}')"></td><td style="width:100px"><input type="number" value="${item.giaGoc}" style="border:none;width:100%" id="giaGoc_${item.id}" onchange="changeGiaBan('${item.id}')"></td><td>${item.giaBan}</td><td>${item.giaTriKhuyenMai}</td><td><input type="radio" name="macDinh" id="trangThai_${item.id}" onclick="changeTrangThai('${item.id}')" /></td><td id="hoatDong_${item.id}" style="width:90px"><span style="color:green">Hoạt động</span></td><td id="xoa_${item.id}" style="width:150px"><a href="/Admin/GenerateQRCode?id=${item.id}&ma=${item.ma}" class="btn btn-secondary">Tạo mã QR</a><button type="button" class="btn btn-danger" onclick="xoa('${item.id}')">Xóa</button></td></tr>`);
+                    }
+                    else {
+                        $("#list_productdetails").append(`<tr><td>${item.ma}</td><td>${item.tenMauSac}</td><td><input type="color" value="${item.maMauSac}" style="border:none;width:27px;height:25px" disabled></td><td>${item.tenKichCo}</td><td style="width:100px"><input type="number" value="${item.soLuong}" style="border:none;width:100%" id="soLuong_${item.id}" onchange="changeSoLuong('${item.id}')"></td><td style="width:100px"><input type="number" value="${item.giaGoc}" style="border:none;width:100%" id="giaGoc_${item.id}" onchange="changeGiaBan('${item.id}')"></td><td>${item.giaBan}</td><td>${item.giaTriKhuyenMai}</td><td><input type="radio" name="macDinh" id="trangThai_${item.id}" onclick="changeTrangThai('${item.id}')" /></td><td id="hoatDong_${item.id}" style="width:90px"><span style="color:red">Không hoạt động</span></td><td id="xoa_${item.id}" style="width:150px"><a href="/Admin/GenerateQRCode?id=${item.id}&ma=${item.ma}" class="btn btn-secondary">Tạo mã QR</a><button type="button" class="btn btn-success" onclick="undo('${item.id}')">Hoàn tác</button></td></tr>`);
+                    }
+                });
+                pagingsp(response.total, function () {
+                    loadsp();
+                });
+            },
+            error: function (err) {
+                console.log('Error:', err);
+            }
+        });
+    }
+    function pagingsp(totalrow, callback) {
+        var totalgages = Math.ceil(totalrow / pagesize);
+        $("#pagination-demo").twbsPagination({
+            totalPages: totalgages,
+            visiblePages: 7,
+            onPageClick: function (event, page) {
+                pageIndex = page;
+                setTimeout(callback, 200);
+            }
+        });
+    }
+    function ReloadPagination() {
+        $("#pagination-demo").twbsPagination('destroy');
+        loadsp();
+    }
+    // function SearchName() {
+    //     var name = document.getElementById("searchName").value;
+    //     return name;
+    // }
+
+    function changeSoLuong(idSP) {
         var ip = document.getElementById("soLuong_" + idSP);
         $.ajax({
             async: true,
@@ -144,8 +149,53 @@
             async: true,
             type: 'POST',
             dataType: "json",
-            data: { id: idSP},
-            url: '/Admin/UpdateTrangThaiChiTietSanPham'
+            data: { id: idSP },
+            url: '/Admin/UpdateTrangThaiChiTietSanPham',
+            success: function (response) {
+                if (response) {
+                    document.getElementById("hoatDong_" + idSP).innerHTML = '<span style="color:green">Hoạt động</span>';
+                    var ip = document.getElementById("xoa_" + idSP);
+                    ip.removeChild(ip.children[1]);
+                    $("#xoa_" + idSP).append("<button type='button' class='btn btn-danger' onclick = \"xoa('" + idSP + "')\">Xoá</button>");
+                }
+            }
+        });
+    }
+    function xoa(idSP) {
+        $.ajax({
+            async: true,
+            type: 'GET',
+            dataType: "json",
+            data: { id: idSP },
+            url: '/Admin/DeleteProductDetail',
+            success: function (response) {
+                if (response.trangThai) {
+                    document.getElementById("hoatDong_" + idSP).innerHTML = '<span style="color:red">Không hoạt động</span>';
+                    var ip = document.getElementById("xoa_" + idSP);
+                    ip.removeChild(ip.children[1]);
+                    $("#xoa_" + idSP).append("<button type='button' class='btn btn-success' onclick = \"undo('" + idSP + "')\">Hoàn tác</button>");
+                }
+                else {
+                    alert(response.loi);
+                }
+            }
+        });
+    }
+    function undo(idSP) {
+        $.ajax({
+            async: true,
+            type: 'GET',
+            dataType: "json",
+            data: { id: idSP },
+            url: '/Admin/UndoProductDetail',
+            success: function (response) {
+                if (response) {
+                    document.getElementById("hoatDong_" + idSP).innerHTML = '<span style="color:green">Hoạt động</span>';
+                    var ip = document.getElementById("xoa_" + idSP);
+                    ip.removeChild(ip.children[1]);
+                    $("#xoa_" + idSP).append("<button type='button' class='btn btn-danger' onclick = \"xoa('" + idSP + "')\">Xoá</button>");
+                }
+            }
         });
     }
 </script>

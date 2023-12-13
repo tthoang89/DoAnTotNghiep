@@ -4,6 +4,7 @@ using AppData.ViewModels;
 using AppData.ViewModels.BanOffline;
 using AppData.ViewModels.SanPham;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.Eventing.Reader;
 
 namespace AppAPI.Services
 {
@@ -458,7 +459,7 @@ namespace AppAPI.Services
             try
             {
                 var chiTietSanPhamNew = _context.ChiTietSanPhams.First(x => x.ID == id);
-                var chiTietSanPhamOld = _context.ChiTietSanPhams.First(x => x.TrangThai == 1 && x.IDSanPham==chiTietSanPhamNew.IDSanPham);
+                var chiTietSanPhamOld = _context.ChiTietSanPhams.First(x =>( x.TrangThai == 1) && x.IDSanPham==chiTietSanPhamNew.IDSanPham);
                 chiTietSanPhamOld.TrangThai = 2;
                 chiTietSanPhamNew.TrangThai = 1;
                 _context.ChiTietSanPhams.Update(chiTietSanPhamOld);
@@ -555,7 +556,28 @@ namespace AppAPI.Services
             try
             {
                 var chiTietSanPham = await _context.ChiTietSanPhams.FindAsync(id);
-                chiTietSanPham.TrangThai = 0;
+                if(chiTietSanPham.TrangThai != 1)
+                {
+                    chiTietSanPham.TrangThai = 0;
+                    _context.ChiTietSanPhams.Update(chiTietSanPham);
+                    await _context.SaveChangesAsync();
+                    return true;
+                }
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public async Task<bool> UndoChiTietSanPham(Guid id)
+        {
+            try
+            {
+                var chiTietSanPham = await _context.ChiTietSanPhams.FindAsync(id);
+                chiTietSanPham.TrangThai = 2;
+                _context.ChiTietSanPhams.Update(chiTietSanPham);
+                await _context.SaveChangesAsync();
                 return true;
             }
             catch
@@ -563,7 +585,6 @@ namespace AppAPI.Services
                 return false;
             }
         }
-        
         #endregion
 
         #region LoaiSP
