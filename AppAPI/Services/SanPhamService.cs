@@ -649,19 +649,28 @@ namespace AppAPI.Services
         #region SanPhamBanHang
         public async Task<List<SanPhamBanHang>> GetAllSanPhamTaiQuay()
         {
-            return await (from sp in _context.SanPhams.AsNoTracking()
-                          let anh = _context.Anhs.AsNoTracking().Where(c => c.IDSanPham == sp.ID && c.DuongDan != null).FirstOrDefault()
-                          let gia = _context.ChiTietSanPhams.AsNoTracking().Where(x => x.IDSanPham == sp.ID && x.GiaBan != null).FirstOrDefault()
-                          where sp.TrangThai == 1
-                          select new SanPhamBanHang()
-                          {
-                              Id = sp.ID,
-                              Ten = sp.Ten,
-                              MaSP = sp.Ma,
-                              Anh = anh != null ? anh.DuongDan : null,
-                              GiaBan = gia != null ? gia.GiaBan : 0,
-                              IdLsp = sp.IDLoaiSP,
-                          }).OrderBy(c => c.MaSP).ToListAsync();
+            var result = await (from sp in _context.SanPhams.AsNoTracking()
+                                 select new SanPhamBanHang()
+                                 {
+                                     Id = sp.ID,
+                                     Ten = sp.Ten,
+                                     MaSP = sp.Ma,
+                                     Anh = (from ctsp in _context.ChiTietSanPhams.Where(c => c.IDSanPham == sp.ID).AsNoTracking()
+                                            join ms in _context.MauSacs.AsNoTracking() on ctsp.IDMauSac equals ms.ID
+                                            join a in _context.Anhs.Where(c => c.IDSanPham == sp.ID).AsNoTracking()
+                                            on ms.ID equals a.IDMauSac
+                                            where ctsp.TrangThai == 1
+                                            select a).FirstOrDefault().DuongDan,
+                                     GiaGoc = _context.ChiTietSanPhams.FirstOrDefault(c => c.IDSanPham == sp.ID && c.TrangThai == 1).GiaBan,
+                                     GiaBan = (from ctsp in _context.ChiTietSanPhams.Where(c => c.IDSanPham == sp.ID)
+                                               join km in _context.KhuyenMais on ctsp.IDKhuyenMai equals km.ID
+                                      into kmGroup
+                                               from km in kmGroup.DefaultIfEmpty()
+                                               where ctsp.TrangThai == 1
+                                               select km == null ? ctsp.GiaBan : (km.TrangThai == 1 ? (int)(ctsp.GiaBan / 100 * (100 - km.GiaTri)) : (ctsp.GiaBan - (int)km.GiaTri))).FirstOrDefault(),
+                                    IdLsp = sp.IDLoaiSP,
+                                 }).OrderBy(c=>c.MaSP).ToListAsync();
+            return result;
         }
 
         public async Task<ChiTietSanPhamBanHang> GetChiTietSPBHById(Guid idsp)
@@ -732,7 +741,7 @@ namespace AppAPI.Services
 
         public async Task<List<HomeProductViewModel>> GetAllSanPhamTrangChu()
         {
-           var lstctsp = await (from sp in _context.SanPhams.AsNoTracking()
+           var result = await (from sp in _context.SanPhams.AsNoTracking()
                      select new HomeProductViewModel()
                      {
                          Id = sp.ID,
@@ -770,7 +779,7 @@ namespace AppAPI.Services
                                      where ctsp.TrangThai == 1
                                      select km).FirstOrDefault().GiaTri
                      }).ToListAsync();
-            return lstctsp;
+            return result;
         }
         #endregion
     }

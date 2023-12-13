@@ -225,7 +225,7 @@
         </div>
         <hr />
         <div class="d-flex flex-row justify-content-end">
-            @if (@Model.TrangThai == 6 && @Model.KhachHang == "Khách lẻ" && @Model.LoaiHD == 0)
+            @if (@Model.TrangThai == 6 && @Model.TrangThai != 9)
             {
                 <div class="d-flex p-2">
                     <button type="button" onclick="DoiTrangThai('5')" class="btn btn-danger fw-normal text-white"><i class="bi bi-reply-all-fill me-2" style="color: #ffffff;"></i> Hoàn hàng</button>
