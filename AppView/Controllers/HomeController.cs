@@ -511,6 +511,47 @@ namespace AppView.Controllers
                 }
             }
         [HttpGet]
+        public async Task<IActionResult> CheckCart()
+        {
+            var session = HttpContext.Session.GetString("LoginInfor");
+            if (String.IsNullOrEmpty(session))
+            {
+                if (Request.Cookies["Cart"] != null)
+                {
+                    var response = await _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCart?request=" + Request.Cookies["Cart"]);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response.Content.ReadAsStringAsync().Result);
+                        
+                        return Json(temp.GioHangs);
+                    }
+                    else return BadRequest();
+                }
+                else
+                {
+                    return View(new List<GioHangRequest>());
+                }
+            }
+            else
+            {
+                var loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
+                if (loginInfor.vaiTro == 1)
+                {
+                    var response = await _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCartLogin?idNguoiDung=" + loginInfor.Id);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response.Content.ReadAsStringAsync().Result);
+                        return Json(temp.GioHangs);
+                    }
+                    else return BadRequest();
+                }
+                else
+                {
+                    return View(new List<GioHangRequest>());
+                }
+            }
+        }
+        [HttpGet]
         public ActionResult DeleteFromCart(Guid id)
         {
             List<GioHangRequest> bienThes = new List<GioHangRequest>();
@@ -627,7 +668,7 @@ namespace AppView.Controllers
                     var response = _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCart?request=" + JsonConvert.SerializeObject(chiTietSanPhams)).Result;
                     var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response.Content.ReadAsStringAsync().Result);
                     TempData["TongTien"] = temp.TongTien.ToString();
-                    return Json(new { success = true, message = "Cập nhật giỏ hàng thành công" });
+                    return Json(new { success = true, message = "Cập nhật giỏ hàng thành công",data = temp.GioHangs });
                 }
                 else
                 {
@@ -643,7 +684,9 @@ namespace AppView.Controllers
                             var temp = JsonConvert.DeserializeObject<GioHangViewModel>(responses.Content.ReadAsStringAsync().Result);
                             TempData["TongTien"] = temp.TongTien.ToString();
                         }
-                        return Json(new { success = true, message = "Cập nhật giỏ hàng thành công"});
+                        var responses1 = _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCartLogin?idNguoiDung=" + loginInfor.Id).Result;
+                        var temp1 = JsonConvert.DeserializeObject<GioHangViewModel>(responses1.Content.ReadAsStringAsync().Result);
+                        return Json(new { success = true, message = "Cập nhật giỏ hàng thành công",data = temp1.GioHangs });
                     }
                     else return Json(new { success = false, message = "Chỉ khách hàng mới thêm được vào giỏ hàng" });
                 }
