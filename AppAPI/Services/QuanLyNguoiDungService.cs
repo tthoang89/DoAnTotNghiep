@@ -226,15 +226,22 @@ namespace AppAPI.Services
 
         public async Task<KhachHang> RegisterKhachHang(KhachHangViewModel khachHang)
         {
+            var existingKhachHang = await context.KhachHangs.FirstOrDefaultAsync(kh => kh.Email == khachHang.Email || kh.SDT == khachHang.SDT);
+            if (existingKhachHang != null)
+            {
+                return null; // Tài khoản đã tồn tại
+            }
             KhachHang kh = new KhachHang()
             {
                 IDKhachHang = Guid.NewGuid(),
                 Ten = khachHang.Name,
                 Email = khachHang.Email,
-                Password = khachHang.Password
+                Password = khachHang.Password,
+                SDT = khachHang.SDT,
+                DiemTich = 0,
+                TrangThai = 1,
             };
             await context.KhachHangs.AddAsync(kh);
-            //await context.SaveChangesAsync();
             GioHang gioHang = new GioHang()
             {
                 IDKhachHang = kh.IDKhachHang,
@@ -243,7 +250,9 @@ namespace AppAPI.Services
             await context.GioHangs.AddAsync(gioHang);
             await context.SaveChangesAsync();
             return kh;
+
         }
+
 
         public async Task<NhanVien> RegisterNhanVien(NhanVienViewModel nhanVien)
         {

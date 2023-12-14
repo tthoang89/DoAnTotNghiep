@@ -64,8 +64,8 @@ namespace AppAPI.Controllers
             }
 
             return Ok("Đăng ký thành công");
-        }
 
+        }
         //[HttpPut("DoiMatKhauNhanVien")]
         //public async Task<IActionResult> DoiMatKhauNV(string email, string oldPassword,string newPassword)
         //{
@@ -85,11 +85,12 @@ namespace AppAPI.Controllers
             var dmk = await service.ChangePassword(email, oldPassword, newPassword);
             if (!dmk)
             {
-                return Ok("Đổi mật khẩu khong  thành công");
+                return BadRequest("Đổi mật khẩu  thành công");
+                
             }
             else
             {
-                return BadRequest("Đổi mật khẩu  thành công");
+                return Ok("Đổi mật khẩu khong  thành công");
             }
         }
         [HttpPost("ForgotPassword")]
@@ -206,7 +207,7 @@ namespace AppAPI.Controllers
                 return Ok("Đổi mật khẩu  thành công");
             }
         }
-        [HttpPut("UpdateProfile")]
+        [HttpPut("UpdateProfile1")]
         public async Task<IActionResult> UpdateProfile(LoginViewModel request)
         {
             LoginViewModel dmk = await service.UpdateProfile(request);
