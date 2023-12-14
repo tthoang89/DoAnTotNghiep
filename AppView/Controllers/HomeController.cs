@@ -991,8 +991,17 @@ namespace AppView.Controllers
                 }
                 if (danhGiaCTHDView.TrangThaiGiaoHang != 0 && danhGiaCTHDView.TrangThaiGiaoHang != null)
                 {
-                    donMuaViewModels = donMuaViewModels.Where(p => p.TrangThaiGiaoHang == danhGiaCTHDView.TrangThaiGiaoHang).ToList();
-
+                    if (danhGiaCTHDView.TrangThaiGiaoHang == 5)
+                    {
+                        donMuaViewModels = donMuaViewModels.Where(p => p.TrangThaiGiaoHang == 4 || p.TrangThaiGiaoHang == 5 || p.TrangThaiGiaoHang == 9).ToList();
+                    }else if (danhGiaCTHDView.TrangThaiGiaoHang == 2)
+                    {
+                        donMuaViewModels = donMuaViewModels.Where(p => p.TrangThaiGiaoHang == 2 || p.TrangThaiGiaoHang == 8).ToList();
+                    }
+                    else
+                    {
+                        donMuaViewModels = donMuaViewModels.Where(p => p.TrangThaiGiaoHang == danhGiaCTHDView.TrangThaiGiaoHang).ToList();
+                    }
                     var model = donMuaViewModels.Skip((page - 1) * pageSize).Take(pageSize).ToList();
                     return Json(new
                     {
