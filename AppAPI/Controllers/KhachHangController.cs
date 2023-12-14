@@ -63,7 +63,7 @@ namespace AppAPI.Controllers
             {
                 var tempID = new Guid(id);  
                 var temp = _dbcontext.KhachHangs.First(x => x.IDKhachHang == tempID);
-                temp.Password = password;
+                temp.Password = MaHoaMatKhauS(password);
                 _dbcontext.Update(temp);
                 await _dbcontext.SaveChangesAsync();
                 return true;
@@ -72,6 +72,16 @@ namespace AppAPI.Controllers
             {
                 return false;
             }
+        }
+        private string MaHoaMatKhauS(string matKhau)
+        {
+            // Ở đây, bạn có thể sử dụng bất kỳ phương thức mã hóa mật khẩu nào phù hợp
+            // Ví dụ: sử dụng thư viện BCrypt.Net để mã hóa mật khẩu
+            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(matKhau);
+            return hashedPassword;
+
+            // Đây chỉ là ví dụ đơn giản, không nên sử dụng trong môi trường thực tế
+            //return matKhau;
         }
         //Nhinh
         [HttpGet("getBySDT")]

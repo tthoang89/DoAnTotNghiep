@@ -167,9 +167,9 @@ namespace AppAPI.Services
         public async Task<LoginViewModel> Login(string lg, string password)
         {
             var nv = await  context.NhanViens.FirstOrDefaultAsync(a => (a.Email == lg || a.SDT == lg) /*&& a.PassWord == password*/ );
-            if (nv != null&&KiemTraMatKhau(password,nv.PassWord)!=null)
+            if (nv != null&&KiemTraMatKhau(password,nv.PassWord))
             {
-                if (nv.TrangThai == 0)
+                if (nv.TrangThai == 1)
                 {
                     return new LoginViewModel
                     {
@@ -180,7 +180,7 @@ namespace AppAPI.Services
                         vaiTro = 0
                     };
                 }
-                else if (nv.TrangThai == 1) // Check for locked account
+                else if (nv.TrangThai == 0) // Check for locked account
                 {
                     return new LoginViewModel
                     {
