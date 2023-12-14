@@ -156,7 +156,7 @@ namespace AppView.Controllers
             var timkiem = dBContext.NhanViens.FirstOrDefault(x => x.ID == id);
             if (timkiem != null)
             {
-                timkiem.TrangThai = timkiem.TrangThai == 0 ? 1 : 0;
+                timkiem.TrangThai = timkiem.TrangThai == 1 ? 0 : 1;
                 dBContext.NhanViens.Update(timkiem);
                 dBContext.SaveChanges();
                 return RedirectToAction("Show");

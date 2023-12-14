@@ -1,6 +1,83 @@
 ﻿@using AppData.Models
+@using AppData.ViewModels
 @model AppData.ViewModels.BanOffline.HoaDonThanhToanViewModel
 @{
+    <style>
+        ul {
+            list-style-type: none;
+        }
+
+        .radio-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .radio-item [type="radio"] {
+            display: none;
+        }
+
+        .radio-item {
+            margin-bottom: 10px;
+        }
+
+            .radio-item + .radio-item {
+                margin-top: 15px;
+            }
+
+            .radio-item label {
+                display: block;
+                padding: 20px 60px;
+                background: #b4cfec;
+                border: 2px solid rgba(255,255,255,0.1);
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 18px;
+                font-weight: 400;
+                min-width: 250px;
+                white-space: nowrap;
+                position: relative;
+            }
+
+                .radio-item label:after,
+                .radio-item label:before {
+                    content: "";
+                    position: absolute;
+                    border-radius: 50%;
+                }
+
+                .radio-item label:after {
+                    height: 20px;
+                    width: 20px;
+                    border: 2px solid #524eee;
+                    left: 20px;
+                    top: calc(50% - 12px);
+                }
+
+                .radio-item label:before {
+                    background: #524eee;
+                    height: 10px;
+                    width: 10px;
+                    left: 25px;
+                    top: calc(50% - 7px);
+                    transform: scale(5);
+                    transition: .4s ease-in-out 0s;
+                    opacity: 0;
+                    visibility: hidden;
+                }
+
+            .radio-item [type="radio"]:checked ~ label {
+                border-color: #0d6efd;
+            }
+
+                .radio-item [type="radio"]:checked ~ label:before {
+                    opacity: 1;
+                    visibility: visible;
+                    transform: scale(1);
+                }
+    </style>
+
+    var lstvc = ViewData["LstVoucher"] as List<Voucher>;
 }
 <div class="d-flex flex-column" style="height:100%;font-size:18px">
     <span id="idvoucher" hidden></span>
@@ -44,7 +121,7 @@
                     <div class="flex-fill">
                         <label class="form-label">
                             Điểm
-                             <i class="bx bx-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Áp dụng tối đa 30% giá trị đơn hàng"></i>
+                            <i class="bx bx-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Áp dụng tối đa 30% giá trị đơn hàng"></i>
                             <label class="badge bg-success">
                                 Tối đa: <span class="text-white" id="dtoida"></span>
                             </label>
@@ -57,7 +134,9 @@
                     </div>
                 </div>
                 <div class="col-3">
-                    <div class="flex-fill  me-auto text-end"><input type="number" min="0" placeholder="Nhập điểm" id="diemKHSD" /></div>
+                    <div class="flex-fill  me-auto text-end">
+                        <input class="inputnhap" type="number" id="diemKHSD" />
+                    </div>
                 </div>
                 <div class="col-4">
                     <div class="flex-fill text-end"><span id="tientrutichdiem"></span></div>
@@ -76,42 +155,90 @@
                 <span id="khachCanTra" style="font-size:20px;font-weight:bold"></span>
             </div>
         </div>
-        <div class="d-flex flex-row lh-1">
-            <div class="col-4">
-                <div class="flex-fill"><label for="inputState" class="form-label">Thanh toán </label></div>
-            </div>
-            <div class="col-8">
-                <div class="d-flex flex-row lh-1">
-                    <div class="flex-fill m-2">
-                        <input class="form-check-input" type="radio" name="pttt" value="Tiền mặt" checked>
-                        <label class="form-check-label" for="gridRadios1">
-                            Tiền mặt
-                        </label>
-                    </div>
-                    <div class="flex-fill m-2">
-                        <input class="form-check-input" type="radio" name="pttt" value="Chuyển khoản">
-                        <label class="form-check-label" for="gridRadios1">
-                            Chuyển khoản
-                        </label>
+        @if (Model.TongSL != 0)
+        {
+            <div class="d-flex flex-row lh-1">
+                <div class="col-4">
+                    <div class="flex-fill"><label for="inputState" class="form-label">Thanh toán </label></div>
+                </div>
+                <div class="col-8">
+                    <div class="d-flex flex-row lh-1">
+                        <div class="flex-fill m-2">
+                            <input class="form-check-input" type="radio" name="pttt" value="Tiền mặt" checked onchange="chonPTTT()">
+                            <label class="form-check-label" for="gridRadios1">
+                                Tiền mặt
+                            </label>
+                        </div>
+                        <div class="flex-fill m-2">
+                            <input class="form-check-input" type="radio" name="pttt" value="Chuyển khoản" onchange="chonPTTT()">
+                            <label class="form-check-label" for="gridRadios1">
+                                Chuyển khoản
+                            </label>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+
+            <div id="tienmat">
+                <div class="d-flex flex-row lh-1">
+                    <div class="flex-fill"><label class="form-label fw-bold">Khách đưa</label></div>
+                    <div class="flex-fill text-end">
+                        <input class="inputnhap" type="number" min="0" id="khachdua" style="width:120px; font-size:20px;font-weight:bold" />
+                    </div>
+                </div>
+            </div>
+            <div id="tienmattrakhach">
+                <div class="d-flex flex-row lh-1">
+                    <div class="flex-fill"><label class="form-label">Tiền thừa trả khách</label></div>
+                    <div class="flex-fill text-end">
+                        <div class="flex-fill text-end"><span id="tientrakhach"></span></div>
+                    </div>
+                </div>
+            </div>
+
+        }
     </form>
     <div class="d-flex flex-column mt-auto">
-        <div class="d-flex flex-row p-3">
-            <div class="col-8" id="voucherinput">
-                <div class="input-group">
+        @if (lstvc.Count != 0)
+        {
+            <div class="d-flex flex-row p-3">
+                <section class="radio-section">
+                    <div class="radio-list" style="height:170px;width:552px; overflow-y: scroll; overflow-x: hidden">
+                        <div class="row p-2">
+                            @foreach (var item in lstvc)
+                            {
+                                <div class="col-6">
+                                    <div class="radio-item">
+                                        <input type="radio" name="radiovoucher" id="@item.ID" onchange="checkVoucher()">
+                                        @if (item.HinhThucGiamGia == 1)
+                                        {
+                                            <label for="@item.ID">Giảm @item.GiaTri %</label>
+                                        }
+                                        else
+                                        {
+                                            <label for="@item.ID">Giảm @item.GiaTri.ToString("n0") VNĐ</label>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </section>
+                @*            <div class="col-8" id="voucherinput">
+                    <div class="input-group">
                     <input type="text" class="form-control border border-dark" placeholder="Nhập voucher" id="valuevoucher" />
                     <button type="button" class="btn btn-primary" id="usevoucher">Áp dụng</button>
-                </div>
-            </div>
-            <div class="col-4 ms-auto">
-                <button class="btn btn-secondary w-100" id="btn-showvoucher">
+                    </div>
+                    </div>
+                    <div class="col-4 ms-auto">
+                    <button class="btn btn-secondary w-100" id="btn-showvoucher">
                     Nhập voucher
-                </button>
+                    </button>
+                    </div>
+                *@
             </div>
-        </div>
+
+        }
         <button type="button" onclick="thanhToan('@Model.Id')" class="btn btn-primary fw-bold btn-block w-100" style="height:60px; font-size:24px">THANH TOÁN</button>
     </div>
 </div>
@@ -126,18 +253,32 @@
         $("#dtoida").text(diemtoida);
          //Tự động áp điểm
         $('.swithTichdiem input[type="checkbox"]').on('click', function(event, state){
-            if($(this).is(':checked')){
-               $('#diemKHSD').val(diemtoida);
-                $("tichdiemhd").text("");
-                $("#tdhd").css('display', 'none');
-               $('#tientrutichdiem').text((diemtoida*@(ViewBag.TLTieu)).toLocaleString());
-            }else{
-                 $('#diemKHSD').val('');
-                  $("#tdhd").css('display', 'block');
-                    $("#tichdiemhd").text(@(Model.DiemTichHD));
-                    $("#tichdiemhd").text(@(Model.DiemTichHD));
-                $('#tientrutichdiem').text(0);
-
+            if(@(ViewBag.LoaiQDD) === 1){ // Chỉ tích hoặc tiêu
+                if($(this).is(':checked')){
+                   $('#diemKHSD').val(diemtoida);
+                    $("tichdiemhd").text("");
+                    $("#tdhd").css('display', 'none');
+                   $('#tientrutichdiem').text((diemtoida*@(ViewBag.TLTieu)).toLocaleString());
+                }else{
+                     $('#diemKHSD').val('');
+                      $("#tdhd").css('display', 'block');
+                        $("#tichdiemhd").text(@(Model.DiemTichHD));
+                        $("#tichdiemhd").text(@(Model.DiemTichHD));
+                    $('#tientrutichdiem').text(0);
+                }
+            }else if(@(ViewBag.LoaiQDD) === 2){// Vừa tích vừa tiêu
+                if($(this).is(':checked')){
+                   $('#diemKHSD').val(diemtoida);
+                    $("tichdiemhd").text("");
+                    $("#tdhd").css('display', 'block');
+                   $('#tientrutichdiem').text((diemtoida*@(ViewBag.TLTieu)).toLocaleString());
+                }else{
+                     $('#diemKHSD').val('');
+                      $("#tdhd").css('display', 'block');
+                        $("#tichdiemhd").text(@(Model.DiemTichHD));
+                        $("#tichdiemhd").text(@(Model.DiemTichHD));
+                    $('#tientrutichdiem').text(0);
+                }
             }
             TinhTien();
         })
@@ -152,7 +293,10 @@
                     $("#tdhd").css('display', 'block');
                     $("#tichdiemhd").text(@(Model.DiemTichHD));
                 }
-                else if($(this).val() > diemtoida){
+                else if($(this).val() < 0){
+                    toastr.error('Số điểm nhập không hợp lệ', "Error Alert", { timeOut: 1000 });
+                    $('#tientrutichdiem').text(0);
+                }else if($(this).val() > diemtoida){
                     $('#tientrutichdiem').text();
                     toastr.error('Số điểm vượt quá số điểm tối đa cho phép', "Error Alert", { timeOut: 1000 });
                 }else if($(this).val() > @(Model.DiemKH)){
@@ -184,37 +328,101 @@
             }
             TinhTien();
         })
-        // Hiện nhập voucher
-        $("#btn-showvoucher").on("click", function() {
-          var voucherInput = $("#voucherinput");
-          if (voucherInput.css('display') === 'none') {
-            voucherInput.css('display', 'block');
-            $(this).text('Hủy áp dụng');
-          } else {
-            voucherInput.css('display', 'none');
-            $("#idvoucher").text('');
-            $("#tienkhuyenmai").css('display', 'none');
-            $("#giatrivoucher").text('');
-            $("#valuevoucher").val('');
-            $("#vldvoucher").text('');
-            $(this).text('Nhập voucher');
-          }
-          TinhTien();
-        });
-        //Áp dụng voucher
-        $("#usevoucher").on("click",function(){
-            var tongtien = @Model.TongTien;
-            var value = $("#valuevoucher").val();
-            if(value ===''){
-                    toastr.error("Chưa nhập voucher áp dụng", "Error Alert", { timeOut: 1000 });
+    })
+    //    // Hiện nhập voucher
+    //    $("#btn-showvoucher").on("click", function() {
+    //      var voucherInput = $("#voucherinput");
+    //      if (voucherInput.css('display') === 'none') {
+    //        voucherInput.css('display', 'block');
+    //        $(this).text('Hủy áp dụng');
+    //      } else {
+    //        voucherInput.css('display', 'none');
+    //        $("#idvoucher").text('');
+    //        $("#tienkhuyenmai").css('display', 'none');
+    //        $("#giatrivoucher").text('');
+    //        $("#valuevoucher").val('');
+    //        $("#vldvoucher").text('');
+    //        $(this).text('Nhập voucher');
+    //      }
+    //      TinhTien();
+    //    });
+    //    //Áp dụng voucher
+    //    $("#usevoucher").on("click",function(){
+    //        var tongtien = @Model.TongTien;
+    //        var value = $("#valuevoucher").val();
+    //        if(value ===''){
+    //                toastr.error("Chưa nhập voucher áp dụng", "Error Alert", { timeOut: 1000 });
+    //        }else{
+    //            $.ajax({
+    //            url: "/BanHangTaiQuay/CheckVoucher",
+    //            type: "GET",
+    //            data:{
+    //            voucher: value,
+    //            ttien:tongtien,
+    //            idkh: '@Model.IdKhachHang',
+    //            },
+    //            dataType: "json",
+    //            success: function(response) {
+    //                if(response.success === true){
+    //                    toastr.success(response.message, "Success Alert", { timeOut: 1000 });
+    //                    $("#idvoucher").text(response.idvoucher);
+    //                    $("#tienkhuyenmai").css('display', 'block');
+    //                    $("#giatrivoucher").text(response.giatri.toLocaleString());
+    //                }else{
+    //                    toastr.error(response.message, "Error Alert", { timeOut: 1000 });
+    //                    $("#idvoucher").val('');
+    //                    $("#tienkhuyenmai").css('display', 'none');
+    //                    $("#giatrivoucher").text('');
+    //                }
+    //                TinhTien();
+    //            }
+    //            ,
+    //            error: function(response){
+    //                toastr.error(response.message, "Error Alert", { timeOut: 1000 });
+    //            },
+    //            });
+    //        }
+    //    })
+    //})
+        //Chọn PTTT
+        function chonPTTT(){
+            var pttt = $('input[name="pttt"]:checked').val();
+            if(pttt === "Tiền mặt"){
+                $("#tienmat").css('display', 'block');
+                $("#tienmattrakhach").css('display', 'block');
+                $("#khachdua").val(0);
+                $("#tientrakhach").text('');
             }else{
-                $.ajax({
+                $("#tienmattrakhach").css('display', 'none');
+                $("#tienmat").css('display', 'none');
+                $("#khachdua").val(0);
+                $("#tientrakhach").text('');
+            }
+        }
+        //Tiền khách đưa
+         $("#khachdua").on("input", function(){
+            let dua = $(this).val();
+            if(dua > 1000000000){
+                toastr.error("Số tiền bạn nhập vào quá lớn", "Error Alert", { timeOut: 1000 });
+                $("#khachdua").val(0);
+                $("#tientrakhach").text('');
+            }else{
+                 $(this).val(dua.toLocaleString());
+                let cantra = $("#khachCanTra").text() === '' ? 0 : parseInt($("#khachCanTra").text().replace(/,/g, ""));
+                let tientra = dua - cantra;
+                $("#tientrakhach").text(tientra.toLocaleString());
+            }
+        });
+        //Chọn voucher
+        function checkVoucher(){
+           var idvoucher = $('input[name="radiovoucher"]:checked').attr('id');
+           var tongtien = @Model.TongTien;
+           $.ajax({
                 url: "/BanHangTaiQuay/CheckVoucher",
                 type: "GET",
                 data:{
-                voucher: value,
+                idvoucher: idvoucher,
                 ttien:tongtien,
-                idkh: '@Model.IdKhachHang',
                 },
                 dataType: "json",
                 success: function(response) {
@@ -235,11 +443,8 @@
                 error: function(response){
                     toastr.error(response.message, "Error Alert", { timeOut: 1000 });
                 },
-                });
-            }
-        })
-    })
-
+            });
+        }
 
         //Tính tiền
        function TinhTien() {
@@ -249,5 +454,5 @@
             var voucher = $("#giatrivoucher").text() === '' ? 0 : parseInt($("#giatrivoucher").text().replace(/,/g, ""));
             var tienkhachtra = tt - trutd - voucher;
             $("#khachCanTra").text(tienkhachtra.toLocaleString());
-        }
+       }
 </script>
