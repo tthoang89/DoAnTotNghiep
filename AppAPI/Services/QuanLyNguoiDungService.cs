@@ -6,8 +6,10 @@ using AppData.ViewModels;
 using AppData.ViewModels.QLND;
 using Microsoft.EntityFrameworkCore;
 using Org.BouncyCastle.Asn1.Ocsp;
+using Org.BouncyCastle.Crypto.Generators;
 using System.Net;
 using System.Net.Mail;
+
 
 namespace AppAPI.Services
 {
@@ -54,7 +56,7 @@ namespace AppAPI.Services
                 var nv = await context.NhanViens.FirstOrDefaultAsync(a => a.Email == model.Email);
                 if (nv != null)
                 {
-                    nv.PassWord = model.Password;
+                    nv.PassWord = MaHoaMatKhau(model.Password);
                     await context.SaveChangesAsync();
                     await SendEmail(nv.Email, "Đổi Mật Khẩu Thành Công", "Mật khẩu của bạn đã được đặt lại thành công.");
 
@@ -66,7 +68,7 @@ namespace AppAPI.Services
                 var kh = await context.KhachHangs.FirstOrDefaultAsync(a => a.Email == model.Email);
                 if (kh != null)
                 {
-                    kh.Password = model.Password;
+                    kh.Password = MaHoaMatKhau(model.Password);
 
                     await context.SaveChangesAsync();
                     await SendEmail(kh.Email, "Đặt lại mật khẩu thành công", "Mật khẩu của bạn đã được đặt lại thành công.");
@@ -103,7 +105,7 @@ namespace AppAPI.Services
                 var nv = await context.NhanViens.FirstOrDefaultAsync(a => a.Email == email);
                 if (nv != null)
                 {
-                    nv.PassWord = data;
+                    nv.PassWord = MaHoaMatKhau(data);
                     await context.SaveChangesAsync();
                     return true;
                 }
@@ -113,7 +115,7 @@ namespace AppAPI.Services
                 var kh = await context.KhachHangs.FirstOrDefaultAsync(a => a.Email == email);
                 if (kh != null)
                 {
-                    kh.Password = data;
+                    kh.Password = MaHoaMatKhau(data);
                     await context.SaveChangesAsync();
                     return true;
                 }
@@ -148,14 +150,14 @@ namespace AppAPI.Services
             var kh = await context.KhachHangs.FirstOrDefaultAsync(h => h.Email == email && h.Password == password);
             if (kh != null)
             {
-                kh.Password = newPassword;
+                kh.Password = MaHoaMatKhau(newPassword);
                 await context.SaveChangesAsync();
                 return true;
             }
             var nv = await context.NhanViens.FirstOrDefaultAsync(h => h.Email == email && h.PassWord == password);
             if (nv != null)
             {
-                nv.PassWord = newPassword;
+                nv.PassWord = MaHoaMatKhau(newPassword);
                 await context.SaveChangesAsync();
                 return true;
             }
@@ -164,10 +166,10 @@ namespace AppAPI.Services
 
         public async Task<LoginViewModel> Login(string lg, string password)
         {
-            var nv = await  context.NhanViens.FirstOrDefaultAsync(a => (a.Email == lg || a.SDT == lg) && a.PassWord == password );
-            if (nv != null)
+            var nv = await  context.NhanViens.FirstOrDefaultAsync(a => (a.Email == lg || a.SDT == lg) /*&& a.PassWord == password*/ );
+            if (nv != null&&KiemTraMatKhau(password,nv.PassWord)!=null)
             {
-                if (nv.TrangThai == 1)
+                if (nv.TrangThai == 0)
                 {
                     return new LoginViewModel
                     {
@@ -178,7 +180,7 @@ namespace AppAPI.Services
                         vaiTro = 0
                     };
                 }
-                else if (nv.TrangThai == 0) // Check for locked account
+                else if (nv.TrangThai == 1) // Check for locked account
                 {
                     return new LoginViewModel
                     {
@@ -187,8 +189,8 @@ namespace AppAPI.Services
                     };
                 }
             }
-            var kh = await context.KhachHangs.FirstOrDefaultAsync(x => (x.Email == lg || x.SDT == lg) && x.Password == password);
-            if(kh != null)
+            var kh = await context.KhachHangs.FirstOrDefaultAsync(x => (x.Email == lg || x.SDT == lg) /*&& x.Password == password*/);
+            if(kh != null&&KiemTraMatKhau(password,kh.Password)!=null)
             {
                 return new LoginViewModel
                 {
@@ -207,6 +209,26 @@ namespace AppAPI.Services
             {
                 Message = "Email hoặc password không chính xác"
             };
+        }
+        private string MaHoaMatKhau(string matKhau)
+        {
+            // Ở đây, bạn có thể sử dụng bất kỳ phương thức mã hóa mật khẩu nào phù hợp
+            // Ví dụ: sử dụng thư viện BCrypt.Net để mã hóa mật khẩu
+            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(matKhau);
+            return hashedPassword;
+
+            // Đây chỉ là ví dụ đơn giản, không nên sử dụng trong môi trường thực tế
+            //return matKhau;
+        }
+        private bool KiemTraMatKhau(string nhap, string hashed)
+        {
+            // Ở đây, bạn phải sử dụng cùng một phương thức mã hóa mật khẩu
+            // để kiểm tra mật khẩu nhập vào có khớp với mật khẩu đã lưu hay không
+            // Ví dụ: sử dụng BCrypt.Net để kiểm tra
+            return BCrypt.Net.BCrypt.Verify(nhap, hashed);
+
+            // Đây chỉ là ví dụ đơn giản, không nên sử dụng trong môi trường thực tế
+            //return nhap == hashed;
         }
 
         //public async Task<object> Login(string email, string password)
@@ -236,7 +258,7 @@ namespace AppAPI.Services
                 IDKhachHang = Guid.NewGuid(),
                 Ten = khachHang.Name,
                 Email = khachHang.Email,
-                Password = khachHang.Password,
+                Password = MaHoaMatKhau(khachHang.Password),
                 SDT = khachHang.SDT,
                 DiemTich = 0,
                 TrangThai = 1,
@@ -261,7 +283,7 @@ namespace AppAPI.Services
                 ID = Guid.NewGuid(),
                 Ten = nhanVien.Name,
                 Email = nhanVien.Email,
-                PassWord = nhanVien.Password,
+                PassWord = MaHoaMatKhau(nhanVien.Password),
                 IDVaiTro = nhanVien.IDVaiTro
             };
             context.NhanViens.Add(kh);
@@ -276,7 +298,7 @@ namespace AppAPI.Services
             {
                 if (kh.Password == request.OldPassword)
                 {
-                    kh.Password = request.NewPassword;
+                    kh.Password = MaHoaMatKhau(request.NewPassword);
                     await context.SaveChangesAsync();
                     return true;
                 }
@@ -286,7 +308,7 @@ namespace AppAPI.Services
             {
                 if (nv.PassWord == request.OldPassword)
                 {
-                    nv.PassWord = request.NewPassword;
+                    nv.PassWord = MaHoaMatKhau(request.NewPassword);
                     await context.SaveChangesAsync();
                     return true;
                 }

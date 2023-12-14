@@ -644,6 +644,7 @@ namespace AppView.Controllers
         {
             try
             {
+                int cout=0;
                 List<GioHangRequest> chiTietSanPhams;
                 string? result = Request.Cookies["Cart"];
                 chiTietSanPhams = JsonConvert.DeserializeObject<List<GioHangRequest>>(result);
@@ -668,7 +669,9 @@ namespace AppView.Controllers
                     var response = _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCart?request=" + JsonConvert.SerializeObject(chiTietSanPhams)).Result;
                     var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response.Content.ReadAsStringAsync().Result);
                     TempData["TongTien"] = temp.TongTien.ToString();
-                    return Json(new { success = true, message = "Cập nhật giỏ hàng thành công",data = temp.GioHangs });
+                    cout = temp.GioHangs.Sum(x=>x.SoLuong);
+                    TempData["SoLuong"] = cout.ToString();
+                    return Json(new { success = true, message = "Cập nhật giỏ hàng thành công",data = temp.GioHangs,cout });
                 }
                 else
                 {
@@ -683,10 +686,12 @@ namespace AppView.Controllers
                             var responses = _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCartLogin?idNguoiDung=" + loginInfor.Id).Result;
                             var temp = JsonConvert.DeserializeObject<GioHangViewModel>(responses.Content.ReadAsStringAsync().Result);
                             TempData["TongTien"] = temp.TongTien.ToString();
+                            cout = temp.GioHangs.Sum(x => x.SoLuong);
+                            TempData["SoLuong"] = cout.ToString();
                         }
                         var responses1 = _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCartLogin?idNguoiDung=" + loginInfor.Id).Result;
                         var temp1 = JsonConvert.DeserializeObject<GioHangViewModel>(responses1.Content.ReadAsStringAsync().Result);
-                        return Json(new { success = true, message = "Cập nhật giỏ hàng thành công",data = temp1.GioHangs });
+                        return Json(new { success = true, message = "Cập nhật giỏ hàng thành công",data = temp1.GioHangs,cout });
                     }
                     else return Json(new { success = false, message = "Chỉ khách hàng mới thêm được vào giỏ hàng" });
                 }

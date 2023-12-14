@@ -87,7 +87,7 @@ namespace AppView.Controllers
         }
         [HttpPost]
 
-        public async Task<IActionResult> Create(KhachHangView kh)
+        public async Task<IActionResult> Create(KhachHangView kh, string nhaplai)
         {
 
 
@@ -119,11 +119,19 @@ namespace AppView.Controllers
             //}
 
             //}
-
-            var url = $"https://localhost:7095/api/KhachHang/PostKHView";
+            if (nhaplai != kh.Password)
+            {
+                ViewBag.NhapLai = "Nhập lại mật khẩu không đúng ";
+                return View();
+            }
+            else
+            {
+                var url = $"https://localhost:7095/api/KhachHang/PostKHView";
                 var response = await httpClients.PostAsJsonAsync(url, kh);
                 if (response.IsSuccessStatusCode) return RedirectToAction("GetAllKhachHang");
                 return View();
+            }
+           
            
 
 
