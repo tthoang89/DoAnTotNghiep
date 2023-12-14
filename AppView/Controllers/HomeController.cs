@@ -5,6 +5,7 @@ using AppData.ViewModels.Mail;
 using AppData.ViewModels.QLND;
 using AppData.ViewModels.SanPham;
 using AppData.ViewModels.VNPay;
+using DocumentFormat.OpenXml.Office2016.Excel;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -798,7 +799,9 @@ namespace AppView.Controllers
             khachhang.DiaChi = diachi;
             khachhang.DiemTich = JsonConvert.DeserializeObject<LoginViewModel>(session).DiemTich;
             khachhang.vaiTro = JsonConvert.DeserializeObject<LoginViewModel>(session).vaiTro;
-            var response = _httpClient.PutAsJsonAsync(_httpClient.BaseAddress + "QuanLyNguoiDung/UpdateProfile", khachhang).Result;
+            khachhang.IsAccountLocked = JsonConvert.DeserializeObject<LoginViewModel>(session).IsAccountLocked;
+            khachhang.Message = "lmao";
+            var response = _httpClient.PutAsJsonAsync(_httpClient.BaseAddress + "QuanLyNguoiDung/UpdateProfile1", khachhang).Result;
             if (response.IsSuccessStatusCode)
             {
                 HttpContext.Session.SetString("LoginInfor", response.Content.ReadAsStringAsync().Result);

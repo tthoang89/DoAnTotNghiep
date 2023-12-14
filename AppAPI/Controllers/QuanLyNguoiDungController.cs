@@ -206,7 +206,7 @@ namespace AppAPI.Controllers
                 return Ok("Đổi mật khẩu  thành công");
             }
         }
-        [HttpPut("UpdateProfile")]
+        [HttpPut("UpdateProfile1")]
         public async Task<IActionResult> UpdateProfile(LoginViewModel request)
         {
             LoginViewModel dmk = await service.UpdateProfile(request);
