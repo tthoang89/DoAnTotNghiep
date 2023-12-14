@@ -89,7 +89,7 @@ namespace AppAPI.Services
                 KhuyenMai? khuyenMai;
                 List<KhuyenMai> khuyenMais = _context.KhuyenMais.Where(x => x.NgayKetThuc > DateTime.Now).ToList();
                 var lstSanPham = await (from a in _context.SanPhams.Where(x => x.TrangThai == 1)
-                                        join b in _context.ChiTietSanPhams on a.ID equals b.IDSanPham
+                                        join b in _context.ChiTietSanPhams.Where(x => x.TrangThai != 0) on a.ID equals b.IDSanPham
                                         join e in _context.LoaiSPs.Where(x => x.LoaiSPCha != null) on a.IDLoaiSP equals e.ID
                                         select new SanPhamViewModel()
                                         {

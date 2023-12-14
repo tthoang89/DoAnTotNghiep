@@ -201,23 +201,23 @@ namespace AppView.Controllers
                 }
 
                 //color-filter
-                List<SanPhamViewModel> lstmautam = new List<SanPhamViewModel>();
-                List<SanPhamViewModel> lstmautam1 = new List<SanPhamViewModel>();
-                if (filter.mauSac != null && filter.mauSac.Count > 0)
-                {
-                    foreach (var x in filter.mauSac)
-                    {
-                        lstmautam = lstSanphamfn.Where(p => p.IDMauSac == x).ToList();
-                        foreach (var item in lstmautam)
-                        {
-                            if (lstmautam1.FirstOrDefault(p => p.ID == item.ID) == null)
-                            {
-                                lstmautam1.Add(item);
-                            }
-                        }
-                    }
-                    lstSanphamfn = lstmautam1;
-                }
+                //List<SanPhamViewModel> lstmautam = new List<SanPhamViewModel>();
+                //List<SanPhamViewModel> lstmautam1 = new List<SanPhamViewModel>();
+                //if (filter.mauSac != null && filter.mauSac.Count > 0)
+                //{
+                //    foreach (var x in filter.mauSac)
+                //    {
+                //        lstmautam = lstSanphamfn.Where(p => p.IDMauSac == x).ToList();
+                //        foreach (var item in lstmautam)
+                //        {
+                //            if (lstmautam1.FirstOrDefault(p => p.ID == item.ID) == null)
+                //            {
+                //                lstmautam1.Add(item);
+                //            }
+                //        }
+                //    }
+                //    lstSanphamfn = lstmautam1;
+                //}
                 //size-filter
                 List<SanPhamViewModel> lstcotam = new List<SanPhamViewModel>();
                 List<SanPhamViewModel> lstcotam1 = new List<SanPhamViewModel>();
@@ -237,23 +237,23 @@ namespace AppView.Controllers
                     lstSanphamfn = lstcotam1;
                 }
                 //material-filter
-                List<SanPhamViewModel> lstchatlieutam = new List<SanPhamViewModel>();
-                List<SanPhamViewModel> lstchatlieutam1 = new List<SanPhamViewModel>();
-                if (filter.chatLieu != null && filter.chatLieu.Count > 0)
-                {
-                    foreach (var x in filter.chatLieu)
-                    {
-                        lstchatlieutam = lstSanphamfn.Where(p => p.IDChatLieu == x).ToList();
-                        foreach (var item in lstchatlieutam)
-                        {
-                            if (lstchatlieutam1.FirstOrDefault(p => p.ID == item.ID) == null)
-                            {
-                                lstchatlieutam1.Add(item);
-                            }
-                        }
-                    }
-                    lstSanphamfn = lstchatlieutam1;
-                }
+                //List<SanPhamViewModel> lstchatlieutam = new List<SanPhamViewModel>();
+                //List<SanPhamViewModel> lstchatlieutam1 = new List<SanPhamViewModel>();
+                //if (filter.chatLieu != null && filter.chatLieu.Count > 0)
+                //{
+                //    foreach (var x in filter.chatLieu)
+                //    {
+                //        lstchatlieutam = lstSanphamfn.Where(p => p.IDChatLieu == x).ToList();
+                //        foreach (var item in lstchatlieutam)
+                //        {
+                //            if (lstchatlieutam1.FirstOrDefault(p => p.ID == item.ID) == null)
+                //            {
+                //                lstchatlieutam1.Add(item);
+                //            }
+                //        }
+                //    }
+                //    lstSanphamfn = lstchatlieutam1;
+                //}
                 //sort
                 if (filter.sortSP != null)
                 {
