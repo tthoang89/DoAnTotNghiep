@@ -14,6 +14,10 @@
         color: #3b71ca !important;
     }
 
+    .pro-qty-2 input::-webkit-outer-spin-button,
+    .pro-qty-2 input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+    }
     .icon-hover:hover i {
         color: #3b71ca !important;
     }
@@ -233,7 +237,7 @@
                                 <td class="quantity__item">
                                     <div class="quantity">
                                         <div class="pro-qty-2">
-                                            <input id="sl" style="width: 50px; border: none; text-align: center;" type="text" value="1">
+                                            <input id="sl" style="width: 50px; border: none; text-align: center;" type="number" value="1">
                                         </div>
                                     </div>
                                 </td>
@@ -549,94 +553,111 @@
         return value
     }
     function addCart() {
-        var idctsp = chiTietSanPhams.find(p => p.maCTSP == document.getElementById("maSP").innerHTML).id;
+        var ctsp = chiTietSanPhams.find(p => p.maCTSP == document.getElementById("maSP").innerHTML);
+        var idctsp = ctsp.id;
         var kichco = KichCo();
         var mausac = MauSac();
+        var soLuong = parseInt(document.getElementById("sl").value);
         if(mausac.length != 0 && kichco.length!=0){
-            $.ajax({
-                async: true,
-                type: 'POST',
-                dataType: "json",
-                data: { id: idctsp, sl: document.getElementById("sl").value },
-                url: '/Home/AddToCart',
-                success: function (response) {
-                    if (response.success == true) {
-                        toastr.success(response.message, 'Success Alert', { timeOut: 300 });
+            if (ctsp.soLuong < soLuong) {
+                toastr.error('Số lượng không đủ vui lòng giảm số lượng', 'Error Alert', { timeOut: 1000 });
+            } else if (soLuong == 0 || isNaN(soLuong) == true) {
+                toastr.error('Vui lòng chọn lại số lượng', 'Error Alert', { timeOut: 1000 });
+            }else{
+                $.ajax({
+                    async: true,
+                    type: 'POST',
+                    dataType: "json",
+                    data: { id: idctsp, sl: document.getElementById("sl").value },
+                    url: '/Home/AddToCart',
+                    success: function (response) {
+                        if (response.success == true) {
+                            toastr.success(response.message, 'Success Alert', { timeOut: 1000 });
 
-                    } else {
-                        toastr.error(response.message, 'Error Alert', { timeOut: 300 });
+                        } else {
+                            toastr.error(response.message, 'Error Alert', { timeOut: 1000 });
+                        }
+                    },
+                    error: function (response) {
+                        toastr.error(response.message, 'Error Alert', { timeOut: 1000 });
                     }
-                },
-                error: function (response) {
-                    toastr.error(response.message, 'Error Alert', { timeOut: 300 });
-                }
-            });
-            $.ajax({
-                async: true,
-                type: 'POST',
-                dataType: "json",
-                data: { sl: document.getElementById("sl").value },
-                url: '/Home/TongSoLuong',
-                success: function (response) {
-                    if (response.success == true) {
-                        $('#tongsoluong').text(response.sl);
+                });
+                $.ajax({
+                    async: true,
+                    type: 'POST',
+                    dataType: "json",
+                    data: { sl: document.getElementById("sl").value },
+                    url: '/Home/TongSoLuong',
+                    success: function (response) {
+                        if (response.success == true) {
+                            $('#tongsoluong').text(response.sl);
 
-                    } else {
+                        } else {
+
+                        }
+                    },
+                    error: function (response) {
 
                     }
-                },
-                error: function (response) {
-
-                }
-            });
+                });
+            }
+            
         }else{
-            toastr.error('Vui lòng chọn biến thể', 'Error Alert', { timeOut: 300 });
+            toastr.error('Vui lòng chọn biến thể', 'Error Alert', { timeOut: 1000 });
         }
         
     }
     function buyNow() {
-        var idctsp = chiTietSanPhams.find(p => p.maCTSP == document.getElementById("maSP").innerHTML).id;
+        var ctsp = chiTietSanPhams.find(p => p.maCTSP == document.getElementById("maSP").innerHTML);
+        var idctsp = ctsp.id;
         var kichco = KichCo();
         var mausac = MauSac();
+        var soLuong = parseInt(document.getElementById("sl").value);
         if (mausac.length != 0 && kichco.length != 0) {
-            $.ajax({
-                async: true,
-                type: 'POST',
-                dataType: "json",
-                data: { id: idctsp, soLuong: document.getElementById("sl").value },
-                url: '/Home/BuyNow',
-                success: function (response) {
-                    if (response.success == true) {
-                        window.location = 'https://localhost:5001/Home/ShoppingCart';
+            if (ctsp.soLuong < soLuong) {
+                toastr.error('Số lượng không đủ vui lòng giảm số lượng', 'Error Alert', { timeOut: 1000 });
+            } else if (soLuong == 0 || isNaN(soLuong) == true) {
+                toastr.error('Vui lòng chọn lại số lượng', 'Error Alert', { timeOut: 1000 });
+            } else {
+                $.ajax({
+                    async: true,
+                    type: 'POST',
+                    dataType: "json",
+                    data: { id: idctsp, soLuong: document.getElementById("sl").value },
+                    url: '/Home/BuyNow',
+                    success: function (response) {
+                        if (response.success == true) {
+                            window.location = 'https://localhost:5001/Home/ShoppingCart';
 
-                    } else {
-                        toastr.error(response.message, 'Error Alert', { timeOut: 300 });
+                        } else {
+                            toastr.error(response.message, 'Error Alert', { timeOut: 1000 });
+                        }
+                    },
+                    error: function (response) {
+                        toastr.error(response.message, 'Error Alert', { timeOut: 1000 });
                     }
-                },
-                error: function (response) {
-                    toastr.error(response.message, 'Error Alert', { timeOut: 300 });
-                }
-            });
-            $.ajax({
-                async: true,
-                type: 'POST',
-                dataType: "json",
-                data: { sl: document.getElementById("sl").value },
-                url: '/Home/TongSoLuong',
-                success: function (response) {
-                    if (response.success == true) {
-                        $('#tongsoluong').text(response.sl);
+                });
+                $.ajax({
+                    async: true,
+                    type: 'POST',
+                    dataType: "json",
+                    data: { sl: document.getElementById("sl").value },
+                    url: '/Home/TongSoLuong',
+                    success: function (response) {
+                        if (response.success == true) {
+                            $('#tongsoluong').text(response.sl);
 
-                    } else {
+                        } else {
+
+                        }
+                    },
+                    error: function (response) {
 
                     }
-                },
-                error: function (response) {
-
-                }
-            });
+                });
+            }
         } else {
-            toastr.error('Vui lòng chọn biến thể', 'Error Alert', { timeOut: 300 });
+            toastr.error('Vui lòng chọn biến thể', 'Error Alert', { timeOut: 1000 });
         }
     }
     //----
@@ -690,7 +711,7 @@
                             $("#danhgia").append("<div class='container' style='border-top: 1px solid #dee2e6;padding-top: 15px;'> <div class='row' style='border-bottom:1px solid #dee2e6; padding-bottom: 20px; padding-top: 20px;'> <div class='col-2'> <h4 style='text-align: center; width: 60px; height: 60px; vertical-align: middle; background-color: gray; border-radius: 50%; display: table-cell;'>" + item.tenKH.substring(0, 1).toUpperCase() + "</h4> </div> <div class='col-10'> <div> <span>" + item.tenKH + "</span> </div><div><i class='fas fa-star text-warning'></i> <i class='fas fa-star text-warning'></i> <i class='fas fa-star text-warning'></i> <i class='fas fa-star text-warning'></i> <i class='fas fa-star star-light mr-1 main_star'></i></div> <div style='margin-top: 6px;' > <span style='color:gray'> " + item.ngayDanhGia + " </span> </div > <div style='margin-top: 6px; ' > <span style='color:gray' > Chất liệu: </span>" + item.chatLieu + " </div > <div style='margin-top: 6px;' > <span style='color:gray' > Màu sắc: </span>" + item.mauSac + " </div > <div style='margin-top: 6px;' > <span style='color:gray' > Kích cỡ: </span>" + item.kichCo + " </div > <div style='margin-top: 6px; ' > <span>" + item.binhLuan + " </span> </div > </div> </div > </div>");
                         }
                         else if (item.sao === 5) {
-                            $("#danhgia").append("<div class='container' style='border-top: 1px solid #dee2e6;padding-top: 15px;'> <div class='row' style='border-bottom:1px solid #dee2e6; padding-bottom: 20px; padding-top: 20px;'> <div class='col-2'> <h4 style='text-align: center; width: 60px; height: 60px; vertical-align: middle; background-color: gray; border-radius: 50%; display: table-cell;'>" + item.tenKH.substring(0, 1).toUpperCase() + "</h4> </div> <div class='col-10'> <div> <span>" + item.tenKH + "</span> </div><div><i class='fas fa-star text-warning'></i> <i class='fas fa-star text-warning'></i> <i class='fas fa-star text-warning'></i> <i class='fas fa - star text - warning'></i> <i class='fas fa-star text-warning'></i> <i class='fas fa-star text-warning'></i> </div> <div style='margin-top: 6px;' > <span style='color:gray'> " + item.ngayDanhGia + " </span> </div > <div style='margin-top: 6px; ' > <span style='color:gray' > Chất liệu: </span>" + item.chatLieu + " </div > <div style='margin-top: 6px;' > <span style='color:gray' > Màu sắc: </span>" + item.mauSac + " </div > <div style='margin-top: 6px;' > <span style='color:gray' > Kích cỡ: </span>" + item.kichCo + " </div > <div style='margin-top: 6px; ' > <span>" + item.binhLuan + " </span> </div > </div> </div > </div>");
+                            $("#danhgia").append("<div class='container' style='border-top: 1px solid #dee2e6;padding-top: 15px;'> <div class='row' style='border-bottom:1px solid #dee2e6; padding-bottom: 20px; padding-top: 20px;'> <div class='col-2'> <h4 style='text-align: center; width: 60px; height: 60px; vertical-align: middle; background-color: gray; border-radius: 50%; display: table-cell;'>" + item.tenKH.substring(0, 1).toUpperCase() + "</h4> </div> <div class='col-10'> <div> <span>" + item.tenKH + "</span> </div><div><i class='fas fa-star text-warning'></i> <i class='fas fa-star text-warning'></i> <i class='fas fa-star text-warning'></i> <i class='fas fa-star text-warning'></i> <i class='fas fa-star text-warning'></i> </div> <div style='margin-top: 6px;' > <span style='color:gray'> " + item.ngayDanhGia + " </span> </div > <div style='margin-top: 6px; ' > <span style='color:gray' > Chất liệu: </span>" + item.chatLieu + " </div > <div style='margin-top: 6px;' > <span style='color:gray' > Màu sắc: </span>" + item.mauSac + " </div > <div style='margin-top: 6px;' > <span style='color:gray' > Kích cỡ: </span>" + item.kichCo + " </div > <div style='margin-top: 6px; ' > <span>" + item.binhLuan + " </span> </div > </div> </div > </div>");
                         }
 
                     });
