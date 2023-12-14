@@ -64,8 +64,8 @@ namespace AppAPI.Controllers
             }
 
             return Ok("Đăng ký thành công");
-        }
 
+        }
         //[HttpPut("DoiMatKhauNhanVien")]
         //public async Task<IActionResult> DoiMatKhauNV(string email, string oldPassword,string newPassword)
         //{
