@@ -12,5 +12,6 @@ namespace AppAPI.IServices
         public bool Delete(Guid id);
         public bool Update(KhachHang khachHang);
         public List<KhachHang> GetAll();
+        public Task<List<HoaDon>> GetAllHDKH(Guid idkh);
     }
 }

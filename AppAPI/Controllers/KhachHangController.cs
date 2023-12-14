@@ -79,6 +79,11 @@ namespace AppAPI.Controllers
         {
             return _khachHangService.GetBySDT(sdt);
         }
+        [HttpGet("getAllHDKH")]
+        public async Task<List<HoaDon>> GetAllHDKH(Guid idkh)
+        {
+            return await _khachHangService.GetAllHDKH(idkh);
+        }
 
         // GET api/<SanPhamController>/5
         [Route("PostKHView")]
@@ -89,7 +94,7 @@ namespace AppAPI.Controllers
             KhachHang kh = new KhachHang();
             kh.IDKhachHang = khv.IDKhachHang;
             kh.Ten = khv.Ten;
-            kh.Password = khv.Password;
+            kh.Password = MaHoaMatKhau(khv.Password);
             kh.GioiTinh=khv.GioiTinh;
             kh.NgaySinh=khv.NgaySinh;
             kh.Email = khv.Email;
@@ -106,7 +111,16 @@ namespace AppAPI.Controllers
              
             return true;
         }
-       
+        private string MaHoaMatKhau(string matKhau)
+        {
+            // Ở đây, bạn có thể sử dụng bất kỳ phương thức mã hóa mật khẩu nào phù hợp
+            // Ví dụ: sử dụng thư viện BCrypt.Net để mã hóa mật khẩu
+            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(matKhau);
+            return hashedPassword;
+
+            // Đây chỉ là ví dụ đơn giản, không nên sử dụng trong môi trường thực tế
+            //return matKhau;
+        }
 
 
         // POST api/<SanPhamController>
@@ -131,7 +145,7 @@ namespace AppAPI.Controllers
             {
                 
                 kh.Ten = khv.Ten;
-                kh.Password = khv.Password;
+                kh.Password = MaHoaMatKhau(khv.Password);
                 kh.GioiTinh = khv.GioiTinh;
                 kh.NgaySinh = khv.NgaySinh;
                 kh.Email = khv.Email;

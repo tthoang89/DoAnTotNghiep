@@ -54,7 +54,7 @@ namespace AppAPI.Controllers
             nv.PassWord = password;
             nv.SDT = sdt;
             nv.DiaChi = diachi;
-            nv.TrangThai = 0;
+            nv.TrangThai = 1;
             nv.IDVaiTro = Guid.Parse("952c1a5d-74ff-4daf-ba88-135c5440809c");
             _dbContext.NhanViens.Add(nv);
             _dbContext.SaveChanges();
