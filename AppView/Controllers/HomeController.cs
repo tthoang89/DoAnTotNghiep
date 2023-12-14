@@ -769,11 +769,21 @@ namespace AppView.Controllers
         }
         [HttpPost]
         public IActionResult Register(KhachHangViewModel khachHang)
+
         {
             khachHang.Id = Guid.NewGuid();
-            HttpResponseMessage response = _httpClient.PostAsJsonAsync(_httpClient.BaseAddress + "KhachHang", khachHang).Result;
-            if (response.IsSuccessStatusCode) return RedirectToAction("Login", new { actionName  = "Index"});
-            return BadRequest();
+            khachHang.DiemTich = 0;
+            khachHang.TrangThai = 1;
+            HttpResponseMessage response = _httpClient.PostAsJsonAsync(_httpClient.BaseAddress + $"QuanLyNguoiDung/DangKyKhachHang", khachHang).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                TempData["SuccessMessage"] = "Tài khoản đã được đăng ký thành công!";
+                //return RedirectToAction("Login", new { actionName = "Index" });
+                return View("RegisterSuccess");
+            }
+            ViewBag.ErrorMessage = "Tài khoản đã được đăng ký với email hoặc số điện thoại này!";
+            return View();
+
         }
         [HttpGet]
         public IActionResult Profile(string loginInfor)
