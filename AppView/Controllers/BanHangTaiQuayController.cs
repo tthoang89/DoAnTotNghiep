@@ -159,10 +159,10 @@ namespace AppView.Controllers
             var response = await _httpClient.PutAsync(stringURL, null);
             if (response.IsSuccessStatusCode)
             {
-                return Json(new { success = true, });
+                return Json(new { success = true, message = "Lưu ghi chú thành công" });
             }
             else
-                return Json(new { success = false, });
+                return Json(new { success = false, message = "Lưu ghi chú thất bại" });
         }
         //Lấy Hóa đơn chi tiết
         [HttpGet("/BanHangTaiQuay/getCTHD/{id}")]
@@ -229,13 +229,60 @@ namespace AppView.Controllers
                 return Json(new { success = false, message = "Cập nhật số lượng thất bại" });
             }
         }
+        //Check voucher
+
+        [HttpGet]
+        public async Task<IActionResult> CheckVoucher(Guid idvoucher, int ttien)
+        {
+            var vc = await _httpClient.GetFromJsonAsync<Voucher>($"Voucher/{idvoucher}");
+            if (vc.HinhThucGiamGia == 0)
+            {
+                return Json(new { success = true, idvoucher = vc.ID, giatri = vc.GiaTri, message = "Bạn được giảm " + vc.GiaTri.ToString("n0") + " VND" });
+
+            }
+            else if (vc.HinhThucGiamGia == 1)
+            {
+                return Json(new { success = true, idvoucher = vc.ID, giatri = (ttien * vc.GiaTri / 100), message = "Bạn được giảm " + vc.GiaTri + "%" });
+            }
+            return Json(new { message = "Đã xảy ra lỗi" });
+            //if (vc != null && idkh != Guid.Empty)
+            //{
+            //    var response = await _httpClient.GetFromJsonAsync<bool>($"HoaDon/CheckCustomerUseVoucher?idkh={idkh}&idvoucher={vc.ID}");
+            //    if (response == true)
+            //    {
+            //        return Json(new { success = false, message = "Khách hàng đã sử dụng voucher này" });
+            //    }
+            //}
+
+            //if (vc == null)
+            //{
+            //    return Json(new { success = false, message = "Voucher hết hạn hoặc không hợp lệ" });
+            //}
+            //else if (vc.SoTienCan > ttien)
+            //{
+            //    return Json(new { success = false, message = "Thanh toán tối thiểu " + vc.SoTienCan.ToString("n0") + " để áp dụng" });
+            //}
+            //else if (vc.HinhThucGiamGia == 0)
+            //{
+            //    return Json(new { success = true, idvoucher = vc.ID, giatri = vc.GiaTri, message = "Bạn được giảm " + vc.GiaTri.ToString("n0") + " VND" });
+
+            //}
+            //else if (vc.HinhThucGiamGia == 1)
+            //{
+            //    return Json(new { success = true, idvoucher = vc.ID, giatri = (ttien * vc.GiaTri / 100), message = "Bạn được giảm " + vc.GiaTri + "%" });
+            //}
+            //return Json(new { message = "Đã xảy ra lỗi" });
+        }
+
         //Load Modal Thanh Tóan
         [HttpGet("/BanHangTaiQuay/ViewThanhToan/{id}")]
         public async Task<IActionResult> ViewThanhToan(string id)
         {
             var hd = await _httpClient.GetFromJsonAsync<HoaDon>($"HoaDon/GetById/{id}");
             var lstcthd = await _httpClient.GetFromJsonAsync<List<HoaDonChiTietViewModel>>($"ChiTietHoaDon/getByIdHD/{id}");
-
+            //Voucher
+            string apiURL = $"https://localhost:7095/api/Voucher";
+            var listvc = await _httpClient.GetFromJsonAsync<List<Voucher>>(apiURL);
             //Quy đổi điểm
             var qdd = await _httpClient.GetFromJsonAsync<List<QuyDoiDiem>>("QuyDoiDiem");
             var qddActive = qdd.FirstOrDefault(c => c.TrangThai != 0);
@@ -264,6 +311,19 @@ namespace AppView.Controllers
             }
             var soluong = lstcthd.Sum(c => c.SoLuong);
             var ttien = lstcthd.Sum(c => c.SoLuong * c.GiaKM);
+            // Lấy danh sách voucher áp dụng được cho hóa đơn (SL >0, chưa hết hạn, trạng thái còn hoạt động)
+            //Thỏa mãn Điều kiện giá trị tối thiểu và khách hàng chưa sử dụng voucher này
+            if(listvc != null)
+            {
+                listvc = listvc.Where(c => c.NgayKetThuc > DateTime.Now && c.SoLuong > 0 && c.TrangThai != 0).ToList();
+                listvc = listvc.Where(c=> c.SoTienCan <= ttien).ToList();
+                if(listvc != null && idkh != Guid.Empty)
+                {
+                    var lsthdmua = await _httpClient.GetFromJsonAsync<List<HoaDon>>($"KhachHang/getAllHDKH?idkh={idkh}");
+                    listvc = listvc.Where(c => !lsthdmua.Any(x => x.IDVoucher == c.ID)).ToList();
+                }
+            }
+
             var hdtt = new HoaDonThanhToanViewModel()
             {
                 Id = hd.ID,
@@ -279,6 +339,7 @@ namespace AppView.Controllers
             };
             ViewBag.TLTieu = qddActive != null ? (qddActive.TiLeTieuDiem) : 0;
             ViewBag.LoaiQDD = qddActive != null ? (qddActive.TrangThai) : 0;
+            ViewData["LstVoucher"] = listvc;
             return PartialView("_ThanhToan", hdtt);
         }
 
@@ -405,43 +466,28 @@ namespace AppView.Controllers
             result = distinctResult.Take(3).ToList();
             return Json(new { data = result });
         }
-        //Check voucher
-
+        // AddHDCho
         [HttpGet]
-        public async Task<IActionResult> CheckVoucher(string voucher, int ttien, Guid idkh)
+        public async Task<IActionResult> AddHDCho()
         {
-            string apiURL = $"https://localhost:7095/api/Voucher";
-            var listvc = await _httpClient.GetFromJsonAsync<List<Voucher>>(apiURL);
-            listvc = listvc.Where(c => c.NgayKetThuc > DateTime.Now && c.SoLuong > 0 && c.TrangThai != 0).ToList();
-            var vc = listvc.FirstOrDefault(c => c.Ten.ToUpper() == voucher.ToUpper());
-            
-            if (vc !=null && idkh != Guid.Empty)
+            var listhdcho = await _httpClient.GetFromJsonAsync<List<HoaDon>>("HoaDon/GetAllHDCho");
+
+            if (listhdcho.Count < 15)
             {
-                var response = await _httpClient.GetFromJsonAsync<bool>($"HoaDon/CheckCustomerUseVoucher?idkh={idkh}&idvoucher={vc.ID}");
-                if(response == true)
+                var loginInfor = new LoginViewModel();
+                string? session = HttpContext.Session.GetString("LoginInfor");
+                if (session != null)
                 {
-                    return Json(new { success = false, message = "Khách hàng đã sử dụng voucher này" });
+                    loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
                 }
+                var request = await _httpClient.PostAsJsonAsync<HoaDon>($"HoaDon/Offline/{loginInfor.Id}", null);
+                listhdcho = await _httpClient.GetFromJsonAsync<List<HoaDon>>("HoaDon/GetAllHDCho");
+                return Json(new { success = true, data = listhdcho });
             }
-
-            if (vc == null)
+            else
             {
-                return Json(new { success = false, message = "Voucher hết hạn hoặc không hợp lệ" });
+                return Json(new { success = false, message = "Hệ thống giới hạn 15 tab cho màn hình bán hàng" });
             }
-            else if (vc.SoTienCan > ttien)
-            {
-                return Json(new { success = false, message = "Thanh toán tối thiểu " + vc.SoTienCan.ToString("n0") + " để áp dụng" });
-            }
-            else if (vc.HinhThucGiamGia == 0)
-            {
-                return Json(new { success = true, idvoucher = vc.ID, giatri = vc.GiaTri, message = "Bạn được giảm " + vc.GiaTri.ToString("n0") + " VND" });
-
-            }
-            else if (vc.HinhThucGiamGia == 1)
-            {
-                return Json(new { success = true, idvoucher = vc.ID, giatri = (ttien * vc.GiaTri / 100), message = "Bạn được giảm " + vc.GiaTri + "%" });
-            }
-            return Json(new { message = "Đã xảy ra lỗi" });
         }
         //HÓA ĐƠN
         //Chuyển view hóa đơn

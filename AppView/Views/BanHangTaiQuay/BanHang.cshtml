@@ -327,18 +327,23 @@
     }
     //THÊM HÓA ĐƠN CHỜ
     function addHDCho() {
+        console.log(12);
         $.ajax({
-            url: `https://localhost:7095/api/HoaDon/Offline/${'@loginInfor.Id'}`,
-            type: "POST",
+            url: "/BanHangTaiQuay/AddHDCho",
+            type: "GET",
             dataType: 'json',
             contentType: 'application/json',
             success: function (response) {
-                loadHDCHO(function () {
-                    activeTab(1);
-                });
+                if(response.success == true){
+                    loadHDCHO(function () {
+                        activeTab(1);
+                    });
+                }else{
+                     toastr.error(response.message, "Error Alert", { timeOut: 1000 });
+                }
             },
             error: function (response) {
-                toastr.error('Thêm thất bại', "Error Alert", { timeOut: 300 });
+                toastr.error('Thêm thất bại', "Error Alert", { timeOut: 1000 });
             }
         });
     }
@@ -420,12 +425,17 @@
     //Thanh toán chuyển trạng thái
     function thanhToan(id) {
         var ttien = parseInt($("#khachCanTra").text().replace(/,/g, ""));
+        var pttt = $('input[name="pttt"]:checked').val();
+        var khachdua = $("#khachdua").val();
+        console.log(ttien);
+        console.log(khachdua);
         if (ttien < 0) {
             toastr.error('Số tiền thanh toán không hợp lệ', 'Error Alert', { timeOut: 300 });
-        }
-        if (ttien === 0) {
+        }else if (ttien === 0) {
             toastr.error('Phiếu hàng đang trống', 'Error Alert', { timeOut: 300 });
-        } else {
+        }else if(khachdua < ttien && pttt === "Tiền mặt"){
+            toastr.error('Khách chưa thanh toán đủ tiền hàng', 'Error Alert', { timeOut: 300 });
+        }else {
             var pttt = $('input[name="pttt"]:checked').val();
             var idvoucher = $("#idvoucher").text();
             var tichdiemhd = $("#tichdiemhd").text();

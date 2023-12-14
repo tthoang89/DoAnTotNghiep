@@ -79,6 +79,11 @@ namespace AppAPI.Controllers
         {
             return _khachHangService.GetBySDT(sdt);
         }
+        [HttpGet("getAllHDKH")]
+        public async Task<List<HoaDon>> GetAllHDKH(Guid idkh)
+        {
+            return await _khachHangService.GetAllHDKH(idkh);
+        }
 
         // GET api/<SanPhamController>/5
         [Route("PostKHView")]

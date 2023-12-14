@@ -145,6 +145,7 @@
                         <th scope="col">Thời gian</th>
                         <th scope="col">Khách hàng</th>
                         <th scope="col">Trạng thái</th>
+                        <th scope="col">Loại HD</th>
                         <th scope="col" class="text-end">Tổng tiền hàng</th>
                         @*<th scope="col" class="text-end">Voucher</th>*@
                         <th scope="col" class="text-end">Khách đã trả</th>
@@ -272,7 +273,7 @@
                      if(pageIndexhd ===1 ){
                           html = `
                                 <tr>
-                                    <td colspan="5" class="text-end fw-bold">
+                                    <td colspan="6" class="text-end fw-bold">
                                         ${response.tienhang.toLocaleString()}
                                     </td>
 
@@ -300,6 +301,8 @@
                                    response.data[i].trangThai === 8 ? '<label class="badge bg-secondary">Chờ xác nhận hủy</label>' :
                                    '<label class="badge bg-danger">Chờ xác nhận hoàn hàng</label>'}
                                </td>
+                               ${response.data[i].loaiHD === 1 ? `<td class="text-center">Tại quầy</td>` : `<td class="text-center">Website</td>`}
+                               
                                <td class="text-end">${response.data[i].tongTienHang.toLocaleString()}</td>
                                <td class="text-end">${response.data[i].khachDaTra.toLocaleString()}</td>
                            </tr>
@@ -313,7 +316,7 @@
                      $("#billRecord").empty();
                      html = `
                                 <tr>
-                                    <td colspan="6" class="text-center">
+                                    <td colspan="7" class="text-center">
                                         Không có hóa đơn nào
                                     </td>
                                 </tr>

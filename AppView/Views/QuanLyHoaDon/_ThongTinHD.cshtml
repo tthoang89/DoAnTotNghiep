@@ -225,10 +225,10 @@
         </div>
         <hr />
         <div class="d-flex flex-row justify-content-end">
-            @if (@Model.TrangThai == 6 && @Model.TrangThai != 9)
+            @if (@Model.TrangThai == 6 && @Model.TrangThai != 9 && @Model.LoaiHD == 0)
             {
                 <div class="d-flex p-2">
-                    <button type="button" onclick="DoiTrangThai('5')" class="btn btn-danger fw-normal text-white"><i class="bi bi-reply-all-fill me-2" style="color: #ffffff;"></i> Hoàn hàng</button>
+                    <button type="button" onclick="DoiTrangThai('4')" class="btn btn-danger fw-normal text-white"><i class="bi bi-reply-all-fill me-2" style="color: #ffffff;"></i> Hoàn hàng</button>
                 </div>
             }
             @if (@Model.TrangThai == 2)
@@ -279,7 +279,7 @@
             </div>
 
             <div class="d-flex p-2">
-                <button type="button" onclick="InHD('@Model.Id')" class="btn btn-secondary fw-normal text-white me-2"><i class="ri-printer-line"></i> In Hóa đơn</button>
+                <button type="button" onclick="InHD('@Model.Id')" class="btn btn-secondary fw-normal text-white"><i class="ri-printer-line me-2"></i> In Hóa đơn</button>
             </div>
             <div class="d-flex p-2">
                 <button type="button" onclick="location.href='@Url.Action("ExportPDF", "QuanLyHoaDon", new{idhd = @Model.Id})'" class="btn btn-secondary fw-normal text-white"><i class="fa-solid fa-file-export fa-xs me-2" style="color: #ffffff;"></i> Xuất PDF</button>
@@ -374,9 +374,9 @@
             $("#save").click(function(){
                 var inputValue = $("#ghiChuinTTHD").val();
                 if(inputValue === ''){
-                    inputValue = null;
-                }
-                $.ajax({
+                    toastr.error("Ghi chú hiện tại đang để trống", 'Error Alert', { timeOut: 300 });
+                }else{
+                     $.ajax({
                     url: "/BanHangTaiQuay/UpdateGhichu",
                     type: "PUT",
                     dataType: "json",
@@ -384,15 +384,19 @@
                         idhd: '@Model.Id',
                         ghichu: inputValue,
                     },
-                    success: function() {
-                        toastr.success(response.message, "Lưu ghi chú thành công", { timeOut: 300 });
+                    success: function(response) {
+                        if(response.success == true){
                             billDetail(id);
                             loadBill();
+                        }else{
+                            toastr.error(response.message, 'Error Alert', { timeOut: 300 });
+                        }
                     },
                     error: function(response) {
-                        toastr.error('Lưu ghi chú thất bại', 'Error Alert', { timeOut: 300 });
+                        toastr.error(response.message, 'Error Alert', { timeOut: 300 });
                     }
                 });
+                }
             })
             function InHD(idhd){
                 $.ajax({
@@ -482,26 +486,31 @@
                     });
             });
 
-            function DoiTrangThai(tragthai){
-            var ans = confirm("Cập nhật trạng thái hóa đơn này?");
-            var id = "@Model.Id";
-            if(ans){
-                    $.ajax({
-                    url: "/QuanLyHoaDon/DoiTrangThai",
-                    type: "POST",
-                    data:{
-                        trangthai:tragthai,
-                        idhd: id,
-                    },
-                    success: function(response) {
-                        toastr.success(response.message, "Success Alert", { timeOut: 300 });
-                        billDetail(id);
-                        loadBill();
-                    },
-                    error: function(err) {
-                        toastr.error('Thay đổi trạng thái thất bại', "Error Alert", { timeOut: 300 });
-                    }
-                });
+            function DoiTrangThai(trangthai){
+            var gc = $("#ghiChuinTTHD").val();
+            if(trangthai === "4" && gc === "" || gc === "@Model.GhiChu"){
+                toastr.error('Bạn chưa nhập ghi chú cho đơn hàng', "Error Alert", { timeOut: 1000 });
+            }else{
+                var ans = confirm("Cập nhật trạng thái hóa đơn này?");
+                var id = "@Model.Id";
+                if(ans){
+                        $.ajax({
+                        url: "/QuanLyHoaDon/DoiTrangThai",
+                        type: "POST",
+                        data:{
+                            trangthai:trangthai,
+                            idhd: id,
+                        },
+                        success: function(response) {
+                            toastr.success(response.message, "Success Alert", { timeOut: 300 });
+                            billDetail(id);
+                            loadBill();
+                        },
+                        error: function(err) {
+                            toastr.error('Thay đổi trạng thái thất bại', "Error Alert", { timeOut: 300 });
+                        }
+                    });
+                }
             }
         }
 

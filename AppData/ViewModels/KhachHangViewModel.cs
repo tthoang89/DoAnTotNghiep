@@ -11,7 +11,7 @@ namespace AppData.ViewModels
     public class KhachHangViewModel
     {
         public Guid Id { get; set; }
-        
+
         [Required]
         [EmailAddress]
         public string? Email { get; set; }
@@ -21,6 +21,7 @@ namespace AppData.ViewModels
         public string? SDT { get; set; }
         [Required]
         public string Password { get; set; }
+
 
     }
 }
