@@ -5,6 +5,50 @@
 
 <h1>Chi tiết sản phẩm</h1>
 
+<div class="row d-flex justify-content-end">
+    <div class="col-lg-1" style="padding:0px">
+        <p style="text-align:end;margin-top:5px;margin-right:5px">Sắp xếp: </p>
+    </div>
+    <div class="col-lg-3" style="padding:0px;margin-right:5px">
+        <select class="form-select" id="sort" onchange="ReloadPagination()">
+            <option selected value="1">Sắp xếp theo mã</option>
+            <option value="2">Sắp xếp theo giá tăng dần</option>
+            <option value="3">Sắp xếp theo giá giảm dần</option>
+            <option value="4">Sắp xếp theo số lượng tăng dần</option>
+            <option value="5">Sắp xếp theo số lượng giảm dần</option>
+        </select>
+    </div>
+    <div class="col-lg-1" style="padding:0px">
+        <button class="btn" style="border:1px solid black" type="button" data-bs-toggle="collapse" data-bs-target=".filter"><i class="bx bx-filter-alt"></i></button>
+    </div>
+</div>
+<div class="row filter collapse" style="margin-bottom:10px">
+    <div class="col-lg-3" style="padding-left:0px;padding-right:2px">
+        <p style="margin:0px;">Mã sản phẩm:</p>
+        <input type="text" class="form-control" placeholder="Tìm kiếm theo mã sản phẩm" style="width:100%" id="searchName">
+    </div>
+    <div class="col-lg-2" style="padding-left:2px;padding-right:2px">
+        <p style="margin:0px">Giá bán:</p>
+        <input type="number" class="form-control" placeholder="Min" style="width:100%" id="priceMin">
+    </div>
+    <div class="col-lg-2" style="padding-left:2px;padding-right:2px">
+        <p style="margin:0px">&ensp;</p>
+        <input type="number" class="form-control" placeholder="Max" style="width:100%" id="priceMax">
+    </div>
+    <div class="col-lg-2" style="padding-left:2px;padding-right:2px">
+        <p style="margin:0px">Số lượng:</p>
+        <input type="number" class="form-control" placeholder="Min" style="width:100%" id="quantityMin">
+    </div>
+    <div class="col-lg-2" style="padding-left:2px;padding-right:2px">
+        <p style="margin:0px">&ensp;</p>
+        <input type="number" class="form-control" placeholder="Max" style="width:100%" id="quantityMax">
+    </div>
+    <div class="col-lg-1" style="padding-left:2px;padding-right:2px">
+        <p style="margin:0px">&ensp;</p>
+        <button class="btn btn-primary" type="button" onclick="ReloadPagination()">Lọc</button>
+    </div>
+</div>
+
 <table class="table">
     <thead>
         <tr>
@@ -29,7 +73,7 @@
             <th>
                 Giá bán
             </th>
-            <th>
+            <th style="width:110px;text-align:center">
                 Giá trị khuyến mãi
             </th>
             <th>
@@ -64,8 +108,13 @@
         loadsp();
     });
     function loadsp() {
-        // var searchName = SearchName();
-        var request = { page: pageIndex, pageSize: pagesize, id: idSanPham };
+        var maSP = $("#searchName").val();
+        var minGia = $("#priceMin").val();
+        var maxGia = $("#priceMax").val();
+        var minSL = $("#quantityMin").val();
+        var maxSL = $("#quantityMax").val();
+        var sx = $("#sort").val();
+        var request = { page: pageIndex, pageSize: pagesize, id: idSanPham, ma: maSP, minPrice: minGia, maxPrice: maxGia, minQuantity: minSL, maxQuantity: maxSL, sort: sx };
         $.ajax({
             url: "/Admin/ShowProductDetail",
             type: "GET",
@@ -74,13 +123,13 @@
                 $("#list_productdetails").empty();
                 $.each(response.data, function (i, item) {
                     if (item.trangThai == 1) {
-                        $("#list_productdetails").append(`<tr><td>${item.ma}</td><td>${item.tenMauSac}</td><td><input type="color" value="${item.maMauSac}" style="border:none;width:27px;height:25px" disabled></td><td>${item.tenKichCo}</td><td style="width:100px"><input type="number" value="${item.soLuong}" style="border:none;width:100%" id="soLuong_${item.id}" onchange="changeSoLuong('${item.id}')"></td><td style="width:100px"><input type="number" value="${item.giaGoc}" style="border:none;width:100%" id="giaGoc_${item.id}" onchange="changeGiaBan('${item.id}')"></td><td>${item.giaBan}</td><td>${item.giaTriKhuyenMai}</td><td><input type="radio" name="macDinh" checked id="trangThai_${item.id}" onclick="changeTrangThai('${item.id}')" /></td><td id="hoatDong_${item.id}" style="width:90px"><span style="color:green">Hoạt động</span></td><td id="xoa_${item.id}" style="width:150px"><a href="/Admin/GenerateQRCode?id=${item.id}&ma=${item.ma}" class="btn btn-secondary">Tạo mã QR</a><button type="button" class="btn btn-danger" onclick="xoa('${item.id}')">Xóa</button></td></tr>`);
+                        $("#list_productdetails").append(`<tr><td>${item.ma}</td><td>${item.tenMauSac}</td><td><input type="color" value="${item.maMauSac}" style="border:none;width:27px;height:25px" disabled></td><td>${item.tenKichCo}</td><td style="width:100px"><input type="number" value="${item.soLuong}" style="border:none;width:100%" id="soLuong_${item.id}" onchange="changeSoLuong('${item.id}')"></td><td style="width:100px"><input type="number" value="${item.giaGoc}" style="border:none;width:100%" id="giaGoc_${item.id}" onchange="changeGiaBan('${item.id}')"></td><td>${item.giaBan}</td><td style="text-align:center">${item.giaTriKhuyenMai == null ? "0" : item.giaTriKhuyenMai}</td><td><input type="radio" name="macDinh" checked id="trangThai_${item.id}" onclick="changeTrangThai('${item.id}')" /></td><td id="hoatDong_${item.id}" style="width:150px"><span style="color:green">Hoạt động</span></td><td id="xoa_${item.id}" style="width:150px"><a href="/Admin/GenerateQRCode?id=${item.id}&ma=${item.ma}" class="btn btn-secondary">Tạo mã QR</a><button type="button" class="btn btn-danger" onclick="xoa('${item.id}')">Xóa</button></td></tr>`);
                     }
                     else if (item.trangThai == 2) {
-                        $("#list_productdetails").append(`<tr><td>${item.ma}</td><td>${item.tenMauSac}</td><td><input type="color" value="${item.maMauSac}" style="border:none;width:27px;height:25px" disabled></td><td>${item.tenKichCo}</td><td style="width:100px"><input type="number" value="${item.soLuong}" style="border:none;width:100%" id="soLuong_${item.id}" onchange="changeSoLuong('${item.id}')"></td><td style="width:100px"><input type="number" value="${item.giaGoc}" style="border:none;width:100%" id="giaGoc_${item.id}" onchange="changeGiaBan('${item.id}')"></td><td>${item.giaBan}</td><td>${item.giaTriKhuyenMai}</td><td><input type="radio" name="macDinh" id="trangThai_${item.id}" onclick="changeTrangThai('${item.id}')" /></td><td id="hoatDong_${item.id}" style="width:90px"><span style="color:green">Hoạt động</span></td><td id="xoa_${item.id}" style="width:150px"><a href="/Admin/GenerateQRCode?id=${item.id}&ma=${item.ma}" class="btn btn-secondary">Tạo mã QR</a><button type="button" class="btn btn-danger" onclick="xoa('${item.id}')">Xóa</button></td></tr>`);
+                        $("#list_productdetails").append(`<tr><td>${item.ma}</td><td>${item.tenMauSac}</td><td><input type="color" value="${item.maMauSac}" style="border:none;width:27px;height:25px" disabled></td><td>${item.tenKichCo}</td><td style="width:100px"><input type="number" value="${item.soLuong}" style="border:none;width:100%" id="soLuong_${item.id}" onchange="changeSoLuong('${item.id}')"></td><td style="width:100px"><input type="number" value="${item.giaGoc}" style="border:none;width:100%" id="giaGoc_${item.id}" onchange="changeGiaBan('${item.id}')"></td><td>${item.giaBan}</td><td style="text-align:center">${item.giaTriKhuyenMai == null ? "0" : item.giaTriKhuyenMai}</td><td><input type="radio" name="macDinh" id="trangThai_${item.id}" onclick="changeTrangThai('${item.id}')" /></td><td id="hoatDong_${item.id}" style="width:150px"><span style="color:green">Hoạt động</span></td><td id="xoa_${item.id}" style="width:150px"><a href="/Admin/GenerateQRCode?id=${item.id}&ma=${item.ma}" class="btn btn-secondary">Tạo mã QR</a><button type="button" class="btn btn-danger" onclick="xoa('${item.id}')">Xóa</button></td></tr>`);
                     }
                     else {
-                        $("#list_productdetails").append(`<tr><td>${item.ma}</td><td>${item.tenMauSac}</td><td><input type="color" value="${item.maMauSac}" style="border:none;width:27px;height:25px" disabled></td><td>${item.tenKichCo}</td><td style="width:100px"><input type="number" value="${item.soLuong}" style="border:none;width:100%" id="soLuong_${item.id}" onchange="changeSoLuong('${item.id}')"></td><td style="width:100px"><input type="number" value="${item.giaGoc}" style="border:none;width:100%" id="giaGoc_${item.id}" onchange="changeGiaBan('${item.id}')"></td><td>${item.giaBan}</td><td>${item.giaTriKhuyenMai}</td><td><input type="radio" name="macDinh" id="trangThai_${item.id}" onclick="changeTrangThai('${item.id}')" /></td><td id="hoatDong_${item.id}" style="width:90px"><span style="color:red">Không hoạt động</span></td><td id="xoa_${item.id}" style="width:150px"><a href="/Admin/GenerateQRCode?id=${item.id}&ma=${item.ma}" class="btn btn-secondary">Tạo mã QR</a><button type="button" class="btn btn-success" onclick="undo('${item.id}')">Hoàn tác</button></td></tr>`);
+                        $("#list_productdetails").append(`<tr><td>${item.ma}</td><td>${item.tenMauSac}</td><td><input type="color" value="${item.maMauSac}" style="border:none;width:27px;height:25px" disabled></td><td>${item.tenKichCo}</td><td style="width:100px"><input type="number" value="${item.soLuong}" style="border:none;width:100%" id="soLuong_${item.id}" onchange="changeSoLuong('${item.id}')"></td><td style="width:100px"><input type="number" value="${item.giaGoc}" style="border:none;width:100%" id="giaGoc_${item.id}" onchange="changeGiaBan('${item.id}')"></td><td>${item.giaBan}</td><td style="text-align:center">${item.giaTriKhuyenMai == null ? "0" : item.giaTriKhuyenMai}</td><td><input type="radio" name="macDinh" id="trangThai_${item.id}" onclick="changeTrangThai('${item.id}')" /></td><td id="hoatDong_${item.id}" style="width:150px"><span style="color:red">Không hoạt động</span></td><td id="xoa_${item.id}" style="width:150px"><a href="/Admin/GenerateQRCode?id=${item.id}&ma=${item.ma}" class="btn btn-secondary">Tạo mã QR</a><button type="button" class="btn btn-success" onclick="undo('${item.id}')">Hoàn tác</button></td></tr>`);
                     }
                 });
                 pagingsp(response.total, function () {
@@ -107,10 +156,6 @@
         $("#pagination-demo").twbsPagination('destroy');
         loadsp();
     }
-    // function SearchName() {
-    //     var name = document.getElementById("searchName").value;
-    //     return name;
-    // }
 
     function changeSoLuong(idSP) {
         var ip = document.getElementById("soLuong_" + idSP);

@@ -78,15 +78,25 @@ namespace AppAPI.Controllers
             return Ok(reponse);
         }
         [HttpGet("GetAllAnhSanPham")]
-        public List<Anh> GetAllAnhSanPham(Guid idSanPham)
+        public List<AnhViewModel> GetAllAnhSanPham(Guid idSanPham)
         {
             return _sanPhamServices.GetAllAnhSanPham(idSanPham);
         }
 
         [HttpPost("AddImageNoColor")]
-        public bool AddImageNoColor(Anh anh)
+        public async Task<bool> AddImageNoColor(Anh anh)
         {
-            return _sanPhamServices.AddImageNoColor(anh);
+            return await _sanPhamServices.AddImageNoColor(anh);
+        }
+        [HttpPut("UpdateImage")]
+        public async Task<bool> UpdateImage(Anh anh)
+        {
+            return await _sanPhamServices.UpdateImage(anh);
+        }
+        [HttpDelete("DeleteImage")]
+        public async Task<bool> DeleteImage(string id)
+        {
+            return await _sanPhamServices.DeleteImage(new Guid(id));
         }
         #endregion
 

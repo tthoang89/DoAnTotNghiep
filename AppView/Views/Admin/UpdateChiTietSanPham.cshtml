@@ -25,13 +25,9 @@
                 <th>
                     Giá bán
                 </th>
-                @if (Model.Location == 0)
-                {
-                    <th>
-                        Mặc định
-                    </th>
-
-                }
+                <th>
+                    Mặc định
+                </th>
                 <th>
                 </th>
                 <th>
@@ -45,27 +41,24 @@
             {
                 <tr>
                     <td>
-                        <input type="text" asp-for="ChiTietSanPhams[i].TenMauSac" style="border:none" readonly>
+                        <input type="text" asp-for="ChiTietSanPhams[i].TenMauSac" style="border:none;background-color:white" readonly>
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => Model.ChiTietSanPhams[i].MaMau)
+                        <input type="color" value="@Model.ChiTietSanPhams[i].MaMau" style="border:none;width:27px;height:25px" readonly disabled>
                     </td>
                     <td>
-                        <input type="text" asp-for="ChiTietSanPhams[i].TenKichCo" style="border:none" readonly>
+                        <input type="text" asp-for="ChiTietSanPhams[i].TenKichCo" style="border:none;background-color:white" readonly>
                     </td>
                     <td>
                         <input type="number" asp-for="ChiTietSanPhams[i].SoLuong">
+                        <span asp-validation-for="ChiTietSanPhams[i].SoLuong" class="text-danger"></span>
                     </td>
                     <td>
                         <input type="number" asp-for="ChiTietSanPhams[i].GiaBan">
+                        <span asp-validation-for="ChiTietSanPhams[i].GiaBan" class="text-danger"></span>
+                    <td>
+                        <input type="radio" asp-for="TrangThai" value="@Model.ChiTietSanPhams[i].IDChiTietSanPham">
                     </td>
-                    @if (Model.Location == 0)
-                    {
-                        <td>
-                            <input type="radio" asp-for="TrangThai" value="@Model.ChiTietSanPhams[i].IDChiTietSanPham">
-                        </td>
-
-                    }
                     <td>
                         <input type="hidden" asp-for="ChiTietSanPhams[i].IDChiTietSanPham">
                     </td>

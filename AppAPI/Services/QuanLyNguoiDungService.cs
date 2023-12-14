@@ -190,7 +190,7 @@ namespace AppAPI.Services
                 }
             }
             var kh = await context.KhachHangs.FirstOrDefaultAsync(x => (x.Email == lg || x.SDT == lg) /*&& x.Password == password*/);
-            if(kh != null&&KiemTraMatKhau(password,kh.Password)!=null)
+            if(kh != null&& KiemTraMatKhau(password,kh.Password))
             {
                 return new LoginViewModel
                 {

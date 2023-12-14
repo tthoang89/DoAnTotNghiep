@@ -387,16 +387,17 @@
         }
     }
 
-    function usevoucher() {
-        voucher = $("#voucher").val();
-        $.ajax({
+    function usevoucher() { 
+        value = $("#voucher").val();
+        $.ajax({          
             async: true,
             type: 'GET',
             dataType: 'json',
             url: '/Home/UseVoucher',
-            data: { ma: voucher, tongTien: @tongtien},
+            data: { ma: value, tongTien: @tongtien},
             success: function (response) {
                 if (response.trangThai == true) {
+                    voucher = value;
                     if (response.hinhThuc == 1) {
                         tienVoucher = (@tongtien * response.giaTri) / 100;
                     }
@@ -418,7 +419,6 @@
         });
     }
     function usediem() {
-        diemTich = $("#diemTich").val();
         if (isNaN(diemTich)) {
             $("#error-message").text("Số điểm không hợp lệ. Vui lòng nhập số nguyên.");
             return;
@@ -428,14 +428,16 @@
             return;
         }
         $("#error-message").text("");
+        var value = $("#diemTich").val();
         $.ajax({
             async: true,
             type: 'GET',
             dataType: 'json',
             url: '/Home/UseDiemTich',
-            data: { diem: diemTich, id: '@loginInfor.Id', tongTien: @tongtien },
+            data: { diem: value, id: '@loginInfor.Id', tongTien: @tongtien },
             success: function (response) {
                 if (response.trangThai == true) {
+                    diemTich = value;
                     var ipDiem = document.getElementById("moneyscore");
                     ipDiem.hidden = false;
                     tienDiem = response.soTienGiam;

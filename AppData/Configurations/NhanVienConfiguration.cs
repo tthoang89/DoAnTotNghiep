@@ -16,7 +16,7 @@ namespace AppData.Configurations
             builder.ToTable("NhanVien");
             builder.HasKey(x => x.ID);
             builder.Property(x => x.Ten).HasColumnType("nvarchar(20)").IsRequired();
-            builder.Property(x => x.Email).HasColumnType("nvarchar(20)").IsRequired();
+            builder.Property(x => x.Email).HasColumnType("nvarchar(100)").IsRequired();
             builder.Property(x => x.SDT).HasColumnType("nvarchar(20)").IsRequired();
             builder.Property(x => x.DiaChi).HasColumnType("nvarchar(20)").IsRequired();
             builder.Property(x => x.TrangThai).HasColumnType("int");
