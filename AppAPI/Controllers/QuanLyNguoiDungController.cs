@@ -85,11 +85,12 @@ namespace AppAPI.Controllers
             var dmk = await service.ChangePassword(email, oldPassword, newPassword);
             if (!dmk)
             {
-                return Ok("Đổi mật khẩu khong  thành công");
+                return BadRequest("Đổi mật khẩu  thành công");
+                
             }
             else
             {
-                return BadRequest("Đổi mật khẩu  thành công");
+                return Ok("Đổi mật khẩu khong  thành công");
             }
         }
         [HttpPost("ForgotPassword")]
