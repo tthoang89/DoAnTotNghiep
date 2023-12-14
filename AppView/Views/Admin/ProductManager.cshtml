@@ -1,12 +1,55 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "ProductManager";
 }
 
 <h1>Quản lý sản phẩm</h1>
 
-<div class=" row" style="margin-bottom:10px">
-    <input type="text" class="form-control" placeholder="Tìm kiếm theo tên sản phẩm" style="width:30%" onchange="ReloadPagination()" id="searchName">
+<div class="row d-flex justify-content-end">
+    <div class="col-lg-1" style="padding:0px">
+        <p style="text-align:end;margin-top:5px;margin-right:5px">Sắp xếp: </p>
+    </div>
+    <div class="col-lg-3" style="padding:0px;margin-right:5px">
+        <select class="form-select" id="sort" onchange="ReloadPagination()">
+            <option selected value="1">Sắp xếp theo tên</option>
+            <option value="2">Sắp xếp theo giá tăng dần</option>
+            <option value="3">Sắp xếp theo giá giảm dần</option>
+            <option value="4">Sắp xếp theo số lượng tăng dần</option>
+            <option value="5">Sắp xếp theo số lượng giảm dần</option>
+        </select>
+    </div>
+    <div class="col-lg-1" style="padding:0px">
+        <button class="btn" style="border:1px solid black" type="button" data-bs-toggle="collapse" data-bs-target=".filter"><i class="bx bx-filter-alt"></i></button>
+    </div>
+</div>
+<div class="row filter collapse" style="margin-bottom:10px">
+    <div class="col-lg-3" style="padding-left:0px;padding-right:2px">
+        <p style="margin:0px;">Tên sản phẩm:</p>
+        <input type="text" class="form-control" placeholder="Tìm kiếm theo tên sản phẩm" style="width:100%"  id="searchName">
+    </div>
+    <div class="col-lg-2" style="padding-left:2px;padding-right:2px">
+        <p style="margin:0px">Giá bán:</p>
+        <input type="number" class="form-control" placeholder="Min" style="width:100%" id="priceMin">   
+    </div>
+    <div class="col-lg-2" style="padding-left:2px;padding-right:2px">
+        <p style="margin:0px">&ensp;</p>
+        <input type="number" class="form-control" placeholder="Max" style="width:100%" id="priceMax">
+    </div>
+    <div class="col-lg-2" style="padding-left:2px;padding-right:2px">
+        <p style="margin:0px">Loại sản phẩm cha:</p>
+        <select class="form-select" id="categorydad">
+            <option selected value="all">Tất cả</option>
+        </select>
+    </div>
+    <div class="col-lg-2" style="padding-left:2px;padding-right:2px">
+        <p style="margin:0px">Loại sản phẩm con:</p>
+        <select class="form-select" id="categoryson">
+            <option selected value="all">Tất cả</option>
+        </select>
+    </div>
+    <div class="col-lg-1" style="padding-left:2px;padding-right:2px">
+        <p style="margin:0px">&ensp;</p>
+        <button class="btn btn-primary" type="button" onclick="ReloadPagination()">Lọc</button>
+    </div>
 </div>
 <div class=" row">
     <table class="table">
@@ -60,10 +103,26 @@
     var pagesize = 10;
     $(document).ready(function () {
         loadsp();
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: "/Admin/GetLoaiSPCha",
+            success: function (response) {
+                for (var i = 0; i < response.length; i++) {
+                    var rows = "<option value='" + response[i].ten + "'>" + response[i].ten + "</option>";
+                    $('#categorydad').append(rows);
+                }
+            }
+        });
     });
     function loadsp() {
-        var searchName = SearchName();
-        var request = { page: pageIndex, pageSize: pagesize, search: searchName };
+        var searchName = $("#searchName").val();
+        var min = $("#priceMin").val();
+        var max = $("#priceMax").val();
+        var categorydad = $("#categorydad").val();
+        var categoryson = $("#categoryson").val();
+        var sort = $("#sort").val();
+        var request = { page: pageIndex, pageSize: pagesize, search: searchName, minPrice: min, maxPrice: max, loaiSPCha: categorydad, loaiSPCon: categoryson, sortSP : sort};
         $.ajax({
             url: "/Admin/ShowProduct",
             type: "GET",
@@ -72,9 +131,9 @@
                 $("#list_products").empty();
                 $.each(response.data, function (i, item) {
                     if (item.trangThai == 1)
-                        $("#list_products").append(`<tr><td>${item.ten}</td><td>${item.ma}</td><td><img src="/img/product/${item.anh}" style="width:70px;height:70px" /></td><td>${item.giaGoc}</td><td>${item.giaBan}</td><td>${item.soLuong}</td><td>${item.chatLieu}</td><td>${item.loaiSP}</td><td><span style="color:green">Hoạt động</span></td><td style="width:200px"><a href='/Admin/ProductDetail?idSanPham=${item.id}' class="btn btn-primary">Chi tiết</a><a href='/Admin/UpdateTrangThaiSanPham?idSanPham=${item.id}&trangThai=0' class="btn btn-danger">Xoá</a></td></tr>`);
+                        $("#list_products").append(`<tr><td>${item.ten}</td><td>${item.ma}</td><td><img src="/img/product/${item.anh}" style="width:70px;height:70px" /></td><td>${item.giaGoc}</td><td>${item.giaBan}</td><td>${item.soLuong}</td><td>${item.chatLieu}</td><td>${item.loaiSPCha}/${item.loaiSPCon}</td><td><span style="color:green">Hoạt động</span></td><td style="width:200px"><a href='/Admin/ProductDetail?idSanPham=${item.id}' class="btn btn-primary" style="margin-right:5px">Chi tiết</a><a href='/Admin/UpdateTrangThaiSanPham?idSanPham=${item.id}&trangThai=0' class="btn btn-danger">Xoá</a></td></tr>`);
                     else {
-                        $("#list_products").append(`<tr><td>${item.ten}</td><td>${item.ma}</td><td><img src="/img/product/${item.anh}" style="width:70px;height:70px" /></td><td>${item.giaGoc}</td><td>${item.giaBan}</td><td>${item.soLuong}</td><td>${item.chatLieu}</td><td>${item.loaiSP}</td><td><span style="color:red">Không hoạt động</span></td><td style="width:200px"><a href='/Admin/ProductDetail?idSanPham=${item.id}' class="btn btn-primary">Chi tiết</a><a href='/Admin/UpdateTrangThaiSanPham?idSanPham=${item.id}&trangThai=1'  class="btn btn-success">Hoàn tác</a></td></tr>`);
+                        $("#list_products").append(`<tr><td>${item.ten}</td><td>${item.ma}</td><td><img src="/img/product/${item.anh}" style="width:70px;height:70px" /></td><td>${item.giaGoc}</td><td>${item.giaBan}</td><td>${item.soLuong}</td><td>${item.chatLieu}</td><td>${item.loaiSPCha}/${item.loaiSPCon}</td><td><span style="color:red">Không hoạt động</span></td><td style="width:200px"><a href='/Admin/ProductDetail?idSanPham=${item.id}' class="btn btn-primary" style="margin-right:5px">Chi tiết</a><a href='/Admin/UpdateTrangThaiSanPham?idSanPham=${item.id}&trangThai=1'  class="btn btn-success">Hoàn tác</a></td></tr>`);
                     }
                 });
                 pagingsp(response.total, function () {
@@ -93,7 +152,7 @@
             visiblePages: 7,
             onPageClick: function (event, page) {
                 pageIndex = page;
-                setTimeout(callback, 200);
+                // setTimeout(callback, 200);
             }
         });
     }
@@ -101,9 +160,31 @@
         $("#pagination-demo").twbsPagination('destroy');
         loadsp();
     }
-    function SearchName() {
-        var name = document.getElementById("searchName").value;
-        return name;
-    }
+
+    $("#categorydad").change(function () {
+        var value = $("#categorydad").val();
+        if (value != "all") {
+            $.ajax({
+                type: "GET",
+                dataType: "json",
+                data: { tenLoaiSPCha: value },
+                url: "/Admin/GetLoaiSPCon",
+                success: function (response) {
+                    $("#categoryson").empty();
+                    var rows = `<option selected value="all">Tất cả</option>`;
+                    for (var i = 0; i < response.length; i++) {
+                        rows += "<option value='" + response[i].ten + "'>" + response[i].ten + "</option>";      
+                    }
+                    $('#categoryson').append(rows);
+                }
+            });
+        }
+        else {
+            document.getElementById("categoryson").value = 'all';
+            $("#categoryson").empty();
+            var rows = `<option selected value="all">Tất cả</option>`;
+            $('#categoryson').append(rows);
+        }
+    });
 </script>
 

@@ -19,5 +19,23 @@ namespace AppView.Services
             }
             return fileName;
         }
+
+        public bool DeleteFile(string fileName,string wwwRootPath)
+        {
+            try
+            {
+                string path = Path.Combine(wwwRootPath + "/img/product/", fileName);
+                if (File.Exists(path))
+                {
+                    File.Delete(path);
+                    
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }

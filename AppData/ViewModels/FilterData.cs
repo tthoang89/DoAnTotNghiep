@@ -17,5 +17,9 @@ namespace AppData.ViewModels
         public string? sortSP { get; set; }
         public int page { get; set; }
         public int pageSize { get; set; }
+        public int? minPrice { get; set; }
+        public int? maxPrice { get; set; }
+        public string? loaiSPCha { get; set; }
+        public string? loaiSPCon { get; set; }
     }
 }

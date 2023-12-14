@@ -48,7 +48,8 @@ namespace AppAPI.Services
                                       Ten = a.Ten,
                                       Ma = a.Ma,
                                       TrangThai = a.TrangThai,
-                                      LoaiSP = _context.LoaiSPs.First(x => x.ID == e.IDLoaiSPCha).Ten + "/" + e.Ten,
+                                      LoaiSPCha = _context.LoaiSPs.First(x => x.ID == e.IDLoaiSPCha).Ten,
+                                      LoaiSPCon = e.Ten,
                                       Anh = _context.Anhs.First(x => x.IDMauSac == b.IDMauSac && x.IDSanPham == a.ID).DuongDan,
                                       ChatLieu = _context.ChatLieus.First(x => x.ID == a.IDChatLieu).Ten,
                                       GiaGoc = b.GiaBan,
@@ -220,17 +221,56 @@ namespace AppAPI.Services
                 return false;
             }
         }
-        public List<Anh> GetAllAnhSanPham(Guid idSanPham)
+        public List<AnhViewModel> GetAllAnhSanPham(Guid idSanPham)
         {
-            return _context.Anhs.Where(x => x.IDSanPham == idSanPham).ToList();
+            var lst = (from a in _context.Anhs.Where(x => x.IDSanPham == idSanPham)
+                       join b in _context.MauSacs on a.IDMauSac equals b.ID
+                       select new AnhViewModel()
+                       {
+                           ID = a.ID,
+                           DuongDan = a.DuongDan,
+                           TenMau = b.Ten,
+                           MaMau = b.Ma
+                       }).ToList();
+            return lst;
         }
 
-        public bool AddImageNoColor(Anh anh)
+        public async Task<bool> AddImageNoColor(Anh anh)
         {
             try
             {
                 _context.Anhs.Add(anh);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
+                return true;
+
+            }
+            catch { return false; }
+        }
+        public async Task<bool> UpdateImage(Anh anh)
+        {
+            try
+            {
+                var temp = _context.Anhs.First(x => x.ID == anh.ID);
+                temp.DuongDan = anh.DuongDan;
+                _context.Anhs.Update(temp);
+                await _context.SaveChangesAsync();
+                return true;
+
+            }
+            catch { return false; }
+        }
+        public async Task<bool> DeleteImage(Guid id)
+        {
+            try
+            {
+                var temp = _context.Anhs.First(x => x.ID == id);
+                if (temp.IDMauSac != null)
+                {
+                    temp.DuongDan = "";
+                    _context.Anhs.Update(temp);
+                }
+                else _context.Anhs.Remove(temp);
+                await _context.SaveChangesAsync();
                 return true;
 
             }

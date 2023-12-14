@@ -18,8 +18,10 @@ namespace AppAPI.IServices
         Task<bool> UpdateTrangThaiSanPham(Guid id,int trangThai);
         bool CheckTrungTenSP(SanPhamRequest lsp);
         Task<bool> AddAnhToSanPham(List<AnhRequest> request);
-        List<Anh> GetAllAnhSanPham(Guid idSanPham);
-        bool AddImageNoColor(Anh anh);
+        List<AnhViewModel> GetAllAnhSanPham(Guid idSanPham);
+        Task<bool> AddImageNoColor(Anh anh);
+        Task<bool> UpdateImage(Anh anh);
+        Task<bool> DeleteImage(Guid id);
         public Guid GetIDsanPhamByIdCTSP (Guid idctsp);
         #endregion
 
