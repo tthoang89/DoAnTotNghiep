@@ -198,8 +198,8 @@
         }
         $button.parent().find('input').val(newVal);
         var cartPrice = $button.parent().parent().parent().parent().find('td.cart__price').html();
-        cartPrice = cartPrice.replaceAll(".", "");
-        cartPrice = cartPrice.replaceAll(",", "");
+        cartPrice = cartPrice.includes(".") ? cartPrice.replaceAll(".", ""):cartPrice;
+        cartPrice = cartPrice.includes(",") ? cartPrice.replaceAll(",", "") : cartPrice;
         var cartPriceSub = parseInt(cartPrice) * newVal;
         console.log(cartPriceSub);
         var cartPrice = $button.parent().parent().parent().parent().find('td.cart__price__sub').text(Intl.NumberFormat().format(cartPriceSub));
@@ -214,11 +214,10 @@
         } else {
             var newVal = parseFloat(oldValue);
         }
-        
         $button.parent().find('input').val(newVal);
         var cartPrice = $button.parent().parent().parent().parent().find('td.cart__price').html();
-        cartPrice = cartPrice.replaceAll(".", "");
-        cartPrice = cartPrice.replaceAll(",", "");
+        cartPrice = cartPrice.includes(".") ? cartPrice.replaceAll(".", "") : cartPrice;
+        cartPrice = cartPrice.includes(",") ? cartPrice.replaceAll(",", "") : cartPrice;
         var cartPriceSub = parseInt(cartPrice) * newVal;
         console.log(cartPriceSub);
         var cartPrice = $button.parent().parent().parent().parent().find('td.cart__price__sub').text(Intl.NumberFormat().format(cartPriceSub));
