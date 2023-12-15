@@ -186,5 +186,43 @@ namespace AppAPI.Services
                 return new ChiTietHoaDonDanhGiaViewModel();
             }
         }
+
+        public async Task<List<LichSuTichDiemTieuDiemViewModel>> GetALLLichSuTichDiembyIdUser(Guid idKhachHang)
+        {
+            try
+            {
+                var lstLichSuTichDiem = await(from a in context.LichSuTichDiems
+                                      join b in context.HoaDons on a.IDHoaDon equals b.ID
+                                      select new LichSuTichDiemTieuDiemViewModel()
+                                      {
+                                          IDHoaDon = b.ID,
+                                          NgayTao = b.NgayTao,
+                                          NgayThanhToan = b.NgayThanhToan,
+                                          NgayNhanHang = b.NgayNhanHang,
+                                          Ngaytao1 = null,
+                                          Ngaynhanhang1 = null,
+                                          Ngaythanhtoan1 = null,
+                                          TenNguoiNhan = b.TenNguoiNhan,
+                                          TrangThaiGiaoHang = b.TrangThaiGiaoHang,
+                                          IdNguoiDung = context.LichSuTichDiems.FirstOrDefault(p => p.IDHoaDon == b.ID) != null ? context.LichSuTichDiems.FirstOrDefault(p => p.IDHoaDon == b.ID).IDKhachHang.Value : null,
+                                          MaHD = b.MaHD,
+                                          TrangThaiLSTD = a.TrangThai,
+                                          Diem = a.Diem,
+                                          LoaiHoaDon = b.LoaiHD
+                                      }).ToListAsync();
+
+                lstLichSuTichDiem = lstLichSuTichDiem.Where(P => P.IdNguoiDung == idKhachHang).ToList();
+                return lstLichSuTichDiem;
+            }
+            catch
+            {
+                return new List<LichSuTichDiemTieuDiemViewModel>();
+            }
+        }
+
+        private object await(IQueryable<DonMuaViewModel> donMuaViewModels)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
