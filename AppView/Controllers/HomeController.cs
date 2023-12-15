@@ -300,10 +300,13 @@ namespace AppView.Controllers
                     else
                     {
                         SanPhamViewModel sanPhamViewModel = lstSanpham.FirstOrDefault(p => p.ID == item.ID && p.TrangThaiCTSP == 1);
-                        if (lstSanPhamfnR.FirstOrDefault(p => p.ID == sanPhamViewModel.ID) == null)
+                        if (sanPhamViewModel != null)
                         {
-                            lstSanPhamfnR.Add(sanPhamViewModel);
-                        }
+                            if (lstSanPhamfnR.FirstOrDefault(p => p.ID == sanPhamViewModel.ID) == null)
+                            {
+                                lstSanPhamfnR.Add(sanPhamViewModel);
+                            }
+                        }                       
                     }
                 }
                 //
