@@ -844,10 +844,6 @@ namespace AppView.Controllers
             LoginViewModel loginViewModel = JsonConvert.DeserializeObject<LoginViewModel>(loginInfor);
             return View(loginViewModel);
         }
-        //public IActionResult ChangePassword()
-        //{
-        //    return PartialView("ChangePassword");
-        //}
         [HttpPut]
         public ActionResult UpdateProfile(string ten, string email, string sdt, int? gioitinh, DateTime? ngaysinh, string? diachi)
         {
@@ -1120,7 +1116,7 @@ namespace AppView.Controllers
                 HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + "KhachHang/ChangeForgotPassword?id=" + khachHang.Id + "&password=" + khachHang.Password).Result;
                 if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("Login");
+                    return RedirectToAction("Login",new {actionName = "Index"});
                 }
                 else
                 {
