@@ -183,7 +183,7 @@
                 <div class="d-flex flex-row lh-1">
                     <div class="flex-fill"><label class="form-label fw-bold">Khách đưa</label></div>
                     <div class="flex-fill text-end">
-                        <input class="inputnhap" type="number" min="0" id="khachdua" style="width:120px; font-size:20px;font-weight:bold" />
+                        <input class="inputnhap" type="number" min="0" id="khachdua" oninput="khachDua(this.value);" style="width:120px; font-size:20px;font-weight:bold" />
                     </div>
                 </div>
             </div>
@@ -393,29 +393,26 @@
             if(pttt === "Tiền mặt"){
                 $("#tienmat").css('display', 'block');
                 $("#tienmattrakhach").css('display', 'block');
-                $("#khachdua").val(0);
+                $("#khachdua").val('');
                 $("#tientrakhach").text('');
             }else{
                 $("#tienmattrakhach").css('display', 'none');
                 $("#tienmat").css('display', 'none');
-                $("#khachdua").val(0);
+                $("#khachdua").val('');
                 $("#tientrakhach").text('');
             }
         }
-        //Tiền khách đưa
-         $("#khachdua").on("input", function(){
-            let dua = $(this).val();
-            if(dua > 1000000000){
+        function khachDua(value){
+             if(value > 1000000000){
                 toastr.error("Số tiền bạn nhập vào quá lớn", "Error Alert", { timeOut: 1000 });
-                $("#khachdua").val(0);
                 $("#tientrakhach").text('');
             }else{
                 let cantra = $("#khachCanTra").text() === '' ? '' : $("#khachCanTra").text().replaceAll('.', '');
                 cantra = cantra.replaceAll(',', '');
-                let tientra = dua - cantra;
+                let tientra = value - cantra;
                 $("#tientrakhach").text(Intl.NumberFormat().format(tientra));
             }
-        });
+        }
         //Chọn voucher
         function checkVoucher(){
            var idvoucher = $('input[name="radiovoucher"]:checked').attr('id');
@@ -459,5 +456,7 @@
             voucher = voucher.replaceAll(",", "");
             var tienkhachtra = tt - trutd - voucher;
             $("#khachCanTra").text(Intl.NumberFormat().format(tienkhachtra));
+            $("#khachdua").val();
+            khachDua($("#khachdua").val());
        }
 </script>
