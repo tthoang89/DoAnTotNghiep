@@ -35,7 +35,7 @@ namespace AppData.Migrations
                     b.Property<Guid?>("IDMauSac")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("IDSanPham")
+                    b.Property<Guid?>("IDSanPham")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("TrangThai")
@@ -292,7 +292,7 @@ namespace AppData.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("varchar(15)");
+                        .HasColumnType("varchar(MAX)");
 
                     b.Property<string>("SDT")
                         .HasColumnType("varchar(10)");
@@ -447,7 +447,7 @@ namespace AppData.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<Guid>("IDVaiTro")
                         .HasColumnType("uniqueidentifier");
@@ -473,6 +473,19 @@ namespace AppData.Migrations
                     b.HasIndex("IDVaiTro");
 
                     b.ToTable("NhanVien", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            ID = new Guid("2ec27ab7-5f67-4ed5-ae67-52f9c9726ebf"),
+                            DiaChi = "Ha Noi",
+                            Email = "tamncph25588@fpt.edu.vn",
+                            IDVaiTro = new Guid("b4996b2d-a343-434b-bfe9-09f8efbb3852"),
+                            PassWord = "$2a$10$SkimxxBIlrv/l33hTFvbkutV/.jF4rlwd9APgp1ZZjNEgVDYXvHa6",
+                            SDT = "0988143310",
+                            Ten = "Admin",
+                            TrangThai = 1
+                        });
                 });
 
             modelBuilder.Entity("AppData.Models.QuyDoiDiem", b =>
@@ -547,6 +560,14 @@ namespace AppData.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("VaiTro", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            ID = new Guid("b4996b2d-a343-434b-bfe9-09f8efbb3852"),
+                            Ten = "Admin",
+                            TrangThai = 1
+                        });
                 });
 
             modelBuilder.Entity("AppData.Models.Voucher", b =>
@@ -596,9 +617,7 @@ namespace AppData.Migrations
 
                     b.HasOne("AppData.Models.SanPham", "SanPham")
                         .WithMany("Anhs")
-                        .HasForeignKey("IDSanPham")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("IDSanPham");
 
                     b.Navigation("MauSac");
 

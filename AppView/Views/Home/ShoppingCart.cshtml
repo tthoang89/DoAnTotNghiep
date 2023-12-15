@@ -101,6 +101,7 @@
     </section>
 <script src="/js/jquery-3.3.1.min.js"></script>
     <script>
+        var checkSoLuong = [];
         $(document).ready(function () {
             UpdateCart();
         });
@@ -111,8 +112,6 @@
                 lst.push(dl[i].name + dl[i].value)
             }
             var postData = { dssl: lst };
-            console.log(postData);
-            
             $.ajax({
                 async: true,
                 type: 'POST',
@@ -121,7 +120,6 @@
                 url: '/Home/UpdateCart',
                 success: function (response) {
                     if (response.success == true) {
-                        console.log(response);
                         var subCart = document.getElementsByClassName("cart__price__sub");
                         var tongtien = 0;
                         for (var i = 0; i < subCart.length; i++) {
@@ -139,6 +137,8 @@
                                 }
                             }
                         }
+                        checkSoLuong = response.data.filter(x => x.hetHang == false).length <= 0;
+                    $('#tongsoluong').text(response.cout);
                     } else {
                         toastr.error(response.message, 'Error Alert', { timeOut: 300 });
                     }
@@ -151,10 +151,11 @@
         }
 
         function CheckCart(){
+
             if(@Model.Count == 0){
                 alert("Vui lòng thêm sản phẩm vào giỏ hàng");
             }
-            else if(@Model.Where(x=>!x.HetHang.Value).Any().ToString().ToLower()){
+            else if(checkSoLuong == false){
                 alert("Yêu cầu không thể đáp ứng");
             }
             else{

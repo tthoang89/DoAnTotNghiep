@@ -245,8 +245,8 @@
                         </div>
                     </div>
                     <div class="buttons d-flex flex-row mt-5 gap-3">
-                        <button onclick="buyNow()" class="btn btn-outline-dark">Buy Now</button>
-                        <button onclick="addCart()" class="btn btn-dark">Add to Basket</button>
+                        <button style="width: 200px;" onclick="buyNow()" class="btn btn-outline-dark">Mua Ngay</button>
+                        <button style="width: 200px;" onclick="addCart()" class="btn btn-dark">Thêm vào giỏ hàng</button>
                     </div>
                 </div>
             </div>
@@ -490,6 +490,11 @@
         document.getElementById("main_product_image").src = "/img/product/" + anh.duongDan;
         document.getElementById("maSP").innerHTML = chiTietSP.maCTSP;
         document.getElementById("giaCTSP").innerHTML = Intl.NumberFormat().format(chiTietSP.giaBan) + " " + "VNĐ";
+        if (chiTietSP.soLuong > 0) {
+            document.getElementById("trangthai").innerHTML = "Còn hàng";
+        } else {
+            document.getElementById("trangthai").innerHTML = "Hết hàng";
+        }
         if (chiTietSP.giaTriKM != null) {
             document.getElementById("giaTKM").style.display = "block";
             document.getElementById("giaGoc").style.display = "block";
@@ -521,6 +526,11 @@
         //ip.style.border = "2px black solid";
         document.getElementById("maSP").innerHTML = chiTietSP.maCTSP;
         document.getElementById("giaCTSP").innerHTML = Intl.NumberFormat().format(chiTietSP.giaBan) + " " + "VNĐ";
+        if (chiTietSP.soLuong > 0) {
+            document.getElementById("trangthai").innerHTML = "Còn hàng";
+        }else{
+            document.getElementById("trangthai").innerHTML = "Hết hàng";
+        }
         if (chiTietSP.giaTriKM != null) {
             document.getElementById("giaTKM").style.display = "block";
             document.getElementById("giaGoc").style.display = "block";
@@ -730,6 +740,10 @@
         $("#pagingsp").twbsPagination({
             totalPages: totalgages,
             visiblePages: 7,
+            first:'Đầu',
+            last:'Cuối',
+            prev:'Trước',
+            next:'Tiếp',
             onPageClick: function (event, page) {
                 pageIndex = page;
                 setTimeout(callback, 200);

@@ -29,6 +29,7 @@ namespace AppView.Controllers
         }
         public IActionResult ProductManager()
         {
+
             return View();
         }
         [HttpGet]
@@ -39,9 +40,49 @@ namespace AppView.Controllers
             if (response.IsSuccessStatusCode)
             {
                 lstSanpham = JsonConvert.DeserializeObject<List<SanPhamViewModelAdmin>>(response.Content.ReadAsStringAsync().Result);
+                //Sắp xếp
+                if(filter.sortSP == "1")
+                {
+                    lstSanpham = lstSanpham.OrderBy(x=>x.Ten).ToList();
+                }
+                else if(filter.sortSP == "2")
+                {
+                    lstSanpham = lstSanpham.OrderBy(x => x.GiaBan).ToList();
+                }
+                else if(filter.sortSP == "3")
+                {
+                    lstSanpham = lstSanpham.OrderByDescending(x => x.GiaBan).ToList();
+                }
+                else if(filter.sortSP == "4")
+                {
+                    lstSanpham = lstSanpham.OrderBy(x => x.SoLuong).ToList();
+                }
+                else if(filter.sortSP == "5")
+                {
+                    lstSanpham = lstSanpham.OrderByDescending(x => x.SoLuong).ToList();
+                }
+                //Tìm kiếm theo tên sản phẩm
                 if (filter.search != null)
                 {
-                    lstSanpham = lstSanpham.Where(x=>x.Ten.Contains(filter.search)).ToList();
+                    lstSanpham = lstSanpham.Where(x=>x.Ten.ToLower().Contains(filter.search.ToLower())).ToList();
+                }
+                //Tìm kiếm theo giá
+                if(filter.minPrice != null)
+                {
+                    lstSanpham = lstSanpham.Where(x => x.GiaBan>=filter.minPrice).ToList();
+                }
+                if (filter.maxPrice != null)
+                {
+                    lstSanpham = lstSanpham.Where(x => x.GiaBan <= filter.maxPrice).ToList();
+                }
+                //Tìm kiếm theo loại sản phẩm
+                if (filter.loaiSPCha != "all")
+                {
+                    lstSanpham = lstSanpham.Where(x => x.LoaiSPCha == filter.loaiSPCha).ToList();
+                    if(filter.loaiSPCon != "all")
+                    {
+                        lstSanpham = lstSanpham.Where(x => x.LoaiSPCon == filter.loaiSPCon).ToList();
+                    }
                 }
                 var model = lstSanpham.Skip((filter.page - 1) * filter.pageSize).Take(filter.pageSize).ToList();
                 return Json(new
@@ -88,9 +129,13 @@ namespace AppView.Controllers
         }
         public JsonResult GetLoaiSPCon(string tenLoaiSPCha)
         {
-            HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllLoaiSPCon?tenLoaiSPCha=" + tenLoaiSPCha).Result;
-            var loaiSP = JsonConvert.DeserializeObject<List<LoaiSP>>(response.Content.ReadAsStringAsync().Result);
-            return Json(loaiSP);
+            string? response = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllLoaiSPCon?tenLoaiSPCha=" + tenLoaiSPCha).Result.Content.ReadAsStringAsync().Result;
+            if (response != null)
+            {
+                var loaiSP = JsonConvert.DeserializeObject<List<LoaiSP>>(response);
+                return Json(new { KetQua = loaiSP, TrangThai = true });
+            }
+            else return Json(new {TrangThai = false });
         }
         [HttpGet]
         public IActionResult AddSanPham()
@@ -100,6 +145,11 @@ namespace AppView.Controllers
         [HttpPost]
         public async Task<IActionResult> AddSanPham(SanPhamRequest sanPhamRequest)
         {
+            //Xóa màu deleted           
+            sanPhamRequest.MauSacs.RemoveAll(XoaMau);
+            //Xoá size deleted
+            sanPhamRequest.KichCos.RemoveAll(XoaSize);
+            //Gọi API
             HttpResponseMessage response = _httpClient.PostAsJsonAsync(_httpClient.BaseAddress + "SanPham/AddSanPham", sanPhamRequest).Result;
             if (response.IsSuccessStatusCode)
             {
@@ -109,6 +159,14 @@ namespace AppView.Controllers
             }
             else return BadRequest();
         }
+        private static bool XoaMau(MauSac mau)
+        {
+            return mau.Ten == "Deleted";
+        }
+        private static bool XoaSize(string size)
+        {
+            return size == "Deleted";
+        }
         [HttpGet]
         public IActionResult ProductDetail(string idSanPham)
         {
@@ -117,21 +175,61 @@ namespace AppView.Controllers
 
         }
         [HttpGet]
-        public JsonResult ShowProductDetail(string id, int page, int pageSize, string? searchMa)
+        public JsonResult ShowProductDetail(string id, int page, int pageSize, string? ma, int? minPrice, int? maxPrice, int? minQuantity, int? maxQuantity,int? sort)
         {
             var response = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllChiTietSanPhamAdmin?idSanPham=" + id).Result;
             if (response.IsSuccessStatusCode)
             {
-                var lstSanPham = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModelAdmin>>(response.Content.ReadAsStringAsync().Result);
-                if (searchMa != null)
+                var lstSanpham = JsonConvert.DeserializeObject<List<ChiTietSanPhamViewModelAdmin>>(response.Content.ReadAsStringAsync().Result);
+                //Sắp xếp
+                if (sort == 1)
                 {
-                    lstSanPham = lstSanPham.Where(x => x.Ma.Contains(searchMa)).ToList();
+                    lstSanpham = lstSanpham.OrderBy(x => x.Ma).ToList();
                 }
-                var model = lstSanPham.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+                else if (sort == 2)
+                {
+                    lstSanpham = lstSanpham.OrderBy(x => x.GiaBan).ToList();
+                }
+                else if (sort == 3)
+                {
+                    lstSanpham = lstSanpham.OrderByDescending(x => x.GiaBan).ToList();
+                }
+                else if (sort == 4)
+                {
+                    lstSanpham = lstSanpham.OrderBy(x => x.SoLuong).ToList();
+                }
+                else if (sort == 5)
+                {
+                    lstSanpham = lstSanpham.OrderByDescending(x => x.SoLuong).ToList();
+                }
+                //Tìm kiếm theo tên sản phẩm
+                if (ma != null)
+                {
+                    lstSanpham = lstSanpham.Where(x => x.Ma.Contains(ma.ToUpper())).ToList();
+                }
+                //Tìm kiếm theo giá
+                if (minPrice != null)
+                {
+                    lstSanpham = lstSanpham.Where(x => x.GiaBan >= minPrice).ToList();
+                }
+                if (maxPrice != null)
+                {
+                    lstSanpham = lstSanpham.Where(x => x.GiaBan <= maxPrice).ToList();
+                }
+                //Tìm kiếm theo số lượng
+                if (minQuantity != null)
+                {
+                    lstSanpham = lstSanpham.Where(x => x.SoLuong >= minQuantity).ToList();
+                }
+                if (maxQuantity != null)
+                {
+                    lstSanpham = lstSanpham.Where(x => x.SoLuong <= maxQuantity).ToList();
+                }
+                var model = lstSanpham.Skip((page - 1) * pageSize).Take(pageSize).ToList();
                 return Json(new
                 {
                     data = model,
-                    total = lstSanPham.Count,
+                    total = lstSanpham.Count,
                     status = true
                 }); ;
             }
@@ -143,9 +241,9 @@ namespace AppView.Controllers
             var response = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllAnhSanPham?idSanPham=" + idSanPham).Result;
             if (response.IsSuccessStatusCode)
             {
-                var lstAnh = JsonConvert.DeserializeObject<List<Anh>>(response.Content.ReadAsStringAsync().Result);
+                var lstAnh = JsonConvert.DeserializeObject<List<AnhViewModel>>(response.Content.ReadAsStringAsync().Result);
                 ViewData["IDSanPham"] = idSanPham.ToString();
-                return View("QuanLyAnh", lstAnh);
+                return View("QuanLyAnh", lstAnh.OrderBy(x=>x.TenMau));
             }
             else return BadRequest();
         }
@@ -161,6 +259,37 @@ namespace AppView.Controllers
             }
             else return BadRequest();
         }
+        [HttpPost]
+        public IActionResult UpdateImage(IFormFile file, string id, string idSanPham,string duongDan)
+        {
+            string wwwrootPath = _hostEnvironment.WebRootPath;
+            var anh = new Anh() { ID = new Guid(id), DuongDan = _iFileService.AddFile(file, wwwrootPath).Result, TrangThai = 1 };
+            var response = _httpClient.PutAsJsonAsync("SanPham/UpdateImage", anh).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                if (_iFileService.DeleteFile(duongDan, wwwrootPath))
+                {
+                    return RedirectToAction("QuanLyAnh", new { idSanPham });
+                }
+                else return BadRequest();
+            }
+            else return BadRequest();
+        }
+        [HttpGet]
+        public IActionResult DeleteImage(string duongDan,string id, string idSanPham)
+        {
+            string wwwrootPath = _hostEnvironment.WebRootPath;
+            var response = _httpClient.DeleteAsync("SanPham/DeleteImage?id="+id).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                if (_iFileService.DeleteFile(duongDan, wwwrootPath))
+                {
+                    return RedirectToAction("QuanLyAnh", new { idSanPham });
+                }
+                else return BadRequest();
+            }
+            else return BadRequest();
+        }
         [HttpGet]
         public IActionResult AddChiTietSanPham(string idSanPham)
         {
@@ -170,6 +299,8 @@ namespace AppView.Controllers
         [HttpPost]
         public async Task<IActionResult> AddChiTietSanPham(ChiTietSanPhamAddRequest request)
         {
+            request.MauSacs.RemoveAll(XoaMau);
+            request.KichCos.RemoveAll(XoaSize);
             string idSanPham = TempData.Peek("IDSanPham").ToString();
             request.IDSanPham = new Guid(idSanPham);
             var response = await _httpClient.PostAsJsonAsync(_httpClient.BaseAddress + "SanPham/AddChiTietSanPham", request);
@@ -208,7 +339,7 @@ namespace AppView.Controllers
             var response = _httpClient.PutAsJsonAsync(_httpClient.BaseAddress + "SanPham/UpdateGiaBanChiTietSanPham", request).Result;
             if (response.IsSuccessStatusCode)
             {
-                return Json(new { Message = giaBan.ToString(), TrangThai = true });
+                return Json(new { Message = response.Content.ReadAsStringAsync().Result, TrangThai = true });
             }
             else
             {
@@ -231,7 +362,7 @@ namespace AppView.Controllers
         [HttpGet]
         public IActionResult UpdateChiTietSanPham()
         {
-            var request = JsonConvert.DeserializeObject<ChiTietSanPhamUpdateRequest>(TempData["UpdateChiTietSanPham"].ToString());
+            var request = JsonConvert.DeserializeObject<ChiTietSanPhamUpdateRequest>(TempData.Peek("UpdateChiTietSanPham").ToString());
             TempData["SanPham"]=request.IDSanPham.ToString();
             TempData["MaSP"] = request.Ma;
             if (request.MauSacs != null)
@@ -244,6 +375,7 @@ namespace AppView.Controllers
         [HttpPost]
         public IActionResult UpdateChiTietSanPham(ChiTietSanPhamUpdateRequest request)
         {
+            if (!ModelState.IsValid) return RedirectToAction("UpdateChiTietSanPham");
             request.IDSanPham = new Guid(TempData.Peek("SanPham").ToString());
             request.Ma = TempData["MaSP"] as string;
             request.Location = Convert.ToInt32(TempData["Location"] as string);
@@ -266,9 +398,9 @@ namespace AppView.Controllers
             string wwwrootPath = _hostEnvironment.WebRootPath;
             string idSanPham = TempData["SanPham"].ToString();
             List<AnhRequest> lstAnhRequest = new List<AnhRequest>();
-            for (var i = 0; i < images.Count; i++)
+            for (var i = 0; i < maMaus.Count; i++)
             {
-                lstAnhRequest.Add(new AnhRequest() { IDSanPham = new Guid(idSanPham), MaMau = maMaus[i], DuongDan = _iFileService.AddFile(images[i], wwwrootPath).Result });
+                lstAnhRequest.Add(new AnhRequest() { IDSanPham = new Guid(idSanPham), MaMau = maMaus[i], DuongDan = images.Count<=i?"": _iFileService.AddFile(images[i], wwwrootPath).Result });
             }
             HttpResponseMessage response = _httpClient.PostAsJsonAsync(_httpClient.BaseAddress + "SanPham/AddAnh", lstAnhRequest).Result;
             if (response.IsSuccessStatusCode) return RedirectToAction("ProductManager");

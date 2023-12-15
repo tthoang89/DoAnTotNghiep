@@ -219,32 +219,42 @@ namespace AppView.Controllers
        
         public async Task<IActionResult> Create(KhuyenMaiView kmv)
         {
-            if (kmv.GiaTri==null||kmv.GiaTri==0)
+            string apiURL = $"https://localhost:7095/api/KhuyenMai";
+            var response1 = await _httpClient.GetAsync(apiURL);
+            var apiData = await response1.Content.ReadAsStringAsync();
+            var roles = JsonConvert.DeserializeObject<List<KhuyenMaiView>>(apiData);
+            if (kmv.GiaTri != null || kmv.NgayApDung != null || kmv.NgayKetThuc != null||kmv.Ten!=null)
             {
-                ViewData["GiaTri"] = "Mời Bạn nhập Giá Trị";
-            }
-            
-            if (kmv.NgayApDung == null)
-            {
-                ViewData["NgayApDung"] = "Mời bạn nhập ngày áp dụng";
-            }
-            if (kmv.NgayKetThuc == null)
-            {
-                ViewData["NgayKetThuc"] = "Mời bạn nhập ngày kết thúc";
-            }
-            if (kmv.NgayKetThuc < kmv.NgayApDung)
-            {
-                ViewData["Ngay"] = "Ngày kết thúc phải lớn hơn hoặc bằng ngày áp dụng";
-            }
-            else
-            {
-                var response = await
-           _httpClient.PostAsJsonAsync("https://localhost:7095/api/KhuyenMai", kmv);
-                if (response.IsSuccessStatusCode) return RedirectToAction("GetAllKM");
-                return View();
+                if (kmv.GiaTri <= 0)
+                {
+                    ViewData["GiaTri"] = "Mời Bạn nhập giá trị lớn hơn 0";
+                }
+                if (kmv.NgayApDung == null)
+                {
+                    ViewData["NgayApDung"] = "Mời bạn nhập ngày áp dụng";
+                }
+                if (kmv.NgayKetThuc == null)
+                {
+                    ViewData["NgayKetThuc"] = "Mời bạn nhập ngày kết thúc";
+                }
+                if (kmv.NgayKetThuc < kmv.NgayApDung)
+                {
+                    ViewData["Ngay"] = "Ngày kết thúc phải lớn hơn hoặc bằng ngày áp dụng";
+                }
+                var timkiem=roles.FirstOrDefault(x=>x.Ten==kmv.Ten);
+                if (timkiem != null)
+                {
+                    ViewData["Ma"] = "Mã này đã tồn tại";
+                }
+                if (kmv.GiaTri > 0 && kmv.NgayKetThuc >= kmv.NgayApDung&&timkiem==null)
+                {
+                    var response = await
+          _httpClient.PostAsJsonAsync("https://localhost:7095/api/KhuyenMai", kmv);
+                    if (response.IsSuccessStatusCode) return RedirectToAction("GetAllKM");
+                    return View();
+                }       
             }
             return View();
-            
         }
         // update
         public  IActionResult Update(Guid id)
@@ -259,30 +269,18 @@ namespace AppView.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(KhuyenMaiView kmv)
         {
-            if (kmv.GiaTri == null || kmv.GiaTri == 0)
-            {
-                ViewData["GiaTri"] = "Mời Bạn nhập giá trị";
-            }
 
-            if (kmv.NgayApDung == null)
-            {
-                ViewData["NgayApDung"] = "Mời bạn nhập ngày áp dụng";
-            }
-            if (kmv.NgayKetThuc == null)
-            {
-                ViewData["NgayKetThuc"] = "Mời bạn nhập ngày kết thúc";
-            }
-            if (kmv.NgayKetThuc < kmv.NgayApDung)
-            {
-                ViewData["Ngay"] = "Ngày kết thúc phải lớn hơn hoặc bằng ngày áp dụng";
-            }
-            else
+            if (kmv.NgayKetThuc >= kmv.NgayApDung)
             {
                 var response = await _httpClient.PutAsJsonAsync($"https://localhost:7095/api/KhuyenMai/{kmv.ID}", kmv);
                 if (response.IsSuccessStatusCode) return RedirectToAction("GetAllKM");
                 return View();
-            }        
+            }
+            ViewData["Ngay"] = "Ngày kết thúc phải lớn hơn hoặc bằng ngày áp dụng";
             return View();
+
+
+
         }
         public async Task<IActionResult> SuDung(Guid id)
         {

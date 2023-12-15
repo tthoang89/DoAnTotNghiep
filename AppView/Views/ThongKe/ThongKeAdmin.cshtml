@@ -161,9 +161,10 @@
 <script type="text/javascript">
     $(function () {
         $('#daterange').daterangepicker({
-            opens: 'left'
+            opens: 'left',
+            startDate: '@Model.Start',
+            endDate: '@Model.End'
         }, function (start, end, label) {
-            //Function xu ly
             location.href = "/ThongKe/ThongKeAdmin?startDate=" + start.format('YYYY-MM-DD') + "&endDate=" + end.format('YYYY-MM-DD');
         });
     });

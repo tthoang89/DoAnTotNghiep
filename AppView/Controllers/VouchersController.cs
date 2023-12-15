@@ -1,5 +1,6 @@
 ﻿using AppData.Models;
 using AppData.ViewModels;
+using AppData.ViewModels.ThongKe;
 using AppView.PhanTrang;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -72,45 +73,46 @@ namespace AppView.Controllers
 
         public async Task<IActionResult> Create(VoucherView voucher)
         {
-            if (voucher.SoTienCan == null || voucher.SoTienCan <= 0)
-            {
-                ViewData["SoTienCan"] = "Mời bạn nhập số tiền cần";
-            }
-            if (voucher.GiaTri == null || voucher.GiaTri <= 0)
-            {
-                ViewData["GiaTri"] = "Mời bạn nhập giá trị ";
-            }
-            if (voucher.SoLuong == null || voucher.SoLuong <= 0)
-            {
-                ViewData["SoLuong"] = "Mời bạn nhập số lượng ";
-            }
-            if (voucher.TrangThai == null || voucher.TrangThai == 0)
-            {
-                ViewData["TrangThai"] = "Mời bạn chọn trạng thái ";
-            }
-            if (voucher.NgayApDung == null)
-            {
-                ViewData["NgayApDung"] = "Mời bạn nhập ngày áp dụng";
-            }
-            if (voucher.NgayKetThuc == null)
-            {
-                ViewData["NgayKetThuc"] = "Mời bạn nhập ngày kết thúc";
-            }
-            if (voucher.NgayKetThuc < voucher.NgayApDung)
-            {
-                ViewData["Ngay"] = "Ngày kết thúc phải lớn hơn ngày áp dụng";
-            }
-            else
-            {
-                var response = await _httpClient.PostAsJsonAsync($"https://localhost:7095/api/Voucher", voucher);
-                if (response.IsSuccessStatusCode)
+            string apiURL = $"https://localhost:7095/api/Voucher";
+            var response1 = await _httpClient.GetAsync(apiURL);
+            var apiData = await response1.Content.ReadAsStringAsync();
+            var roles = JsonConvert.DeserializeObject<List<VoucherView>>(apiData);
+           
+                if (voucher.SoTienCan != null || voucher.Ten != null || voucher.GiaTri != null || voucher.HinhThucGiamGia != null || voucher.TrangThai != null || voucher.NgayApDung != null || voucher.NgayKetThuc != null)
                 {
-                    return RedirectToAction("GetAllVoucher");
-                }
-                return View();
-            }
+                    if ( voucher.SoTienCan <= 0)
+                    {
+                        ViewData["SoTienCan"] = "Mời bạn nhập số tiền cần lớn hơn 0";
+                    }
+                    if ( voucher.GiaTri <= 0)
+                    {
+                        ViewData["GiaTri"] = "Mời bạn nhập giá trị lớn hơn 0";
+                    }
+                    if ( voucher.SoLuong <= 0)
+                    {
+                        ViewData["SoLuong"] = "Mời bạn nhập số lượng lớn hơn 0";
+                    }               
+                    if (voucher.NgayKetThuc < voucher.NgayApDung)
+                    {
+                        ViewData["Ngay"] = "Ngày kết thúc phải lớn hơn ngày áp dụng";
+                    }
+                    var timkiem = roles.FirstOrDefault(x => x.Ten == voucher.Ten);
+                    if (timkiem != null)
+                    {
+                        ViewData["Ma"] = "Mã này đã tồn tại";
+                    }
+                    if(voucher.SoTienCan>0&&voucher.GiaTri>0&&voucher.SoLuong>0&& voucher.NgayKetThuc >= voucher.NgayApDung&&timkiem==null)
+                    {
+                        var response = await _httpClient.PostAsJsonAsync($"https://localhost:7095/api/Voucher", voucher);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            return RedirectToAction("GetAllVoucher");
+                        }
+                        return View();
+                    }
 
-            
+                }
+                
             return View();
         }
         // update
@@ -127,46 +129,33 @@ namespace AppView.Controllers
 
         [HttpPost]
 
-        public async Task<IActionResult> Updates( VoucherView voucher)
-        {
-            if (voucher.SoTienCan == null || voucher.SoTienCan == 0)
+        public async Task<IActionResult> Updates(VoucherView voucher)
+        {        
+            if (voucher.SoLuong > 0 && voucher.NgayKetThuc >= voucher.NgayApDung && voucher.SoTienCan > 0)
             {
-                ViewData["SoTienCan"] = "Mời bạn nhập số tiền cần";
-            }
-            if (voucher.GiaTri == null || voucher.GiaTri == 0)
-            {
-                ViewData["GiaTri"] = "Mời bạn nhập giá trị ";
-            }
-            if (voucher.SoLuong == null || voucher.SoLuong == 0)
-            {
-                ViewData["SoLuong"] = "Mời bạn nhập số lượng ";
-            }
-            if (voucher.TrangThai == null || voucher.TrangThai == 0)
-            {
-                ViewData["TrangThai"] = "Mời bạn chọn trạng thái ";
-            }
-            if (voucher.NgayApDung == null)
-            {
-                ViewData["NgayApDung"] = "Mời bạn nhập ngày áp dụng";
-            }
-            if (voucher.NgayKetThuc == null)
-            {
-                ViewData["NgayKetThuc"] = "Mời bạn nhập ngày kết thúc";
-            }
-            if (voucher.NgayKetThuc < voucher.NgayApDung)
-            {
-                ViewData["Ngay"] = "Ngày kết thúc phải lớn hơn ngày áp dụng";
+                    var response = await _httpClient.PutAsJsonAsync($"https://localhost:7095/api/Voucher/{voucher.Id}", voucher);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return RedirectToAction("GetAllVoucher");
+                    }
+                    return View();
             }
             else
             {
-                var response = await _httpClient.PutAsJsonAsync($"https://localhost:7095/api/Voucher/{voucher.Id}", voucher);
-                if (response.IsSuccessStatusCode)
+                if (voucher.NgayKetThuc < voucher.NgayApDung)
                 {
-                    return RedirectToAction("GetAllVoucher");
+                    ViewData["Ngay"] = "Ngày kết thúc phải lớn hơn ngày áp dụng";
+                }
+                if (voucher.SoTienCan <= 0)
+                {
+                    ViewData["SoTienCan"] = "Mời bạn nhập số tiền cần lớn hơn 0";
+                }
+                if (voucher.SoLuong <= 0)
+                {
+                    ViewData["SoLuong"] = "Mời bạn nhập số lượng lớn hơn 0";
                 }
                 return View();
             }
-           
             return View();
         }
         // delete

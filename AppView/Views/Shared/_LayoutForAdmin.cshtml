@@ -179,7 +179,33 @@
                                     </li>
                                 </ul>
                             </li><!-- End Forms Nav -->
-
+                            <li class="nav-item">
+                                <a class="nav-link collapsed" data-bs-target="#thuocTinh" data-bs-toggle="collapse">
+                                    <i class="bi bi-layout-text-window-reverse"></i><span>Quản lý thuộc tính</span><i class="bi bi-chevron-down ms-auto"></i>
+                                </a>
+                                <ul id="thuocTinh" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                                    <li>
+                                        <a asp-controller="ThongKe" asp-action="ThongKeAdmin">
+                                            <i class="bi bi-circle"></i><span>Quản lý màu sắc </span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a asp-controller="ThongKe" asp-action="ThongKeAdmin">
+                                            <i class="bi bi-circle"></i><span>Quản lý kích cỡ</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a asp-controller="ThongKe" asp-action="ThongKeAdmin">
+                                            <i class="bi bi-circle"></i><span>Quản lý chất liệu</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a asp-controller="ThongKe" asp-action="ThongKeAdmin">
+                                            <i class="bi bi-circle"></i><span>Quản lý loại sản phẩm </span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
                 <li class="nav-item">
                                 <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse">
                                     <i class="bi bi-layout-text-window-reverse"></i><span>Quản lý các loại khuyến mãi</span><i class="bi bi-chevron-down ms-auto"></i>

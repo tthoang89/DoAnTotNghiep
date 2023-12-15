@@ -1,4 +1,4 @@
-﻿@model IEnumerable<AppData.Models.Anh>
+﻿@model IEnumerable<AppData.ViewModels.SanPham.AnhViewModel>
 
 @{
     ViewData["Title"] = "QuanLyAnh";
@@ -11,24 +11,19 @@
     <label for="image" class="btn btn-primary">Thêm ảnh</label>
     <input id="image" style="visibility:hidden;" type="file" onchange="AddImage(event)">
 </div>
-<table class="table">
+<table class="table" style="width:500px">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.ID)
+                Ảnh
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DuongDan)
+                Tên màu
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TrangThai)
+                Mã màu
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IDMauSac)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IDSanPham)
-            </th>
+            <th></th>
             <th></th>
         </tr>
     </thead>
@@ -37,23 +32,20 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ID)
+                    <img src="/img/product/@item.DuongDan" style="width:70px;height:70px" />
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.DuongDan)
+                    @Html.DisplayFor(modelItem => item.TenMau)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.TrangThai)
+                    <input type="color" value="@item.MaMau" style="border:none;width:27px;height:25px" disabled />
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.IDMauSac)
+                <td style="padding-right:2px;width:50px">
+                    <label for="update_@item.ID" class="btn btn-success">Sửa</label><br/>
+                    <input id="update_@item.ID" style="visibility:hidden;width:50px" type="file" onchange="UpdateImage(event,'@item.ID','@item.DuongDan')">
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.IDSanPham)
-                </td>
-                <td style="width:200px!important">
-                    <a asp-action="UpdateImage" class="btn btn-success" asp-route-idSanPham="@item.ID">Sửa</a>
-                    <a asp-action="DeleteImage" class="btn btn-danger" asp-route-idSanPham="@item.ID">Xoá</a>
+                <td style="padding-left:2px">
+                    <a asp-action="DeleteImage" class="btn btn-danger" asp-route-id="@item.ID" asp-route-idSanPham="@id" asp-route-duongDan="@item.DuongDan">Xoá</a>
                 </td>
             </tr>
         }
@@ -61,12 +53,25 @@
 </table>
 <script src="/js/jquery-3.3.1.min.js"></script>
 <script>
-    function AddImage(event) {
+    function AddImage(event,id) {
         var value = event.target.files[0];
         var formData = new FormData();
         formData.append("file", value);
         formData.append("idSanPham", '@id');
         fetch("/Admin/AddAnhNoColor", {
+            method: 'POST',
+            body: formData
+        });
+        setTimeout("location.reload(true);", 600);
+    };
+    function UpdateImage(event,id,duongdan) {
+        var value = event.target.files[0];
+        var formData = new FormData();
+        formData.append("file", value);
+        formData.append("id", id);
+        formData.append("duongDan", duongdan);
+        formData.append("idSanPham", '@id');
+        fetch("/Admin/UpdateImage", {
             method: 'POST',
             body: formData
         });

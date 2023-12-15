@@ -16,7 +16,7 @@ namespace AppData.Configurations
             builder.ToTable("KhachHang");
             builder.HasKey(x => x.IDKhachHang);
             builder.Property(x => x.Ten).HasColumnType("nvarchar(100)");
-            builder.Property(x => x.Password).HasColumnType("varchar(15)");
+            builder.Property(x => x.Password).HasColumnType("varchar(MAX)");
             builder.Property(x => x.GioiTinh).HasColumnType("int");
             builder.Property(x => x.NgaySinh).HasColumnType("datetime");
             builder.Property(x => x.Email).HasColumnType("varchar(250)");

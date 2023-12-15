@@ -2,13 +2,14 @@
 @using AppData.ViewModels;
 @using Newtonsoft.Json;
 @{
-    var loginInfor = new LoginViewModel();
+    LoginViewModel loginInfor = new LoginViewModel();
     string? session = Context.Session.GetString("LoginInfor");
     if (session != null)
     {
         loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(Context.Session.GetString("LoginInfor"));
     }
-    string tongtien = TempData.Peek("TongTien") as string;
+    string? tongtien = TempData.Peek("TongTien") as string;
+    string? soLuong = TempData.Peek("Quantity") as string;
     long tienship = 0;
     Layout = "_Layout";
 }
@@ -53,7 +54,7 @@
                         <div class="col-lg-12">
                             <div class="checkout__input">
                                 <label for="ten">Tên</label>
-                                <input type="text" class="form-control" id="name" placeholder="" value="" required="" style="height:38px">
+                                <input type="text" class="form-control" id="name" placeholder="" value="@loginInfor.Ten" required="" style="height:38px">
                                 <div class="invalid-feedback"> Không để trống tên</div>
                             </div>
                         </div>
@@ -62,14 +63,14 @@
                         <div class="col-lg-6">
                             <div class="checkout__input">
                                 <label for="sdt">SĐT</label>
-                                <input type="text" class="form-control" id="phone" placeholder="" value="" required="" style="height:38px">
+                                <input type="text" class="form-control" id="phone" placeholder="" value="@loginInfor.SDT" required="" style="height:38px">
                                 <div class="invalid-feedback"> Không để trống SDT </div>
                             </div>
                         </div>
                         <div class="col-lg-6">
                             <div class="checkout__input">
                                 <label for="email">Email</label>
-                                <input type="text" class="form-control" id="email" placeholder="" value="" required="" style="height:38px">
+                                <input type="text" class="form-control" id="email" placeholder="" value="@loginInfor.Email" required="" style="height:38px">
                                 <div class="invalid-feedback"> Không để trống email </div>
                             </div>
                         </div>
@@ -175,11 +176,11 @@
                         <li>04. Cluten free mini dozen <span>$ 110.0</span></li>
                         </ul> *@
                         <ul class="checkout__order__products">
-                            <li>Tiền hàng <span>@tongtien VNĐ</span></li>
+                            <li>Tiền hàng <span id="tienHang"></span></li>
                             <li id="moneyvoucher" hidden></li>
                             <li id="moneyscore" hidden></li>
-                            <li>Tiền ship <span id="fee">@tienship VNĐ</span></li>
-                            <li>Tổng tiền <span id="total">@tongtien VNĐ</span></li>
+                            <li>Tiền ship <span id="fee">0 VND</span></li>
+                            <li>Tổng tiền <span id="total"></span></li>
                         </ul>
                         <button onclick="createhoadon()" class="site-btn">
                             XÁC NHẬN
@@ -201,6 +202,9 @@
     var voucher = "";
     var diemTich = 0;
     $(document).ready(function () {
+        var tienHang = @tongtien;
+        document.getElementById("tienHang").innerHTML = tienHang.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
+        document.getElementById("total").innerHTML = tienHang.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
         $.ajax({
             type: "GET",
             url: "https://online-gateway.ghn.vn/shiip/public-api/master-data/province",
@@ -269,14 +273,14 @@
             xa = document.getElementById(value1).innerHTML;
             $.ajax({
                 type: "GET",
-                url: "https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee?shop_id=4643378?to_ward_code=" + value1 + "&to_district_id=" + value2 + "&weight=100&service_type_id=2",
+                url: "https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee?shop_id=4643378?to_ward_code=" + value1 + "&to_district_id=" + value2 + "&weight="+500*@soLuong+"&service_type_id=2",
                 headers: { token: '9f4e42e4-fde8-11ed-a281-3aa62a37e0a5' },
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (data) {
                     $('#dfward').remove();
                     tienShip = data.data.total;
-                    document.getElementById("fee").innerHTML = data.data.total + " VNĐ";
+                    document.getElementById("fee").innerHTML = data.data.total.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
                     document.getElementById("total").innerHTML = (tienShip + @tongtien-tienVoucher - tienDiem) + "VNĐ";
                 },
                 error: function (reponse) {
@@ -387,16 +391,17 @@
         }
     }
 
-    function usevoucher() {
-        voucher = $("#voucher").val();
-        $.ajax({
+    function usevoucher() { 
+        value = $("#voucher").val();
+        $.ajax({          
             async: true,
             type: 'GET',
             dataType: 'json',
             url: '/Home/UseVoucher',
-            data: { ma: voucher, tongTien: @tongtien},
+            data: { ma: value, tongTien: @tongtien},
             success: function (response) {
                 if (response.trangThai == true) {
+                    voucher = value;
                     if (response.hinhThuc == 1) {
                         tienVoucher = (@tongtien * response.giaTri) / 100;
                     }
@@ -418,7 +423,6 @@
         });
     }
     function usediem() {
-        diemTich = $("#diemTich").val();
         if (isNaN(diemTich)) {
             $("#error-message").text("Số điểm không hợp lệ. Vui lòng nhập số nguyên.");
             return;
@@ -428,14 +432,16 @@
             return;
         }
         $("#error-message").text("");
+        var value = $("#diemTich").val();
         $.ajax({
             async: true,
             type: 'GET',
             dataType: 'json',
             url: '/Home/UseDiemTich',
-            data: { diem: diemTich, id: '@loginInfor.Id', tongTien: @tongtien },
+            data: { diem: value, id: '@loginInfor.Id', tongTien: @tongtien },
             success: function (response) {
                 if (response.trangThai == true) {
+                    diemTich = value;
                     var ipDiem = document.getElementById("moneyscore");
                     ipDiem.hidden = false;
                     tienDiem = response.soTienGiam;
