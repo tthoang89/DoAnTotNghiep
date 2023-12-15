@@ -32,6 +32,12 @@ namespace AppAPI.Controllers
             var listDonMua = await _lichsu.getAllDonMua(IDkhachHang);
             return listDonMua;
         }
+        [HttpGet("GetALLLichSuTichDiembyIdUser")]
+        public async Task<List<LichSuTichDiemTieuDiemViewModel>> GetALLLichSuTichDiembyIdUser(Guid IDkhachHang)
+        {
+            var listDonMua = await _lichsu.GetALLLichSuTichDiembyIdUser(IDkhachHang);
+            return listDonMua;
+        }
         [HttpGet("GetAllDonMuaChiTiet")]
         public async Task<List<DonMuaChiTietViewModel>> GetAllDonMuaCT(Guid idHoaDon)
         {
