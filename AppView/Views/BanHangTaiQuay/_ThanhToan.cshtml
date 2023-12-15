@@ -201,7 +201,10 @@
     <div class="d-flex flex-column mt-auto">
         @if (lstvc.Count != 0)
         {
-            <div class="d-flex flex-row p-3">
+            <div class="d-flex">
+                <label for="inputState" class="form-label">Voucher áp dụng </label>
+            </div>
+            <div class="d-flex flex-row">
                 <section class="radio-section">
                     <div class="radio-list" style="height:170px;width:552px; overflow-y: scroll; overflow-x: hidden">
                         <div class="row p-2">
@@ -258,7 +261,7 @@
                    $('#diemKHSD').val(diemtoida);
                     $("tichdiemhd").text("");
                     $("#tdhd").css('display', 'none');
-                   $('#tientrutichdiem').text((diemtoida*@(ViewBag.TLTieu)).toLocaleString());
+                   $('#tientrutichdiem').text(Intl.NumberFormat().format(diemtoida*@(ViewBag.TLTieu)));
                 }else{
                      $('#diemKHSD').val('');
                       $("#tdhd").css('display', 'block');
@@ -271,7 +274,7 @@
                    $('#diemKHSD').val(diemtoida);
                     $("tichdiemhd").text("");
                     $("#tdhd").css('display', 'block');
-                   $('#tientrutichdiem').text((diemtoida*@(ViewBag.TLTieu)).toLocaleString());
+                   $('#tientrutichdiem').text(Intl.NumberFormat().format(diemtoida*@(ViewBag.TLTieu)));
                 }else{
                      $('#diemKHSD').val('');
                       $("#tdhd").css('display', 'block');
@@ -305,7 +308,7 @@
                    if(@(Model.TongTien) !== 0){
                        $("tichdiemhd").text("");
                        $("#tdhd").css('display', 'none');
-                       $('#tientrutichdiem').text(tien.toLocaleString());
+                       $('#tientrutichdiem').text(Intl.NumberFormat().format(tien));
                    }else{
                        //toastr.error('Chưa có sản phẩm thanh toán', "Error Alert", { timeOut: 1000 });
                        $(this).val('');
@@ -320,7 +323,7 @@
                     else if($(this).val() > @(Model.DiemKH)){
                         toastr.error('Số điểm không đủ', "Error Alert", { timeOut: 1000 });
                     }else{
-                        $('#tientrutichdiem').text(tien.toLocaleString());
+                        $('#tientrutichdiem').text(Intl.NumberFormat().format(tien));
                     }
                 }else{
                     //toastr.error('Chưa có sản phẩm thanh toán', "Error Alert", { timeOut: 1000 });
@@ -407,10 +410,10 @@
                 $("#khachdua").val(0);
                 $("#tientrakhach").text('');
             }else{
-                 $(this).val(dua.toLocaleString());
-                let cantra = $("#khachCanTra").text() === '' ? 0 : parseInt($("#khachCanTra").text().replace(/,/g, ""));
+                let cantra = $("#khachCanTra").text() === '' ? '' : $("#khachCanTra").text().replaceAll('.', '');
+                cantra = cantra.replaceAll(',', '');
                 let tientra = dua - cantra;
-                $("#tientrakhach").text(tientra.toLocaleString());
+                $("#tientrakhach").text(Intl.NumberFormat().format(tientra));
             }
         });
         //Chọn voucher
@@ -430,7 +433,7 @@
                         toastr.success(response.message, "Success Alert", { timeOut: 1000 });
                         $("#idvoucher").text(response.idvoucher);
                         $("#tienkhuyenmai").css('display', 'block');
-                        $("#giatrivoucher").text(response.giatri.toLocaleString());
+                        $("#giatrivoucher").text(Intl.NumberFormat().format(response.giatri));
                     }else{
                         toastr.error(response.message, "Error Alert", { timeOut: 1000 });
                         $("#idvoucher").val('');
@@ -449,10 +452,12 @@
         //Tính tiền
        function TinhTien() {
             var tt = @Model.TongTien;
-            $("#tongTienHang").text(tt.toLocaleString());
-            var trutd = $("#tientrutichdiem").text() === '' ? 0 : parseInt($("#tientrutichdiem").text().replace(/,/g, ""));
-            var voucher = $("#giatrivoucher").text() === '' ? 0 : parseInt($("#giatrivoucher").text().replace(/,/g, ""));
+            $("#tongTienHang").text(Intl.NumberFormat().format(tt));
+            var trutd = $("#tientrutichdiem").text() === '' ? '' : $("#tientrutichdiem").text().replaceAll('.', '');
+            var voucher = $("#giatrivoucher").text() === '' ? '' : $("#giatrivoucher").text().replaceAll('.', '');
+            trutd = trutd.replaceAll(",", "");
+            voucher = voucher.replaceAll(",", "");
             var tienkhachtra = tt - trutd - voucher;
-            $("#khachCanTra").text(tienkhachtra.toLocaleString());
+            $("#khachCanTra").text(Intl.NumberFormat().format(tienkhachtra));
        }
 </script>
