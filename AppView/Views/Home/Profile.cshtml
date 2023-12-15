@@ -147,8 +147,11 @@
                             <div class="col-sm-3">
                                 <p class="mb-0">Điểm tích</p>
                             </div>
-                            <div class="col-sm-9">
+                            <div class="col-sm-3">
                                 <input style="border:none;width: 100%; background: white;" type="text" value="@Model.DiemTich" disabled />
+                            </div>
+                            <div class="col-sm-6">
+                                <button onclick="LichsuTichDiem()" type="button" class="btn btn-primary">Lịch sử tiêu điểm</button>
                             </div>
                         </div>
                     </div>
@@ -164,6 +167,9 @@
     
 </section>
 <script>
+        function LichsuTichDiem(){
+            location.href = 'LichSuTieuDiemTichDiem';
+        }
         function SuaThongTinCN() {
             var x = document.getElementById("ten").disabled;
             document.getElementById("ten").disabled = false;

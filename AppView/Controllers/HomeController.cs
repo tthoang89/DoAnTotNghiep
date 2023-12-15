@@ -893,6 +893,59 @@ namespace AppView.Controllers
             }
             return View("PurchaseOrderDetail", DonMuaCT);
         }
+        public IActionResult LichSuTieuDiemTichDiem()
+        {
+            return View();
+        }
+        public IActionResult LichSuTieuDiemTichDiembyuser(HoaDon danhGiaCTHDView, int page, int pageSize)
+        {
+            var session = HttpContext.Session.GetString("LoginInfor");
+            LoginViewModel loginViewModel = JsonConvert.DeserializeObject<LoginViewModel>(session);
+            List<LichSuTichDiemTieuDiemViewModel> listLSTD = new List<LichSuTichDiemTieuDiemViewModel>();
+            HttpResponseMessage responseDonMua = _httpClient.GetAsync(_httpClient.BaseAddress + $"LichSuTichDiem/GetALLLichSuTichDiembyIdUser?IDkhachHang={loginViewModel.Id}").Result;
+            if (responseDonMua.IsSuccessStatusCode)
+            {
+                listLSTD = JsonConvert.DeserializeObject<List<LichSuTichDiemTieuDiemViewModel>>(responseDonMua.Content.ReadAsStringAsync().Result);
+                listLSTD = listLSTD.OrderByDescending(p => p.NgayTao).ToList();
+
+                foreach (var item in listLSTD)
+                {
+                    item.Ngaytao1 = item.NgayTao.ToString("dd/MM/yyyy");
+                    item.Ngaythanhtoan1 = item.NgayThanhToan != null ? item.NgayThanhToan.Value.ToString("dd/MM/yyyy") : null;
+                    item.Ngaynhanhang1 = item.NgayNhanHang != null ? item.NgayNhanHang.Value.ToString("dd/MM/yyyy") : null;
+                }
+                if (danhGiaCTHDView.TrangThaiGiaoHang != 2 && danhGiaCTHDView.TrangThaiGiaoHang != null)
+                {
+                    if (danhGiaCTHDView.TrangThaiGiaoHang == 0)
+                    {
+                        listLSTD = listLSTD.Where(p => p.TrangThaiLSTD == 0).ToList();
+                    }
+                    else
+                    {
+                        listLSTD = listLSTD.Where(p => p.TrangThaiLSTD == 1).ToList();
+                    }
+                    var model = listLSTD.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+                    return Json(new
+                    {
+                        data = model,
+                        total = listLSTD.Count,
+                        status = true
+                    });
+                }
+                else
+                {
+                    var model = listLSTD.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+                    return Json(new
+                    {
+                        data = model,
+                        total = listLSTD.Count,
+                        status = true
+                    });
+                }
+            }
+            else return Json(new { status = false });
+
+        }
         public IActionResult ReviewProducts(Guid idCTHD)
         {
             ChiTietHoaDonDanhGiaViewModel hdctDanhGia = new ChiTietHoaDonDanhGiaViewModel();
