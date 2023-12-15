@@ -27,7 +27,7 @@ namespace AppData.ViewModels
         public string Email { get; set; }
         [Required(ErrorMessage = "mời bạn nhập địa chỉ")]
         public string? DiaChi { get; set; }
-        [Required(ErrorMessage = "mời bạn nhập SDT")]
+      
         public string? SDT { get; set; }
         public int? DiemTich { get; set; }
         public int? TrangThai { get; set; }

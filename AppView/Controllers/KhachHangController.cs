@@ -89,56 +89,48 @@ namespace AppView.Controllers
 
         public async Task<IActionResult> Create(KhachHangView kh, string nhaplai)
         {
-
-
-            if (kh.Password != null)
+            string apiUrl1 = "https://localhost:7095/api/KhachHang";
+            var response1 = await httpClients.GetAsync(apiUrl1);
+            string apiData1 = await response1.Content.ReadAsStringAsync();
+            var kh1 = JsonConvert.DeserializeObject<List<KhachHangView>>(apiData1);
+            if (kh.Password != null || kh.SDT != null || kh.Email != null)
             {
                 if (kh.Password.Length < 5)
                 {
-                    ViewData["MK"] = "Mật Khẩu phải lớn hơn 5 kí tự";
+                    ViewBag.MatKhau = "Mật Khẩu phải lớn hơn 5 kí tự";
                 }
-            }
-            if (kh.SDT != null)
-            {
                 if (kh.SDT.Length < 10)
                 {
-                    ViewData["SDT"] = "Số Điện thoại không hợp lệ";
+                    ViewBag.SDT = "Số Điện thoại không hợp lệ";
                 }
-                //var timkiem = kh1.Where(x => x.SDT == kh.SDT).FirstOrDefault();
-                //if (timkiem != null)
-                //{
-                //    ViewData["SDT"] = "Số Điện thoại này đã được đăng kí";
-                //}
-            }
-            //if (kh.Email != null)
-            //{
-            //var email = kh1.Where(x => x.SDT == kh.Email).FirstOrDefault();
-            //if (email != null)
-            //{               
-            //        ViewData["Email"] = "Email này đã được đăng kí";                   
-            //}
+                var timkiem = kh1.Where(x => x.SDT == kh.SDT).FirstOrDefault();
+                if (timkiem != null)
+                {
+                    ViewBag.SDT = "Số Điện thoại này đã được đăng kí";
+                }
+                if (!kh.Email.Contains("@"))
+                {
+                    ViewBag.email = kh.Email.Replace("@", "%40");
+                }
+                var email = kh1.Where(x => x.Email == kh.Email).FirstOrDefault();
+                if (email != null)
+                {
+                    ViewBag.email = "email đã tồn tại";
 
-            //}
-            if (nhaplai != kh.Password)
-            {
-                ViewBag.NhapLai = "Nhập lại mật khẩu không đúng ";
+                }
+                if (nhaplai != kh.Password)
+                {
+                    ViewBag.NhapLai = "Nhập lại mật khẩu không đúng ";
+                }
+                if (kh.SDT.Length >= 10 && kh.Email.Contains("@") &&   timkiem == null && email == null && nhaplai == kh.Password)
+                {
+                    var url = $"https://localhost:7095/api/KhachHang/PostKHView";
+                    var response = await httpClients.PostAsJsonAsync(url, kh);
+                    if (response.IsSuccessStatusCode) return RedirectToAction("GetAllKhachHang");
+                    return View();
+                }
+            }            
                 return View();
-            }
-            else
-            {
-                var url = $"https://localhost:7095/api/KhachHang/PostKHView";
-                var response = await httpClients.PostAsJsonAsync(url, kh);
-                if (response.IsSuccessStatusCode) return RedirectToAction("GetAllKhachHang");
-                return View();
-            }
-           
-           
-
-
-           
-            
-            
-            
         }
         [HttpGet]
 
@@ -164,19 +156,13 @@ namespace AppView.Controllers
         }
         [HttpPost]
 
-        public async Task<IActionResult> Update(KhachHangView kh)
+        public async Task<IActionResult> Updates(KhachHangView kh)
         {
-           
-                var url =
-                $"https://localhost:7095/api/KhachHang/{kh.IDKhachHang}";
-                var response = await httpClients.PutAsJsonAsync(url, kh);
-                if (response.IsSuccessStatusCode) return RedirectToAction("GetAllKhachHang");
-                return View();
-            
-           
-
-
-            
+            var url =
+         $"https://localhost:7095/api/KhachHang/PutKhView";
+            var response = await httpClients.PutAsJsonAsync(url, kh);
+            if (response.IsSuccessStatusCode) return RedirectToAction("GetAllKhachHang");
+            return View();
         }
 
 
