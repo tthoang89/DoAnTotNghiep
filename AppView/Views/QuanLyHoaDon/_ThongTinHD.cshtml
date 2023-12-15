@@ -17,7 +17,7 @@
     @if (Model.KhachHang != "Khách lẻ")
     {
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#lstd" type="button" role="tab" aria-selected="false" tabindex="-1">Lịch sử tích điểm</button>
+            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#lstd" type="button" role="tab" aria-selected="false" tabindex="-1">Lịch sử điểm</button>
         </li>
     }
 </ul>
@@ -59,12 +59,13 @@
                         <label class="col-form-label">
                             @{
                                 @(Model.TrangThai == 2 ? "Chờ xác nhận" :
+                            (Model.TrangThai == 10 ? "Đang đóng hàng" :
                             (Model.TrangThai == 3 ? "Đang giao hàng" :
                             (Model.TrangThai == 4 ? "Đang hoàn hàng" :
                             (Model.TrangThai == 5 ? "Hoàn hàng thành công" :
                             (Model.TrangThai == 6 ? "Thành công" :
                             (Model.TrangThai == 7 ? "Đơn hủy" :
-                            (Model.TrangThai == 8 ? "Chờ xác nhận hủy" : "Chờ xác nhận hoàn hàng")))))))
+                            (Model.TrangThai == 8 ? "Chờ xác nhận hủy" : "Chờ xác nhận hoàn hàng"))))))))
                             }
                         </label>
                     </div>
@@ -228,16 +229,22 @@
             @if (@Model.TrangThai == 6 && @Model.TrangThai != 9 && @Model.LoaiHD == 0)
             {
                 <div class="d-flex p-2">
-                    <button type="button" onclick="DoiTrangThai('4')" class="btn btn-danger fw-normal text-white"><i class="bi bi-reply-all-fill me-2" style="color: #ffffff;"></i> Hoàn hàng</button>
+                    <button type="button" onclick="hoanHang('@Model.Id')" class="btn btn-danger fw-normal text-white"><i class="bi bi-reply-all-fill me-2" style="color: #ffffff;"></i> Hoàn hàng</button>
                 </div>
             }
             @if (@Model.TrangThai == 2)
             {
                 <div class="d-flex p-2">
-                    <button type="button" onclick="DoiTrangThai('3')" class="btn btn-primary fw-normal text-white"><i class="fa-solid fa-check fa-xs me-2" style="color: #ffffff;"></i> Xác nhận hóa đơn</button>
+                    <button type="button" onclick="DoiTrangThai('10')" class="btn btn-primary fw-normal text-white"><i class="fa-solid fa-check fa-xs me-2" style="color: #ffffff;"></i> Xác nhận hóa đơn</button>
                 </div>
                 <div class="d-flex p-2">
                     <button type="button" class="btn btn-dark fw-normal text-white" onclick="huyDon('@Model.Id')"><i class="fa-solid fa-trash fa-xs me-2" style="color: #ffffff;"></i>Hủy bỏ</button>
+                </div>
+            }
+             @if (@Model.TrangThai == 10)
+            {
+                <div class="d-flex p-2">
+                    <button type="button" onclick="DoiTrangThai('3')" class="btn btn-primary fw-normal text-white"><i class="bi bi-truck fa-xs me-2" style="color: #ffffff;"></i> Giao hàng</button>
                 </div>
             }
             @if (@Model.TrangThai == 3)
@@ -249,13 +256,13 @@
             @if (@Model.TrangThai == 4)
             {
                 <div class="d-flex p-2">
-                    <button type="button" onclick="DoiTrangThai('5')" class="btn btn-danger fw-normal text-white"><i class="fa-solid fa-check fa-xs me-2" style="color: #ffffff;"></i>Hoàn hàng thành công</button>
+                    <button type="button" onclick="hoanHangTC('@Model.Id')" class="btn btn-danger fw-normal text-white"><i class="fa-solid fa-check fa-xs me-2" style="color: #ffffff;"></i>Hoàn hàng thành công</button>
                 </div>
             }
             @if (@Model.TrangThai == 6 && @Model.LoaiHD == 1)
             {
                 <div class="d-flex p-2">
-                    <button type="button" onclick="DoiTrangThai('5')" class="btn btn-danger fw-normal text-white"><i class="bi bi-reply-all-fill me-2" style="color: #ffffff;"></i> Hoàn hàng</button>
+                    <button type="button" onclick="hoanHang('@Model.Id')" class="btn btn-danger fw-normal text-white"><i class="bi bi-reply-all-fill me-2" style="color: #ffffff;"></i> Hoàn hàng</button>
                 </div>
             }
             @if (@Model.TrangThai == 8)
@@ -263,11 +270,14 @@
                 <div class="d-flex p-2">
                     <button type="button" class="btn btn-secondary fw-normal text-white" onclick="huyDon('@Model.Id')"><i class="fa-solid fa-check fa-xs me-2" style="color: #ffffff;"></i> Xác nhận hủy</button>
                 </div>
+                <div class="d-flex p-2">
+                    <button type="button" onclick="DoiTrangThai('10')" class="btn btn-primary fw-normal text-white"><i class="fa-solid fa-check fa-xs me-2" style="color: #ffffff;"></i> Xác nhận hóa đơn</button>
+                </div>
             }
             @if (@Model.TrangThai == 9)
             {
                 <div class="d-flex p-2">
-                    <button type="button" onclick="DoiTrangThai('4')" class="btn btn-danger fw-normal text-white"><i class="fa-solid fa-check fa-xs me-2" style="color: #ffffff;"></i> Xác nhận hoàn hàng</button>
+                    <button type="button" onclick="hoanHang('@Model.Id')" class="btn btn-danger fw-normal text-white"><i class="fa-solid fa-check fa-xs me-2" style="color: #ffffff;"></i> Xác nhận hoàn hàng</button>
                 </div>
             }
             <div class="d-flex p-2">
@@ -386,7 +396,7 @@
                     },
                     success: function(response) {
                         if(response.success == true){
-                            billDetail(id);
+                            billDetail('@Model.Id');
                             loadBill();
                         }else{
                             toastr.error(response.message, 'Error Alert', { timeOut: 300 });
@@ -485,21 +495,44 @@
                         }
                     });
             });
-
-            function DoiTrangThai(trangthai){
+        //Đổi trạng thái
+        function DoiTrangThai(trangthai){
+            var ans = confirm("Cập nhật trạng thái hóa đơn này?");
+            var id = "@Model.Id";
+            if(ans){
+                    $.ajax({
+                    url: "/QuanLyHoaDon/DoiTrangThai",
+                    type: "POST",
+                    data:{
+                        trangthai:trangthai,
+                        idhd: id,
+                    },
+                    success: function(response) {
+                        toastr.success(response.message, "Success Alert", { timeOut: 300 });
+                        billDetail(id);
+                        loadBill();
+                    },
+                    error: function(err) {
+                        toastr.error('Thay đổi trạng thái thất bại', "Error Alert", { timeOut: 300 });
+                    }
+                });
+            }
+        }
+        //Hoàn hàng
+        function hoanHang(){
             var gc = $("#ghiChuinTTHD").val();
-            if(trangthai === "4" && gc === "" || gc === "@Model.GhiChu"){
+            if( gc === "" || gc === "@Model.GhiChu"){
                 toastr.error('Bạn chưa nhập ghi chú cho đơn hàng', "Error Alert", { timeOut: 1000 });
             }else{
                 var ans = confirm("Cập nhật trạng thái hóa đơn này?");
                 var id = "@Model.Id";
                 if(ans){
                         $.ajax({
-                        url: "/QuanLyHoaDon/DoiTrangThai",
-                        type: "POST",
+                        url: "/QuanLyHoaDon/HoanHang",
+                        type: "GET",
                         data:{
-                            trangthai:trangthai,
                             idhd: id,
+                            ghichu = gc,
                         },
                         success: function(response) {
                             toastr.success(response.message, "Success Alert", { timeOut: 300 });
@@ -511,6 +544,28 @@
                         }
                     });
                 }
+            }
+        }
+        //Hoàn hàng thành công
+        function hoanHangTC(){
+            var ans = confirm("Cập nhật trạng thái hóa đơn này?");
+            var id = "@Model.Id";
+            if(ans){
+                    $.ajax({
+                    url: "/QuanLyHoaDon/HoanHangTC",
+                    type: "GET",
+                    data:{
+                        idhd: id,
+                    },
+                    success: function(response) {
+                        toastr.success(response.message, "Success Alert", { timeOut: 300 });
+                        billDetail(id);
+                        loadBill();
+                    },
+                    error: function(err) {
+                        toastr.error('Thay đổi trạng thái thất bại', "Error Alert", { timeOut: 300 });
+                    }
+                });
             }
         }
 

@@ -137,10 +137,12 @@
             data: { tenLoaiSPCha: value },
             url: "/Admin/GetLoaiSPCon",
             success: function (response) {
-                for (var i = 0; i < response.length; i++) {
-                    var rows = "<option value='" + response[i].ten + "'>" + response[i].ten + "</option>";
-                    $('#loaiSPCon').append(rows);
-                }
+                if (response.trangThai == true) {
+                    for (var i = 0; i < response.ketQua.length; i++) {
+                        var rows = "<option value='" + response[i].ten + "'>" + response[i].ten + "</option>";
+                        $('#loaiSPCon').append(rows);
+                    }
+                }               
             }
         });
     });

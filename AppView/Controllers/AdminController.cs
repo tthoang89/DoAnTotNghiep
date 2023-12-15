@@ -129,9 +129,13 @@ namespace AppView.Controllers
         }
         public JsonResult GetLoaiSPCon(string tenLoaiSPCha)
         {
-            HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllLoaiSPCon?tenLoaiSPCha=" + tenLoaiSPCha).Result;
-            var loaiSP = JsonConvert.DeserializeObject<List<LoaiSP>>(response.Content.ReadAsStringAsync().Result);
-            return Json(loaiSP);
+            string? response = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllLoaiSPCon?tenLoaiSPCha=" + tenLoaiSPCha).Result.Content.ReadAsStringAsync().Result;
+            if (response != null)
+            {
+                var loaiSP = JsonConvert.DeserializeObject<List<LoaiSP>>(response);
+                return Json(new { KetQua = loaiSP, TrangThai = true });
+            }
+            else return Json(new {TrangThai = false });
         }
         [HttpGet]
         public IActionResult AddSanPham()
@@ -335,7 +339,7 @@ namespace AppView.Controllers
             var response = _httpClient.PutAsJsonAsync(_httpClient.BaseAddress + "SanPham/UpdateGiaBanChiTietSanPham", request).Result;
             if (response.IsSuccessStatusCode)
             {
-                return Json(new { Message = giaBan.ToString(), TrangThai = true });
+                return Json(new { Message = response.Content.ReadAsStringAsync().Result, TrangThai = true });
             }
             else
             {

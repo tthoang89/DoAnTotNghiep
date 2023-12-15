@@ -12,7 +12,6 @@ using System.Net;
 
 namespace AppView.Controllers
 {
-
     public class QuanLyHoaDonController : Controller
     {
         private readonly HttpClient _httpClient;
@@ -96,26 +95,6 @@ namespace AppView.Controllers
             var hd = await _httpClient.GetFromJsonAsync<ChiTietHoaDonQL>($"HoaDon/ChiTietHoaDonQL/{idhd}");
             return PartialView("_ThongTinHD", hd);
         }
-
-        //Hủy hóa đơn
-        [HttpGet("/QuanLyHoaDon/HuyHD")]
-        public async Task<IActionResult> HuyHD(Guid idhd, string ghichu)
-        {
-            var loginInfor = new LoginViewModel();
-            string? session = HttpContext.Session.GetString("LoginInfor");
-            if (session != null)
-            {
-                loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
-            }
-            var idnv = loginInfor.Id;
-            string url = $"HoaDon/HuyHD?idhd={idhd}&idnv={idnv}&Ghichu={ghichu}";
-            var response = await _httpClient.PutAsync(url, null);
-            if (response.IsSuccessStatusCode)
-            {
-                return Json(new { success = true, message = "Cập nhật trạng thái thành công" });
-            }
-            return Json(new { success = false, message = "Cập nhật trạng thái thất bại" });
-        }
         //Sao chép hóa đơn
         [HttpGet("/QuanLyHoaDon/CopyHD")]
         public async Task<IActionResult> CopyHD(string idhd)
@@ -132,7 +111,7 @@ namespace AppView.Controllers
             var response = await _httpClient.PutAsync(url, null);
             if (response.IsSuccessStatusCode)
             {
-                return RedirectToAction("BanHang","BanHangTaiQuay");
+                return RedirectToAction("BanHang", "BanHangTaiQuay");
             }
             return Json(new { success = false, message = "Sao chép hóa đơn thất bại" });
         }
@@ -156,8 +135,40 @@ namespace AppView.Controllers
         //    }
         //    return Json(new { success = false, message = "Cập nhật trạng thái thất bại" });
         //}
+
         // Cập nhật trạng thái
-        public async Task<IActionResult> DoiTrangThai(Guid idhd, int trangthai)
+        public async Task<IActionResult> DoiTrangThai(Guid idhd, int trangthai)// Dùng cho trạng thái truyền  vào: 10, 3
+        {
+            var loginInfor = new LoginViewModel();
+            string? session = HttpContext.Session.GetString("LoginInfor");
+            if (session != null)
+            {
+                loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
+                var idnv = loginInfor.Id;
+                if(trangthai == 6)
+                {
+                    string url = $"HoaDon/ThanhCong?idhd={idhd}&idnv={idnv}";
+                    var response = await _httpClient.PutAsync(url, null);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return Json(new { success = true, message = "Cập nhật trạng thái thành công" });
+                    }
+                }
+                else
+                {
+                    string url = $"HoaDon?idhoadon={idhd}&trangthai={trangthai}&idnhanvien={idnv}";
+                    var response = await _httpClient.PutAsync(url, null);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return Json(new { success = true, message = "Cập nhật trạng thái thành công" });
+                    }
+                }
+            }
+            return Json(new { success = false, message = "Cập nhật trạng thái thất bại" });
+        }
+        //Hủy hóa đơn
+        [HttpGet("/QuanLyHoaDon/HuyHD")] //
+        public async Task<IActionResult> HuyHD(Guid idhd, string ghichu)
         {
             var loginInfor = new LoginViewModel();
             string? session = HttpContext.Session.GetString("LoginInfor");
@@ -166,7 +177,7 @@ namespace AppView.Controllers
                 loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
             }
             var idnv = loginInfor.Id;
-            string url = $"HoaDon?idhoadon={idhd}&trangthai={trangthai}&idnhanvien={idnv}";
+            string url = $"HoaDon/HuyHD?idhd={idhd}&idnv={idnv}";
             var response = await _httpClient.PutAsync(url, null);
             if (response.IsSuccessStatusCode)
             {
@@ -174,8 +185,54 @@ namespace AppView.Controllers
             }
             return Json(new { success = false, message = "Cập nhật trạng thái thất bại" });
         }
-        //Xuất PDF
+        //Hoàn hàng
+        [HttpGet("/QuanLyHoaDon/HoanHang")] //
+        public async Task<IActionResult> HoanHang(Guid idhd, string ghichu)
+        {
+            var loginInfor = new LoginViewModel();
+            string? session = HttpContext.Session.GetString("LoginInfor");
+            if (session != null)
+            {
+                loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
+            }
+            var idnv = loginInfor.Id;
 
+            string url = $"HoaDon/HoanHD?idhd={idhd}&idnv={idnv}";
+            var response = await _httpClient.PutAsync(url, null);
+            if (response.IsSuccessStatusCode)
+            {
+                var stringURL = $"https://localhost:7095/api/HoaDon/UpdateGhichu?idhd={idhd}&idnv={loginInfor.Id}&ghichu={ghichu}";
+                var responseghichu = await _httpClient.PutAsync(stringURL, null);
+                if (responseghichu.IsSuccessStatusCode)
+                {
+                    return Json(new { success = true, message = "Cập nhật trạng thái thành công" });
+                }
+            }
+            return Json(new { success = false, message = "Cập nhật trạng thái thất bại" });
+        }
+        //Hoàn hàng thành công
+        [HttpGet("/QuanLyHoaDon/HoanHangTC")] //
+        public async Task<IActionResult> HoanHangTC(Guid idhd)
+        {
+            var loginInfor = new LoginViewModel();
+            string? session = HttpContext.Session.GetString("LoginInfor");
+            if (session != null)
+            {
+                loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
+            }
+            var idnv = loginInfor.Id;
+
+            string url = $"HoaDon/HoanTCHD?idhd={idhd}&idnv={idnv}";
+            var response = await _httpClient.PutAsync(url, null);
+            if (response.IsSuccessStatusCode)
+            {
+
+                return Json(new { success = true, message = "Cập nhật trạng thái thành công" });
+            }
+            return Json(new { success = false, message = "Cập nhật trạng thái thất bại" });
+        }
+
+        //Xuất PDF
         [HttpGet("/Admin/QuanLyHoaDon/ExportPDF/{idhd}")]
         public async Task<IActionResult> ExportPDF(Guid idhd)
         {

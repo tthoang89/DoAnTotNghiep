@@ -144,9 +144,9 @@ namespace AppAPI.Controllers
             }
         }
         [HttpPut("UpdateGiaBanChiTietSanPham")]
-        public bool UpdateGiaBanChiTietSanPham(ChiTietSanPhamRequest request)
+        public int UpdateGiaBanChiTietSanPham(ChiTietSanPhamRequest request)
         {
-            if (request.GiaBan == null) return false;
+            if (request.GiaBan == null) return -1;
             else
             {
                 var response = _sanPhamServices.UpdateGiaBanChiTietSanPham(request.IDChiTietSanPham, request.GiaBan.Value).Result;

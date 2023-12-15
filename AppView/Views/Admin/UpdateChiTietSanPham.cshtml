@@ -6,7 +6,7 @@
 
 <h1>AddAnhToMauSac</h1>
 
-<form asp-action="UpdateChiTietSanPham">
+<form asp-action="UpdateChiTietSanPham" id="myForm">
     <table class="table">
         <thead>
             <tr>
@@ -51,11 +51,9 @@
                     </td>
                     <td>
                         <input type="number" asp-for="ChiTietSanPhams[i].SoLuong">
-                        <span asp-validation-for="ChiTietSanPhams[i].SoLuong" class="text-danger"></span>
                     </td>
                     <td>
                         <input type="number" asp-for="ChiTietSanPhams[i].GiaBan">
-                        <span asp-validation-for="ChiTietSanPhams[i].GiaBan" class="text-danger"></span>
                     <td>
                         <input type="radio" asp-for="TrangThai" value="@Model.ChiTietSanPhams[i].IDChiTietSanPham">
                     </td>
@@ -74,3 +72,26 @@
     </table>
     <button class="btn btn-primary" type="submit">Submit</button>
 </form>
+
+<script src="/js/jquery-3.3.1.min.js"></script>
+<script>
+    $(".btn").on("click", function (event) {
+        event.preventDefault();
+        var check = true;
+        for (var i = 0; i < @Model.ChiTietSanPhams.Count; i++) {
+            if ($("#ChiTietSanPhams_" + i + "__GiaBan").val() < 0) {
+                alert("Giá bán và số lượng không được âm");
+                check = false;
+                break;
+            }
+            if ($("#ChiTietSanPhams_" + i + "__SoLuong").val() < 0) {
+                alert("Giá bán và số lượng không được âm");
+                check = false;
+                break;
+            }
+        }
+        if (check) {
+            document.getElementById("myForm").submit();
+        }
+    })
+</script>
