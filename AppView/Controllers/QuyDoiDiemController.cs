@@ -62,35 +62,31 @@ namespace AppView.Controllers
 
         public async Task<IActionResult> Create(QuyDoiDiem qdd)
         {
-            if (qdd.TiLeTichDiem ==0||qdd.TiLeTichDiem==null)
+            if (qdd.TiLeTichDiem != null || qdd.TiLeTieuDiem != null||qdd.TrangThai!=null)
             {
-                ViewData["TiLeTichDiem"] = "Yêu cầu nhập dữ liệu ";
-            }
-            else if(qdd.TiLeTichDiem<0)
-            {
-                ViewData["TiLeTichDiem"] = "Yêu cầu nhập dữ liệu lớn hơn 0 ";
-            }
-            if (qdd.TiLeTieuDiem ==0||qdd.TiLeTieuDiem==null)
-            {
-                ViewData["TiLeTieuDiem"] = "Yêu cầu nhập dữ liệu ";
-            }
-            else if (qdd.TiLeTieuDiem < 0)
-            {
-                ViewData["TiLeTieuDiem"] = "Yêu cầu nhập dữ liệu lớn hơn 0 ";
-            }
-            if (qdd.TrangThai == 0)
-            {
-                ViewData["TrangThai"] = "Yêu cầu chọn trạng thái ";
-            }
-            else
-            {
-                var response = await _httpClient.PostAsync($"https://localhost:7095/api/QuyDoiDiem?TiLeTichDiem={qdd.TiLeTichDiem}&TiLeTieuDiem={qdd.TiLeTieuDiem}&TrangThai={qdd.TrangThai}", null);
-
-                if (response.IsSuccessStatusCode)
+                if (qdd.TiLeTichDiem < 0)
                 {
-                    return RedirectToAction("GetAllQuyDoiDiem");
+                    ViewData["TiLeTichDiem"] = "Yêu cầu nhập dữ liệu không âm";
                 }
-                return View();
+
+                if (qdd.TiLeTieuDiem < 0)
+                {
+                    ViewData["TiLeTieuDiem"] = "Yêu cầu nhập dữ liệu không âm";
+                }
+                if (qdd.TrangThai == 0)
+                {
+                    ViewData["TrangThai"] = "Yêu cầu chọn trạng thái ";
+                }
+                if (qdd.TrangThai != 0 && qdd.TiLeTichDiem >= 0 && qdd.TiLeTieuDiem >= 0)
+                {
+                    var response = await _httpClient.PostAsync($"https://localhost:7095/api/QuyDoiDiem?TiLeTichDiem={qdd.TiLeTichDiem}&TiLeTieuDiem={qdd.TiLeTieuDiem}&TrangThai={qdd.TrangThai}", null);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return RedirectToAction("GetAllQuyDoiDiem");
+                    }
+                    return View();
+                }
             }
             return View();
                        

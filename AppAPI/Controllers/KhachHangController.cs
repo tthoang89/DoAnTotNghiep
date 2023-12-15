@@ -146,7 +146,7 @@ namespace AppAPI.Controllers
             return Ok("Đăng ký thành công");
         }
         // PUT api/<SanPhamController>/5
-        [Route("{id}")]
+        [Route("PutKhView")]
         [HttpPut]
         public bool PutKhView(KhachHangView khv)
         {
@@ -155,13 +155,13 @@ namespace AppAPI.Controllers
             {
                 
                 kh.Ten = khv.Ten;
-                kh.Password = MaHoaMatKhau(khv.Password);
-                kh.GioiTinh = khv.GioiTinh;
+                //kh.Password = MaHoaMatKhau(khv.Password);
+                //kh.GioiTinh = khv.GioiTinh;
                 kh.NgaySinh = khv.NgaySinh;
-                kh.Email = khv.Email;
+                //kh.Email = khv.Email;
                 kh.DiaChi = khv.DiaChi;
-                kh.SDT = khv.SDT;
-                kh.TrangThai = khv.TrangThai;
+                //kh.SDT = khv.SDT;
+                //kh.TrangThai = khv.TrangThai;
                 
                 _dbcontext.KhachHangs.Update(kh);
                 _dbcontext.SaveChanges();

@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_LayoutForAdmin.cshtml";
+    AppData.Models.AssignmentDBContext dbcontext = new AppData.Models.AssignmentDBContext();
 }
 
 <h1>Thêm khách hàng</h1>
@@ -21,14 +22,17 @@
             </div>
             <div class="form-group">
                 <label  class="control-label">Mật khẩu </label>
-                <input asp-for="Password" class="form-control" />
+                <input type="password" asp-for="Password" class="form-control" />
                 <span asp-validation-for="Password" class="text-danger"></span>
-                <span class="text-danger">@ViewData["MK"]</span>
+                <span class="text-danger">@ViewBag.MatKhau</span>
+              
+                
             </div>
             <div class="form-group">
                 <label class="control-label">Nhập lại mật khẩu </label>
-                <input name="nhaplai" class="form-control" />
+                <input type="password" name="nhaplai" class="form-control" />
                 <span asp-validation-for="Password" class="text-danger"></span>
+                
                 <span class="text-danger">@ViewBag.NhapLai</span>
             </div>
             <div class="form-group">
@@ -49,13 +53,15 @@
             <div class="form-group">
                 <label  class="control-label">Ngày sinh</label>
                 <input asp-for="NgaySinh" class="form-control" />
-                <span asp-validation-for="NgaySinh" class="text-danger"></span>
+               
             </div>
             <div class="form-group">
                 <label  class="control-label">Email</label>
                 <input asp-for="Email" class="form-control" />
                 <span asp-validation-for="Email" class="text-danger"></span>
-                <span class="text-danger">@ViewData["Email"]</span>
+                <span class="text-danger">@ViewBag.email</span>
+               
+               
             </div>
             <div class="form-group">
                 <label  class="control-label">Địa chỉ</label>
@@ -66,13 +72,15 @@
                 <label  class="control-label">Số điện thoại</label>
                 <input asp-for="SDT" class="form-control" />
                 <span asp-validation-for="SDT" class="text-danger"></span>
-                <span class="text-danger">@ViewData["SDT"]</span>
+                <span class="text-danger">@ViewBag.SDT</span>
+                
+               
             </div>
-            <div class="form-group">
+            @*<div class="form-group">
                 <label class="control-label">Điểm tích</label>
                 <input asp-for="DiemTich" class="form-control" />
                 <span asp-validation-for="DiemTich" class="text-danger"></span>
-            </div>
+            </div>*@
             <div class="form-group">
                 <input type="submit" value="Thêm khách hàng" class="btn btn-success" />
             </div>

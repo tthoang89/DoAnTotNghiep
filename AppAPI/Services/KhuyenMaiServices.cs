@@ -121,9 +121,9 @@ namespace AppAPI.Services
             var khuyenmai = _repos.GetAll().FirstOrDefault(x => x.ID == kmv.ID);
             if (khuyenmai != null)
             {
-                khuyenmai.TrangThai = kmv.TrangThai;
-                khuyenmai.Ten = kmv.Ten;
-                khuyenmai.GiaTri = kmv.GiaTri;
+                //khuyenmai.TrangThai = kmv.TrangThai;
+                //khuyenmai.Ten = kmv.Ten;
+                //khuyenmai.GiaTri = kmv.GiaTri;
                 khuyenmai.MoTa = kmv.MoTa;
                 khuyenmai.NgayApDung = kmv.NgayApDung;
                 khuyenmai.NgayKetThuc = kmv.NgayKetThuc;
