@@ -6,6 +6,7 @@
             position: relative;
             display: inline-block;
         }
+
         .stars-inner {
             position: absolute;
             top: 0;
@@ -19,7 +20,7 @@
             content: "\f005 \f005 \f005 \f005 \f005";
             font-family: 'Font Awesome 5 Free';
             font-weight: 900;
-            font-size: 14px;            
+            font-size: 14px;
             color: #ccc;
         }
 
@@ -552,6 +553,46 @@
 
       $(`.${id} .stars-inner`).css('width', starPercentageRounded);
     }
+        function addCart(idctsp) {
+        $.ajax({
+            async: true,
+            type: 'POST',
+            dataType: "json",
+            data: { id: idctsp },
+            url: '/Home/AddToCart',
+            success: function (response) {
+                if (response.success == true) {
+                    toastr.success(response.message, 'Success Alert', { timeOut: 300 });
+
+                } else {
+                    toastr.error(response.message, 'Error Alert', { timeOut: 300 });
+                }
+            },
+            error: function (response) {
+                console.log(response);
+                toastr.error(response.message, 'Error Alert', { timeOut: 300 });
+            }
+        });
+        $.ajax({
+            async: true,
+            type: 'POST',
+            dataType: "json",
+            data: { sl:1 },
+            url: '/Home/TongSoLuong',
+            success: function (response) {
+                if (response.success == true) {
+                    $('#tongsoluong').text(response.sl);
+
+                } else {
+
+                }
+            },
+            error: function (response) {
+
+            }
+        });
+    }
+
     function FilterSPHome(index){
          $.ajax({
            type: "GET",
@@ -580,7 +621,7 @@
                         </a>
                         <div class="product__item__text">
                           <h6>${item.ten}</h6>
-                          <a href="#" class="add-cart">+ Thêm vào giỏ hàng</a>
+                          <a onclick="addCart('${item.idCTSP}')" class="add-cart">+ Thêm vào giỏ hàng</a>
                           <div class="stars-outer">
                             <div class="stars-inner"></div>
                             <span class="number-rating"></span>

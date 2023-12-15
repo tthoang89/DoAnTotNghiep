@@ -678,6 +678,7 @@ namespace AppAPI.Services
         public async Task<List<SanPhamBanHang>> GetAllSanPhamTaiQuay()
         {
             var result = await (from sp in _context.SanPhams.AsNoTracking()
+                                 where sp.TrangThai !=0
                                  select new SanPhamBanHang()
                                  {
                                      Id = sp.ID,
@@ -705,7 +706,7 @@ namespace AppAPI.Services
         {
             var lstMS = (from ctsp in _context.ChiTietSanPhams.AsNoTracking()
                          join ms in _context.MauSacs.AsNoTracking() on ctsp.IDMauSac equals ms.ID
-                         where ctsp.IDSanPham == idsp
+                         where ctsp.IDSanPham == idsp && ctsp.TrangThai != 0
                          select new MauSac
                          {
                              ID = ms.ID,
@@ -715,7 +716,7 @@ namespace AppAPI.Services
 
             var lstKC = (from ctsp in _context.ChiTietSanPhams
                          join kc in _context.KichCos on ctsp.IDKichCo equals kc.ID
-                         where ctsp.IDSanPham == idsp
+                         where ctsp.IDSanPham == idsp && ctsp.TrangThai != 0
                          select new KichCo
                          {
                              ID = kc.ID,
@@ -723,7 +724,7 @@ namespace AppAPI.Services
                          }).Distinct().ToList();
 
             var result = await (from sp in _context.SanPhams.AsNoTracking()
-                                where sp.ID == idsp
+                                where sp.ID == idsp && sp.TrangThai !=0
                                 select new ChiTietSanPhamBanHang()
                                 {
                                     Id = sp.ID,
@@ -743,7 +744,7 @@ namespace AppAPI.Services
                           join km in _context.KhuyenMais on ctsp.IDKhuyenMai equals km.ID
                           into kmGroup
                           from km in kmGroup.DefaultIfEmpty()
-                          where ctsp.IDSanPham == idsp
+                          where ctsp.IDSanPham == idsp && ctsp.TrangThai !=0
                           select new ChiTietCTSPBanHang()
                           {
                               Id = ctsp.ID,
@@ -770,17 +771,19 @@ namespace AppAPI.Services
         public async Task<List<HomeProductViewModel>> GetAllSanPhamTrangChu()
         {
            var result = await (from sp in _context.SanPhams.AsNoTracking()
+                               where sp.TrangThai != 0
                      select new HomeProductViewModel()
                      {
                          Id = sp.ID,
                          Ten = sp.Ten,
+                         IdCTSP = _context.ChiTietSanPhams.Where(c=>c.IDSanPham == sp.ID && c.TrangThai == 1).FirstOrDefault().ID,
                          Anh = (from ctsp in _context.ChiTietSanPhams.Where(c => c.IDSanPham == sp.ID).AsNoTracking()
                                 join ms in _context.MauSacs.AsNoTracking() on ctsp.IDMauSac equals ms.ID
                                 join a in _context.Anhs.Where(c => c.IDSanPham == sp.ID).AsNoTracking()
                                 on ms.ID equals a.IDMauSac
                                 where ctsp.TrangThai == 1
                                 select a).FirstOrDefault().DuongDan,
-                         SLBan = (from hd in _context.HoaDons.AsNoTracking().Where(c => c.TrangThaiGiaoHang == 6)
+                         SLBan = (from hd in _context.HoaDons.AsNoTracking().Where(c => c.TrangThaiGiaoHang == 6 && c.LoaiHD == 0)
                                   join cthd in _context.ChiTietHoaDons.AsNoTracking()
                                   on hd.ID equals cthd.IDHoaDon
                                   join ctsp in _context.ChiTietSanPhams.AsNoTracking()

@@ -180,7 +180,15 @@ namespace AppView.Controllers
             try
             {
                 var ctsp = await _httpClient.GetFromJsonAsync<ChiTietSanPhamViewModel>($"SanPham/GetChiTietSanPhamByID?id={request.IdChiTietSanPham}");
-                if (ctsp != null && request.SoLuong > ctsp.SoLuong)
+                if (ctsp == null)
+                {
+                    return Json(new { success = false, message = "Không tìm thấy sản phẩm này" });
+                }
+                if (ctsp != null && ctsp.TrangThai == 0)
+                {
+                    return Json(new { success = false, message = "Sản phẩm không hoạt động" });
+                }
+                else if (ctsp != null && request.SoLuong > ctsp.SoLuong)
                 {
                     return Json(new { success = false, message = "Sản phẩm đã hết hàng" });
                 }
@@ -280,6 +288,7 @@ namespace AppView.Controllers
         {
             var hd = await _httpClient.GetFromJsonAsync<HoaDon>($"HoaDon/GetById/{id}");
             var lstcthd = await _httpClient.GetFromJsonAsync<List<HoaDonChiTietViewModel>>($"ChiTietHoaDon/getByIdHD/{id}");
+            lstcthd = lstcthd.Where(c => c.SoLuong > 0).ToList();
             //Voucher
             string apiURL = $"https://localhost:7095/api/Voucher";
             var listvc = await _httpClient.GetFromJsonAsync<List<Voucher>>(apiURL);
