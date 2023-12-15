@@ -212,6 +212,7 @@
                 $(this).addClass("active");
             });
         });
+        $("#resultsp").css("display","none");
     })
     //TabActive
     function activeTab(index) {
@@ -250,7 +251,7 @@
                                                                     <div class="product-detail d-flex flex-column flex-grow-1">
                                                                         <span class="product-name mt-1">${response.data[i].ten}</span>
                                                                         <div class="product-infor mt-auto">
-                                                                            <span style="flex-basis:100%"><b style="color:blue;font-size:14px; font-weight:700">${response.data[i].giaBan.toLocaleString()}</b></span>
+                                                                            <span style="flex-basis:100%"><b style="color:blue;font-size:14px; font-weight:700">${Intl.NumberFormat().format(response.data[i].giaBan)}</b></span>
 
                                                                         </div>
                                                                     </div>
@@ -424,10 +425,10 @@
 
     //Thanh toán chuyển trạng thái
     function thanhToan(id) {
-        var ttien = parseInt($("#khachCanTra").text().replace(/,/g, ""));
+        var ttien = $("#khachCanTra").text().replaceAll('.', '');
+        ttien = parseInt(ttien.replaceAll(',', ''));
         var pttt = $('input[name="pttt"]:checked').val();
         var khachdua = $("#khachdua").val();
-        console.log(ttien);
         console.log(khachdua);
         if (ttien < 0) {
             toastr.error('Số tiền thanh toán không hợp lệ', 'Error Alert', { timeOut: 300 });
@@ -444,9 +445,7 @@
             if ($('#tientrutichdiem').text() === 0 || $('#tientrutichdiem').text() === '') {
                 tichdiemsd = 0;
             };
-            console.log(tichdiemsd);
             var request = { Id: id, PTTT: pttt, IdNhanVien: '@loginInfor.Id', IdVoucher: idvoucher, TongTien: ttien, DiemTichHD: tichdiemhd, DiemSD: tichdiemsd };
-            console.log(request);
             $.ajax({
                 url: "/BanHangTaiQuay/ThanhToan",
                 async: false,
@@ -456,8 +455,8 @@
                 success: function (response) {
                     $("#thanhtoan").modal("hide");
                     $("#partialGioHang").empty();
-                    InHD(id);
                     toastr.success('Thanh toán thành công', "Success Alert", { timeOut: 300 });
+                    InHD(id);
                     loadHDCHO(function () {
                         activeTab(0);
                     });
@@ -492,31 +491,37 @@
                 url: "/BanHangTaiQuay/Search/" + keyword,
                 dataType: 'json',
                 success: function (response) {
-                    for (let i = 0; i < response.data.length; i++) {
-                        const item = response.data[i];
-                        $("#resultsp").append(`
-                                    <li id="sptk" onclick="showSPDetail('${item.id}')">
-                                        <div class="d-flex align-items-center p-1">
-                                            <div class="flex-shrink-0">
-                                                <img src="/img/product/${item.anh}" style="height:80px; width:70px;" alt="...">
-                                            </div>
-                                            <div class="flex-grow-1 ms-3 text-dark">
-                                                <span class="product-name mt-1">${item.ten}</span>
-                                                <div class="product-infor mt-auto">
-                                                    <span style="flex-basis:100%"><b style="color:blue;font-size:14px; font-weight:700">${item.giaBan.toLocaleString()}</b></span>
+                    if(response.data.length > 0){
+                        $("#resultsp").css("display","block");
+                        for (let i = 0; i < response.data.length; i++) {
+                            const item = response.data[i];
+                            $("#resultsp").append(`
+                                        <li id="sptk" onclick="showSPDetail('${item.id}')">
+                                            <div class="d-flex align-items-center p-1">
+                                                <div class="flex-shrink-0">
+                                                    <img src="/img/product/${item.anh}" style="height:80px; width:70px;" alt="...">
+                                                </div>
+                                                <div class="flex-grow-1 ms-3 text-dark">
+                                                    <span class="product-name mt-1">${item.ten}</span>
+                                                    <div class="product-infor mt-auto">
+                                                        <span style="flex-basis:100%"><b style="color:blue;font-size:14px; font-weight:700">${Intl.NumberFormat().format(item.giaBan)}</b></span>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </li>
-                                `);
+                                        </li>
+                                    `);
+                            }
+                    }else{
+                        $("#resultsp").css("display","none");
                     }
                 },
                 error: function (response) {
-
+                     $("#resultsp").css("display","none");
                 }
             });
         } else {
             $("#resultsp").empty();
+            $("#resultsp").css("display","none");
         }
     });
     //Chuyển trang quản lý hóa đơn
