@@ -14,5 +14,7 @@ namespace AppData.ViewModels.ThongKe
         public List<ThongKeCotViewModel> BieuDoCot { get; set; }
         public List<ThongKeDuongViewModel> BieuDoDuong { get; set; }
         public List<ThongKeTronViewModel> BieuDoTron { get; set; }
+        public string Start { get; set; }
+        public string End { get; set; }
     }
 }

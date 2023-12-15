@@ -87,7 +87,7 @@ namespace AppAPI.Services
                                                           TrangThaiHoaDon = g.Key == 6 ? "Thành công" : "Hủy",
                                                           PhanTram = (g.Count() * 100) / tongHoaDonTron,
                                                       }).ToList();
-            return new ThongKeViewModel() { SoLuongThanhVien = soLuongThanhVien, SoLuongDonHang = soLuongDonHangCho, SoLuongSanPham = soLuongSanPham, BieuDoCot = thongKeCot, BieuDoDuong = thongKeDuong.OrderBy(x=>x.Ngay).ToList(), BieuDoTron = thongKeTron };
+            return new ThongKeViewModel() { SoLuongThanhVien = soLuongThanhVien, SoLuongDonHang = soLuongDonHangCho, SoLuongSanPham = soLuongSanPham, BieuDoCot = thongKeCot, BieuDoDuong = thongKeDuong.OrderBy(x=>x.Ngay).ToList(), BieuDoTron = thongKeTron, Start = start.ToString("MM/dd/yyyy"), End = end.ToString("MM/dd/yyyy") };
         }
 
         public List<ThongKeCotViewModel> ThongKeSanPham()
