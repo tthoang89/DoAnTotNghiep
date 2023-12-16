@@ -998,7 +998,7 @@ namespace AppView.Controllers
             request.OldPassword = oldPassword;
             var response = _httpClient.PutAsJsonAsync(_httpClient.BaseAddress + "QuanLyNguoiDung/ChangePassword", request).Result;
             HttpContext.Session.Remove("LoginInfor");
-            if (response.IsSuccessStatusCode) return RedirectToAction("Login");
+            if (response.IsSuccessStatusCode) return RedirectToAction("Login",new {actionName="Index"});
             else return BadRequest();
         }
         public IActionResult DanhGiaSanPham([FromBody] DanhGiaCTHDViewModel danhGiaCTHDView)
