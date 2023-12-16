@@ -43,6 +43,7 @@ namespace AppView.Controllers
         // create
         public IActionResult Create()
         {
+
             var Diem = dbcontext.QuyDoiDiems.ToList();
             foreach (var tk in Diem)
             {
@@ -79,7 +80,7 @@ namespace AppView.Controllers
                 }
                 if (qdd.TrangThai != 0 && qdd.TiLeTichDiem >= 0 && qdd.TiLeTieuDiem >= 0)
                 {
-                    var response = await _httpClient.PostAsync($"https://localhost:7095/api/QuyDoiDiem?TiLeTichDiem={qdd.TiLeTichDiem}&TiLeTieuDiem={qdd.TiLeTieuDiem}&TrangThai={qdd.TrangThai}", null);
+                    var response = await _httpClient.PostAsync($" https://localhost:7095/api/QuyDoiDiem?TiLeTichDiem={qdd.TiLeTichDiem}&TiLeTieuDiem={qdd.TiLeTieuDiem}&TrangThai={qdd.TrangThai}", null);
 
                     if (response.IsSuccessStatusCode)
                     {
@@ -108,6 +109,7 @@ namespace AppView.Controllers
 
         public async Task<IActionResult> Updates(QuyDoiDiem qdd)
         {
+           
             var Diem = Guid.Parse(HttpContext.Session.GetString("IDQuyDoi"));
             var trangthai = dbcontext.QuyDoiDiems.Where(x => x.ID != Diem).ToList();
             if (trangthai != null)
@@ -120,11 +122,30 @@ namespace AppView.Controllers
                 dbcontext.SaveChangesAsync();
                 
             }                            
-            var response = await _httpClient.PutAsync($"https://localhost:7095/api/QuyDoiDiem/{qdd.ID}?TiLeTichDiem={qdd.TiLeTichDiem}&TiLeTieuDiem={qdd.TiLeTieuDiem}&TrangThai={qdd.TrangThai}", null);
-           
+            var response = await _httpClient.PutAsync($"https://localhost:7095/api/QuyDoiDiem/{qdd.ID}?TrangThai={qdd.TrangThai}", null);
+
             if (response.IsSuccessStatusCode)
-            {              
-                return RedirectToAction("GetAllQuyDoiDiem");
+            {
+                string apiURL1 = $"https://localhost:7095/api/QuyDoiDiem";
+                var response1 = await _httpClient.GetAsync(apiURL1);
+                var apiData1 = await response1.Content.ReadAsStringAsync();
+                var roles = JsonConvert.DeserializeObject<List<QuyDoiDiem>>(apiData1);
+                var timkiem = roles.Where(x => x.TrangThai == 1 || x.TrangThai == 2).ToList();
+                if (timkiem.Count()==0)
+                {
+                    var response2 = await _httpClient.PostAsync($" https://localhost:7095/api/QuyDoiDiem?TiLeTichDiem=0&TiLeTieuDiem=0&TrangThai=1",null);
+
+                    if (response2.IsSuccessStatusCode)
+                    {
+                        return RedirectToAction("GetAllQuyDoiDiem");
+                    }
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction("GetAllQuyDoiDiem");
+                }
+               
             }
             return View();                      
         }

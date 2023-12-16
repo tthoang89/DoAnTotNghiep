@@ -300,10 +300,13 @@ namespace AppView.Controllers
                     else
                     {
                         SanPhamViewModel sanPhamViewModel = lstSanpham.FirstOrDefault(p => p.ID == item.ID && p.TrangThaiCTSP == 1);
-                        if (lstSanPhamfnR.FirstOrDefault(p => p.ID == sanPhamViewModel.ID) == null)
+                        if (sanPhamViewModel != null)
                         {
-                            lstSanPhamfnR.Add(sanPhamViewModel);
-                        }
+                            if (lstSanPhamfnR.FirstOrDefault(p => p.ID == sanPhamViewModel.ID) == null)
+                            {
+                                lstSanPhamfnR.Add(sanPhamViewModel);
+                            }
+                        }                       
                     }
                 }
                 //
@@ -1295,7 +1298,7 @@ namespace AppView.Controllers
                 HttpResponseMessage response = _httpClient.PostAsJsonAsync("HoaDon", hoaDon).Result;
                 if (response.IsSuccessStatusCode)
                 {
-
+                    TempData["CheckOutSuccess"] = response.Content.ReadAsStringAsync().Result;
                     if (!hoaDon.TrangThai) Response.Cookies.Delete("Cart");
                     // lam them
                     TempData["SoLuong"] = "0";
@@ -1391,6 +1394,7 @@ namespace AppView.Controllers
                         HttpResponseMessage response = _httpClient.PostAsJsonAsync("HoaDon", hoaDon).Result;
                         if (response.IsSuccessStatusCode)
                         {
+                            TempData["CheckOutSuccess"] = response.Content.ReadAsStringAsync().Result;
                             if (!hoaDon.TrangThai) Response.Cookies.Delete("Cart");
                             // lam them
                             TempData["SoLuong"] = "0";
@@ -1415,7 +1419,8 @@ namespace AppView.Controllers
         [HttpGet]
         public IActionResult CheckOutSuccess()
         {
-            return View();
+            var donMua = JsonConvert.DeserializeObject<DonMuaSuccessViewModel>(TempData.Peek("CheckOutSuccess") as string);
+            return View(donMua);
         }
         [HttpGet]
         public async Task<JsonResult> UseVoucher(string ma, int tongTien)
@@ -1455,6 +1460,17 @@ namespace AppView.Controllers
                 }
             }
             else return Json(new { HinhThuc = false, GiaTri = 0 });
+        }
+        [HttpGet]
+        public JsonResult GetAllVoucherByTien(int tongTien)
+        {
+            var response = _httpClient.GetAsync("Voucher/GetAllVoucherByTien?tongTien=" + tongTien).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                var lst = JsonConvert.DeserializeObject<List<Voucher>>(response.Content.ReadAsStringAsync().Result);
+                return Json(new { TrangThai = true, KetQua = lst });
+            }
+            else return Json(new { TrangThai = false });
         }
         #endregion
 

@@ -296,7 +296,7 @@ namespace AppAPI.Services
             var kh = await context.KhachHangs.FirstOrDefaultAsync(h => h.IDKhachHang == request.ID);
             if (kh != null)
             {
-                if (kh.Password == request.OldPassword)
+                if (KiemTraMatKhau(request.OldPassword,kh.Password))
                 {
                     kh.Password = MaHoaMatKhau(request.NewPassword);
                     await context.SaveChangesAsync();
@@ -306,7 +306,7 @@ namespace AppAPI.Services
             var nv = await context.NhanViens.FirstOrDefaultAsync(h => h.ID == request.ID);
             if (nv != null)
             {
-                if (nv.PassWord == request.OldPassword)
+                if (KiemTraMatKhau(request.OldPassword, nv.PassWord))
                 {
                     nv.PassWord = MaHoaMatKhau(request.NewPassword);
                     await context.SaveChangesAsync();
@@ -315,6 +315,7 @@ namespace AppAPI.Services
             }
             return false;
         }
+
         public async Task<int> UseDiemTich(int diem,string id)
         {
             var khachHang= context.KhachHangs.First(x=>x.IDKhachHang==new Guid(id));

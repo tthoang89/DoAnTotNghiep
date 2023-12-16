@@ -147,7 +147,9 @@
                     <div class="cart__discount" style="margin-bottom:20px!important">
                         <h6>Hình thức giảm giá</h6>
                         <div style="position:relative;margin-bottom:5px">
-                            <input type="text" id="voucher" placeholder="Nhập mã giảm giá" style="font-size:14px;color:#b7b7b7;height: 50px;width: 100%;border: 1px solid #e1e1e1;padding-left: 20px;">
+                            <input type="text" id="voucher" placeholder="Nhập mã giảm giá" style="font-size:14px;color:#b7b7b7;height: 50px;width: 100%;border: 1px solid #e1e1e1;padding-left: 20px;" list="vouchers" />
+                            <datalist id="vouchers">
+                            </datalist>
                             <button onclick="usevoucher()" style="font-size: 14px;color: #ffffff;font-weight: 700;letter-spacing: 2px;text-transform: uppercase;background: #111111;padding: 0 30px;border: none;position: absolute;right: 0;top: 0;height: 100%;">
                                 Áp dụng
                             </button>
@@ -205,6 +207,26 @@
         var tienHang = @tongtien;
         document.getElementById("tienHang").innerHTML = tienHang.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
         document.getElementById("total").innerHTML = tienHang.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
+        $.ajax({
+            type: "GET",
+            url: "/Home/GetAllVoucherByTien",
+            dataType: "json",
+            data: { tongTien : tienHang},
+            success: function (response) {
+                $.each(response.ketQua, function (i,item) {
+                    if (item.hinhThucGiamGia == 1) {
+                        $("#vouchers").append(`<option value='${item.ten}'>(-${item.giaTri}%)</option>`)
+                    } 
+                    else 
+                    {
+                        $("#vouchers").append(`<option value='${item.ten}'>(-${item.giaTri.toLocaleString('it-IT', { style: 'currency', currency: 'VND' })})</option>`)
+                    }
+                });
+            },
+            error: function (reponse) {
+                console(reponse);
+            }
+        });
         $.ajax({
             type: "GET",
             url: "https://online-gateway.ghn.vn/shiip/public-api/master-data/province",
@@ -281,7 +303,7 @@
                     $('#dfward').remove();
                     tienShip = data.data.total;
                     document.getElementById("fee").innerHTML = data.data.total.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
-                    document.getElementById("total").innerHTML = (tienShip + @tongtien-tienVoucher - tienDiem) + "VNĐ";
+                    document.getElementById("total").innerHTML = (tienShip + @tongtien-tienVoucher - tienDiem).toLocaleString('it-IT', { style: 'currency', currency: 'VND' }) ;
                 },
                 error: function (reponse) {
                     alert(reponse.responseText);
@@ -410,8 +432,8 @@
                     }
                     var ipVoucher = document.getElementById("moneyvoucher");
                     ipVoucher.hidden = false;
-                    ipVoucher.innerHTML = "Số tiền giảm (Voucher)<span>" + tienVoucher + " VNĐ</span>";
-                    document.getElementById("total").innerHTML = (tienShip + @tongtien-tienVoucher - tienDiem) + "VNĐ";
+                    ipVoucher.innerHTML = "Số tiền giảm (Voucher)<span>" + tienVoucher.toLocaleString('it-IT', { style: 'currency', currency: 'VND' }) + " </span>";
+                    document.getElementById("total").innerHTML = (tienShip + @tongtien-tienVoucher - tienDiem).toLocaleString('it-IT', { style: 'currency', currency: 'VND' }) ;
                 }
                 else {
                     alert(response.loi);
@@ -423,39 +445,49 @@
         });
     }
     function usediem() {
-        if (isNaN(diemTich)) {
-            $("#error-message").text("Số điểm không hợp lệ. Vui lòng nhập số nguyên.");
-            return;
-        }
-        if (diemTich < 0) {
-            $("#error-message").text("Số điểm không thể âm.");
-            return;
-        }
-        $("#error-message").text("");
+        // if (isNaN(diemTich)) {
+        //     $("#error-message").text("Số điểm không hợp lệ. Vui lòng nhập số nguyên.");
+        //     return;
+        // }
+        // if (diemTich < 0) {
+        //     $("#error-message").text("Số điểm không thể âm.");
+        //     return;
+        // }
+        // $("#error-message").text("");
         var value = $("#diemTich").val();
-        $.ajax({
-            async: true,
-            type: 'GET',
-            dataType: 'json',
-            url: '/Home/UseDiemTich',
-            data: { diem: value, id: '@loginInfor.Id', tongTien: @tongtien },
-            success: function (response) {
-                if (response.trangThai == true) {
-                    diemTich = value;
-                    var ipDiem = document.getElementById("moneyscore");
-                    ipDiem.hidden = false;
-                    tienDiem = response.soTienGiam;
-                    ipDiem.innerHTML = "Số tiền giảm (Điểm)<span>" + tienDiem + " VNĐ</span>";
-                    document.getElementById("total").innerHTML = (tienShip + @tongtien-tienVoucher - tienDiem) + "VNĐ";
+        if (value > @(loginInfor.DiemTich==null?0:loginInfor.DiemTich)) {
+            alert("Số điểm của bạn không đủ");
+        }
+        else if (value<0) {
+            alert("Số điểm không thể âm");
+        } else if (isNaN(value)) {
+            alert("Giá trị không hợp lệ");
+        }
+        else {
+            $.ajax({
+                async: true,
+                type: 'GET',
+                dataType: 'json',
+                url: '/Home/UseDiemTich',
+                data: { diem: value, id: '@loginInfor.Id', tongTien: @tongtien },
+                success: function (response) {
+                    if (response.trangThai == true) {
+                        diemTich = value;
+                        var ipDiem = document.getElementById("moneyscore");
+                        ipDiem.hidden = false;
+                        tienDiem = response.soTienGiam;
+                        ipDiem.innerHTML = "Số tiền giảm (Điểm)<span>" + tienDiem.toLocaleString('it-IT', { style: 'currency', currency: 'VND' }) + "</span>";
+                        document.getElementById("total").innerHTML = (tienShip + @tongtien-tienVoucher - tienDiem).toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
+                    }
+                    else {
+                        alert(response.loi);
+                    }
+                },
+                error: function (response) {
+                    alert("Error");
                 }
-                else {
-                    alert(response.loi);
-                }
-            },
-            error: function (response) {
-                alert("Error");
-            }
-        });
+            });
+        }       
     }
 </script>
 
