@@ -650,24 +650,24 @@ namespace AppView.Controllers
             try
             {
                 int cout = 0;
-                List<GioHangRequest> chiTietSanPhams;
-                string? result = Request.Cookies["Cart"];
-                chiTietSanPhams = JsonConvert.DeserializeObject<List<GioHangRequest>>(result);
-                foreach (var item in dssl)
-                {
-                    Guid id = Guid.Parse(item.Substring(0, 36));
-                    int sl = Convert.ToInt32(item.Substring(36, item.Length - 36));
-                    foreach (var x in chiTietSanPhams)
-                    {
-                        if (x.IDChiTietSanPham == id)
-                        {
-                            x.SoLuong = sl;
-                        }
-                    }
-                }
                 var session = HttpContext.Session.GetString("LoginInfor");
                 if (session == null)
                 {
+                    List<GioHangRequest> chiTietSanPhams;
+                    string? result = Request.Cookies["Cart"];
+                    chiTietSanPhams = JsonConvert.DeserializeObject<List<GioHangRequest>>(result);
+                    foreach (var item in dssl)
+                    {
+                        Guid id = Guid.Parse(item.Substring(0, 36));
+                        int sl = Convert.ToInt32(item.Substring(36, item.Length - 36));
+                        foreach (var x in chiTietSanPhams)
+                        {
+                            if (x.IDChiTietSanPham == id)
+                            {
+                                x.SoLuong = sl;
+                            }
+                        }
+                    }
                     CookieOptions cookie = new CookieOptions();
                     cookie.Expires = DateTime.Now.AddDays(30);
                     Response.Cookies.Append("Cart", JsonConvert.SerializeObject(chiTietSanPhams), cookie);
@@ -839,9 +839,11 @@ namespace AppView.Controllers
 
         }
         [HttpGet]
-        public IActionResult Profile(string loginInfor)
+        public IActionResult Profile()
         {
-            LoginViewModel loginViewModel = JsonConvert.DeserializeObject<LoginViewModel>(loginInfor);
+            var session = HttpContext.Session.GetString("LoginInfor");
+            LoginViewModel loginViewModel = JsonConvert.DeserializeObject<LoginViewModel>(session);
+            //LoginViewModel loginViewModel = JsonConvert.DeserializeObject<LoginViewModel>(loginInfor);
             return View(loginViewModel);
         }
         [HttpPut]
@@ -863,6 +865,7 @@ namespace AppView.Controllers
             var response = _httpClient.PutAsJsonAsync(_httpClient.BaseAddress + "QuanLyNguoiDung/UpdateProfile1", khachhang).Result;
             if (response.IsSuccessStatusCode)
             {
+                HttpContext.Session.Remove("LoginInfor");
                 HttpContext.Session.SetString("LoginInfor", response.Content.ReadAsStringAsync().Result);
                 return Json(new { success = true, message = "Cập nhật thông tin cá nhân thành công" });
             }
