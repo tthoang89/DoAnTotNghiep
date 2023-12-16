@@ -1458,6 +1458,17 @@ namespace AppView.Controllers
             }
             else return Json(new { HinhThuc = false, GiaTri = 0 });
         }
+        [HttpGet]
+        public JsonResult GetAllVoucherByTien(int tongTien)
+        {
+            var response = _httpClient.GetAsync("Voucher/GetAllVoucherByTien?tongTien=" + tongTien).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                var lst = JsonConvert.DeserializeObject<List<Voucher>>(response.Content.ReadAsStringAsync().Result);
+                return Json(new { TrangThai = true, KetQua = lst });
+            }
+            else return Json(new { TrangThai = false });
+        }
         #endregion
 
         #region Other

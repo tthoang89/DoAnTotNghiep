@@ -139,6 +139,7 @@ namespace AppAPI.Services
                     //hoaDon1.ThueVAT = 10;
                     hoaDon1.TongTien = hoaDon.TongTien;
                     hoaDon1.GhiChu = hoaDon.GhiChu;
+                    donMua.ID = hoaDon1.ID.ToString();
                     if (reposHoaDon.Add(hoaDon1))
                     {
                         foreach (var x in chiTietHoaDons)
@@ -247,7 +248,6 @@ namespace AppAPI.Services
                         {
                             _iGioHangServices.DeleteCart(hoaDon.IDNguoiDung.Value);
                         }
-                        
                         return donMua;
                     }
                     else
