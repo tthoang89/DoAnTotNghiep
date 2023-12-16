@@ -897,6 +897,7 @@ namespace AppAPI.Services
                 var hd = context.HoaDons.FirstOrDefault(c => c.ID == idhd);
                 hd.TrangThaiGiaoHang = 6;
                 hd.IDNhanVien = idnv;
+                hd.NgayNhanHang = DateTime.Now;
                 context.HoaDons.Update(hd);
                 context.SaveChanges();
                 //Cộng tích điểm cho khách
