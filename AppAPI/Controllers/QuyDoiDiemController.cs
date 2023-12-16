@@ -31,19 +31,19 @@ namespace AppAPI.Controllers
 
         // POST api/<QuyDoiDiemController>
         [HttpPost]
-        public bool Post(int sodiem, int TiLeTichDiem, int TiLeTieuDiem, int TrangThai)
+        public bool Post( int TiLeTichDiem, int TiLeTieuDiem, int TrangThai)
         {
-            return _quydoidiem.Add(sodiem,TiLeTichDiem, TiLeTieuDiem, TrangThai);
+            return _quydoidiem.Add(TiLeTichDiem, TiLeTieuDiem, TrangThai);
         }
 
         // PUT api/<QuyDoiDiemController>/5
         [HttpPut("{id}")]
-        public bool Put(Guid id, int sodiem, int TiLeTichDiem, int TiLeTieuDiem, int TrangThai)
+        public bool Put(Guid id,int TrangThai)
         {
             var quydoidiem = _quydoidiem.GetById(id);
             if(quydoidiem != null)
             {
-               return _quydoidiem.Update(quydoidiem.ID, sodiem, TiLeTichDiem, TiLeTieuDiem, TrangThai);
+               return _quydoidiem.Update(quydoidiem.ID,  TrangThai);
             }
             else
             {
