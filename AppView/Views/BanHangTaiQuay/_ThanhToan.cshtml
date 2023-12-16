@@ -257,12 +257,13 @@
             diemtoida = @(Model.DiemKH);
         }
         $("#dtoida").text(diemtoida);
+
          //Tự động áp điểm
         $('.swithTichdiem input[type="checkbox"]').on('click', function(event, state){
             if(@(ViewBag.LoaiQDD) === 1){ // Chỉ tích hoặc tiêu
                 if($(this).is(':checked')){
                    $('#diemKHSD').val(diemtoida);
-                    $("tichdiemhd").text("");
+                    $("#tichdiemhd").text("");
                     $("#tdhd").css('display', 'none');
                    $('#tientrutichdiem').text(Intl.NumberFormat().format(diemtoida*@(ViewBag.TLTieu)));
                 }else{
@@ -275,7 +276,7 @@
             }else if(@(ViewBag.LoaiQDD) === 2){// Vừa tích vừa tiêu
                 if($(this).is(':checked')){
                    $('#diemKHSD').val(diemtoida);
-                    $("tichdiemhd").text("");
+                    $("#tichdiemhd").text("");
                     $("#tdhd").css('display', 'block');
                    $('#tientrutichdiem').text(Intl.NumberFormat().format(diemtoida*@(ViewBag.TLTieu)));
                 }else{
@@ -311,7 +312,7 @@
                     toastr.error('Số điểm không đủ', "Error Alert", { timeOut: 1000 });
                 }else{
                    if(@(Model.TongTien) !== 0){
-                       $("tichdiemhd").text("");
+                       $("#tichdiemhd").text("");
                        $("#tdhd").css('display', 'none');
                        $('#tientrutichdiem').text(Intl.NumberFormat().format(tien));
                    }else{
