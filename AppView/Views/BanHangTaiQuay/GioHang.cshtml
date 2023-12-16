@@ -211,11 +211,19 @@
                     success: function(response) {
                         for (let i = 0; i < response.data.length; i++) {
                             const item = response.data[i];
-                            $("#result").append(`
+                            if(item.sdt === null || item.sdt ===''){
+                                $("#result").append(`
+                               <li class="list-group-item link-class" onclick="suaKhachHang('${item.idKhachHang}')">
+                                    <input value="${item.idKhachHang}" hidden />${item.ten}
+                               </li>
+                            `);
+                            }else{
+                                $("#result").append(`
                                <li class="list-group-item link-class" onclick="suaKhachHang('${item.idKhachHang}')">
                                     <input value="${item.idKhachHang}" hidden />${item.ten} | <span class="text-muted">${item.sdt}</span>
                                </li>
                             `);
+                            }
                         }
                     },
                     error: function(response) {
@@ -242,7 +250,7 @@
             $("#validatekh").css('display','block');
             $("#validatekh").text('Số điện thoại không được để trống');
          }else{
-              var khachHang = {IDKhachHang: idhd, Ten: tenkh, GioiTinh: gtinh, NgaySinh: dob, Email: email, DiaChi: dchi, SDT: sdt, Password: 123456};
+              var khachHang = {IDKhachHang: idhd, Ten: tenkh, GioiTinh: gtinh, NgaySinh: dob, Email: email, DiaChi: dchi, SDT: sdt};
              console.log(khachHang);
              $.ajax({
                  url: "/BanHangTaiQuay/AddKhachHang",
@@ -252,8 +260,8 @@
                  data:khachHang,
                  success: function(response) {
                     if(response.success == true){
-                    gethdct(idhd);
-                    $("#themkhachhang").modal("hide");
+                        gethdct(idhd);
+                        $("#themkhachhang").modal("hide");
                         toastr.success(response.message, "Success Alert", {timeOut : 300});
                     }else{
                         $("#validatekh").text(response.message);

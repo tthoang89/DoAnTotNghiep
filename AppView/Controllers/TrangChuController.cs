@@ -84,6 +84,7 @@ namespace AppView.Controllers
         {
 
             var lstsp = await _httpClient.GetFromJsonAsync<List<HomeProductViewModel>>("SanPham/getAllSPTrangChu");
+            lstsp = lstsp.Where(c => c.GiaGoc != 0).ToList();
             // Lấy sản phẩm mới nhất
             var loai = Convert.ToInt32(index);
             if(loai == 1)

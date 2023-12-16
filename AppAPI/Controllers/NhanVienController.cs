@@ -55,7 +55,7 @@ namespace AppAPI.Controllers
             nv.SDT = sdt;
             nv.DiaChi = diachi;
             nv.TrangThai = 1;
-            nv.IDVaiTro = Guid.Parse("952c1a5d-74ff-4daf-ba88-135c5440809c");
+            nv.IDVaiTro = Guid.Parse("9ea902ac-4093-4889-9a9f-dc33d1af1e3c");
             _dbContext.NhanViens.Add(nv);
             _dbContext.SaveChanges();
             return true;

@@ -118,7 +118,6 @@ namespace AppAPI.Controllers
             gh.NgayTao=DateTime.Now;
             _dbcontext.GioHangs.Add(gh);
             _dbcontext.SaveChanges();
-             
             return true;
         }
         private string MaHoaMatKhau(string matKhau)
