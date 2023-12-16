@@ -332,7 +332,6 @@ namespace AppView.Controllers
                     listvc = listvc.Where(c => !lsthdmua.Any(x => x.IDVoucher == c.ID)).ToList();
                 }
             }
-
             var hdtt = new HoaDonThanhToanViewModel()
             {
                 Id = hd.ID,
@@ -343,11 +342,11 @@ namespace AppView.Controllers
                 TongSL = soluong,
                 TongTien = ttien,
                 DiemKH = dtkh,
-                DiemTichHD = qddActive != null ? Convert.ToInt32(ttien / qddActive?.TiLeTichDiem) : 0,
+                DiemTichHD = qddActive != null && qddActive.TiLeTichDiem !=0 ? Convert.ToInt32(ttien / qddActive?.TiLeTichDiem) : 0,
                 NhanVien = loginInfor.Ten,
             };
-            ViewBag.TLTieu = qddActive != null ? (qddActive.TiLeTieuDiem) : 0;
-            ViewBag.LoaiQDD = qddActive != null ? (qddActive.TrangThai) : 0;
+            ViewBag.TLTieu = (qddActive != null && qddActive.TiLeTichDiem != 0) ? (qddActive.TiLeTieuDiem) : 0;
+            ViewBag.LoaiQDD = qddActive != null ? (qddActive.TrangThai) : 0;    
             ViewData["LstVoucher"] = listvc;
             return PartialView("_ThanhToan", hdtt);
         }
@@ -378,8 +377,20 @@ namespace AppView.Controllers
         {
             try
             {
+                KhachHangView khview = new KhachHangView();
+                khview.IDKhachHang = Guid.NewGuid();
+                khview.SDT = request.SDT;
+                khview.Email = request.Email;
+                khview.Ten = request.Ten;
+                khview.DiaChi = request.DiaChi;
+                khview.NgaySinh = request.NgaySinh;
+                khview.GioiTinh = request.GioiTinh;
+                khview.Password = khview.IDKhachHang.ToString();
+                khview.TrangThai = 1;
+                khview.DiemTich = 0;
                 var lstkh = await _httpClient.GetFromJsonAsync<List<KhachHang>>("KhachHang");
-                if (lstkh.Any(c => c.SDT.Equals(request.SDT)))
+
+                if (request.SDT != null && lstkh.Any(c => c.SDT.Equals(request.SDT)))
                 {
                     return Json(new { success = false, message = "Số điện thoại đã được sử dụng" });
                 }
@@ -387,24 +398,30 @@ namespace AppView.Controllers
                 {
                     return Json(new { success = false, message = "Email đã được sử dụng" });
                 }
-                var response = await _httpClient.PostAsJsonAsync("KhachHang/PostKHView/", request);
-                if (response.IsSuccessStatusCode) // Thêm khách hàng thành công -> tạo lịch sử tích điểm
+                else
                 {
-                    var qdd = await _httpClient.GetFromJsonAsync<List<QuyDoiDiem>>("QuyDoiDiem");
-                    var idqdd = qdd.FirstOrDefault(c => c.TrangThai == 1).ID;
-                    var kh = await _httpClient.GetFromJsonAsync<KhachHang>($"KhachHang/getBySDT?sdt={request.SDT}");
-                    var IDHD = request.IDKhachHang; // Luu tam idhd qua idkh
-                                                    // ktra hd đã có lstd 
-                    var checkexist = await _httpClient.GetFromJsonAsync<bool>($"HoaDon/CheckLSGDHD/{IDHD}");
-                    if (checkexist == true) // Tồn tại-> xóa
+                    var url = $"https://localhost:7095/api/KhachHang/PostKHView";
+                    var response = await _httpClient.PostAsJsonAsync(url, khview);
+                    if (response.IsSuccessStatusCode) // Thêm khách hàng thành công -> tạo lịch sử tích điểm
                     {
-                        var lstdexist = await _httpClient.GetFromJsonAsync<LichSuTichDiem>($"HoaDon/LichSuGiaoDich/{IDHD}");
-                        var deletelstd = await _httpClient.DeleteAsync($"LichSuTichDiem/{lstdexist.ID}");
+                        var qdd = await _httpClient.GetFromJsonAsync<List<QuyDoiDiem>>("QuyDoiDiem");
+                        var idqdd = qdd.FirstOrDefault(c => c.TrangThai != 0).ID;
+                        var kh = await _httpClient.GetFromJsonAsync<KhachHang>($"KhachHang/getBySDT?sdt={request.SDT}");
+                        var IDHD = request.IDKhachHang; // Luu tam idhd qua idkh
+                        // ktra hd đã có lstd 
+                        var checkexist = await _httpClient.GetFromJsonAsync<bool>($"HoaDon/CheckLSGDHD/{IDHD}");
+                        if (checkexist == true) // Tồn tại-> xóa
+                        {
+                            var lstdexist = await _httpClient.GetFromJsonAsync<LichSuTichDiem>($"HoaDon/LichSuGiaoDich/{IDHD}");
+                            var deletelstd = await _httpClient.DeleteAsync($"LichSuTichDiem/{lstdexist.ID}");
+                        }
+                        string apiUrl = $"https://localhost:7095/api/LichSuTichDiem?diem=0&trangthai=1&IdKhachHang={kh.IDKhachHang}&IdQuyDoiDiem={idqdd}&IdHoaDon={IDHD}";
+                        var lstdresponse = await _httpClient.PostAsync(apiUrl, null);
+                        return Json(new { success = true, message = "Thêm khách hàng thành công" });
                     }
-                    string apiUrl = $"https://localhost:7095/api/LichSuTichDiem?diem=0&trangthai=1&IdKhachHang={kh.IDKhachHang}&IdQuyDoiDiem={idqdd}&IdHoaDon={IDHD}";
-                    var lstdresponse = await _httpClient.PostAsync(apiUrl, null);
+                    return Json(new { success = false, message = "Thêm khách hàng thất bại" });
                 }
-                return Json(new { success = true, message = "Thêm khách hàng thành công" });
+                return Json(new { success = false, message = "Thêm khách hàng thất bại" });
             }
             catch (Exception ex)
             {
@@ -463,7 +480,7 @@ namespace AppView.Controllers
         {
             var lstkh = await _httpClient.GetFromJsonAsync<List<KhachHang>>("KhachHang");
             var distinctResult = lstkh
-                                .Where(c => c.Ten.ToLower().Contains(keyword.ToLower()) || c.SDT.Contains(keyword))
+                                .Where(c => c.Ten.ToLower().Contains(keyword.ToLower()) || (c.SDT !=null && c.SDT.Contains(keyword)))
                                 .Distinct()
                                 .ToList();
             var result = new List<KhachHang>();

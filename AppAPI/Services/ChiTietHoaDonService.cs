@@ -107,7 +107,7 @@ namespace AppAPI.Services
                                                           join ms in _context.MauSacs on ctsp.IDMauSac equals ms.ID
                                                           join kc in _context.KichCos on ctsp.IDKichCo equals kc.ID
                                                           join sp in _context.SanPhams on ctsp.IDSanPham equals sp.ID
-                                                          join km in _context.KhuyenMais on ctsp.IDKhuyenMai equals km.ID
+                                                          join km in _context.KhuyenMais.Where(c => c.NgayKetThuc > DateTime.Now && c.TrangThai != 2) on ctsp.IDKhuyenMai equals km.ID
                                                           into kmGroup
                                                           from km in kmGroup.DefaultIfEmpty()
                                                           where cthd.IDHoaDon == idhd
@@ -120,7 +120,7 @@ namespace AppAPI.Services
                                                               PhanLoai = ms.Ten + " - " + kc.Ten,
                                                               SoLuong = cthd.SoLuong,
                                                               GiaGoc = ctsp.GiaBan,
-                                                              GiaKM = km.TrangThai == null ? ctsp.GiaBan : (km.TrangThai == 0 ? ctsp.GiaBan - km.GiaTri : (ctsp.GiaBan * (100 - km.GiaTri) / 100)),
+                                                              GiaKM = km.TrangThai == null ? ctsp.GiaBan : (km.TrangThai == 0 ? ctsp.GiaBan - km.GiaTri : (ctsp.GiaBan / 100 * (100 - km.GiaTri))),
                                                           }).ToListAsync();
             return lsthdct;
         }

@@ -249,7 +249,10 @@
 
     $(document).ready(function(){
         $("#tichdiemhd").text(@(Model.DiemTichHD));
-        let diemtoida = (@(Model.TongTien)*0.3)/ @(ViewBag.TLTieu);
+        let diemtoida = 0;
+        if(@(ViewBag.TLTieu) !== 0 ){
+            diemtoida = (@(Model.TongTien)*0.3)/ @(ViewBag.TLTieu);
+        }
         if(diemtoida >= @(Model.DiemKH)){
             diemtoida = @(Model.DiemKH);
         }
@@ -289,6 +292,7 @@
         //Áp dụng tích điểm
         $('#diemKHSD').on("input",function(){
             var diem = $(this).val();
+            console.log(diem);
             var tien = diem * @(ViewBag.TLTieu);
             if(@(ViewBag.LoaiQDD) === 1){ // Chỉ tích hoặc tiêu
                 if($(this).val() ===''){ // không nhập
@@ -296,13 +300,14 @@
                     $("#tdhd").css('display', 'block');
                     $("#tichdiemhd").text(@(Model.DiemTichHD));
                 }
-                else if($(this).val() < 0){
+                else if(diem < 0){
+                    console.log(0);
                     toastr.error('Số điểm nhập không hợp lệ', "Error Alert", { timeOut: 1000 });
                     $('#tientrutichdiem').text(0);
-                }else if($(this).val() > diemtoida){
+                }else if(diem > diemtoida){
                     $('#tientrutichdiem').text();
                     toastr.error('Số điểm vượt quá số điểm tối đa cho phép', "Error Alert", { timeOut: 1000 });
-                }else if($(this).val() > @(Model.DiemKH)){
+                }else if(diem> @(Model.DiemKH)){
                     toastr.error('Số điểm không đủ', "Error Alert", { timeOut: 1000 });
                 }else{
                    if(@(Model.TongTien) !== 0){
@@ -310,17 +315,21 @@
                        $("#tdhd").css('display', 'none');
                        $('#tientrutichdiem').text(Intl.NumberFormat().format(tien));
                    }else{
-                       //toastr.error('Chưa có sản phẩm thanh toán', "Error Alert", { timeOut: 1000 });
                        $(this).val('');
                    }
                 }
             }else if(@(ViewBag.LoaiQDD) === 2){ // Vừa tích vừa tiêu
-                if(@(Model.TongTien) !== 0){
-                    if($(this).val() > diemtoida){
+                if(diem < 0){
+                    console.log(0);
+                    toastr.error('Số điểm nhập không hợp lệ', "Error Alert", { timeOut: 1000 });
+                    $('#tientrutichdiem').text(0);
+                }
+                else if(@(Model.TongTien) !== 0){
+                    if(diem > diemtoida){
                         $('#tientrutichdiem').text(0);
                         toastr.error('Số điểm vượt quá số điểm tối đa cho phép', "Error Alert", { timeOut: 1000 });
                     }
-                    else if($(this).val() > @(Model.DiemKH)){
+                    else if(diem > @(Model.DiemKH)){
                         toastr.error('Số điểm không đủ', "Error Alert", { timeOut: 1000 });
                     }else{
                         $('#tientrutichdiem').text(Intl.NumberFormat().format(tien));
@@ -401,6 +410,7 @@
                 $("#khachdua").val('');
                 $("#tientrakhach").text('');
             }
+            TinhTien();
         }
         function khachDua(value){
              if(value > 1000000000){
