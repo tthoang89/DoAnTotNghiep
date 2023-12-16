@@ -183,7 +183,7 @@ namespace AppAPI.Services
                                         IDKhachHang = hoaDon.IDNguoiDung,
                                         IDQuyDoiDiem = quyDoiDiem.ID,
                                         IDHoaDon = hoaDon1.ID,
-                                        Diem = subtotal / quyDoiDiem.TiLeTichDiem,
+                                        Diem = quyDoiDiem.TiLeTichDiem != 0 ? subtotal / quyDoiDiem.TiLeTichDiem:0,
                                         TrangThai = 1
                                     };
                                     reposLichSuTichDiem.Add(lichSuTichDiem);
@@ -220,7 +220,7 @@ namespace AppAPI.Services
                                     IDKhachHang = hoaDon.IDNguoiDung,
                                     IDQuyDoiDiem = quyDoiDiem.ID,
                                     IDHoaDon = hoaDon1.ID,
-                                    Diem = subtotal / quyDoiDiem.TiLeTichDiem,
+                                    Diem = quyDoiDiem.TiLeTichDiem != 0 ? subtotal / quyDoiDiem.TiLeTichDiem: 0,
                                     TrangThai = 1
                                 };
                                 reposLichSuTichDiem.Add(lichSuTichDiem);
@@ -876,6 +876,18 @@ namespace AppAPI.Services
                 }
                 if (trangThai == 6)
                 {
+                    var lstlstd = context.LichSuTichDiems.Where(c => c.IDHoaDon == idHoaDon).ToList();
+                    if (lstlstd.Count != 0)
+                    {
+                        var td = lstlstd.Where(c => c.TrangThai == 1).FirstOrDefault();
+                        if (td != null)
+                        {
+                            var kh = context.KhachHangs.Where(c => c.IDKhachHang == td.IDKhachHang).FirstOrDefault();
+                            kh.DiemTich += td.Diem;
+                            context.KhachHangs.Update(kh);
+                            context.SaveChanges();
+                        }
+                    }
                     update.NgayThanhToan = update.NgayThanhToan == null ? DateTime.Now : update.NgayThanhToan;
                     update.NgayNhanHang = update.NgayNhanHang == null ? DateTime.Now : update.NgayNhanHang;
                 }
