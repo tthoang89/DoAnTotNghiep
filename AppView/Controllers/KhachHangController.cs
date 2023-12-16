@@ -93,21 +93,14 @@ namespace AppView.Controllers
             var response1 = await httpClients.GetAsync(apiUrl1);
             string apiData1 = await response1.Content.ReadAsStringAsync();
             var kh1 = JsonConvert.DeserializeObject<List<KhachHangView>>(apiData1);
-            if (kh.Password != null || kh.SDT != null || kh.Email != null)
+            if (kh.Password != null  || kh.Email != null)
             {
-                if (kh.Password.Length < 5)
+                if (kh.Password.Length < 8)
                 {
-                    ViewBag.MatKhau = "Mật Khẩu phải lớn hơn 5 kí tự";
-                }
-                if (kh.SDT.Length < 10)
-                {
-                    ViewBag.SDT = "Số Điện thoại không hợp lệ";
+                    ViewBag.MatKhau = "Mật Khẩu phải lớn hơn 7 kí tự";
                 }
                 var timkiem = kh1.Where(x => x.SDT == kh.SDT).FirstOrDefault();
-                if (timkiem != null)
-                {
-                    ViewBag.SDT = "Số Điện thoại này đã được đăng kí";
-                }
+                    
                 if (!kh.Email.Contains("@"))
                 {
                     ViewBag.email = kh.Email.Replace("@", "%40");
@@ -122,7 +115,22 @@ namespace AppView.Controllers
                 {
                     ViewBag.NhapLai = "Nhập lại mật khẩu không đúng ";
                 }
-                if (kh.SDT.Length >= 10 && kh.Email.Contains("@") &&   timkiem == null && email == null && nhaplai == kh.Password)
+                if (kh.SDT != null)
+                {
+                    if (kh.SDT.Length < 10)
+                    {
+                        ViewBag.SDT = "Số Điện thoại không hợp lệ";
+                    }
+                    else
+                    {
+                        if (timkiem != null)
+                        {
+                            ViewBag.SDT = "Số Điện thoại này đã được đăng kí";
+                            return View();
+                        }
+                    }
+                }
+                if ( (kh.Email.Contains("@") && email == null && nhaplai == kh.Password)||(kh.Email.Contains("@") && email == null && nhaplai == kh.Password&& kh.SDT.Length >= 10 &&timkiem==null))
                 {
                     var url = $"https://localhost:7095/api/KhachHang/PostKHView";
                     var response = await httpClients.PostAsJsonAsync(url, kh);

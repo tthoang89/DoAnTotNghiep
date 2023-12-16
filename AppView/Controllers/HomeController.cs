@@ -597,44 +597,70 @@ namespace AppView.Controllers
         {
             List<GioHangRequest> lstGioHang;
             string? result = Request.Cookies["Cart"];
-            if (string.IsNullOrEmpty(result))
-            {
-                //chiTietSanPham.SoLuong = (sl != null)?sl.Value:1;
-                lstGioHang = new List<GioHangRequest>() { new GioHangRequest() { IDChiTietSanPham = new Guid(id), SoLuong = (sl != null) ? sl.Value : 1 } };
-            }
-            else
-            {
-                lstGioHang = JsonConvert.DeserializeObject<List<GioHangRequest>>(result);
-                var tempBienThe = lstGioHang.FirstOrDefault(x => x.IDChiTietSanPham == new Guid(id));
-                if (tempBienThe != null)
-                {
-                    //Sua 
-                    if (sl == null)
-                    {
-                        tempBienThe.SoLuong++;
-                    }
-                    else
-                    {
-                        tempBienThe.SoLuong = tempBienThe.SoLuong + sl.Value;
-                    }
-
-                }
-                else
-                {
-                    lstGioHang.Add(new GioHangRequest() { IDChiTietSanPham = new Guid(id), SoLuong = (sl != null) ? sl.Value : 1 });
-                }
-            }
             var session = HttpContext.Session.GetString("LoginInfor");
             if (session == null)
             {
+                if (string.IsNullOrEmpty(result))
+                {
+                    //chiTietSanPham.SoLuong = (sl != null)?sl.Value:1;
+                    lstGioHang = new List<GioHangRequest>() { new GioHangRequest() { IDChiTietSanPham = new Guid(id), SoLuong = (sl != null) ? sl.Value : 1 } };
+                }
+                else
+                {
+                    lstGioHang = JsonConvert.DeserializeObject<List<GioHangRequest>>(result);
+                    var tempBienThe = lstGioHang.FirstOrDefault(x => x.IDChiTietSanPham == new Guid(id));
+                    if (tempBienThe != null)
+                    {
+                        //Sua 
+                        if (sl == null)
+                        {
+                            tempBienThe.SoLuong++;
+                        }
+                        else
+                        {
+                            tempBienThe.SoLuong = tempBienThe.SoLuong + sl.Value;
+                        }
+
+                    }
+                    else
+                    {
+                        lstGioHang.Add(new GioHangRequest() { IDChiTietSanPham = new Guid(id), SoLuong = (sl != null) ? sl.Value : 1 });
+                    }
+                }
                 CookieOptions cookie = new CookieOptions();
                 cookie.Expires = DateTime.Now.AddDays(30);
                 Response.Cookies.Append("Cart", JsonConvert.SerializeObject(lstGioHang), cookie);
-
                 return Json(new { success = true, message = "Add to cart successfully" });
             }
             else
             {
+                if (string.IsNullOrEmpty(result))
+                {
+                    //chiTietSanPham.SoLuong = (sl != null)?sl.Value:1;
+                    lstGioHang = new List<GioHangRequest>() { new GioHangRequest() { IDChiTietSanPham = new Guid(id), SoLuong = (sl != null) ? sl.Value : 1 } };
+                }
+                else
+                {
+                    lstGioHang = JsonConvert.DeserializeObject<List<GioHangRequest>>(result);
+                    var tempBienThe = lstGioHang.FirstOrDefault(x => x.IDChiTietSanPham == new Guid(id));
+                    if (tempBienThe != null)
+                    {
+                        //Sua 
+                        if (sl == null)
+                        {
+                            tempBienThe.SoLuong++;
+                        }
+                        else
+                        {
+                            tempBienThe.SoLuong = tempBienThe.SoLuong + sl.Value;
+                        }
+
+                    }
+                    else
+                    {
+                        lstGioHang.Add(new GioHangRequest() { IDChiTietSanPham = new Guid(id), SoLuong = (sl != null) ? sl.Value : 1 });
+                    }
+                }
                 var loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
                 if (loginInfor.vaiTro == 1)
                 {
@@ -972,7 +998,7 @@ namespace AppView.Controllers
             request.OldPassword = oldPassword;
             var response = _httpClient.PutAsJsonAsync(_httpClient.BaseAddress + "QuanLyNguoiDung/ChangePassword", request).Result;
             HttpContext.Session.Remove("LoginInfor");
-            if (response.IsSuccessStatusCode) return RedirectToAction("Login");
+            if (response.IsSuccessStatusCode) return RedirectToAction("Login",new {actionName="Index"});
             else return BadRequest();
         }
         public IActionResult DanhGiaSanPham([FromBody] DanhGiaCTHDViewModel danhGiaCTHDView)
@@ -1274,8 +1300,8 @@ namespace AppView.Controllers
         public string Order(HoaDonViewModel hoaDon)
         {
             List<ChiTietHoaDonViewModel> lstChiTietHoaDon = new List<ChiTietHoaDonViewModel>();
-            string temp = TempData["ListBienThe"] as string;
-            string trangThai = TempData["TrangThai"] as string;
+            string temp = TempData.Peek("ListBienThe") as string;
+            string trangThai = TempData.Peek("TrangThai") as string;
             foreach (var item in JsonConvert.DeserializeObject<List<GioHangRequest>>(temp))
             {
                 ChiTietHoaDonViewModel chiTietHoaDon = new ChiTietHoaDonViewModel();
