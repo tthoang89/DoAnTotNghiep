@@ -479,7 +479,7 @@ namespace AppView.Controllers
         [HttpGet("/BanHangTaiQuay/SearchKH/{keyword}")]
         public async Task<IActionResult> SearchKH(string keyword)
         {
-            var lstkh = await _httpClient.GetFromJsonAsync<List<KhachHang>>("KhachHang");
+          var lstkh = await _httpClient.GetFromJsonAsync<List<KhachHang>>("KhachHang");
             var distinctResult = lstkh
                                 .Where(c => c.Ten.ToLower().Contains(keyword.ToLower()) || (c.SDT !=null && c.SDT.Contains(keyword)))
                                 .Distinct()
