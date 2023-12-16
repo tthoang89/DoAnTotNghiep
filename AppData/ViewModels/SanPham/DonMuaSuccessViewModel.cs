@@ -8,6 +8,7 @@ namespace AppData.ViewModels.SanPham
 {
     public class DonMuaSuccessViewModel
     {
+        public string ID { get; set; }
         public string Ten { get; set; }
         public string Email { get; set; }
         public string SDT { get; set; }

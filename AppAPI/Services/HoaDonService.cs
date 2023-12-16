@@ -99,7 +99,7 @@ namespace AppAPI.Services
                     PhuongThucThanhToan = hoaDon.PhuongThucThanhToan,
                     TongTien = hoaDon.TongTien,
                     GhiChu = hoaDon.GhiChu == null ? "" : hoaDon.GhiChu,
-                    DiemSuDung = hoaDon.Diem == null?0:hoaDon.Diem.Value,
+                    DiemSuDung = hoaDon.Diem == null ? 0 : hoaDon.Diem.Value,
                     Login = false,
                     GioHangs = new List<GioHangRequest>()
                 };
@@ -139,6 +139,7 @@ namespace AppAPI.Services
                     //hoaDon1.ThueVAT = 10;
                     hoaDon1.TongTien = hoaDon.TongTien;
                     hoaDon1.GhiChu = hoaDon.GhiChu;
+                    donMua.ID = hoaDon1.ID.ToString();
                     if (reposHoaDon.Add(hoaDon1))
                     {
                         foreach (var x in chiTietHoaDons)
@@ -162,7 +163,7 @@ namespace AppAPI.Services
                             subtotal += x.SoLuong * x.DonGia;
                             repsCTSanPham.Update(CTsanPham);
                             //Tâm
-                            donMua.GioHangs.Add(new GioHangRequest() { Anh = context.Anhs.First(y => y.IDSanPham == CTsanPham.IDSanPham && y.IDMauSac == CTsanPham.IDMauSac).DuongDan, SoLuong = x.SoLuong, DonGia = x.DonGia,Ten = context.SanPhams.First(y=>y.ID == CTsanPham.IDSanPham).Ten, KichCo = context.KichCos.First(y => y.ID == CTsanPham.IDKichCo).Ten,MauSac = context.MauSacs.First(y => y.ID == CTsanPham.IDMauSac).Ten });
+                            donMua.GioHangs.Add(new GioHangRequest() { Anh = context.Anhs.First(y => y.IDSanPham == CTsanPham.IDSanPham && y.IDMauSac == CTsanPham.IDMauSac).DuongDan, SoLuong = x.SoLuong, DonGia = x.DonGia, Ten = context.SanPhams.First(y => y.ID == CTsanPham.IDSanPham).Ten, KichCo = context.KichCos.First(y => y.ID == CTsanPham.IDKichCo).Ten, MauSac = context.MauSacs.First(y => y.ID == CTsanPham.IDMauSac).Ten });
                         }
                         //tích điểm, dùng điểm
                         if (hoaDon.IDNguoiDung != null)
@@ -247,7 +248,7 @@ namespace AppAPI.Services
                         {
                             _iGioHangServices.DeleteCart(hoaDon.IDNguoiDung.Value);
                         }
-                        
+
                         return donMua;
                     }
                     else
@@ -477,7 +478,8 @@ namespace AppAPI.Services
                               }).FirstOrDefault();
 
                 return result;
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
@@ -577,7 +579,7 @@ namespace AppAPI.Services
                         if (tieud != null)
                         {
                             //Cộng điểm kh
-                            var kh = context.KhachHangs.Where(c => c.IDKhachHang ==     tieud.IDKhachHang).FirstOrDefault();
+                            var kh = context.KhachHangs.Where(c => c.IDKhachHang == tieud.IDKhachHang).FirstOrDefault();
                             kh.DiemTich += tieud.Diem;
                             context.KhachHangs.Update(kh);
                             context.SaveChanges();
@@ -615,7 +617,7 @@ namespace AppAPI.Services
                 return false;
             }
         }
-       //Copy
+        //Copy
         public async Task<bool> CopyHD(Guid idhd, Guid idnv)
         {
             try
@@ -787,46 +789,50 @@ namespace AppAPI.Services
                 context.ChiTietHoaDons.Update(item);
                 context.SaveChanges();
             }
-            //Xóa đánh giá
-            //var deletedg = context.DanhGias.Where(c => lsthdct.Select(x => x.ID).Contains(c.ID)).ToList();
-            //context.DanhGias.RemoveRange(deletedg);
-            //context.SaveChanges();
-
-            //Update LSTD tích
-            var lstd = reposLichSuTichDiem.GetAll().FirstOrDefault(c => c.IDHoaDon == hoaDon.Id);
+            //Update LSTD tích (ban đầu chỉ có duy nhất 1
+            var lstd = context.LichSuTichDiems.FirstOrDefault(c => c.IDHoaDon == hoaDon.Id);
             if (lstd != null)
             {
-                //Lấy id quy đổi điểm
-                var qqdiem = reposQuyDoiDiem.GetAll().FirstOrDefault(c => c.ID == lstd.IDQuyDoiDiem);
-                if (qqdiem.TrangThai == 1) // Tích hoặc tiêu 
+                //Lấy id quy đổi điểm dùng hiện tại
+                var qdiem = context.QuyDoiDiems.FirstOrDefault(c => c.TrangThai != 0);
+                if (qdiem.TrangThai == 1) // Chỉ tích hoặc tiêu
                 {
-                    if (hoaDon.DiemTichHD > hoaDon.DiemSD && hoaDon.DiemTichHD > 0) //luôn có 1 trong 2 cái có gtri =0
+                    if (hoaDon.DiemTichHD >= hoaDon.DiemSD) // Trường hợp tích = tiêu = 0
                     {
                         lstd.Diem = hoaDon.DiemTichHD;
+                        context.LichSuTichDiems.Update(lstd);
+                        context.SaveChanges();
                     }
-                    else
+                    else if (hoaDon.DiemSD > hoaDon.DiemTichHD) // Trường hợp tiêu nhiều hơn tích
                     {
-                        lstd.TrangThai = 0;
                         lstd.Diem = hoaDon.DiemSD;
-                        reposLichSuTichDiem.Update(lstd);
+                        lstd.TrangThai = 0;
+                        context.LichSuTichDiems.Update(lstd);
+                        context.SaveChanges();
                     }
                 }
-                else if (qqdiem.TrangThai == 2) // Cả tích và cả tiêu
+                else if (qdiem.TrangThai == 2) // Vừa tích vừa tiêu
                 {
-                    lstd.Diem = hoaDon.DiemTichHD;
-                    reposLichSuTichDiem.Update(lstd);
-                    if (hoaDon.DiemSD > 0)
+                    if (hoaDon.DiemTichHD != 0)
                     {
-                        LichSuTichDiem lstieudiem = new LichSuTichDiem()
+                        lstd.Diem = hoaDon.DiemTichHD;
+                        context.LichSuTichDiems.Update(lstd);
+                        context.SaveChanges();
+                    }
+                    if (hoaDon.DiemSD != 0)
+                    {
+                        // Tạo lstieudiem
+                        LichSuTichDiem lstieu = new LichSuTichDiem()
                         {
                             ID = new Guid(),
-                            IDHoaDon = lstd.IDHoaDon,
+                            TrangThai = 0,
+                            IDHoaDon = hoaDon.Id,
                             IDKhachHang = lstd.IDKhachHang,
                             Diem = hoaDon.DiemSD,
-                            TrangThai = 0,
-                            IDQuyDoiDiem = lstd.IDQuyDoiDiem,
+                            IDQuyDoiDiem = qdiem.ID,
                         };
-                        reposLichSuTichDiem.Add(lstieudiem);
+                        context.LichSuTichDiems.Add(lstieu);
+                        context.SaveChanges();
                     }
                 }
                 // Thêm điểm cho Khách hàng và trừ
@@ -835,7 +841,6 @@ namespace AppAPI.Services
                 kh.DiemTich -= hoaDon.DiemSD;
                 reposKhachHang.Update(kh);
             }
-
             // Trừ số lượng voucher nếu có
             var vc = context.Vouchers.Find(hoaDon.IdVoucher);
             if (vc != null)
@@ -853,22 +858,6 @@ namespace AppAPI.Services
             update.IDVoucher = hoaDon.IdVoucher == Guid.Empty ? null : hoaDon.IdVoucher;
             return reposHoaDon.Update(update);
         }
-
-        //public bool UpdatePTTT(PhuongThucThanhToan pttt)
-        //{
-        //    try
-        //    {
-        //        var phuongttt = reposPTTT.GetAll().FirstOrDefault(p => p.ID == pttt.ID);
-        //        pttt.Ten = phuongttt.Ten;
-        //        pttt.TrangThai = phuongttt.TrangThai;
-        //        reposPTTT.Update(pttt);
-        //        return true;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new Exception(ex.Message);
-        //    }
-        //}
 
         public bool UpdateTrangThaiGiaoHang(Guid idHoaDon, int trangThai, Guid? idNhanVien)
         {
@@ -926,7 +915,7 @@ namespace AppAPI.Services
                 }
                 return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
@@ -939,8 +928,7 @@ namespace AppAPI.Services
                 var hd = context.HoaDons.FirstOrDefault(c => c.ID == idhd);
                 hd.TrangThaiGiaoHang = 4;
                 hd.IDNhanVien = idnv;
-                context.HoaDons.Update(hd);
-                context.SaveChanges();
+                
                 //Trừ đi điểm tích của khách hàng nếu có
                 var lstlstd = context.LichSuTichDiems.Where(c => c.IDHoaDon == idhd).ToList();
                 if (lstlstd.Count != 0)
@@ -953,12 +941,14 @@ namespace AppAPI.Services
                         kh.DiemTich -= td.Diem;
                         context.KhachHangs.Update(kh);
                         context.SaveChanges();
+                        //Cập nhật tích điểm
+                        td.Diem = 0;
+                        context.LichSuTichDiems.Update(td);
+                        context.SaveChanges();
                     }
-                    //Cập nhật tích điểm
-                    td.Diem = 0;
-                    context.LichSuTichDiems.Update(td);
-                    context.SaveChanges();
                 }
+                context.HoaDons.Update(hd);
+                context.SaveChanges();
                 return true;
             }
             catch (Exception ex)
@@ -1008,7 +998,7 @@ namespace AppAPI.Services
                         kh.DiemTich += tieud.Diem;
                         context.KhachHangs.Update(kh);
                         context.SaveChanges();
-                        if(lsthdct.Count == 2)
+                        if (lsthdct.Count == 2)
                         {
                             context.LichSuTichDiems.Remove(tieud);
                             context.SaveChanges();

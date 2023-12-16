@@ -11,6 +11,7 @@ namespace AppAPI.IServices
         public Voucher GetById(Guid Id);
         public List<Voucher> GetAll();
         public Voucher? GetVoucherByMa(string ma);
+        public List<Voucher> GetAllVoucherByTien(int tongTien);
 
     }
 }

@@ -206,7 +206,7 @@
                                 {
                                 <label id="tronMau">
                                     <input type="radio" class="btn-check" id="btn-check-outlined_@item.GiaTri" autocomplete="off" value="@item.ID" name="color" onclick="getMauSac(this)"/>
-                                    <label for="btn-check-outlined_@item.GiaTri" style="background-color:@item.GiaTri;border:white 1px solid;cursor:pointer" id="label_@item.ID">
+                                    <label for="btn-check-outlined_@item.GiaTri" style="background-color:@item.GiaTri;border:gray 1px solid;cursor:pointer" id="label_@item.ID">
                                     </label>
                                 </label>
                                 }
@@ -482,7 +482,7 @@
         var lstMauSacElement = document.getElementById("filter-color").children;
         for (let i = 0; i < lstMauSacElement.length;i++){
             if (lstMauSacElement[i].children[1].style.border = "1px black solid") {
-                lstMauSacElement[i].children[1].style.border = "1px white solid";
+                lstMauSacElement[i].children[1].style.border = "1px gray solid";
             }
         }
         var label = document.getElementById("label_" + element.value);
