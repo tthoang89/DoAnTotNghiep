@@ -89,5 +89,9 @@ namespace AppAPI.Services
         {
             return _allRepository.GetAll().FirstOrDefault(x => x.Ten.ToUpper() == ma.ToUpper());
         }
+        public List<Voucher> GetAllVoucherByTien(int tongTien) 
+        {
+            return _allRepository.GetAll().Where(x=>x.NgayApDung<DateTime.Now && x.NgayKetThuc>DateTime.Now && x.SoTienCan<tongTien && x.TrangThai>0).ToList();
+        }
     }
 }
