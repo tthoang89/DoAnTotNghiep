@@ -37,6 +37,7 @@ namespace AppView.Controllers
         public async Task<IActionResult> LoadSp(int page, int pagesize)
         {
             var listsanPham = await _httpClient.GetFromJsonAsync<List<SanPhamBanHang>>("SanPham/getAllSPBanHang");
+            listsanPham = listsanPham.Where(c => c.GiaGoc != 0).ToList();
             var model = listsanPham.Skip((page - 1) * pagesize).Take(pagesize).ToList();
             int totalRow = listsanPham.Count;
             return Json(new
