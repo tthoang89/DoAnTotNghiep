@@ -1,4 +1,5 @@
-﻿@{
+﻿@model AppData.ViewModels.SanPham.DonMuaSuccessViewModel
+@{
     Layout = "_Layout";
 }
 <div class="container" style="width:930px">
@@ -7,27 +8,29 @@
             <i class="fas fa-check" style="margin-right:5px"></i>Đặt hàng thành công
         </div>
         <div class="row" style="margin-top:20px">
-            <div class="col-lg-6" style="font-size:20px"><strong>Tên: </strong>Nguyễn Chung Tâm</div>
-            <div class="col-lg-6" style="font-size:20px"><strong>Email: </strong>: Nguyễn Chung Tâm</div>
+            <div class="col-lg-6" style="font-size:20px"><strong>Tên: </strong>@Model.Ten</div>
+            <div class="col-lg-6" style="font-size:20px"><strong>Email: </strong>@Model.Email</div>
         </div>
         <div class="row">
-            <div class="col-lg-6" style="font-size:20px"><strong>SĐT: </strong>Nguyễn Chung Tâm</div>
-            <div class="col-lg-6" style="font-size:20px"><strong>Địa chỉ: </strong>: Nguyễn Chung Tâm</div>
+            <div class="col-lg-6" style="font-size:20px"><strong>SĐT: </strong>@Model.SDT</div>
+            <div class="col-lg-6" style="font-size:20px"><strong>Phương thức thanh toán: </strong>@Model.PhuongThucThanhToan</div>
         </div>
         <div class="row">
-            <div class="col-lg-6" style="font-size:20px"><strong>Phương thức thanh toán: </strong>Nguyễn Chung Tâm</div>
-            <div class="col-lg-6" style="font-size:20px"><strong>Tiền ship: </strong>: Nguyễn Chung Tâm</div>
+            <div class="col-lg-6" style="font-size:20px"><strong>Tổng tiền: </strong>@Model.TongTien.ToString("n0") VND</div>
+            <div class="col-lg-6" style="font-size:20px"><strong>Mã voucher: </strong>@Model.MaVoucher</div>
+        </div>     
+        @if (Model.Login)
+        {
+            <div class="row">
+                <div class="col-lg-6" style="font-size:20px"><strong>Điểm được tích: </strong>@Model.DiemTich</div>
+                <div class="col-lg-6" style="font-size:20px"><strong>Điểm sử dụng: </strong>@Model.DiemSuDung</div>
+            </div>
+        } 
+        <div class="row">
+            <div class="col-lg-12" style="font-size:20px"><strong>Địa chỉ: </strong>@Model.DiaChi</div>
         </div>
         <div class="row">
-            <div class="col-lg-6" style="font-size:20px"><strong>Điểm được tích: </strong>Nguyễn Chung Tâm</div>
-            <div class="col-lg-6" style="font-size:20px"><strong>Điểm sử dụng: </strong>: Nguyễn Chung Tâm</div>
-        </div>
-        <div class="row">
-            <div class="col-lg-6" style="font-size:20px"><strong>Giá trị điểm sử dụng: </strong>Nguyễn Chung Tâm</div>
-            <div class="col-lg-6" style="font-size:20px"><strong>Giá trị voucher: </strong>: Nguyễn Chung Tâm</div>
-        </div>
-        <div class="row">
-            <div class="col-lg-12" style="font-size:20px"><strong>Ghi chú: </strong>Nguyễn Chung Tâm</div>
+            <div class="col-lg-12" style="font-size:20px"><strong>Ghi chú: </strong>@Model.GhiChu</div>
         </div>
         <div class="shopping__cart__table" style="margin-top:20px">
             <table style="width:100%" class="table">
@@ -40,26 +43,23 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td class="product__cart__item">
-                            <div class="product__cart__item__pic">
-                                <img style="height:50px;width:50px" src="/img/product/40a9de057378a158cc53f285aeed232a231024382231803549232319375.jpg" alt="">
-                            </div>
-                            <div class="product__cart__item__text" style="padding-top:0px!important">
-                                <h6>Ten san pham</h6>
-                                <h5>Vang/S</h5>
-                            </div>
-                        </td>
-                        <td class="cart__price" style="text-align:center">10000</td>
-                        <td class="quantity__item" style="text-align:center;font-weight:700">2</td>
-                        <td class="cart__price" style="text-align:center">10000</td>
-                    </tr>
-                    <tr>
-                        <td style="font-size:20px;font-family:'Nunito Sans', sans-serif;font-weight:700">Tổng tiền</td>
-                        <td></td>
-                        <td></td>
-                        <td class="cart__price" style="text-align:center"> 10000</td>
-                    </tr>
+                    @foreach(var item in Model.GioHangs)
+                    {
+                        <tr>
+                            <td class="product__cart__item">
+                                <div class="product__cart__item__pic">
+                                    <img style="height:50px;width:50px" src="/img/product/@item.Anh" alt="">
+                                </div>
+                                <div class="product__cart__item__text" style="padding-top:0px!important">
+                                    <h6>@item.Ten</h6>
+                                    <h5>@item.MauSac/@item.KichCo</h5>
+                                </div>
+                            </td>
+                            <td class="cart__price" style="text-align:center">@item.DonGia.Value.ToString("n0") VND</td>
+                            <td class="quantity__item" style="text-align:center;font-weight:700">@item.SoLuong</td>
+                            <td class="cart__price" style="text-align:center">@((item.DonGia*item.SoLuong).Value.ToString("n0")) VND</td>
+                        </tr>
+                    }                   
                 </tbody>
             </table>
         </div>

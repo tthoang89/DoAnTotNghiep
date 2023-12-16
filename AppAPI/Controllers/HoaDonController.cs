@@ -3,6 +3,7 @@ using AppAPI.Services;
 using AppData.Models;
 using AppData.ViewModels;
 using AppData.ViewModels.BanOffline;
+using AppData.ViewModels.SanPham;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -61,7 +62,7 @@ namespace AppAPI.Controllers
             return _iHoaDonService.CheckCusUseVoucher(idkh, idvoucher);
         }
         [HttpPost]
-        public bool CreateHoaDon(HoaDonViewModel hoaDon)
+        public DonMuaSuccessViewModel CreateHoaDon(HoaDonViewModel hoaDon)
         {
             return _iHoaDonService.CreateHoaDon(hoaDon.ChiTietHoaDons, hoaDon);
         }

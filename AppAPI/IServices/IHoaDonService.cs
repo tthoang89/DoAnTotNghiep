@@ -1,12 +1,13 @@
 ﻿using AppData.Models;
 using AppData.ViewModels;
 using AppData.ViewModels.BanOffline;
+using AppData.ViewModels.SanPham;
 
 namespace AppAPI.IServices
 {
     public interface IHoaDonService
     {
-        public bool CreateHoaDon(List<ChiTietHoaDonViewModel> chiTietHoaDons,HoaDonViewModel hoaDon);
+        public DonMuaSuccessViewModel CreateHoaDon(List<ChiTietHoaDonViewModel> chiTietHoaDons,HoaDonViewModel hoaDon);
         public List<HoaDon> GetAllHoaDon();
         public HoaDon GetHoaDonById(Guid idhd);
         public List<ChiTietHoaDon> GetAllChiTietHoaDon(Guid idHoaDon);

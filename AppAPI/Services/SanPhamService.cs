@@ -306,14 +306,25 @@ namespace AppAPI.Services
             }
             catch { return new ChiTietSanPhamUpdateRequest(); }
         }
-        public ChiTietSanPhamViewModel GetChiTietSanPhamByID(Guid id)
+        public ChiTietSanPhamViewModel? GetChiTietSanPhamByID(Guid id)
         {
-            var temp = _context.ChiTietSanPhams.First(x => x.ID == id);
-            var anh = _context.Anhs.FirstOrDefault(x => x.IDMauSac == temp.IDMauSac && x.IDSanPham == temp.IDSanPham);
-            ChiTietSanPhamViewModel chiTietSanPham = new ChiTietSanPhamViewModel() { ID = temp.ID, Ten = _context.SanPhams.First(x => x.ID == temp.IDSanPham).Ten, SoLuong = temp.SoLuong, GiaGoc = temp.GiaBan, TrangThai = temp.TrangThai, Anh = anh != null ? anh.DuongDan : null, MauSac = _context.MauSacs.First(x => x.ID == temp.IDMauSac).Ten, KichCo = _context.KichCos.First(x => x.ID == temp.IDKichCo).Ten };
-            var khuyenMai = _context.KhuyenMais.FirstOrDefault(x => x.ID == temp.IDKhuyenMai && x.NgayKetThuc > DateTime.Now);
-            chiTietSanPham.GiaBan = khuyenMai != null ? GetKhuyenMai(khuyenMai.GiaTri, chiTietSanPham.GiaGoc, khuyenMai.TrangThai) : chiTietSanPham.GiaGoc;
-            return chiTietSanPham;
+            try
+            {
+                var temp = _context.ChiTietSanPhams.FirstOrDefault(x => x.ID == id);
+                if (temp != null)
+                {
+                    var anh = _context.Anhs.FirstOrDefault(x => x.IDMauSac == temp.IDMauSac && x.IDSanPham == temp.IDSanPham);
+                    ChiTietSanPhamViewModel chiTietSanPham = new ChiTietSanPhamViewModel() { ID = temp.ID, Ten = _context.SanPhams.First(x => x.ID == temp.IDSanPham).Ten, SoLuong = temp.SoLuong, GiaGoc = temp.GiaBan, TrangThai = temp.TrangThai, Anh = anh != null ? anh.DuongDan : null, MauSac = _context.MauSacs.First(x => x.ID == temp.IDMauSac).Ten, KichCo = _context.KichCos.First(x => x.ID == temp.IDKichCo).Ten };
+                    var khuyenMai = _context.KhuyenMais.FirstOrDefault(x => x.ID == temp.IDKhuyenMai && x.NgayKetThuc > DateTime.Now);
+                    chiTietSanPham.GiaBan = khuyenMai != null ? GetKhuyenMai(khuyenMai.GiaTri, chiTietSanPham.GiaGoc, khuyenMai.TrangThai) : chiTietSanPham.GiaGoc;
+                    return chiTietSanPham;
+                }
+                else return null;
+            }
+            catch
+            {
+                return null;
+            }
         }
         public async Task<ChiTietSanPhamViewModelHome> GetAllChiTietSanPhamHome(Guid idSanPham)
         {
