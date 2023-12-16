@@ -1300,8 +1300,8 @@ namespace AppView.Controllers
         public string Order(HoaDonViewModel hoaDon)
         {
             List<ChiTietHoaDonViewModel> lstChiTietHoaDon = new List<ChiTietHoaDonViewModel>();
-            string temp = TempData["ListBienThe"] as string;
-            string trangThai = TempData["TrangThai"] as string;
+            string temp = TempData.Peek("ListBienThe") as string;
+            string trangThai = TempData.Peek("TrangThai") as string;
             foreach (var item in JsonConvert.DeserializeObject<List<GioHangRequest>>(temp))
             {
                 ChiTietHoaDonViewModel chiTietHoaDon = new ChiTietHoaDonViewModel();

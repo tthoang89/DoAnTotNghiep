@@ -10,6 +10,7 @@
                 }]
             },
             options: {
+                responsive: false,
                 plugins: {
                     legend: {
                         display:false
@@ -38,6 +39,7 @@
                 }]
             },
             options: {
+                responsive: false,
                 plugins: {
                     legend: {
                         display: false
@@ -67,6 +69,7 @@
                 }]
             },
             options: {
+                responsive: false,
                 plugins: {
                     title: {
                         display: true,
