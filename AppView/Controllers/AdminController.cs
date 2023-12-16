@@ -84,7 +84,7 @@ namespace AppView.Controllers
                         lstSanpham = lstSanpham.Where(x => x.LoaiSPCon == filter.loaiSPCon).ToList();
                     }
                 }
-                var model = lstSanpham.Skip((filter.page - 1) * filter.pageSize).Take(filter.pageSize).ToList();
+                var model = lstSanpham.Skip((filter.page - 1) * filter.pageSize).Take(filter.pageSize).OrderBy(x=>x.Ma).ToList();
                 return Json(new
                 {
                     data = model,

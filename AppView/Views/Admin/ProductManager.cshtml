@@ -172,8 +172,8 @@
                 success: function (response) {
                     $("#categoryson").empty();
                     var rows = `<option selected value="all">Tất cả</option>`;
-                    for (var i = 0; i < response.length; i++) {
-                        rows += "<option value='" + response[i].ten + "'>" + response[i].ten + "</option>";      
+                    for (var i = 0; i < response.ketQua.length; i++) {
+                        rows += "<option value='" + response.ketQua[i].ten + "'>" + response.ketQua[i].ten + "</option>";
                     }
                     $('#categoryson').append(rows);
                 }
