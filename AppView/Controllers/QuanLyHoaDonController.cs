@@ -115,27 +115,6 @@ namespace AppView.Controllers
             }
             return Json(new { success = false, message = "Sao chép hóa đơn thất bại" });
         }
-
-        //// Trả hàng
-        //[HttpGet("/QuanLyHoaDon/TraHD")]
-        //public async Task<IActionResult> TraHD(Guid idhd, string ghichu)
-        //{
-        //    var loginInfor = new LoginViewModel();
-        //    string? session = HttpContext.Session.GetString("LoginInfor");
-        //    if (session != null)
-        //    {
-        //        loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
-        //    }
-        //    var idnv = loginInfor.Id;
-        //    string url = $"HoaDon/TraHD?idhd={idhd}&idnv={idnv}&Ghichu={ghichu}";
-        //    var response = await _httpClient.PutAsync(url, null);
-        //    if (response.IsSuccessStatusCode)
-        //    {
-        //        return RedirectToAction("BanHang", "BanHangTaiQuay", new { area = "Admin" });
-        //    }
-        //    return Json(new { success = false, message = "Cập nhật trạng thái thất bại" });
-        //}
-
         // Cập nhật trạng thái
         public async Task<IActionResult> DoiTrangThai(Guid idhd, int trangthai)// Dùng cho trạng thái truyền  vào: 10, 3
         {
@@ -147,7 +126,7 @@ namespace AppView.Controllers
                 var idnv = loginInfor.Id;
                 if(trangthai == 6)
                 {
-                    string url = $"HoaDon/ThanhCong?idhd={idhd}&idnv={idnv}";
+                    string url = $"HoaDon/GiaoThanhCong?idhd={idhd}&idnv={idnv}";
                     var response = await _httpClient.PutAsync(url, null);
                     if (response.IsSuccessStatusCode)
                     {

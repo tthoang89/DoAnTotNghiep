@@ -597,44 +597,70 @@ namespace AppView.Controllers
         {
             List<GioHangRequest> lstGioHang;
             string? result = Request.Cookies["Cart"];
-            if (string.IsNullOrEmpty(result))
-            {
-                //chiTietSanPham.SoLuong = (sl != null)?sl.Value:1;
-                lstGioHang = new List<GioHangRequest>() { new GioHangRequest() { IDChiTietSanPham = new Guid(id), SoLuong = (sl != null) ? sl.Value : 1 } };
-            }
-            else
-            {
-                lstGioHang = JsonConvert.DeserializeObject<List<GioHangRequest>>(result);
-                var tempBienThe = lstGioHang.FirstOrDefault(x => x.IDChiTietSanPham == new Guid(id));
-                if (tempBienThe != null)
-                {
-                    //Sua 
-                    if (sl == null)
-                    {
-                        tempBienThe.SoLuong++;
-                    }
-                    else
-                    {
-                        tempBienThe.SoLuong = tempBienThe.SoLuong + sl.Value;
-                    }
-
-                }
-                else
-                {
-                    lstGioHang.Add(new GioHangRequest() { IDChiTietSanPham = new Guid(id), SoLuong = (sl != null) ? sl.Value : 1 });
-                }
-            }
             var session = HttpContext.Session.GetString("LoginInfor");
             if (session == null)
             {
+                if (string.IsNullOrEmpty(result))
+                {
+                    //chiTietSanPham.SoLuong = (sl != null)?sl.Value:1;
+                    lstGioHang = new List<GioHangRequest>() { new GioHangRequest() { IDChiTietSanPham = new Guid(id), SoLuong = (sl != null) ? sl.Value : 1 } };
+                }
+                else
+                {
+                    lstGioHang = JsonConvert.DeserializeObject<List<GioHangRequest>>(result);
+                    var tempBienThe = lstGioHang.FirstOrDefault(x => x.IDChiTietSanPham == new Guid(id));
+                    if (tempBienThe != null)
+                    {
+                        //Sua 
+                        if (sl == null)
+                        {
+                            tempBienThe.SoLuong++;
+                        }
+                        else
+                        {
+                            tempBienThe.SoLuong = tempBienThe.SoLuong + sl.Value;
+                        }
+
+                    }
+                    else
+                    {
+                        lstGioHang.Add(new GioHangRequest() { IDChiTietSanPham = new Guid(id), SoLuong = (sl != null) ? sl.Value : 1 });
+                    }
+                }
                 CookieOptions cookie = new CookieOptions();
                 cookie.Expires = DateTime.Now.AddDays(30);
                 Response.Cookies.Append("Cart", JsonConvert.SerializeObject(lstGioHang), cookie);
-
                 return Json(new { success = true, message = "Add to cart successfully" });
             }
             else
             {
+                if (string.IsNullOrEmpty(result))
+                {
+                    //chiTietSanPham.SoLuong = (sl != null)?sl.Value:1;
+                    lstGioHang = new List<GioHangRequest>() { new GioHangRequest() { IDChiTietSanPham = new Guid(id), SoLuong = (sl != null) ? sl.Value : 1 } };
+                }
+                else
+                {
+                    lstGioHang = JsonConvert.DeserializeObject<List<GioHangRequest>>(result);
+                    var tempBienThe = lstGioHang.FirstOrDefault(x => x.IDChiTietSanPham == new Guid(id));
+                    if (tempBienThe != null)
+                    {
+                        //Sua 
+                        if (sl == null)
+                        {
+                            tempBienThe.SoLuong++;
+                        }
+                        else
+                        {
+                            tempBienThe.SoLuong = tempBienThe.SoLuong + sl.Value;
+                        }
+
+                    }
+                    else
+                    {
+                        lstGioHang.Add(new GioHangRequest() { IDChiTietSanPham = new Guid(id), SoLuong = (sl != null) ? sl.Value : 1 });
+                    }
+                }
                 var loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
                 if (loginInfor.vaiTro == 1)
                 {
@@ -653,24 +679,24 @@ namespace AppView.Controllers
             try
             {
                 int cout = 0;
-                List<GioHangRequest> chiTietSanPhams;
-                string? result = Request.Cookies["Cart"];
-                chiTietSanPhams = JsonConvert.DeserializeObject<List<GioHangRequest>>(result);
-                foreach (var item in dssl)
-                {
-                    Guid id = Guid.Parse(item.Substring(0, 36));
-                    int sl = Convert.ToInt32(item.Substring(36, item.Length - 36));
-                    foreach (var x in chiTietSanPhams)
-                    {
-                        if (x.IDChiTietSanPham == id)
-                        {
-                            x.SoLuong = sl;
-                        }
-                    }
-                }
                 var session = HttpContext.Session.GetString("LoginInfor");
                 if (session == null)
                 {
+                    List<GioHangRequest> chiTietSanPhams;
+                    string? result = Request.Cookies["Cart"];
+                    chiTietSanPhams = JsonConvert.DeserializeObject<List<GioHangRequest>>(result);
+                    foreach (var item in dssl)
+                    {
+                        Guid id = Guid.Parse(item.Substring(0, 36));
+                        int sl = Convert.ToInt32(item.Substring(36, item.Length - 36));
+                        foreach (var x in chiTietSanPhams)
+                        {
+                            if (x.IDChiTietSanPham == id)
+                            {
+                                x.SoLuong = sl;
+                            }
+                        }
+                    }
                     CookieOptions cookie = new CookieOptions();
                     cookie.Expires = DateTime.Now.AddDays(30);
                     Response.Cookies.Append("Cart", JsonConvert.SerializeObject(chiTietSanPhams), cookie);
@@ -842,9 +868,11 @@ namespace AppView.Controllers
 
         }
         [HttpGet]
-        public IActionResult Profile(string loginInfor)
+        public IActionResult Profile()
         {
-            LoginViewModel loginViewModel = JsonConvert.DeserializeObject<LoginViewModel>(loginInfor);
+            var session = HttpContext.Session.GetString("LoginInfor");
+            LoginViewModel loginViewModel = JsonConvert.DeserializeObject<LoginViewModel>(session);
+            //LoginViewModel loginViewModel = JsonConvert.DeserializeObject<LoginViewModel>(loginInfor);
             return View(loginViewModel);
         }
         [HttpPut]
@@ -866,6 +894,7 @@ namespace AppView.Controllers
             var response = _httpClient.PutAsJsonAsync(_httpClient.BaseAddress + "QuanLyNguoiDung/UpdateProfile1", khachhang).Result;
             if (response.IsSuccessStatusCode)
             {
+                HttpContext.Session.Remove("LoginInfor");
                 HttpContext.Session.SetString("LoginInfor", response.Content.ReadAsStringAsync().Result);
                 return Json(new { success = true, message = "Cập nhật thông tin cá nhân thành công" });
             }

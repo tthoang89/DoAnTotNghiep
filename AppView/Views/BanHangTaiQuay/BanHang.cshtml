@@ -446,6 +446,7 @@
                 tichdiemsd = 0;
             };
             var request = { Id: id, PTTT: pttt, IdNhanVien: '@loginInfor.Id', IdVoucher: idvoucher, TongTien: ttien, DiemTichHD: tichdiemhd, DiemSD: tichdiemsd };
+            console.log(request);
             $.ajax({
                 url: "/BanHangTaiQuay/ThanhToan",
                 async: false,

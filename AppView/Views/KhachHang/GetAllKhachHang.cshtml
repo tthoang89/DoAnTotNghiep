@@ -69,9 +69,12 @@
                     {
                         <div style="color:red">Nữ</div>
                     }
-                    else
+                    @if(item.GioiTinh == 1)
                     {
                         <div style="color:green">Nam</div>
+                    }
+                    @if (item.GioiTinh == null){
+                        <div style="color:green"></div>
                     }
                 </td>
                 <td>
