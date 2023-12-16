@@ -18,14 +18,14 @@ namespace AppData.ViewModels
 
         [Required(ErrorMessage = "mời bạn nhập mật khẩu")]
         public string Password { get; set; }
-        [Required(ErrorMessage = "mời bạn nhập giới tính")]
+    
         public int? GioiTinh { get; set; }
-        [Required(ErrorMessage = "mời bạn nhập ngày sinh")]
+       
         public DateTime? NgaySinh { get; set; }
         [EmailAddress]
        
         public string Email { get; set; }
-        [Required(ErrorMessage = "mời bạn nhập địa chỉ")]
+       
         public string? DiaChi { get; set; }
       
         public string? SDT { get; set; }
