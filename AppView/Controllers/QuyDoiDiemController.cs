@@ -78,7 +78,7 @@ namespace AppView.Controllers
                 {
                     ViewData["TrangThai"] = "Yêu cầu chọn trạng thái ";
                 }
-                if (qdd.TrangThai != 0 && qdd.TiLeTichDiem >= 0 && qdd.TiLeTieuDiem >= 0)
+                if (qdd.TrangThai != 0 && qdd.TiLeTichDiem > 0 && qdd.TiLeTieuDiem > 0)
                 {
                     var response = await _httpClient.PostAsync($" https://localhost:7095/api/QuyDoiDiem?TiLeTichDiem={qdd.TiLeTichDiem}&TiLeTieuDiem={qdd.TiLeTieuDiem}&TrangThai={qdd.TrangThai}", null);
 
@@ -133,10 +133,12 @@ namespace AppView.Controllers
                 var timkiem = roles.Where(x => x.TrangThai == 1 || x.TrangThai == 2).ToList();
                 if (timkiem.Count()==0)
                 {
-                    var response2 = await _httpClient.PostAsync($" https://localhost:7095/api/QuyDoiDiem?TiLeTichDiem=0&TiLeTieuDiem=0&TrangThai=1",null);
-
-                    if (response2.IsSuccessStatusCode)
+                    var timkiem1 = dbcontext.QuyDoiDiems.Where(x => x.TiLeTichDiem == 0 && x.TiLeTieuDiem == 0).FirstOrDefault();
+                    if (timkiem1 != null)
                     {
+                        timkiem1.TrangThai = 1;
+                        dbcontext.Update(timkiem1);
+                        dbcontext.SaveChangesAsync();
                         return RedirectToAction("GetAllQuyDoiDiem");
                     }
                     return View();
