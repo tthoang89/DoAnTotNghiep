@@ -4,6 +4,7 @@ using AppData.Models;
 using AppData.Repositories;
 using AppData.ViewModels;
 using AppData.ViewModels.BanOffline;
+using AppData.ViewModels.SanPham;
 using System.Security.Cryptography.Xml;
 
 namespace AppAPI.Services
@@ -18,8 +19,6 @@ namespace AppAPI.Services
         private readonly IAllRepository<LichSuTichDiem> reposLichSuTichDiem;
         private readonly IAllRepository<KhachHang> reposKhachHang;
         private readonly IAllRepository<SanPham> reposSanPham;
-        //private readonly IAllRepository<PhuongThucThanhToan> reposPTTT;
-        //private readonly IAllRepository<ChiTietPTTT> reposChiTietPTTT;
         private readonly IAllRepository<DanhGia> reposDanhGia;
         private readonly IAllRepository<NhanVien> reposNhanVien;
 
@@ -86,10 +85,24 @@ namespace AppAPI.Services
         }
 
         //Thanh toan online
-        public bool CreateHoaDon(List<ChiTietHoaDonViewModel> chiTietHoaDons, HoaDonViewModel hoaDon)
+        public DonMuaSuccessViewModel CreateHoaDon(List<ChiTietHoaDonViewModel> chiTietHoaDons, HoaDonViewModel hoaDon)
         {
             try
             {
+                //Tâm - Thêm đơn mua
+                DonMuaSuccessViewModel donMua = new DonMuaSuccessViewModel()
+                {
+                    Ten = hoaDon.Ten,
+                    Email = hoaDon.Email,
+                    SDT = hoaDon.SDT,
+                    DiaChi = hoaDon.DiaChi,
+                    PhuongThucThanhToan = hoaDon.PhuongThucThanhToan,
+                    TongTien = hoaDon.TongTien,
+                    GhiChu = hoaDon.GhiChu == null ? "" : hoaDon.GhiChu,
+                    DiemSuDung = hoaDon.Diem == null?0:hoaDon.Diem.Value,
+                    Login = false,
+                    GioHangs = new List<GioHangRequest>()
+                };
                 int subtotal = 0;
                 var voucher = reposVoucher.GetAll().FirstOrDefault(p => p.Ten == hoaDon.TenVoucher);
                 if (chiTietHoaDons != null)
@@ -102,6 +115,7 @@ namespace AppAPI.Services
                         hoaDon1.IDVoucher = voucher.ID;
                         voucher.SoLuong--;
                         reposVoucher.Update(voucher);
+                        donMua.MaVoucher = voucher.Ten;
                     }
                     else
                     {
@@ -147,13 +161,15 @@ namespace AppAPI.Services
                             CTsanPham.SoLuong -= chiTietHoaDon.SoLuong;
                             subtotal += x.SoLuong * x.DonGia;
                             repsCTSanPham.Update(CTsanPham);
-
+                            //Tâm
+                            donMua.GioHangs.Add(new GioHangRequest() { Anh = context.Anhs.First(y => y.IDSanPham == CTsanPham.IDSanPham && y.IDMauSac == CTsanPham.IDMauSac).DuongDan, SoLuong = x.SoLuong, DonGia = x.DonGia,Ten = context.SanPhams.First(y=>y.ID == CTsanPham.IDSanPham).Ten, KichCo = context.KichCos.First(y => y.ID == CTsanPham.IDKichCo).Ten,MauSac = context.MauSacs.First(y => y.ID == CTsanPham.IDMauSac).Ten });
                         }
                         //tích điểm, dùng điểm
                         if (hoaDon.IDNguoiDung != null)
                         {
                             QuyDoiDiem quyDoiDiem = reposQuyDoiDiem.GetAll().First(p => p.TrangThai > 0);
                             KhachHang khachHang = reposKhachHang.GetAll().FirstOrDefault(p => p.IDKhachHang == hoaDon.IDNguoiDung);
+                            donMua.Login = true;
                             if (quyDoiDiem.TrangThai == 1)
                             {
                                 if (hoaDon.Diem == 0 || hoaDon.Diem == null)
@@ -170,6 +186,7 @@ namespace AppAPI.Services
                                         TrangThai = 1
                                     };
                                     reposLichSuTichDiem.Add(lichSuTichDiem);
+                                    donMua.DiemTich = lichSuTichDiem.Diem;
                                 }
                                 //dùng điểm
                                 else
@@ -206,6 +223,7 @@ namespace AppAPI.Services
                                     TrangThai = 1
                                 };
                                 reposLichSuTichDiem.Add(lichSuTichDiem);
+                                donMua.DiemTich = lichSuTichDiem.Diem;
                                 //tiều điểm
                                 if (khachHang.DiemTich >= hoaDon.Diem && hoaDon.Diem != 0)
                                 {
@@ -229,21 +247,22 @@ namespace AppAPI.Services
                         {
                             _iGioHangServices.DeleteCart(hoaDon.IDNguoiDung.Value);
                         }
-                        return true;
+                        
+                        return donMua;
                     }
                     else
                     {
-                        return false;
+                        return new DonMuaSuccessViewModel();
                     }
                 }
                 else
                 {
-                    return false;
+                    return new DonMuaSuccessViewModel();
                 }
             }
             catch
             {
-                return false;
+                return new DonMuaSuccessViewModel();
             }
         }
 

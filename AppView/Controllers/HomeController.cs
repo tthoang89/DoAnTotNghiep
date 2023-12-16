@@ -1295,7 +1295,7 @@ namespace AppView.Controllers
                 HttpResponseMessage response = _httpClient.PostAsJsonAsync("HoaDon", hoaDon).Result;
                 if (response.IsSuccessStatusCode)
                 {
-
+                    TempData["CheckOutSuccess"] = response.Content.ReadAsStringAsync().Result;
                     if (!hoaDon.TrangThai) Response.Cookies.Delete("Cart");
                     // lam them
                     TempData["SoLuong"] = "0";
@@ -1391,6 +1391,7 @@ namespace AppView.Controllers
                         HttpResponseMessage response = _httpClient.PostAsJsonAsync("HoaDon", hoaDon).Result;
                         if (response.IsSuccessStatusCode)
                         {
+                            TempData["CheckOutSuccess"] = response.Content.ReadAsStringAsync().Result;
                             if (!hoaDon.TrangThai) Response.Cookies.Delete("Cart");
                             // lam them
                             TempData["SoLuong"] = "0";
@@ -1415,7 +1416,8 @@ namespace AppView.Controllers
         [HttpGet]
         public IActionResult CheckOutSuccess()
         {
-            return View();
+            var donMua = JsonConvert.DeserializeObject<DonMuaSuccessViewModel>(TempData.Peek("CheckOutSuccess") as string);
+            return View(donMua);
         }
         [HttpGet]
         public async Task<JsonResult> UseVoucher(string ma, int tongTien)
