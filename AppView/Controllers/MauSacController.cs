@@ -82,17 +82,13 @@ namespace AppView.Controllers
         {
             ms.TrangThai = 1;
             string apiUrl = $"https://localhost:7095/api/MauSac/ThemMauSac?ten={ms.Ten}&ma={ms.Ma}";
-            var reponsen = await _httpClient.PostAsync(apiUrl, null);
+            var content = new StringContent(JsonConvert.SerializeObject(ms), Encoding.UTF8, "application/json");
+            var reponsen = await _httpClient.PostAsync(apiUrl, content);
             if (reponsen.IsSuccessStatusCode)
             {
                 return RedirectToAction("Show");
             }
-            else if (reponsen.StatusCode == HttpStatusCode.BadRequest)
-            {
-                ViewBag.ErrorMessage = "Mau này đã có trong danh sách";
-                return View();
-            }
-            return View(ms);
+            return View();
         }
 
         [HttpGet]

@@ -97,7 +97,7 @@ namespace AppView.Controllers
         [HttpGet]
         public IActionResult Edit(Guid id)
         {
-            //var url = $"https://localhost:7095/api/LoaiSP/getById/{id}";
+            //var  responseLoaiSP = $"https://localhost:7095/api/LoaiSP/getById/{id}";
             var responseLoaiSP = _httpClient.GetAsync(_httpClient.BaseAddress + $"https://localhost:7095/api/LoaiSP/getAll").Result;
             if (responseLoaiSP.IsSuccessStatusCode)
             {
@@ -110,7 +110,7 @@ namespace AppView.Controllers
         public async Task<IActionResult> Edit(LoaiSPRequest lsp, Guid id)
         {
             if (lsp == null) return BadRequest();
-            string apiURL = $"https://localhost:7095/api/LoaiSP/save";
+            string apiURL = $"https://localhost:7095/api/LoaiSP/save/id={id}";
             var content = new StringContent(JsonConvert.SerializeObject(lsp), Encoding.UTF8, "application/json");
             var response = await _httpClient.PutAsync(apiURL, content);
             if (response.IsSuccessStatusCode)
