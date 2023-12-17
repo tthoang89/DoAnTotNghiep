@@ -11,7 +11,7 @@ namespace AppData.ViewModels.SanPham
         public Guid ID { get; set; }
         public string Ten { get; set; }
         public string Ma { get; set; }
-        public string Anh { get; set; }
+        public string? Anh { get; set; }
         public int GiaBan { get; set; }
         public int GiaGoc { get; set; }
         public int SoLuong { get; set; }

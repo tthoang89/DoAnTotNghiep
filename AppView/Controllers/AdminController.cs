@@ -43,7 +43,11 @@ namespace AppView.Controllers
                 //Sắp xếp
                 if(filter.sortSP == "1")
                 {
-                    lstSanpham = lstSanpham.OrderBy(x=>x.Ten).ToList();
+                    lstSanpham = lstSanpham.OrderBy(x => Convert.ToInt32(x.Ma.Substring(2))).ToList();
+                }
+                else if (filter.sortSP == "6")
+                {
+                    lstSanpham = lstSanpham.OrderBy(x => x.Ten).ToList();
                 }
                 else if(filter.sortSP == "2")
                 {
@@ -84,7 +88,7 @@ namespace AppView.Controllers
                         lstSanpham = lstSanpham.Where(x => x.LoaiSPCon == filter.loaiSPCon).ToList();
                     }
                 }
-                var model = lstSanpham.Skip((filter.page - 1) * filter.pageSize).Take(filter.pageSize).OrderBy(x=>x.Ma).ToList();
+                var model = lstSanpham.Skip((filter.page - 1) * filter.pageSize).Take(filter.pageSize).ToList();
                 return Json(new
                 {
                     data = model,
