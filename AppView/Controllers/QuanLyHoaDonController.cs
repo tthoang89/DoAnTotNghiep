@@ -160,7 +160,12 @@ namespace AppView.Controllers
             var response = await _httpClient.PutAsync(url, null);
             if (response.IsSuccessStatusCode)
             {
-                return Json(new { success = true, message = "Cập nhật trạng thái thành công" });
+                var stringURL = $"https://localhost:7095/api/HoaDon/UpdateGhichu?idhd={idhd}&idnv={loginInfor.Id}&ghichu={ghichu}";
+                var responseghichu = await _httpClient.PutAsync(stringURL, null);
+                if (responseghichu.IsSuccessStatusCode)
+                {
+                    return Json(new { success = true, message = "Cập nhật trạng thái thành công" });
+                }
             }
             return Json(new { success = false, message = "Cập nhật trạng thái thất bại" });
         }
@@ -205,7 +210,6 @@ namespace AppView.Controllers
             var response = await _httpClient.PutAsync(url, null);
             if (response.IsSuccessStatusCode)
             {
-
                 return Json(new { success = true, message = "Cập nhật trạng thái thành công" });
             }
             return Json(new { success = false, message = "Cập nhật trạng thái thất bại" });

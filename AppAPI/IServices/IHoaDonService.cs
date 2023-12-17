@@ -19,7 +19,7 @@ namespace AppAPI.IServices
         public bool HoanHang(Guid idhd, Guid idnv);
         public bool ThanhCong(Guid idhd, Guid idnv);
         public bool HoanHangThanhCong(Guid idhd, Guid idnv);
-        public bool HuyHD(Guid idhd, Guid idnv, string Ghichu);
+        public bool HuyHD(Guid idhd, Guid idnv);
         Task<bool> CopyHD(Guid idhd, Guid idnv);
         public bool CreateHoaDonOffline(Guid idnhanvien);
         public bool DeleteHoaDon(Guid id);
