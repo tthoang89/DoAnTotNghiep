@@ -10,7 +10,6 @@ namespace AppData.Models
     public class KichCo
     {
         public Guid ID { get; set; }
-        [Required(ErrorMessage = "Vui lòng nhập kích cỡ")]
         [StringLength(10, ErrorMessage = "Tên kích cỡ không được vượt quá 10 kí tự ")]
         public string? Ten { get; set; }
         public int? TrangThai { get; set; }

@@ -10,7 +10,6 @@ namespace AppData.Models
     public class ChatLieu
     {
         public Guid ID { get; set; }
-        [Required(ErrorMessage = "Vui lòng nhập tên chất liệu")]
         [StringLength(20, ErrorMessage = "Tên chất liệu không được vượt quá 20 kí tự ")]
         public string Ten { get; set; }
         public int TrangThai { get; set; }
