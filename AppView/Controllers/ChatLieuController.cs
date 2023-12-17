@@ -1,34 +1,35 @@
 ﻿using AppData.Models;
 using AppData.ViewModels;
 using AppView.PhanTrang;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using System.Drawing.Printing;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 
 namespace AppView.Controllers
 {
-    public class NhanVienController : Controller
+    public class ChatLieuController : Controller
     {
         private readonly HttpClient _httpClient;
         private readonly AssignmentDBContext dBContext;
-        public NhanVienController()
+        public ChatLieuController()
         {
             _httpClient = new HttpClient();
             dBContext = new AssignmentDBContext();
         }
+        // GET: ChatLieuController
         public int PageSize = 8;
 
         public async Task<IActionResult> Show(int ProductPage = 1)
         {
-            string apiUrl = $"https://localhost:7095/api/NhanVien/GetAll";
+            string apiUrl = $"https://localhost:7095/api/ChatLieu/GetAllChatLieu";
             var response = await _httpClient.GetAsync(apiUrl);
             string apiData = await response.Content.ReadAsStringAsync();
-            var users = JsonConvert.DeserializeObject<List<NhanVien>>(apiData);
-            return View(new PhanTrangNhanVien
+            var users = JsonConvert.DeserializeObject<List<ChatLieu>>(apiData);
+            return View(new PhanTrangChatLieu
             {
                 listNv = users
                         .Skip((ProductPage - 1) * PageSize).Take(PageSize),
@@ -49,15 +50,15 @@ namespace AppView.Controllers
                 ViewData["SearchError"] = "Vui lòng nhập tên để tìm kiếm";
                 return RedirectToAction("Show");
             }
-            string apiUrl = $"https://localhost:7095/api/NhanVien/TimKiemNhanVien?name={Ten}";
+            string apiUrl = $"https://localhost:7095/api/ChatLieu/TimKiemChatLieu?name={Ten}";
             var response = await _httpClient.GetAsync(apiUrl);
             string apiData = await response.Content.ReadAsStringAsync();
-            var users = JsonConvert.DeserializeObject<List<NhanVien>>(apiData);
+            var users = JsonConvert.DeserializeObject<List<ChatLieu>>(apiData);
             if (users.Count == 0)
             {
                 ViewData["SearchError"] = "Không tìm thấy kết quả phù hợp";
             }
-            return View("Show", new PhanTrangNhanVien
+            return View("Show", new PhanTrangChatLieu
             {
                 listNv = users
                          .Skip((ProductPage - 1) * PageSize).Take(PageSize),
@@ -77,11 +78,11 @@ namespace AppView.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(NhanVien nhanVien)
+        public async Task<IActionResult> Create(ChatLieu mauSac)
         {
-            nhanVien.TrangThai = 1;
-            var vt = dBContext.VaiTros.FirstOrDefault(x => x.Ten == "Nhân viên");
-            string apiUrl = $"https://localhost:7095/api/NhanVien/DangKyNhanVien?ten={nhanVien.Ten}&email={nhanVien.Email}&password={nhanVien.PassWord}&sdt={nhanVien.SDT}&diachi={nhanVien.DiaChi}";
+
+            mauSac.TrangThai = 1;
+            string apiUrl = $"https://localhost:7095/api/ChatLieu/ThemChatLieu?ten={mauSac.Ten}";
             var reponsen = await _httpClient.PostAsync(apiUrl, null);
             if (reponsen.IsSuccessStatusCode)
             {
@@ -89,77 +90,69 @@ namespace AppView.Controllers
             }
             else if (reponsen.StatusCode == HttpStatusCode.BadRequest)
             {
-                ViewBag.ErrorMessage = "Email hoặc sdt này đã được đăng ký";
+                ViewBag.ErrorMessage = "Chất liệu này đã có trong danh sách";
                 return View();
             }
-
-            return View(nhanVien);
+            return View(mauSac);
 
         }
 
         [HttpGet]
         public async Task<IActionResult> Details(Guid id)
         {
-            string apiUrl = $"https://localhost:7095/api/NhanVien/GetById?id={id}";
+            string apiUrl = $"https://localhost:7095/api/ChatLieu/GetChatLieuById?id={id}";
             var response = await _httpClient.GetAsync(apiUrl);
             string apiData = await response.Content.ReadAsStringAsync();
 
-            var user = JsonConvert.DeserializeObject<NhanVien>(apiData);
-            var vt = await dBContext.VaiTros.FindAsync(user.IDVaiTro);
-            ViewBag.TenVaiTro = vt.Ten;
+            var user = JsonConvert.DeserializeObject<ChatLieu>(apiData);
             return View(user);
         }
-
+        [HttpGet]
         public IActionResult Edit(Guid id)
         {
-            string apiUrl = $"https://localhost:7095/api/NhanVien/GetById?id={id}";
+            string apiUrl = $"https://localhost:7095/api/ChatLieu/GetChatLieuById?id={id}";
             var response = _httpClient.GetAsync(apiUrl).Result;
             var apiData = response.Content.ReadAsStringAsync().Result;
-            var user = JsonConvert.DeserializeObject<NhanVien>(apiData);
+            var user = JsonConvert.DeserializeObject<ChatLieu>(apiData);
             return View(user);
         }
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, NhanVien nv)
+        public async Task<IActionResult> Edit(Guid id, ChatLieu nv)
         {
-            if (ModelState.IsValid)
-            {
-                string apiUrl = $"https://localhost:7095/api/NhanVien/{id}?ten={nv.Ten}&email={nv.Email}&password={nv.PassWord}&sdt={nv.SDT}&diachi={nv.DiaChi}&trangthai={nv.TrangThai}&idvaitro={nv.IDVaiTro}";
+            nv.TrangThai = 1;
+            string apiUrl = $"https://localhost:7095/api/ChatLieu/{id}?ten={nv.Ten}";
+            var content = new StringContent(JsonConvert.SerializeObject(nv), Encoding.UTF8, "application/json");
+            var reponsen = await _httpClient.PutAsync(apiUrl, content);
 
-                var reponsen = await _httpClient.PutAsync(apiUrl, null);
-                if (reponsen.IsSuccessStatusCode)
-                {
-                    return RedirectToAction("Show");
-                }
+            if (reponsen.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Show");
+            }
+            else if (reponsen.StatusCode == HttpStatusCode.BadRequest)
+            {
+                ViewBag.ErrorMessage = "Chất liệu này đã có trong danh sách";
+                return View();
             }
             return View(nv);
 
         }
         public async Task<IActionResult> Delete(Guid id)
         {
-            string apiUrl = $"https://localhost:7095/api/NhanVien/{id}";
+            string apiUrl = $"https://localhost:7095/api/ChatLieu/{id}";
             var reposen = await _httpClient.DeleteAsync(apiUrl);
             if (reposen.IsSuccessStatusCode)
             {
                 return RedirectToAction("Show");
             }
             return RedirectToAction("Show");
-            //else
-            //{
-            //    // Log the error to the console.
-            //    Console.WriteLine(reposen.StatusCode);
-            //    Console.WriteLine(reposen.ReasonPhrase);
-            //}
-
-            //return View("DeleteError");
         }
         public async Task<IActionResult> Sua(Guid id)
         {
-            var timkiem = dBContext.NhanViens.FirstOrDefault(x => x.ID == id);
+            var timkiem = dBContext.ChatLieus.FirstOrDefault(x => x.ID == id);
             if (timkiem != null)
             {
-                timkiem.TrangThai = timkiem.TrangThai == 1 ? 0 : 1;
-                dBContext.NhanViens.Update(timkiem);
+                timkiem.TrangThai = timkiem.TrangThai == 0 ? 1 : 0;
+                dBContext.ChatLieus.Update(timkiem);
                 dBContext.SaveChanges();
                 return RedirectToAction("Show");
             }
@@ -183,6 +176,5 @@ namespace AppView.Controllers
             ProductPage--;
             return await Show(ProductPage);
         }
-
     }
 }
