@@ -17,9 +17,41 @@ namespace AppAPI.Services
         }
 
         #region SanPham
-        public Task<bool> UpdateSanPham(SanPhamRequest request)
+        public async Task<bool> UpdateSanPham(SanPhamUpdateRequest request)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var sanpham = await _context.SanPhams.FirstAsync(x=>x.ID == request.ID);
+                LoaiSP? loaiSPCon = _context.LoaiSPs.Where(x => x.IDLoaiSPCha != null).FirstOrDefault(x => x.Ten == request.TenLoaiSPCon);
+                ChatLieu? chatLieu = _context.ChatLieus.FirstOrDefault(x => x.Ten == request.TenChatLieu);
+                if (loaiSPCon == null)
+                {
+                    LoaiSP? loaiSPCha = _context.LoaiSPs.Where(x => x.IDLoaiSPCha == null).FirstOrDefault(x => x.Ten == request.TenLoaiSPCha);
+                    if (loaiSPCha == null)
+                    {
+                        loaiSPCha = new LoaiSP() { ID = Guid.NewGuid(), Ten = request.TenLoaiSPCha, TrangThai = 1 };
+                        _context.LoaiSPs.AddAsync(loaiSPCha);
+                    }
+                    loaiSPCon = new LoaiSP() { ID = Guid.NewGuid(), Ten = request.TenLoaiSPCon, IDLoaiSPCha = loaiSPCha.ID, TrangThai = 1 };
+                    await _context.LoaiSPs.AddAsync(loaiSPCon);
+                }
+                if (chatLieu == null)
+                {
+                    chatLieu = new ChatLieu() { ID = Guid.NewGuid(), Ten = request.TenChatLieu, TrangThai = 1 };
+                    await _context.AddAsync(chatLieu);
+                }
+                sanpham.Ten = request.Ten;
+                sanpham.MoTa = request.MoTa;
+                sanpham.IDChatLieu = chatLieu.ID;
+                sanpham.IDLoaiSP = loaiSPCon.ID;
+                _context.SanPhams.Update(sanpham);
+                _context.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
         public Task<List<SanPhamViewModel>> TimKiemSanPham(SanPhamTimKiemNangCao sp)
         {
@@ -29,9 +61,26 @@ namespace AppAPI.Services
         {
             throw new NotImplementedException();
         }
-        public Task<SanPhamDetail> GetSanPhamById(Guid id)
+        public async Task<SanPhamUpdateRequest> GetSanPhamById(Guid id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var sanPham = await _context.SanPhams.FirstAsync(x=>x.ID == id);
+                var loaiSP = await _context.LoaiSPs.FirstAsync(x=>x.ID == sanPham.IDLoaiSP);
+                var response = new SanPhamUpdateRequest() { 
+                    ID = sanPham.ID,
+                    Ten = sanPham.Ten,
+                    MoTa = sanPham.MoTa,
+                    TenChatLieu = _context.ChatLieus.First(x=>x.ID == sanPham.IDChatLieu).Ten,
+                    TenLoaiSPCha = _context.LoaiSPs.First(x=>x.ID == loaiSP.IDLoaiSPCha).Ten,
+                    TenLoaiSPCon = loaiSP.Ten
+                };
+                return response;
+            }
+            catch
+            {
+                return new SanPhamUpdateRequest();
+            }
         }
         public List<SanPhamViewModelAdmin> GetAllSanPhamAdmin()
         {

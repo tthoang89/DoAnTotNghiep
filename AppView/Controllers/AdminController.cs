@@ -29,7 +29,6 @@ namespace AppView.Controllers
         }
         public IActionResult ProductManager()
         {
-
             return View();
         }
         [HttpGet]
@@ -133,13 +132,20 @@ namespace AppView.Controllers
         }
         public JsonResult GetLoaiSPCon(string tenLoaiSPCha)
         {
-            string? response = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllLoaiSPCon?tenLoaiSPCha=" + tenLoaiSPCha).Result.Content.ReadAsStringAsync().Result;
-            if (response != null)
+            try
             {
-                var loaiSP = JsonConvert.DeserializeObject<List<LoaiSP>>(response);
-                return Json(new { KetQua = loaiSP, TrangThai = true });
+                string? response = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllLoaiSPCon?tenLoaiSPCha=" + tenLoaiSPCha).Result.Content.ReadAsStringAsync().Result;
+                if (response != null)
+                {
+                    var loaiSP = JsonConvert.DeserializeObject<List<LoaiSP>>(response);
+                    return Json(new { KetQua = loaiSP, TrangThai = true });
+                }
+                else return Json(new { TrangThai = false });
             }
-            else return Json(new {TrangThai = false });
+            catch
+            {
+                return Json(new { TrangThai = false });
+            }
         }
         [HttpGet]
         public IActionResult AddSanPham()
@@ -400,14 +406,14 @@ namespace AppView.Controllers
         public IActionResult AddAnhToSanPham(List<string> maMaus, List<IFormFile> images)
         {
             string wwwrootPath = _hostEnvironment.WebRootPath;
-            string idSanPham = TempData["SanPham"].ToString();
+            string idSanPham = TempData.Peek("SanPham").ToString();
             List<AnhRequest> lstAnhRequest = new List<AnhRequest>();
             for (var i = 0; i < maMaus.Count; i++)
             {
                 lstAnhRequest.Add(new AnhRequest() { IDSanPham = new Guid(idSanPham), MaMau = maMaus[i], DuongDan = images.Count<=i?"": _iFileService.AddFile(images[i], wwwrootPath).Result });
             }
             HttpResponseMessage response = _httpClient.PostAsJsonAsync(_httpClient.BaseAddress + "SanPham/AddAnh", lstAnhRequest).Result;
-            if (response.IsSuccessStatusCode) return RedirectToAction("ProductManager");
+            if (response.IsSuccessStatusCode) return RedirectToAction("ProductDetail",new { idSanPham = idSanPham});
             else return BadRequest();
         }
         public FileResult GenerateQRCode(string id,string ma)
@@ -453,6 +459,22 @@ namespace AppView.Controllers
             {
                 return Json(false);
             }
+        }
+        [HttpGet]
+        public IActionResult UpdateSanPham(Guid id)
+        {
+            var response = JsonConvert.DeserializeObject<SanPhamUpdateRequest>(_httpClient.GetAsync("SanPham/GetSanPhamById?id=" + id).Result.Content.ReadAsStringAsync().Result);
+            return View(response);
+        }
+        [HttpPost]
+        public IActionResult UpdateSanPham(SanPhamUpdateRequest request)
+        {
+            var response = _httpClient.PutAsJsonAsync("SanPham/UpdateSanPham",request).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("ProductManager");
+            }
+            else return BadRequest();
         }
     }
 }
