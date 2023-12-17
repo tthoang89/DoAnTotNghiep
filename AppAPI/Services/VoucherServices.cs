@@ -91,7 +91,7 @@ namespace AppAPI.Services
         }
         public List<Voucher> GetAllVoucherByTien(int tongTien) 
         {
-            return _allRepository.GetAll().Where(x=>x.NgayApDung<DateTime.Now && x.NgayKetThuc>DateTime.Now && x.SoTienCan<tongTien && x.TrangThai>0).ToList();
+            return _allRepository.GetAll().Where(x=>x.NgayApDung<DateTime.Now && x.NgayKetThuc>DateTime.Now && x.SoTienCan<tongTien && x.TrangThai>0 && x.SoLuong>0).ToList();
         }
     }
 }
