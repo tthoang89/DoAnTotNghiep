@@ -166,8 +166,8 @@ namespace AppAPI.Services
 
         public async Task<LoginViewModel> Login(string lg, string password)
         {
-            var nv = await  context.NhanViens.FirstOrDefaultAsync(a => (a.Email == lg || a.SDT == lg) /*&& a.PassWord == password*/ );
-            if (nv != null&&KiemTraMatKhau(password,nv.PassWord))
+            var nv = await context.NhanViens.FirstOrDefaultAsync(a => (a.Email == lg || a.SDT == lg) /*&& a.PassWord == password*/ );
+            if (nv != null && KiemTraMatKhau(password, nv.PassWord))
             {
                 if (nv.TrangThai == 1)
                 {
@@ -191,7 +191,7 @@ namespace AppAPI.Services
                 }
             }
             var kh = await context.KhachHangs.FirstOrDefaultAsync(x => (x.Email == lg || x.SDT == lg) /*&& x.Password == password*/);
-            if(kh != null&& KiemTraMatKhau(password,kh.Password))
+            if (kh != null && KiemTraMatKhau(password, kh.Password))
             {
                 return new LoginViewModel
                 {
@@ -297,7 +297,7 @@ namespace AppAPI.Services
             var kh = await context.KhachHangs.FirstOrDefaultAsync(h => h.IDKhachHang == request.ID);
             if (kh != null)
             {
-                if (KiemTraMatKhau(request.OldPassword,kh.Password))
+                if (KiemTraMatKhau(request.OldPassword, kh.Password))
                 {
                     kh.Password = MaHoaMatKhau(request.NewPassword);
                     await context.SaveChangesAsync();
@@ -317,12 +317,12 @@ namespace AppAPI.Services
             return false;
         }
 
-        public async Task<int> UseDiemTich(int diem,string id)
+        public async Task<int> UseDiemTich(int diem, string id)
         {
-            var khachHang= context.KhachHangs.First(x=>x.IDKhachHang==new Guid(id));
+            var khachHang = context.KhachHangs.First(x => x.IDKhachHang == new Guid(id));
             var quyDoiDiem = context.QuyDoiDiems.First(x => x.TrangThai > 0);
 
-            if(quyDoiDiem == null) 
+            if (quyDoiDiem == null)
             {
                 return 0;
             }
@@ -341,7 +341,7 @@ namespace AppAPI.Services
             var kh = await context.KhachHangs.FirstOrDefaultAsync(h => h.IDKhachHang == loginViewModel.Id);
             if (kh != null)
             {
-                
+
                 kh.Ten = loginViewModel.Ten;
                 kh.SDT = loginViewModel.SDT;
                 kh.DiaChi = loginViewModel.DiaChi;
@@ -350,7 +350,8 @@ namespace AppAPI.Services
                 kh.Email = loginViewModel.Email;
                 //context.KhachHangs.Update(kh);
                 context.SaveChangesAsync();
-                return new LoginViewModel {
+                return new LoginViewModel
+                {
                     Id = loginViewModel.Id,
                     Email = loginViewModel.Email,
                     Ten = loginViewModel.Ten,
@@ -361,7 +362,7 @@ namespace AppAPI.Services
                     DiaChi = loginViewModel.DiaChi,
                     vaiTro = loginViewModel.vaiTro,
                 };
-                
+
             }
             var nv = await context.NhanViens.FirstOrDefaultAsync(h => h.ID == loginViewModel.Id);
             if (nv != null)
@@ -387,5 +388,36 @@ namespace AppAPI.Services
             return null;
         }
         //End
+        //Nhinh thêm
+        public bool AddNhanhKH(KhachHang kh)
+        {
+            try
+            {
+                KhachHang KH = new KhachHang();
+                KH.IDKhachHang = Guid.NewGuid();
+                KH.Ten = kh.Ten;
+                KH.Email = kh.Email;
+                KH.Password = MaHoaMatKhau(kh.Password);
+                KH.SDT = kh.SDT;
+                KH.DiemTich = 0;
+                KH.TrangThai = 1;
+                KH.DiaChi = kh.DiaChi;
+                KH.DiemTich = 0;
+                context.KhachHangs.AddAsync(kh);
+                context.SaveChangesAsync();
+                GioHang gioHang = new GioHang()
+                {
+                    IDKhachHang = kh.IDKhachHang,
+                    NgayTao = DateTime.Now,
+                };
+                context.GioHangs.AddAsync(gioHang);
+                context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

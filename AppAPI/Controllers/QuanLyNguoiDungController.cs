@@ -86,7 +86,7 @@ namespace AppAPI.Controllers
             if (!dmk)
             {
                 return BadRequest("Đổi mật khẩu  thành công");
-                
+
             }
             else
             {
@@ -226,5 +226,11 @@ namespace AppAPI.Controllers
             return await service.UseDiemTich(diem, id);
         }
         //End
+        //Nhinh
+        [HttpPost("AddNhanhKH")]
+        public bool AddNhanhKH(KhachHang kh)
+        {
+            return service.AddNhanhKH(kh);
+        }
     }
 }

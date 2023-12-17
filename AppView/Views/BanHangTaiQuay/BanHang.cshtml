@@ -201,9 +201,9 @@
     var pageIndexsp = 1;//Trang ban đầu
     $(document).ready(function () {
         loadsp();
-        if (@lsthdcho.Count == 0) {
-            addHDCho();
-        }
+        //if (@lsthdcho.Count == 0) {
+        //    addHDCho();
+        //}
         activeTab(0);
         $(function () {
             $(document).on("click", ".tab", function (e) {
@@ -293,9 +293,9 @@
                 dataType: "json"
             });
             $(".tabs-box").empty();
-            if (data.length === 0) {
-                addHDCho();
-            }
+            //if (data.length === 0) {
+            //    addHDCho();
+            //}
             for (let i = 0; i < data.length; i++) {
                 const item = data[i];
                 const itemID = item.id;

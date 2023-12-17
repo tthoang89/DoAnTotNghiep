@@ -6,7 +6,6 @@ using AppData.ViewModels;
 using AppData.ViewModels.BanOffline;
 using AppData.ViewModels.SanPham;
 using System.Security.Cryptography.Xml;
-
 namespace AppAPI.Services
 {
     public class HoaDonService : IHoaDonService
@@ -537,13 +536,12 @@ namespace AppAPI.Services
             return reposLichSuTichDiem.GetAll().FirstOrDefault(c => c.IDHoaDon == idHoaDon);
         }
 
-        public bool HuyHD(Guid idhd, Guid idnv, string Ghichu)
+        public bool HuyHD(Guid idhd, Guid idnv)
         {
             try
             {
                 var hd = context.HoaDons.Where(c => c.ID == idhd).FirstOrDefault();
                 //Update hd
-                hd.GhiChu = Ghichu;
                 hd.IDNhanVien = idnv;
                 hd.TrangThaiGiaoHang = 7;
                 hd.TongTien = 0;

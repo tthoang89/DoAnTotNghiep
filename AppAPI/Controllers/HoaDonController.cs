@@ -107,9 +107,9 @@ namespace AppAPI.Controllers
             return _iHoaDonService.UpdateHoaDon(hoaDon);
         }
         [HttpPut("HuyHD")]
-        public IActionResult HuyHD(Guid idhd, Guid idnv, string Ghichu)
+        public IActionResult HuyHD(Guid idhd, Guid idnv)
         {
-            var result = _iHoaDonService.HuyHD(idhd,idnv,Ghichu);
+            var result = _iHoaDonService.HuyHD(idhd,idnv);
             return Ok(result);
         }
         [HttpPut("GiaoThanhCong")]
