@@ -15,7 +15,7 @@ namespace AppAPI.Services
         #region KichCo
         public async Task<KichCo> AddKichCo(string ten, int trangthai)
         {
-            var existingColor = await _dbContext.KichCos.FirstOrDefaultAsync(x => x.Ten == ten);
+            var existingColor = await _dbContext.KichCos.FirstOrDefaultAsync(x => x.Ten.Trim().ToUpper() == ten.Trim().ToUpper());
             if (existingColor != null)
             {
                 return null;
@@ -75,11 +75,12 @@ namespace AppAPI.Services
 
         public async Task<MauSac> AddMauSac(string ten, string ma, int trangthai)
         {
-            var existingColor = await _dbContext.MauSacs.FirstOrDefaultAsync(x => x.Ma == ma);
+            var existingColor = await _dbContext.MauSacs.FirstOrDefaultAsync(x => x.Ten.Trim().ToUpper() == ten.Trim().ToUpper() && x.Ma.Trim().ToUpper()==ma.Trim().ToUpper());
             if (existingColor != null)
             {
                 return null;
             }
+
             MauSac kc = new MauSac()
             {
                 ID = Guid.NewGuid(),
@@ -137,7 +138,7 @@ namespace AppAPI.Services
         #region chat lieu
         public async Task<ChatLieu> AddChatLieu(string ten, int trangthai)
         {
-            var existingColor = await _dbContext.ChatLieus.FirstOrDefaultAsync(x => x.Ten == ten);
+            var existingColor = await _dbContext.ChatLieus.FirstOrDefaultAsync(x => x.Ten.Trim().ToUpper() == ten.Trim().ToUpper());
             if (existingColor != null)
             {
                 return null;

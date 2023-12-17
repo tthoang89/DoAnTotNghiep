@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using AppView.PhanTrang;
 using AppData.ViewModels;
 using DocumentFormat.OpenXml.InkML;
+using System.Net;
 
 namespace AppView.Controllers
 {
@@ -81,6 +82,11 @@ namespace AppView.Controllers
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToAction("Show");
+            }
+            else if (response.StatusCode == HttpStatusCode.BadRequest)
+            {
+                ViewBag.ErrorMessage = "Loại sản phẩm này đã có trong danh sách";
+                return View();
             }
             return View();
         }

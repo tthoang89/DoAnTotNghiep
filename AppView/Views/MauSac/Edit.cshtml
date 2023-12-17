@@ -18,12 +18,12 @@
             <div class="form-group">
                 <label asp-for="Ten" class="control-label">Tên</label>
                 <input asp-for="Ten" class="form-control" />
-                <span asp-validation-for="Ten" class="text-danger"></span>
+                <div id="emptyNameError" class="invalid-feedback d-none">Vui lòng nhập tên màu sắc!</div>
             </div>
             <div class="form-group">
                 <label asp-for="Ma" class="control-label">Mã</label>
                 <input asp-for="Ma" type="color"class="form-control" />
-                <span asp-validation-for="Ma" class="text-danger"></span>
+                <div id="emptyNameError" class="invalid-feedback d-none">Vui lòng chọn mã màu sắc !</div>
             </div>
             <div class="form-group" hidden>
                 <label asp-for="TrangThai" class="control-label"></label>
@@ -36,7 +36,22 @@
         </form>
     </div>
 </div>
-
+<script>
+    $("input[name='Ten']").on("input", function () {
+        $(this).removeClass("is-invalid");
+        $("#emptyNameError").text("");
+    });
+    $("form").submit(function () {
+        var tenInput = $("input[name='Ten']");
+        var tenValue = tenInput.val();
+        if (tenValue.trim() === "") {
+            tenInput.addClass("is-invalid");
+            $("#emptyNameError").text("Tên không được bỏ trống");
+            return false;
+        }
+        return true;
+    });
+</script>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
