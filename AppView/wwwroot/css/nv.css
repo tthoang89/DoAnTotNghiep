@@ -11,17 +11,19 @@
     color: #fff;
     height: 35px
 }
+
 .table-header {
     background-color: darkslategray;
     color: white;
 }
+
 h1 {
-    text-align:center;
+    text-align: center;
     animation: blink 1s linear infinite;
     margin-top: 50px;
     margin-bottom: 50px
 }
-   /* h1:hover {
+/* h1:hover {
         animation: blink 1s linear infinite;
         color: brown;
     }
@@ -47,6 +49,7 @@ h1 {
     font-weight: 400;
     color: #fff;
 }
+
 .btn-details {
     padding: 5px 15px;
     border-radius: 50px;
@@ -56,29 +59,33 @@ h1 {
     font-weight: 400;
     color: #fff;
 }
+
 .btn-delete {
     padding: 5px 15px;
     border-radius: 50px;
     outline: 0;
     border: 0;
-    background:#3b3da1;
+    background: #3b3da1;
     font-weight: 400;
     color: #fff;
 }
+
 .btn-create:hover {
-    color:black;
+    color: black;
     background: #06A9AE;
     background: -webkit-linear-gradient(to right, #ECAD8F, #AF6E4E);
     background: linear-gradient(to right, #ECAD8F, #AF6E4E);
     text-decoration: none;
 }
+
 .btn-edit:hover {
-    color:black;
-  background: #f12711; 
-  background: -webkit-linear-gradient(to right, #f12711, #f5af19); 
-  background: linear-gradient(to right, #f12711, #f5af19); 
-  text-decoration: none;
+    color: black;
+    background: #f12711;
+    background: -webkit-linear-gradient(to right, #f12711, #f5af19);
+    background: linear-gradient(to right, #f12711, #f5af19);
+    text-decoration: none;
 }
+
 .btn-details:hover {
     color: black;
     background: #ffd8b9;
@@ -86,6 +93,7 @@ h1 {
     background: linear-gradient(to right, #ffd8b9, #f5af19);
     text-decoration: none;
 }
+
 .btn-delete:hover {
     color: black;
     background: #D2A3A9;
@@ -93,6 +101,7 @@ h1 {
     background: linear-gradient(to right, #ECAD8F, #AF6E4E);
     text-decoration: none;
 }
+
 .tk1 {
     padding: 5px 15px;
     border-radius: 0px;
@@ -102,6 +111,7 @@ h1 {
     font-weight: 400;
     width: 290px;
 }
+
 .tk {
     padding: 5px 15px;
     border-radius: 50px;
@@ -111,19 +121,22 @@ h1 {
     font-weight: 400;
     color: #fff;
 }
-.tk:hover {
-    color: black;
-    background: #D2A3A9;
-    background: -webkit-linear-gradient(to right, #ECAD8F, #AF6E4E);
-    background: linear-gradient(to right, #ECAD8F, #AF6E4E);
-    text-decoration: none;
-}
+
+    .tk:hover {
+        color: black;
+        background: #D2A3A9;
+        background: -webkit-linear-gradient(to right, #ECAD8F, #AF6E4E);
+        background: linear-gradient(to right, #ECAD8F, #AF6E4E);
+        text-decoration: none;
+    }
+
 .modal-dialog {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
+
 .modal {
     position: fixed;
     top: 0;
@@ -132,6 +145,7 @@ h1 {
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.5);
 }
+
 .modal-content-floating {
     position: fixed;
     top: 50%;

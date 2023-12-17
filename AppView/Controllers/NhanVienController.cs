@@ -2,8 +2,10 @@
 using AppData.ViewModels;
 using AppView.PhanTrang;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Drawing.Printing;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 
@@ -77,20 +79,20 @@ namespace AppView.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(NhanVien nhanVien)
         {
-            nhanVien.TrangThai = 0;
-            if (ModelState.IsValid)
+            nhanVien.TrangThai = 1;
+            var vt = dBContext.VaiTros.FirstOrDefault(x => x.Ten == "Nhân viên");
+            string apiUrl = $"https://localhost:7095/api/NhanVien/DangKyNhanVien?ten={nhanVien.Ten}&email={nhanVien.Email}&password={nhanVien.PassWord}&sdt={nhanVien.SDT}&diachi={nhanVien.DiaChi}";
+            var reponsen = await _httpClient.PostAsync(apiUrl, null);
+            if (reponsen.IsSuccessStatusCode)
             {
-                if (nhanVien.IDVaiTro == Guid.Empty)
-                {
-                    nhanVien.IDVaiTro = Guid.Parse("952c1a5d-74ff-4daf-ba88-135c5440809c");
-                }
-                string apiUrl = $"https://localhost:7095/api/NhanVien/DangKyNhanVien?ten={nhanVien.Ten}&email={nhanVien.Email}&password={nhanVien.PassWord}&sdt={nhanVien.SDT}&diachi={nhanVien.DiaChi}";
-                var reponsen = await _httpClient.PostAsync(apiUrl, null);
-                if (reponsen.IsSuccessStatusCode)
-                {
-                    return RedirectToAction("Show");
-                }
+                return RedirectToAction("Show");
             }
+            else if (reponsen.StatusCode == HttpStatusCode.BadRequest)
+            {
+                ViewBag.ErrorMessage = "Email hoặc sdt này đã được đăng ký";
+                return View();
+            }
+
             return View(nhanVien);
 
         }
@@ -181,6 +183,50 @@ namespace AppView.Controllers
             ProductPage--;
             return await Show(ProductPage);
         }
+        [HttpGet]
+        public IActionResult ProfileNhanVien_Admin()
+        {
+            var session = HttpContext.Session.GetString("LoginInfor");
+            LoginViewModel loginViewModel = JsonConvert.DeserializeObject<LoginViewModel>(session);
+            //LoginViewModel loginViewModel = JsonConvert.DeserializeObject<LoginViewModel>(loginInfor);
+            return View(loginViewModel);
+            var response = _httpClient.GetAsync(_httpClient.BaseAddress + $"KhachHang/GetById?id={loginViewModel.Id}").Result;
+            if (response.IsSuccessStatusCode)
+            {
+                loginViewModel.DiemTich = JsonConvert.DeserializeObject<KhachHang>(response.Content.ReadAsStringAsync().Result).DiemTich;
+                return View(loginViewModel);
+            }
+            else
+            {
+                return View(loginViewModel);
+            }
 
+        }
+        [HttpPut]
+        public ActionResult UpdateProfile(string ten, string email, string sdt, string? diachi)
+        {
+            var session = HttpContext.Session.GetString("LoginInfor");
+            LoginViewModel khachhang = new LoginViewModel();
+            khachhang.Id = JsonConvert.DeserializeObject<LoginViewModel>(session).Id;
+            khachhang.Ten = ten;
+            khachhang.Email = email;
+            khachhang.SDT = sdt;
+            khachhang.DiaChi = diachi;
+            khachhang.DiemTich = JsonConvert.DeserializeObject<LoginViewModel>(session).DiemTich;
+            khachhang.vaiTro = JsonConvert.DeserializeObject<LoginViewModel>(session).vaiTro;
+            khachhang.IsAccountLocked = JsonConvert.DeserializeObject<LoginViewModel>(session).IsAccountLocked;
+            khachhang.Message = "lmao";
+            var response = _httpClient.PutAsJsonAsync("https://localhost:7095/api/" + "QuanLyNguoiDung/UpdateProfile1", khachhang).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                HttpContext.Session.Remove("LoginInfor");
+                HttpContext.Session.SetString("LoginInfor", response.Content.ReadAsStringAsync().Result);
+                return Json(new { success = true, message = "Cập nhật thông tin cá nhân thành công" });
+            }
+            else
+            {
+                return Json(new { success = false, message = "Cập nhật thông tin cá nhân thất bại" });
+            }
+        }
     }
 }

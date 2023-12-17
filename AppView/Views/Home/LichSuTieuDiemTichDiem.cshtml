@@ -148,28 +148,28 @@
                                 </td>
                         </tr>`);
                     }
-                    else if (response.data[i].trangThaiGiaoHang == 5 && response.data[i].trangThaiLSTD === 1) {
-                        $("#DShoaDon").append(`<tr>
-                            <th class="adon" scope="row"><a href="PurchaseOrderDetail?idHoaDon=${response.data[i].idHoaDon}">${response.data[i].maHD}</a></th>
-                                <td>
-                                    ${response.data[i].ngaythanhtoan1}
-                                </td>
-                                <td>
-                                   <label>-${response.data[i].diem}</label>
-                                </td>
-                        </tr>`);
-                    }
-                    else if (response.data[i].trangThaiGiaoHang == 5 && response.data[i].trangThaiLSTD === 0) {
-                        $("#DShoaDon").append(`<tr>
-                            <th class="adon" scope="row"><a href="PurchaseOrderDetail?idHoaDon=${response.data[i].idHoaDon}">${response.data[i].maHD}</a></th>
-                                <td>
-                                    ${response.data[i].ngaythanhtoan1}
-                                </td>
-                                <td>
-                                   <label>+${response.data[i].diem}</label>
-                                </td>
-                        </tr>`);
-                    }
+                    //else if (response.data[i].trangThaiGiaoHang == 5 && response.data[i].trangThaiLSTD === 1) {
+                    //    $("#DShoaDon").append(`<tr>
+                    //        <th class="adon" scope="row"><a href="PurchaseOrderDetail?idHoaDon=${response.data[i].idHoaDon}">${response.data[i].maHD}</a></th>
+                    //            <td>
+                    //                ${response.data[i].ngaythanhtoan1}
+                    //            </td>
+                    //            <td>
+                    //               <label>-${response.data[i].diem}</label>
+                    //            </td>
+                    //    </tr>`);
+                    //}
+                    //else if (response.data[i].trangThaiGiaoHang == 5 && response.data[i].trangThaiLSTD === 0) {
+                    //    $("#DShoaDon").append(`<tr>
+                    //        <th class="adon" scope="row"><a href="PurchaseOrderDetail?idHoaDon=${response.data[i].idHoaDon}">${response.data[i].maHD}</a></th>
+                    //            <td>
+                    //                ${response.data[i].ngaythanhtoan1}
+                    //            </td>
+                    //            <td>
+                    //               <label>+${response.data[i].diem}</label>
+                    //            </td>
+                    //    </tr>`);
+                    //}
                     
                 }
                 paginghd(response.total, function () {

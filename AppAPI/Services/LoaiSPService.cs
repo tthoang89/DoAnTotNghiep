@@ -19,7 +19,7 @@ namespace AppAPI.Services
             var lsp = await _context.LoaiSPs.FindAsync(id);
             if (lsp == null) throw new Exception($"Không tìm thấy Loại sản phẩm: {id}");
             // Check LoaiSP đag đc sử dụng k
-            if(_context.SanPhams.Any(c=>c.IDLoaiSP == id)) return false;
+            if (_context.SanPhams.Any(c => c.IDLoaiSP == id)) return false;
             _context.LoaiSPs.Remove(lsp);
             await _context.SaveChangesAsync();
             return true;
@@ -27,7 +27,7 @@ namespace AppAPI.Services
 
         public async Task<List<LoaiSP>> GetAllLoaiSP()
         {
-            return await _context.LoaiSPs.AsNoTracking().ToListAsync();
+            return await _context.LoaiSPs.AsNoTracking().OrderByDescending(x => x.TrangThai).ToListAsync();
         }
 
         public async Task<LoaiSP> GetLoaiSPById(Guid id)
@@ -42,7 +42,7 @@ namespace AppAPI.Services
             if (Lsp != null) //Update
             {
                 Lsp.Ten = lsp.Ten;
-                Lsp.TrangThai = lsp.TrangThai;
+                Lsp.TrangThai = 1;
                 Lsp.IDLoaiSPCha = lsp.IDLoaiSPCha;
                 _context.LoaiSPs.Update(Lsp);
                 await _context.SaveChangesAsync();
@@ -55,7 +55,7 @@ namespace AppAPI.Services
                     ID = new Guid(),
                     Ten = lsp.Ten,
                     IDLoaiSPCha = lsp.IDLoaiSPCha,
-                    TrangThai = lsp.TrangThai,
+                    TrangThai = 1,
                 };
                 await _context.AddAsync(loaiSP);
                 await _context.SaveChangesAsync();
@@ -71,6 +71,26 @@ namespace AppAPI.Services
             }
             return true;
         }
+
+        public async Task<LoaiSP> AddSpCha(Guid idLoaiSPCha, string ten, int trangthai)
+        {
+            var check = _context.LoaiSPs.FirstOrDefaultAsync(x => x.Ten == ten && x.IDLoaiSPCha != idLoaiSPCha);
+            if (check != null)
+            {
+                return null;
+            }
+            LoaiSP kc = new LoaiSP()
+            {
+                IDLoaiSPCha = Guid.NewGuid(),
+                Ten = ten,
+                TrangThai = 1
+            };
+            _context.LoaiSPs.Add(kc);
+            _context.SaveChanges();
+            return kc;
+        }
+
+
         #endregion
     }
 }

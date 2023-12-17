@@ -129,6 +129,9 @@
                                         <p style="margin-bottom: 0px;padding-left: 10px;">Chuyển khoản qua VNPay</p>
                                     </div>
                                 </div>
+
+                                <div id="pttt-error" style="display:none;color:red">Vui lòng chọn phương thức thanh toán</div>
+
                                 <div id="pttt-error" style="display:none;color:red; font-size:12px;">Vui lòng chọn phương thức thanh toán</div>
                             </div>
                         </div>
@@ -139,6 +142,7 @@
                                 <label for="ten">Ghi chú</label>
                                 <textarea class="form-control" id="note" placeholder="" value=""></textarea>
                                 <div class="invalid-feedback"> Không để trống tên</div>
+
                             </div>
                         </div>
                     </div>
@@ -331,9 +335,10 @@
         var xa = $("#ward option:selected").text().trim();
         var diachi = $("#address").val();
         var pttt = $('input[name="pttt"]:checked').val();
-        var diachi = $("#address").val();
-        var ghiChu = $("#note").val();
 
+        var voucher = $("#voucher").val();
+
+        var ghiChu = $("#note").val();
         $('.invalid-feedback').text('');
         $('.is-invalid').removeClass('is-invalid');
         var hasError = false;
@@ -395,6 +400,7 @@
         if (hasError) {
             alert("Vui long dien day du thong tin");
         }
+
         else {
             var objHoaDon = { Ten: ten, Email: email, SDT: sdt, DiaChi: diachi + ", " + xa + ", " + huyen + ", " + tinh, TienShip: tienShip, PhuongThucThanhToan: pttt, TongTien: tienShip + @tongtien-tienVoucher - tienDiem, TenVoucher: voucher, Diem: diemTich, GhiChu: ghiChu};
             $.ajax({
@@ -404,6 +410,9 @@
                 url: '/Home/Order',
                 data: objHoaDon,
                 success: function (response) {
+
+                    console.log(response);
+
                     location.href = response;
                 },
                 error: function (response) {

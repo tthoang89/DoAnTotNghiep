@@ -1,8 +1,10 @@
 ﻿using AppAPI.IServices;
 using AppAPI.Services;
+using AppData.Models;
 using AppData.ViewModels.SanPham;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace AppAPI.Controllers
 {
@@ -11,9 +13,11 @@ namespace AppAPI.Controllers
     public class LoaiSPController : ControllerBase
     {
         private readonly ILoaiSPService _loaiSPService;
+        private readonly AssignmentDBContext context;
         public LoaiSPController()
         {
             _loaiSPService = new LoaiSPService();
+            context = new AssignmentDBContext();
         }
         #region LoaiSP
         [HttpGet("getAll")]
@@ -22,11 +26,12 @@ namespace AppAPI.Controllers
             var listLsp = await _loaiSPService.GetAllLoaiSP();
             return Ok(listLsp);
         }
+
         [HttpGet("getById/{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
             var lsp = await _loaiSPService.GetLoaiSPById(id);
-            if (lsp == null) return NotFound();
+            if (lsp == null) return BadRequest();
             return Ok(lsp);
         }
         [HttpPost("save")]
@@ -42,6 +47,27 @@ namespace AppAPI.Controllers
         {
             var loaiSP = await _loaiSPService.DeleteLoaiSP(id);
             return Ok();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetLoaiSpTheoCha(Guid id)
+        {
+            // Lấy danh sách các LoaiSPCha
+            var listLoaiSpTheoCha = await context.LoaiSPs
+              .Where(lsp => lsp.IDLoaiSPCha == id)
+              .ToListAsync();
+            if (listLoaiSpTheoCha == null)
+            {
+                return BadRequest();
+            }
+            return Ok(listLoaiSpTheoCha);
+        }
+        [HttpPost]
+        public async Task<IActionResult> AddLoaiSPCha(Guid idLoaiSPCha, string ten, int trangthai)
+        {
+            var tr = _loaiSPService.AddSpCha(idLoaiSPCha, ten, trangthai);
+            if (tr == null) return BadRequest();
+            return Ok(tr);
         }
         #endregion
     }
