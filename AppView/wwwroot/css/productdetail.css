@@ -176,7 +176,7 @@
     }
 
 .buttons .btn {
-    height: 50px;
-    width: 150px;
+    height: 60px;
+    /*width: 150px;*/
     border-radius: 0px !important
 }

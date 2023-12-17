@@ -51,11 +51,11 @@ namespace AppView.Controllers
             {
                 if (filter.loaitk == 1)
                 {
-                    listhdql = listhdql.Where(c => c.MaHD.ToLower().Contains(filter.keyWord.ToLower()) || c.SDTnhanhang != null && c.SDTnhanhang.Contains(filter.keyWord)).ToList();
+                    listhdql = listhdql.Where(c => c.MaHD.ToLower().Contains(filter.keyWord.ToLower()) || (c.SDTnhanhang != null && c.SDTnhanhang.Contains(filter.keyWord))).ToList();
                 }
                 else if (filter.loaitk == 2)
                 {
-                    listhdql = listhdql.Where(c => c.KhachHang.ToLower().Contains(filter.keyWord.ToLower()) || c.SDTKH != null && c.SDTKH.Contains(filter.keyWord)).ToList();
+                    listhdql = listhdql.Where(c => c.KhachHang.ToLower().Contains(filter.keyWord.ToLower()) || (c.SDTKH != null && c.SDTKH.Contains(filter.keyWord))).ToList();
                 }
             }
             //Trả hàng

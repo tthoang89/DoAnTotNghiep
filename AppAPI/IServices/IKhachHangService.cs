@@ -9,6 +9,7 @@ namespace AppAPI.IServices
         public KhachHang GetById(Guid id);
         //Nhinh thêm
         public KhachHang GetBySDT(string sdt);
+        //End
         public bool Delete(Guid id);
         public bool Update(KhachHang khachHang);
         public List<KhachHang> GetAll();
