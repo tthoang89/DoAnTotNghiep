@@ -32,12 +32,17 @@ namespace AppAPI.Controllers
             return listSP;
         }
 
-        [HttpGet("getById/{id}")]
+        [HttpGet("GetSanPhamById")]
         public async Task<IActionResult> GetSanPhamById(Guid id)
         {
             var sanPham = await _sanPhamServices.GetSanPhamById(id);
             if (sanPham == null) return NotFound();
             return Ok(sanPham);
+        }
+        [HttpPut("UpdateSanPham")]
+        public async Task<bool> UpdateSanPham(SanPhamUpdateRequest request)
+        {
+            return await _sanPhamServices.UpdateSanPham(request);
         }
         [HttpGet("getByIdLsp/{idLsp}")]
         public async Task<IActionResult> GetSanPhamByIdDanhMuc(Guid idLsp)

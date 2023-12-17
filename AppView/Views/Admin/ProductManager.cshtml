@@ -4,22 +4,28 @@
 
 <h1>Quản lý sản phẩm</h1>
 
-<div class="row d-flex justify-content-end">
-    <div class="col-lg-1" style="padding:0px">
-        <p style="text-align:end;margin-top:5px;margin-right:5px">Sắp xếp: </p>
+<div class="row">
+    <div class="col-lg-4">
+        <a asp-action="AddSanPham" class="btn btn-primary">Thêm sản phẩm</a>
     </div>
-    <div class="col-lg-3" style="padding:0px;margin-right:5px">
-        <select class="form-select" id="sort" onchange="ReloadPagination()">
-            <option selected value="1">Sắp xếp theo tên</option>
-            <option value="2">Sắp xếp theo giá tăng dần</option>
-            <option value="3">Sắp xếp theo giá giảm dần</option>
-            <option value="4">Sắp xếp theo số lượng tăng dần</option>
-            <option value="5">Sắp xếp theo số lượng giảm dần</option>
-        </select>
-    </div>
-    <div class="col-lg-1" style="padding:0px">
-        <button class="btn" style="border:1px solid black" type="button" data-bs-toggle="collapse" data-bs-target=".filter"><i class="bx bx-filter-alt"></i></button>
-    </div>
+    <div class="col-lg-8 d-flex justify-content-end">
+        <div class="col-lg-1" style="padding:0px">
+            <p style="text-align:end;margin-top:5px;margin-right:5px">Sắp xếp: </p>
+        </div>
+        <div class="col-lg-3" style="padding:0px;margin-right:5px">
+            <select class="form-select" id="sort" onchange="ReloadPagination()">
+                <option selected value="1">Sắp xếp theo mã</option>
+                <option value="6">Sắp xếp theo tên</option>
+                <option value="2">Sắp xếp theo giá tăng dần</option>
+                <option value="3">Sắp xếp theo giá giảm dần</option>
+                <option value="4">Sắp xếp theo số lượng tăng dần</option>
+                <option value="5">Sắp xếp theo số lượng giảm dần</option>
+            </select>
+        </div>
+        <div class="col-lg-1" style="padding:0px">
+            <button class="btn" style="border:1px solid black" type="button" data-bs-toggle="collapse" data-bs-target=".filter"><i class="bx bx-filter-alt"></i></button>
+        </div>
+    </div>   
 </div>
 <div class="row filter collapse" style="margin-bottom:10px">
     <div class="col-lg-3" style="padding-left:0px;padding-right:2px">
@@ -89,9 +95,7 @@
         </tbody>
     </table>
 </div>
-<div class="d-flex justify-content-end">
-    <a asp-action="AddSanPham" class="btn btn-primary">Thêm sản phẩm</a>
-</div>
+
 <div class="row">
     <div class="col-lg-12 d-flex justify-content-center">
         <ul id="pagination-demo" class="pagination"></ul>
@@ -131,9 +135,9 @@
                 $("#list_products").empty();
                 $.each(response.data, function (i, item) {
                     if (item.trangThai == 1)
-                        $("#list_products").append(`<tr><td>${item.ten}</td><td>${item.ma}</td><td><img src="/img/product/${item.anh}" style="width:70px;height:70px" /></td><td>${item.giaGoc}</td><td>${item.giaBan}</td><td>${item.soLuong}</td><td>${item.chatLieu}</td><td>${item.loaiSPCha}/${item.loaiSPCon}</td><td><span style="color:green">Hoạt động</span></td><td style="width:200px"><a href='/Admin/ProductDetail?idSanPham=${item.id}' class="btn btn-primary" style="margin-right:5px">Chi tiết</a><a href='/Admin/UpdateTrangThaiSanPham?idSanPham=${item.id}&trangThai=0' class="btn btn-danger">Xoá</a></td></tr>`);
+                        $("#list_products").append(`<tr><td>${item.ten}</td><td>${item.ma}</td><td><img src="/img/product/${item.anh}" style="width:70px;height:70px" /></td><td>${item.giaGoc}</td><td>${item.giaBan}</td><td>${item.soLuong}</td><td>${item.chatLieu}</td><td>${item.loaiSPCha}/${item.loaiSPCon}</td><td><span style="color:green">Hoạt động</span></td><td style="width:250px"><a href='/Admin/ProductDetail?idSanPham=${item.id}' class="btn btn-primary" style="margin-right:5px">Chi tiết</a><a href='/Admin/UpdateSanPham?id=${item.id}' class="btn btn-warning" style="margin-right:5px">Sửa</a><a href='/Admin/UpdateTrangThaiSanPham?idSanPham=${item.id}&trangThai=0' class="btn btn-danger">Xoá</a></td></tr>`);
                     else {
-                        $("#list_products").append(`<tr><td>${item.ten}</td><td>${item.ma}</td><td><img src="/img/product/${item.anh}" style="width:70px;height:70px" /></td><td>${item.giaGoc}</td><td>${item.giaBan}</td><td>${item.soLuong}</td><td>${item.chatLieu}</td><td>${item.loaiSPCha}/${item.loaiSPCon}</td><td><span style="color:red">Không hoạt động</span></td><td style="width:200px"><a href='/Admin/ProductDetail?idSanPham=${item.id}' class="btn btn-primary" style="margin-right:5px">Chi tiết</a><a href='/Admin/UpdateTrangThaiSanPham?idSanPham=${item.id}&trangThai=1'  class="btn btn-success">Hoàn tác</a></td></tr>`);
+                        $("#list_products").append(`<tr><td>${item.ten}</td><td>${item.ma}</td><td><img src="/img/product/${item.anh}" style="width:70px;height:70px" /></td><td>${item.giaGoc}</td><td>${item.giaBan}</td><td>${item.soLuong}</td><td>${item.chatLieu}</td><td>${item.loaiSPCha}/${item.loaiSPCon}</td><td><span style="color:red">Không hoạt động</span></td><td style="width:250px"><a href='/Admin/ProductDetail?idSanPham=${item.id}' class="btn btn-primary" style="margin-right:5px">Chi tiết</a><a href='/Admin/UpdateSanPham?id=${item.id}' class="btn btn-warning" style="margin-right:5px">Sửa</a><a href='/Admin/UpdateTrangThaiSanPham?idSanPham=${item.id}&trangThai=1'  class="btn btn-success">Hoàn tác</a></td></tr>`);
                     }
                 });
                 pagingsp(response.total, function () {
@@ -152,7 +156,7 @@
             visiblePages: 7,
             onPageClick: function (event, page) {
                 pageIndex = page;
-                // setTimeout(callback, 200);
+                setTimeout(callback, 200);
             }
         });
     }
@@ -172,8 +176,8 @@
                 success: function (response) {
                     $("#categoryson").empty();
                     var rows = `<option selected value="all">Tất cả</option>`;
-                    for (var i = 0; i < response.length; i++) {
-                        rows += "<option value='" + response[i].ten + "'>" + response[i].ten + "</option>";      
+                    for (var i = 0; i < response.ketQua.length; i++) {
+                        rows += "<option value='" + response.ketQua[i].ten + "'>" + response.ketQua[i].ten + "</option>";
                     }
                     $('#categoryson').append(rows);
                 }
