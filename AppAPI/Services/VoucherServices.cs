@@ -77,7 +77,7 @@ namespace AppAPI.Services
                 }
                 voucher.SoLuong = voucherview.SoLuong;
                 voucher.MoTa = voucherview.MoTa;
-                voucher.TrangThai = voucherview.TrangThai;
+              
                 return _allRepository.Update(voucher);
             }
             else
