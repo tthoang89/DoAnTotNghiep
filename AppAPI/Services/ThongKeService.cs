@@ -77,7 +77,7 @@ namespace AppAPI.Services
             List<ThongKeDuongViewModel> thongKeDuong = new List<ThongKeDuongViewModel>();
             for (var i = start; i <= end; i=i.AddDays(1))
             {
-                thongKeDuong.Add(new ThongKeDuongViewModel() { Ngay = i.Date, SoLuongDon = context.HoaDons.Where(x => x.TrangThaiGiaoHang == 6 && x.NgayThanhToan.Value.Date == i.Date).Count() });
+                thongKeDuong.Add(new ThongKeDuongViewModel() { Ngay = i.Date, DoanhThu = context.HoaDons.Where(x => x.TrangThaiGiaoHang == 6 && x.NgayThanhToan.Value.Date == i.Date).Sum(x=>x.TongTien-x.TienShip).Value });
             }
             //Lấy biểu đồ tròn
             List<ThongKeTronViewModel> thongKeTron = (from a in lstHoaDon.Where(x=>x.TrangThaiGiaoHang==6 || x.TrangThaiGiaoHang == 7)
@@ -90,7 +90,7 @@ namespace AppAPI.Services
             return new ThongKeViewModel() { SoLuongThanhVien = soLuongThanhVien, SoLuongDonHang = soLuongDonHangCho, SoLuongSanPham = soLuongSanPham, BieuDoCot = thongKeCot, BieuDoDuong = thongKeDuong.OrderBy(x=>x.Ngay).ToList(), BieuDoTron = thongKeTron, Start = start.ToString("MM/dd/yyyy"), End = end.ToString("MM/dd/yyyy") };
         }
 
-        public List<ThongKeCotViewModel> ThongKeSanPham()
+        public List<ThongKeSanPham> ThongKeSanPham()
         {
             List<ChiTietHoaDon> lstChiTietHoaDon = new List<ChiTietHoaDon>();
             List<HoaDon> lstHoaDon = context.HoaDons.Where(x => x.TrangThaiGiaoHang == 6).ToList();
@@ -98,18 +98,19 @@ namespace AppAPI.Services
             {
                 lstChiTietHoaDon.AddRange(context.ChiTietHoaDons.Where(x => x.IDHoaDon == hoaDon.ID));
             }
-            List<ThongKeCotViewModel> thongKeCot = (from a in lstChiTietHoaDon
+            List<ThongKeSanPham> thongKeSanPham = (from a in lstChiTietHoaDon
                                                     group a by a.IDCTSP into g
-                                                    select new ThongKeCotViewModel()
+                                                    select new ThongKeSanPham()
                                                     {
                                                         TenSP = g.Key.ToString(),
                                                         SoLuong = g.Sum(x => x.SoLuong),
+                                                        DoanhThu = g.Sum(x => x.SoLuong*x.DonGia),
                                                     }).OrderByDescending(x => x.SoLuong).Take(10).ToList();
             ChiTietSanPham chiTietSanPham;
             MauSac mauSac;
             KichCo kichCo;
             SanPham sanPham;
-            foreach (var item in thongKeCot)
+            foreach (var item in thongKeSanPham)
             {
                 chiTietSanPham = context.ChiTietSanPhams.First(x => x.ID == new Guid(item.TenSP));
                 mauSac = context.MauSacs.First(x => x.ID == chiTietSanPham.IDMauSac);
@@ -117,7 +118,7 @@ namespace AppAPI.Services
                 sanPham = context.SanPhams.First(x => x.ID == chiTietSanPham.IDSanPham);
                 item.TenSP = sanPham.Ten + "_" + mauSac.Ten + "_" + kichCo.Ten;
             }
-            return thongKeCot;
+            return thongKeSanPham;
         }
 
     }

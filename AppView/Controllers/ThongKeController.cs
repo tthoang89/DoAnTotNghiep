@@ -341,17 +341,18 @@ namespace AppView.Controllers
         public async Task<FileResult> ExportExcel()
         {
             var response = await _httpClient.GetAsync("https://localhost:7095/api/ThongKe/ThongKeSanPham");
-            var lst = JsonConvert.DeserializeObject<List<ThongKeCotViewModel>>(await response.Content.ReadAsStringAsync());
+            var lst = JsonConvert.DeserializeObject<List<ThongKeSanPham>>(await response.Content.ReadAsStringAsync());
             var fileName = "thongKeSanPham.xlsx";
             DataTable dataTable = new DataTable("SanPham");
             dataTable.Columns.AddRange(new DataColumn[]
             {
                 new DataColumn("Tên sản phẩm"),
-                new DataColumn("Số lượng bán ra")
+                new DataColumn("Số lượng bán ra"),
+                new DataColumn("Tổng doanh thu")
             });
             foreach(var item in lst)
             {
-                dataTable.Rows.Add(item.TenSP, item.SoLuong);
+                dataTable.Rows.Add(item.TenSP, item.SoLuong,item.DoanhThu);
             }
             using(XLWorkbook wb = new XLWorkbook())
             {
