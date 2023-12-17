@@ -399,8 +399,15 @@ namespace AppView.Controllers
         [HttpGet]
         public IActionResult AddAnhToSanPham()
         {
-            var lst = JsonConvert.DeserializeObject<List<MauSac>>(TempData["MauSac"].ToString());
-            return View(lst);
+            try
+            {
+                var lst = JsonConvert.DeserializeObject<List<MauSac>>(TempData["MauSac"].ToString());
+                return View(lst);
+            }
+            catch
+            {
+                return View(new List<MauSac>());
+            }
         }
         [HttpPost]
         public IActionResult AddAnhToSanPham(List<string> maMaus, List<IFormFile> images)

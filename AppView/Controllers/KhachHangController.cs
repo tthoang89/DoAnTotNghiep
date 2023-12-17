@@ -38,28 +38,94 @@ namespace AppView.Controllers
             });
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllLSTDByIDKH(Guid id, int ProductPage = 1)
+        public async Task<IActionResult> GetAllLSTDByIDKH(Guid id)
         {
            
-            string apiURL = $"https://localhost:7095/api/LichSuTichDiem/GetLSTDByIdKH?idkh={id}";
+            string apiURL = $"https://localhost:7095/api/LichSuTichDiem/TongDonThanhCong?id={id}";
             var response = await httpClients.GetAsync(apiURL);
             var apiData = await response.Content.ReadAsStringAsync();
-            var roles = JsonConvert.DeserializeObject<List<LichSuTichDiemView>>(apiData);
-            return View(new PhanTrangLSTD
+            var DonThanhCong = JsonConvert.DeserializeObject<TongDon?>(apiData);
+            ViewBag.DonThanhCong = DonThanhCong;
+            string apiURL1 = $"https://localhost:7095/api/LichSuTichDiem/TongDonHuy?id={id}";
+            var response1 = await httpClients.GetAsync(apiURL1);
+            var apiData1 = await response1.Content.ReadAsStringAsync();
+            var DonHuy = JsonConvert.DeserializeObject<TongDon?>(apiData1);
+            ViewBag.DonHuy = DonHuy;
+            string apiURL2 = $"https://localhost:7095/api/LichSuTichDiem/TongDonHoanHang?id={id}";
+            var response2 = await httpClients.GetAsync(apiURL2);
+            var apiData2 = await response2.Content.ReadAsStringAsync();
+            var DonHoanHang = JsonConvert.DeserializeObject<TongDon?>(apiData2);
+            ViewBag.DonHoanHang = DonHoanHang;
+
+            HttpContext.Session.SetString("DonKH", id.ToString());
+            return View(
+                );
+
+        }
+        [HttpGet]
+         public  async Task<IActionResult> DonThanhCong( int ProductPage = 1)
+          {
+            var id = Guid.Parse(HttpContext.Session.GetString("DonKH"));
+            string apiURL2 = $"https://localhost:7095/api/LichSuTichDiem/ListDonThanhCong?id={id}";
+            var response2 = await httpClients.GetAsync(apiURL2);
+            var apiData2 = await response2.Content.ReadAsStringAsync();
+            var Don = JsonConvert.DeserializeObject<List<ListDon>>(apiData2); 
+            return View(new PhanTrangDon
             {
-                listLSTDs = roles
-                        .Skip((ProductPage - 1) * PageSize).Take(PageSize),
+               listdon = Don
+                      .Skip((ProductPage - 1) * PageSize).Take(PageSize),
                 PagingInfo = new PagingInfo
                 {
                     ItemsPerPage = PageSize,
                     CurrentPage = ProductPage,
-                    TotalItems = roles.Count()
+                    TotalItems = Don.Count()
                 }
 
-            }
-                );
-
+            });
         }
+        [HttpGet]
+        public async Task<IActionResult> DonHuy( int ProductPage = 1)
+        {
+            var id = Guid.Parse(HttpContext.Session.GetString("DonKH"));
+            string apiURL2 = $"https://localhost:7095/api/LichSuTichDiem/ListDonHuy?id={id}";
+            var response2 = await httpClients.GetAsync(apiURL2);
+            var apiData2 = await response2.Content.ReadAsStringAsync();
+            var Don = JsonConvert.DeserializeObject<List<ListDon>>(apiData2);
+            return View(new PhanTrangDon
+            {
+                listdon = Don
+                      .Skip((ProductPage - 1) * PageSize).Take(PageSize),
+                PagingInfo = new PagingInfo
+                {
+                    ItemsPerPage = PageSize,
+                    CurrentPage = ProductPage,
+                    TotalItems = Don.Count()
+                }
+
+            });
+        }
+        [HttpGet]
+        public async Task<IActionResult> DonHoanHang(int ProductPage = 1)
+        {
+            var id = Guid.Parse(HttpContext.Session.GetString("DonKH"));
+            string apiURL2 = $"https://localhost:7095/api/LichSuTichDiem/ListDonHoanHang?id={id}";
+            var response2 = await httpClients.GetAsync(apiURL2);
+            var apiData2 = await response2.Content.ReadAsStringAsync();
+            var Don = JsonConvert.DeserializeObject<List<ListDon>>(apiData2);
+            return View(new PhanTrangDon
+            {
+                listdon = Don
+                      .Skip((ProductPage - 1) * PageSize).Take(PageSize),
+                PagingInfo = new PagingInfo
+                {
+                    ItemsPerPage = PageSize,
+                    CurrentPage = ProductPage,
+                    TotalItems = Don.Count()
+                }
+
+            });
+        }
+
         // tim kiem KH theo Ten Hoac SDT
         [HttpGet]
         public async Task<IActionResult> GetAllKHTheoTimKiem(string? Ten, string? SDT,int ProductPage = 1)

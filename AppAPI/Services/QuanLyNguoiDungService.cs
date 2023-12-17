@@ -176,6 +176,7 @@ namespace AppAPI.Services
                         Id = nv.ID,
                         Email = nv.Email,
                         Ten = nv.Ten,
+                        DiaChi = nv.DiaChi,
                         SDT = nv.SDT,
                         vaiTro = 0
                     };
@@ -362,6 +363,26 @@ namespace AppAPI.Services
                     vaiTro = loginViewModel.vaiTro,
                 };
 
+            }
+            var nv = await context.NhanViens.FirstOrDefaultAsync(h => h.ID == loginViewModel.Id);
+            if (nv != null)
+            {
+                nv.Ten = loginViewModel.Ten;
+                nv.SDT = loginViewModel.SDT;
+                nv.DiaChi = loginViewModel.DiaChi;
+                nv.Email = loginViewModel.Email;
+                context.SaveChangesAsync();
+                return new LoginViewModel
+                {
+                    Id = loginViewModel.Id,
+                    Email = loginViewModel.Email,
+                    Ten = loginViewModel.Ten,
+                    SDT = loginViewModel.SDT,
+                    GioiTinh = loginViewModel.GioiTinh,
+                    NgaySinh = loginViewModel.NgaySinh,
+                    DiaChi = loginViewModel.DiaChi,
+                    vaiTro = loginViewModel.vaiTro,
+                };
             }
 
             return null;

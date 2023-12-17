@@ -66,23 +66,26 @@ namespace AppAPI.Services
             // Đây chỉ là ví dụ đơn giản, không nên sử dụng trong môi trường thực tế
             //return matKhau;
         }
-        public async Task<NhanVien> Add(string ten, string email, string password, string sdt, string diachi, int trangthai, Guid idvaitro)
+        public async Task<NhanVien> Add(string ten, string email, string password, string sdt, string diachi, int trangthai, Guid idVaiTro)
         {
-            NhanVien nv = new NhanVien()
+            var check = await _dbContext.NhanViens.FirstOrDefaultAsync(x => x.Email == email || x.SDT == sdt);
+            if (check != null)
             {
-                ID = Guid.NewGuid(),
-                Ten = ten,
-                Email = email,
-                PassWord = MaHoaMatKhau(password),
-                SDT = sdt,
-                DiaChi = diachi,
-                TrangThai = 1,
-                IDVaiTro = Guid.Parse("952c1a5d-74ff-4daf-ba88-135c5440809c"),
-            };
+                return null;
+            }
+            var vt = _dbContext.VaiTros.FirstOrDefault(x => x.Ten == "Nhân viên");
+            var nv = new NhanVien();
+            nv.ID = Guid.NewGuid();
+            nv.Ten = ten;
+            nv.Email = email;
+            nv.PassWord = MaHoaMatKhau(password);
+            nv.SDT = sdt;
+            nv.DiaChi = diachi;
+            nv.TrangThai = 1;
+            nv.IDVaiTro = vt.ID;
             _dbContext.NhanViens.Add(nv);
             _dbContext.SaveChanges();
             return nv;
-
         }
 
         public NhanVien GetById(Guid id)
