@@ -1446,6 +1446,14 @@ namespace AppView.Controllers
         public IActionResult CheckOutSuccess()
         {
             var donMua = JsonConvert.DeserializeObject<DonMuaSuccessViewModel>(TempData.Peek("CheckOutSuccess") as string);
+            var temp = HttpContext.Session.GetString("LoginInfor");
+            if(temp!=null && donMua!=null)
+            {
+                var loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(temp);
+                loginInfor.DiemTich += donMua.DiemTich;
+                loginInfor.DiemTich -= donMua.DiemSuDung;
+                HttpContext.Session.SetString("LoginInfor", JsonConvert.SerializeObject(loginInfor));
+            }
             return View(donMua);
         }
         [HttpGet]
