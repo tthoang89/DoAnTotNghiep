@@ -4,6 +4,7 @@ using AppData.Models;
 using AppData.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -79,7 +80,7 @@ namespace AppAPI.Controllers
         }
         [Route("TongDonThanhCong")]
         [HttpGet]
-        public int? TongDonThanhCong(Guid id)
+        public TongDon? TongDonThanhCong(Guid id)
         {
             var result = _dbcontext.LichSuTichDiems
                 .Join(_dbcontext.HoaDons, lstd => lstd.IDHoaDon, hd => hd.ID, (lstd, hd) => new { LichSuTichDiem = lstd, HoaDon = hd }).
@@ -87,21 +88,27 @@ namespace AppAPI.Controllers
                 GroupBy(x => x.HoaDon.TrangThaiGiaoHang == 6).Select(group => new TongDon
                 {
                     Id = id,
-                    SoDon = group.Sum(x => x.HoaDon.ID != null ? 1 : 0)
+                    SoDon = group.Sum(x => x.HoaDon.ID != null ? 1 : 0),
+                    SoTien=group.Sum(x=>x.HoaDon.TongTien)
                 }).FirstOrDefault();
             if (result == null)
             {
-                return 0;
+                return new TongDon
+                {
+                    Id=id,
+                    SoDon = 0,
+                    SoTien = 0
+                };
             }
             else
             {
-                return result.SoDon;
+                return result;
             }
 
         }
         [Route("TongDonHuy")]
         [HttpGet]
-        public int? TongDonHuy(Guid id)
+        public TongDon? TongDonHuy(Guid id)
         {
             var result = _dbcontext.LichSuTichDiems
                 .Join(_dbcontext.HoaDons, lstd => lstd.IDHoaDon, hd => hd.ID, (lstd, hd) => new { LichSuTichDiem = lstd, HoaDon = hd }).
@@ -109,21 +116,27 @@ namespace AppAPI.Controllers
                 GroupBy(x => x.HoaDon.TrangThaiGiaoHang == 7).Select(group => new TongDon
                 {
                     Id = id,
-                    SoDon = group.Sum(x => x.HoaDon.ID != null ? 1 : 0)
+                    SoDon = group.Sum(x => x.HoaDon.ID != null ? 1 : 0),
+                    SoTien = group.Sum(x => x.HoaDon.TongTien)
                 }).FirstOrDefault();
             if (result == null)
             {
-                return 0;
+                return new TongDon
+                {
+                    Id = id,
+                    SoDon = 0,
+                    SoTien = 0
+                };
             }
             else
             {
-                return result.SoDon;
+                return result;
             }
 
         }
         [Route("TongDonHoanHang")]
         [HttpGet]
-        public int? TongDonHoanHang(Guid id)
+        public TongDon? TongDonHoanHang(Guid id)
         {
            var result = _dbcontext.LichSuTichDiems
                 .Join(_dbcontext.HoaDons, lstd => lstd.IDHoaDon, hd => hd.ID, (lstd, hd) => new { LichSuTichDiem = lstd, HoaDon = hd }).
@@ -131,18 +144,71 @@ namespace AppAPI.Controllers
                 GroupBy(x => x.HoaDon.TrangThaiGiaoHang == 5).Select(group => new TongDon
                 {
                     Id = id,
-                    SoDon = group.Sum(x => x.HoaDon.ID != null ? 1 : 0)
+                    SoDon = group.Sum(x => x.HoaDon.ID != null ? 1 : 0),
+                    SoTien = group.Sum(x => x.HoaDon.TongTien)
                 }).FirstOrDefault();
             if (result == null)
             {
-                return 0;
+                return new TongDon
+                {
+                    Id = id,
+                    SoDon = 0,
+                    SoTien = 0
+                };
             }
             else
             {
-                return result.SoDon;
+                return result;
             }
 
-           
+
+
+        }
+        [Route("ListDonThanhCong")]
+        [HttpGet]
+        public List<ListDon> ListDonThanhCong(Guid id)
+        {
+            var result = _dbcontext.LichSuTichDiems
+                .Join(_dbcontext.HoaDons, lstd => lstd.IDHoaDon, hd => hd.ID, (lstd, hd) => new { LichSuTichDiem = lstd, HoaDon = hd }).
+                Where(x => x.LichSuTichDiem.IDKhachHang == id && x.HoaDon.TrangThaiGiaoHang == 6 && x.HoaDon.NgayThanhToan.HasValue).
+                Select(group => new ListDon {
+                    MaDon=group.HoaDon.MaHD,
+                    NgayThanhToan=group.HoaDon.NgayThanhToan.Value,
+                    SoTien=group.HoaDon.TongTien.Value
+                }).ToList();
+            return result;
+
+        }
+        [Route("ListDonHuy")]
+        [HttpGet]
+        public List<ListDon> ListDonHuy(Guid id)
+        {
+            var result = _dbcontext.LichSuTichDiems
+                .Join(_dbcontext.HoaDons, lstd => lstd.IDHoaDon, hd => hd.ID, (lstd, hd) => new { LichSuTichDiem = lstd, HoaDon = hd }).
+                Where(x => x.LichSuTichDiem.IDKhachHang == id && x.HoaDon.TrangThaiGiaoHang == 7 && x.HoaDon.NgayThanhToan.HasValue).
+                Select(group => new ListDon
+                {
+                    MaDon = group.HoaDon.MaHD,
+                    NgayThanhToan = group.HoaDon.NgayThanhToan.Value,
+                    SoTien = group.HoaDon.TongTien.Value
+                }).ToList();
+            return result;
+
+        }
+        [Route("ListDonHoanHang")]
+        [HttpGet]
+        public List<ListDon> ListDonHoanHang(Guid id)
+        {
+            var result = _dbcontext.LichSuTichDiems
+                .Join(_dbcontext.HoaDons, lstd => lstd.IDHoaDon, hd => hd.ID, (lstd, hd) => new { LichSuTichDiem = lstd, HoaDon = hd }).
+                Where(x => x.LichSuTichDiem.IDKhachHang == id && x.HoaDon.TrangThaiGiaoHang == 5 && x.HoaDon.NgayThanhToan.HasValue).
+                Select(group => new ListDon
+                {
+                    MaDon = group.HoaDon.MaHD,
+                    NgayThanhToan = group.HoaDon.NgayThanhToan.Value,
+                    SoTien = group.HoaDon.TongTien.Value
+                }).ToList();
+            return result;
 
         }
         // laam end

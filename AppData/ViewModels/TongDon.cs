@@ -10,5 +10,6 @@ namespace AppData.ViewModels
     {   
         public Guid Id { get; set; }   
         public int? SoDon { get; set; }
+        public double? SoTien { get; set; }
     }
 }
