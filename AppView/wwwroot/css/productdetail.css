@@ -31,7 +31,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    border-bottom: 1px solid #eee;
+    /*border-bottom: 1px solid #eee;*/
     height: 400px;
     width: 100%;
     overflow: hidden
@@ -176,7 +176,7 @@
     }
 
 .buttons .btn {
-    height: 50px;
-    width: 150px;
+    height: 60px;
+    /*width: 150px;*/
     border-radius: 0px !important
 }

@@ -15,6 +15,8 @@ namespace AppAPI.IServices
         Task<LoginViewModel> UpdateProfile(LoginViewModel loginViewModel);
         Task<bool> ResetPassword(ResetPasswordRequest model);
         public Task<int> UseDiemTich(int diem, string id);
+        //Nhinh thêm
+        public bool AddNhanhKH(KhachHang kh);
 
     }
 }

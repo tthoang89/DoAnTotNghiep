@@ -34,8 +34,7 @@ namespace AppAPI.Services
             await _dbContext.GioHangs.AddAsync(gh);
             await _dbContext.SaveChangesAsync();
             return kh;
-        }
-
+        }  
         public bool Delete(Guid id)
         {
             try
@@ -80,7 +79,7 @@ namespace AppAPI.Services
         //Nhinh thêm
         public KhachHang GetBySDT(string sdt)
         {
-            return _dbContext.KhachHangs.FirstOrDefault(c=>c.SDT == sdt);
+            return _dbContext.KhachHangs.FirstOrDefault(c=>c.SDT == sdt || c.Email == sdt);
         }
 
         public bool Update(KhachHang khachHang)
