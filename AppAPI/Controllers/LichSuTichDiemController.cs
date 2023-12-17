@@ -77,6 +77,74 @@ namespace AppAPI.Controllers
                                  }).Where(x=>x.IDKhachHang==idkh).ToListAsync();
             return AllCTSP;
         }
+        [Route("TongDonThanhCong")]
+        [HttpGet]
+        public int? TongDonThanhCong(Guid id)
+        {
+            var result = _dbcontext.LichSuTichDiems
+                .Join(_dbcontext.HoaDons, lstd => lstd.IDHoaDon, hd => hd.ID, (lstd, hd) => new { LichSuTichDiem = lstd, HoaDon = hd }).
+                Where(x => x.LichSuTichDiem.IDKhachHang == id&&x.HoaDon.TrangThaiGiaoHang==6).
+                GroupBy(x => x.HoaDon.TrangThaiGiaoHang == 6).Select(group => new TongDon
+                {
+                    Id = id,
+                    SoDon = group.Sum(x => x.HoaDon.ID != null ? 1 : 0)
+                }).FirstOrDefault();
+            if (result == null)
+            {
+                return 0;
+            }
+            else
+            {
+                return result.SoDon;
+            }
+
+        }
+        [Route("TongDonHuy")]
+        [HttpGet]
+        public int? TongDonHuy(Guid id)
+        {
+            var result = _dbcontext.LichSuTichDiems
+                .Join(_dbcontext.HoaDons, lstd => lstd.IDHoaDon, hd => hd.ID, (lstd, hd) => new { LichSuTichDiem = lstd, HoaDon = hd }).
+                Where(x => x.LichSuTichDiem.IDKhachHang == id && x.HoaDon.TrangThaiGiaoHang == 7 ).
+                GroupBy(x => x.HoaDon.TrangThaiGiaoHang == 7).Select(group => new TongDon
+                {
+                    Id = id,
+                    SoDon = group.Sum(x => x.HoaDon.ID != null ? 1 : 0)
+                }).FirstOrDefault();
+            if (result == null)
+            {
+                return 0;
+            }
+            else
+            {
+                return result.SoDon;
+            }
+
+        }
+        [Route("TongDonHoanHang")]
+        [HttpGet]
+        public int? TongDonHoanHang(Guid id)
+        {
+           var result = _dbcontext.LichSuTichDiems
+                .Join(_dbcontext.HoaDons, lstd => lstd.IDHoaDon, hd => hd.ID, (lstd, hd) => new { LichSuTichDiem = lstd, HoaDon = hd }).
+                Where(x => x.LichSuTichDiem.IDKhachHang == id && x.HoaDon.TrangThaiGiaoHang == 5 ).
+                GroupBy(x => x.HoaDon.TrangThaiGiaoHang == 5).Select(group => new TongDon
+                {
+                    Id = id,
+                    SoDon = group.Sum(x => x.HoaDon.ID != null ? 1 : 0)
+                }).FirstOrDefault();
+            if (result == null)
+            {
+                return 0;
+            }
+            else
+            {
+                return result.SoDon;
+            }
+
+           
+
+        }
         // laam end
         // GET api/<LichSuTichDiemController>/5
         [HttpGet("{id}")]

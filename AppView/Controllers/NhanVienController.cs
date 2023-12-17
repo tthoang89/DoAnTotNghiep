@@ -2,8 +2,10 @@
 using AppData.ViewModels;
 using AppView.PhanTrang;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Drawing.Printing;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 
@@ -77,20 +79,20 @@ namespace AppView.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(NhanVien nhanVien)
         {
-            nhanVien.TrangThai = 0;
-            if (ModelState.IsValid)
+            nhanVien.TrangThai = 1;
+            var vt = dBContext.VaiTros.FirstOrDefault(x => x.Ten == "Nhân viên");
+            string apiUrl = $"https://localhost:7095/api/NhanVien/DangKyNhanVien?ten={nhanVien.Ten}&email={nhanVien.Email}&password={nhanVien.PassWord}&sdt={nhanVien.SDT}&diachi={nhanVien.DiaChi}";
+            var reponsen = await _httpClient.PostAsync(apiUrl, null);
+            if (reponsen.IsSuccessStatusCode)
             {
-                if (nhanVien.IDVaiTro == Guid.Empty)
-                {
-                    nhanVien.IDVaiTro = Guid.Parse("952c1a5d-74ff-4daf-ba88-135c5440809c");
-                }
-                string apiUrl = $"https://localhost:7095/api/NhanVien/DangKyNhanVien?ten={nhanVien.Ten}&email={nhanVien.Email}&password={nhanVien.PassWord}&sdt={nhanVien.SDT}&diachi={nhanVien.DiaChi}";
-                var reponsen = await _httpClient.PostAsync(apiUrl, null);
-                if (reponsen.IsSuccessStatusCode)
-                {
-                    return RedirectToAction("Show");
-                }
+                return RedirectToAction("Show");
             }
+            else if (reponsen.StatusCode == HttpStatusCode.BadRequest)
+            {
+                ViewBag.ErrorMessage = "Email hoặc sdt này đã được đăng ký";
+                return View();
+            }
+
             return View(nhanVien);
 
         }

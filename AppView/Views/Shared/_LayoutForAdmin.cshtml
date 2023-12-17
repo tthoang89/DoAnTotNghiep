@@ -41,7 +41,6 @@
     <link href="~/Admin/vendor/simple-datatables/style.css" rel="stylesheet">
 
     <!--Datetime picker range-->
-    
     <!-- Template Main CSS File -->
     <link href="~/Admin/css/style.css" rel="stylesheet">
 
@@ -138,7 +137,7 @@
                             </li>
                             <!--Lam thêm end-->
 
-                <li class="nav-item">
+                            <li class="nav-item">
                                 <a class="nav-link collapsed" asp-controller="BanHangTaiQuay" asp-action="BanHang">
                                     <i class="bi bi-menu-button-wide"></i><span>Bán hàng</span>
                                 </a>
@@ -185,28 +184,41 @@
                                 </a>
                                 <ul id="thuocTinh" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                                     <li>
-                                        <a asp-controller="ThongKe" asp-action="ThongKeAdmin">
+                                        <a asp-controller="MauSac" asp-action="Show">
+
+
+
                                             <i class="bi bi-circle"></i><span>Quản lý màu sắc </span>
                                         </a>
                                     </li>
                                     <li>
-                                        <a asp-controller="ThongKe" asp-action="ThongKeAdmin">
+
+                                        <a asp-controller="KichCo" asp-action="Show">
+
+
                                             <i class="bi bi-circle"></i><span>Quản lý kích cỡ</span>
                                         </a>
                                     </li>
                                     <li>
-                                        <a asp-controller="ThongKe" asp-action="ThongKeAdmin">
+
+                                        <a asp-controller="ChatLieu" asp-action="Show">
+
+
+
                                             <i class="bi bi-circle"></i><span>Quản lý chất liệu</span>
                                         </a>
                                     </li>
                                     <li>
-                                        <a asp-controller="ThongKe" asp-action="ThongKeAdmin">
+
+                                        <a asp-controller="LoaiSP" asp-action="Show">
+
+
                                             <i class="bi bi-circle"></i><span>Quản lý loại sản phẩm </span>
                                         </a>
                                     </li>
                                 </ul>
                             </li>
-                <li class="nav-item">
+                            <li class="nav-item">
                                 <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse">
                                     <i class="bi bi-layout-text-window-reverse"></i><span>Quản lý các loại khuyến mãi</span><i class="bi bi-chevron-down ms-auto"></i>
                                 </a>
@@ -229,9 +241,9 @@
                                 </ul>
                             </li><!-- End Tables Nav -->
 
-                <li class="nav-item">
+                            <li class="nav-item">
                                 @*<a class="nav-link collapsed" asp-controller="NhanVien" asp-action="Show">
-                                    <i class="bi bi-bar-chart"></i><span>Quản lý nhân viên</span></a>*@
+                <i class="bi bi-bar-chart"></i><span>Quản lý nhân viên</span></a>*@
                                 <ul id="charts-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                                     <li>
                                         <a asp-controller="VaiTro" asp-action="GetAllVaiTro">
@@ -241,7 +253,7 @@
                                 </ul>
                             </li><!-- End Charts Nav -->
 
-                <li class="nav-item">
+                            <li class="nav-item">
                                 <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
                                     <i class="bi bi-gem"></i><span>Quản lý người dùng</span><i class="bi bi-chevron-down ms-auto"></i>
                                 </a>
@@ -257,7 +269,7 @@
                                 </ul>
                             </li><!-- End Icons Nav -->
 
-                <li class="nav-heading">Pages</li>
+                            <li class="nav-heading">Pages</li>
 
                             <li class="nav-item">
                                 <a class="nav-link collapsed" asp-controller="NhanVien" asp-action="ProfileNhanVien_Admin">
@@ -266,34 +278,34 @@
                                 </a>
                             </li><!-- End Profile Page Nav -->
 
-                <li class="nav-item">
+                            <li class="nav-item">
                                 <a class="nav-link collapsed" href="pages-faq.html">
                                     <i class="bi bi-question-circle"></i>
                                     <span>F.A.Q</span>
                                 </a>
                             </li><!-- End F.A.Q Page Nav -->
 
-                <li class="nav-item">
+                            <li class="nav-item">
                                 <a class="nav-link collapsed" href="pages-contact.html">
                                     <i class="bi bi-envelope"></i>
                                     <span>Contact</span>
                                 </a>
                             </li><!-- End Contact Page Nav -->
 
-                <li class="nav-item">
+                            <li class="nav-item">
                                 <a class="nav-link collapsed" href="pages-register.html">
                                     <i class="bi bi-card-list"></i>
                                     <span>Register</span>
                                 </a>
                             </li><!-- End Register Page Nav -->
 
-                <li class="nav-item">
+                            <li class="nav-item">
                                 <a class="nav-link collapsed" href="pages-login.html">
                                     <i class="bi bi-box-arrow-in-right"></i>
                                     <span>Login</span>
                                 </a>
                             </li><!-- End Login Page Nav -->
-            </ul>
+                        </ul>
                     }
                     else
                     {
@@ -308,7 +320,7 @@
                             <!--Lam thêm  start-->
                             <!--Lam thêm end-->
 
-                <li class="nav-item">
+                            <li class="nav-item">
                                 <a class="nav-link collapsed" asp-controller="BanHangTaiQuay" asp-action="BanHang">
                                     <i class="bi bi-menu-button-wide"></i><span>Bán hàng</span>
                                 </a>
@@ -337,7 +349,7 @@
                             <!-- End Tables Nav -->
                             <!-- End Charts Nav -->
 
-                <li class="nav-item">
+                            <li class="nav-item">
                                 <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
                                     <i class="bi bi-gem"></i><span>Quản lý người dùng</span><i class="bi bi-chevron-down ms-auto"></i>
                                 </a>
@@ -351,7 +363,7 @@
                                 </ul>
                             </li><!-- End Icons Nav -->
 
-                <li class="nav-heading">Pages</li>
+                            <li class="nav-heading">Pages</li>
 
                             <li class="nav-item">
                                 <a class="nav-link collapsed" href="users-profile.html">
@@ -360,34 +372,34 @@
                                 </a>
                             </li><!-- End Profile Page Nav -->
 
-                <li class="nav-item">
+                            <li class="nav-item">
                                 <a class="nav-link collapsed" href="pages-faq.html">
                                     <i class="bi bi-question-circle"></i>
                                     <span>F.A.Q</span>
                                 </a>
                             </li><!-- End F.A.Q Page Nav -->
 
-                <li class="nav-item">
+                            <li class="nav-item">
                                 <a class="nav-link collapsed" href="pages-contact.html">
                                     <i class="bi bi-envelope"></i>
                                     <span>Contact</span>
                                 </a>
                             </li><!-- End Contact Page Nav -->
 
-                <li class="nav-item">
+                            <li class="nav-item">
                                 <a class="nav-link collapsed" href="pages-register.html">
                                     <i class="bi bi-card-list"></i>
                                     <span>Register</span>
                                 </a>
                             </li><!-- End Register Page Nav -->
 
-                <li class="nav-item">
+                            <li class="nav-item">
                                 <a class="nav-link collapsed" href="pages-login.html">
                                     <i class="bi bi-box-arrow-in-right"></i>
                                     <span>Login</span>
                                 </a>
                             </li><!-- End Login Page Nav -->
-            </ul>
+                        </ul>
                     }
                 }
 
@@ -401,14 +413,14 @@
     <main id="main" class="main">
 
         @*<div class="pagetitle">
-            <h1>Dashboard</h1>
-            <nav>
-            <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-            <li class="breadcrumb-item active">Dashboard</li>
-            </ol>
-            </nav>
-            </div><!-- End Page Title -->*@
+        <h1>Dashboard</h1>
+        <nav>
+        <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+        <li class="breadcrumb-item active">Dashboard</li>
+        </ol>
+        </nav>
+        </div><!-- End Page Title -->*@
 
         <div class="container-fluid">
             @RenderBody()
@@ -416,13 +428,13 @@
     </main><!-- End #main -->
     <!-- ======= Footer ======= -->
     @* <footer id="footer" class="footer">
-        <div class="copyright">
-        &copy; Copyright <strong><span>ReputationAdmin</span></strong>. All Rights Reserved
-        </div>
-        <div class="credits">
-        Designed by <a href="https://bootstrapmade.com/">SD70</a>
-        </div>
-        </footer><!-- End Footer -->
+    <div class="copyright">
+    &copy; Copyright <strong><span>ReputationAdmin</span></strong>. All Rights Reserved
+    </div>
+    <div class="credits">
+    Designed by <a href="https://bootstrapmade.com/">SD70</a>
+    </div>
+    </footer><!-- End Footer -->
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
     *@
 

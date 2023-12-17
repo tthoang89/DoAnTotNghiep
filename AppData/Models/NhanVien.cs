@@ -11,8 +11,10 @@ namespace AppData.Models
     {
         public Guid ID { get; set; }
         [Required(ErrorMessage = "Vui lòng nhập Tên.")]
+        [StringLength(20, ErrorMessage = "Tên không được vượt quá 20 kí tự ")]
         public string Ten { get; set; }
         [Required(ErrorMessage = "Vui lòng nhập Email.")]
+        [StringLength(20, ErrorMessage = "Email không được vượt quá 100 kí tự ")]
         [EmailAddress]
 
         public string Email { get; set; }
@@ -21,8 +23,8 @@ namespace AppData.Models
         [Required(ErrorMessage = "Vui lòng nhập Số điện thoại.")]
         public string? SDT { get; set; }
         [Required(ErrorMessage = "Vui lòng nhập Địa chỉ.")]
+        [StringLength(20, ErrorMessage = "Địa chỉ không được vượt quá 20 kí tự ")]
         public string? DiaChi { get; set; }
-        [Required(ErrorMessage = "Vui lòng nhập Trạng thái.")]
         public int? TrangThai { get; set; }
         public Guid IDVaiTro { get; set; }
         public virtual IEnumerable<HoaDon>? HoaDons { get; set; }

@@ -11,10 +11,10 @@ namespace AppAPI.IServices
         List<SanPhamViewModelAdmin> GetAllSanPhamAdmin();
         Task<List<SanPhamViewModel>> GetAllSanPham();
         Task<List<SanPhamViewModel>> TimKiemSanPham(SanPhamTimKiemNangCao sp);
-        Task<SanPhamDetail> GetSanPhamById(Guid id);
+        Task<SanPhamUpdateRequest> GetSanPhamById(Guid id);
         Task<List<SanPhamViewModel>> GetSanPhamByIdDanhMuc(Guid idloaisp);
         Task<ChiTietSanPhamUpdateRequest> AddSanPham(SanPhamRequest request);
-        Task<bool> UpdateSanPham(SanPhamRequest request);
+        Task<bool> UpdateSanPham(SanPhamUpdateRequest request);
         Task<bool> UpdateTrangThaiSanPham(Guid id,int trangThai);
         bool CheckTrungTenSP(SanPhamRequest lsp);
         Task<bool> AddAnhToSanPham(List<AnhRequest> request);
