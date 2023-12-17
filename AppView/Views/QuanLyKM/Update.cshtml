@@ -5,9 +5,9 @@
     Layout = "~/Views/Shared/_LayoutForAdmin.cshtml";
 }
 
-<h1>Update</h1>
+<h1>Sửa khuyến mãi</h1>
 
-<h4>KhuyenMaiView</h4>
+
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -18,40 +18,41 @@
                 <input asp-for="ID" class="form-control" />
                 <span asp-validation-for="ID" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label class="control-label">Tên</label>
+            <div class="form-group" hidden>
+                <label class="control-label">Mã</label>
                 <input asp-for="Ten" class="form-control" />
                 <span asp-validation-for="Ten" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label class="control-label">Loại Khuyến Mãi</label>
+           @* <div class="form-group">
+                <label class="control-label">Loại khuyến mãi</label>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="trangthai" value="1" @(Model.TrangThai == 1 ? "checked" : "")>
+                    <input class="form-check-input" type="radio" name="trangthai" value="1" @(Model.TrangThai == 1||Model.TrangThai==3 ? "checked" : "")>
                     <label class="form-check-label" for="flexRadioDefault1">
-                        Phần Trăm
+                        Phần trăm
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="trangthai" value="0" @(Model.TrangThai == 0 ? "checked" : "")>
+                    <input class="form-check-input" type="radio" name="trangthai" value="0" @(Model.TrangThai == 0||Model.TrangThai==2 ? "checked" : "")>
                     <label class="form-check-label" for="flexRadioDefault2">
-                       Tiền Mặt
+                       Tiền mặt
                     </label>
                 </div>
+            </div>*@
+            <div class="form-group" hidden>
+                <label class="control-label">Giá trị</label>
+                <input asp-for="GiaTri" class="form-control"  />
+                
             </div>
             <div class="form-group">
-                <label class="control-label">Giá Trị</label>
-                <input asp-for="GiaTri" class="form-control" />
-                <span asp-validation-for="GiaTri" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label class="control-label">Ngày Áp Dụng</label>
+                <label class="control-label">Ngày áp dụng</label>
                 <input asp-for="NgayApDung" class="form-control" />
-                <span asp-validation-for="NgayApDung" class="text-danger"></span>
+                <span class="text-danger">@ViewData["NgayApDung"]</span>
             </div>
             <div class="form-group">
-                <label class="control-label"> Ngày Kết Thúc</label>
+                <label class="control-label"> Ngày kết thúc</label>
                 <input asp-for="NgayKetThuc" class="form-control" />
-                <span asp-validation-for="NgayKetThuc" class="text-danger"></span>
+                <span class="text-danger">@ViewData["NgayKetThuc"]</span>
+                <span class="text-danger">@ViewData["Ngay"]</span>
             </div>
             <div class="form-group">
                 <label class="control-label"> Mô tả </label>
@@ -59,25 +60,26 @@
                 <span asp-validation-for="MoTa" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" class="btn btn-success" value="Sửa Khuyến Mãi" />
+                <input type="submit" class="btn btn-success" value="Sửa khuyến mãi" />
             </div>
 
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+<br />
+<button class="btn btn-primary">
+    <a asp-action="GetAllKM" style="color:white;">Quay lại</a>
+</button>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
-    <script>
+   @* <script>
         // JavaScript để quản lý trạng thái của radio buttons
         document.addEventListener("DOMContentLoaded", function () {
             var gioiTinh = @Model.TrangThai;
 
             document.querySelector('input[name="trangthai"][value="' + gioiTinh + '"]').checked = true;
         });
-    </script>
+    </script>*@

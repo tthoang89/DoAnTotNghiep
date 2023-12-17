@@ -11,6 +11,7 @@ namespace AppData.Configurations
             builder.HasKey(x => x.ID);
             builder.Property(x => x.NgayTao).HasColumnType("datetime");
             builder.Property(x => x.NgayThanhToan).HasColumnType("datetime");
+            builder.Property(x => x.NgayNhanHang).HasColumnType("datetime");
             builder.Property(x => x.TenNguoiNhan).HasColumnType("nvarchar(100)");
             builder.Property(x => x.SDT).HasColumnType("nvarchar(10)");
             builder.Property(x => x.Email).HasColumnType("nvarchar(50)");

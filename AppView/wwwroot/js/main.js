@@ -191,11 +191,36 @@
             // Don't allow decrementing below zero
             if (oldValue > 1) {
                 var newVal = parseFloat(oldValue) - 1;
+                
             } else {
                 newVal = 1;
             }
         }
         $button.parent().find('input').val(newVal);
+        var cartPrice = $button.parent().parent().parent().parent().find('td.cart__price').html();
+        cartPrice = cartPrice.includes(".") ? cartPrice.replaceAll(".", ""):cartPrice;
+        cartPrice = cartPrice.includes(",") ? cartPrice.replaceAll(",", "") : cartPrice;
+        var cartPriceSub = parseInt(cartPrice) * newVal;
+        var cartPrice = $button.parent().parent().parent().parent().find('td.cart__price__sub').text(Intl.NumberFormat().format(cartPriceSub));
+        UpdateCart();
+    });
+    //onchange
+    proQty.on('input', '.soLuongCart', function () {
+        var $button = $(this);
+        var oldValue = $button.val();
+        if (oldValue == "" && oldValue == 0) {
+            var newVal = 1;
+        } else {
+            var newVal = parseFloat(oldValue);
+        }
+        $button.parent().find('input').val(newVal);
+        var cartPrice = $button.parent().parent().parent().parent().find('td.cart__price').html();
+        cartPrice = cartPrice.includes(".") ? cartPrice.replaceAll(".", "") : cartPrice;
+        cartPrice = cartPrice.includes(",") ? cartPrice.replaceAll(",", "") : cartPrice;
+        var cartPriceSub = parseInt(cartPrice) * newVal;
+        var cartPrice = $button.parent().parent().parent().parent().find('td.cart__price__sub').text(Intl.NumberFormat().format(cartPriceSub));
+        UpdateCart();
+        CheckSoLuong();
     });
 
     /*------------------

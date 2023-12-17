@@ -19,7 +19,6 @@
                 <th>
                     Mã Màu
                 </th>
-                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -33,16 +32,8 @@
                        @Html.DisplayFor(modelItem=>Model[i].Ten)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem=>Model[i].Ma)
+                        <input type="color" value="@Model[i].Ma" style="border:none;width:27px;height:25px" readonly name="maMaus">
                     </td>
-                    <td>
-                        <input type="text" name="maMaus" value="@Model[i].Ma" />
-                    </td>
-                    @*                     <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-                </td> *@
                 </tr>
             }
         </tbody>

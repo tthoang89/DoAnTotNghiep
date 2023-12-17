@@ -8,7 +8,7 @@ namespace AppData.ViewModels.ThongKe
 {
     public class ThongKeDuongViewModel
     {
-        public int Nam { get; set; }
-        public int SoLuongDon { get; set; }//Chỉ tính đơn thành công
+        public DateTime Ngay { get; set; }
+        public int DoanhThu { get; set; }//Chỉ tính đơn thành công
     }
 }

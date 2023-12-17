@@ -10,7 +10,6 @@ namespace AppData.ViewModels.BanOffline
     {
         public Guid Id { get; set; }
         public Guid IdNhanVien { get; set; }
-        //public Guid IdPTTT { get; set; }
         public string PTTT { get; set; }
         public DateTime NgayThanhToan { get; set; }
         public Guid IdVoucher { get; set; }
@@ -18,5 +17,6 @@ namespace AppData.ViewModels.BanOffline
         public int DiemTichHD { get; set; }
         public int DiemSD { get; set; }
         public int TrangThai { get; set; }
+        public string? GhiChu { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AppData.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -31,5 +32,8 @@ namespace AppData.ViewModels
         public int? GiaTri { get; set; }
         public int? HinhThucGiamGia { get; set; }
         public int TiLeTieuDiem { get; set; }
+        public int TiLeTichDiem { get; set; }
+        public int LoaiHoaDon { get; set; }
+        public List<LichSuTichDiem>? lichSuTichDiems { get; set; }
     }
 }

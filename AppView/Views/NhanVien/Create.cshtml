@@ -17,6 +17,12 @@
 <hr />
 <div class="row" style="margin-left:150px; margin-right: 150px">
     <div class="col-md-12">
+        @if (ViewBag.ErrorMessage != null)
+        {
+            <div class="alert alert-danger">
+                @ViewBag.ErrorMessage
+            </div>
+        }
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="row g-2">
@@ -24,7 +30,7 @@
                     <div class=" p-3">
                         <div class="form-group">
                             <label asp-for="Ten" class="control-label">Tên</label>
-                            <input asp-for="Ten" class="form-control" />
+                            <input asp-for="Ten" class="form-control" autocomplete="off" />
                             <span asp-validation-for="Ten" class="text-danger"></span>
                         </div>
                     </div>
@@ -33,69 +39,46 @@
                     <div class="p-3">
                         <div class="form-group">
                             <label asp-for="DiaChi" class="control-label">Địa chỉ</label>
-                            <input asp-for="DiaChi" class="form-control" />
+                            <input asp-for="DiaChi" class="form-control" autocomplete="off" />
                             <span asp-validation-for="DiaChi" class="text-danger"></span>
                         </div>
                     </div>
                 </div>
-
                 <div class="col-6">
                     <div class="p-3">
                         <div class="form-group">
                             <label asp-for="Email" class="control-label">Email</label>
-                            <input asp-for="Email" class="form-control" />
+                            <input asp-for="Email" class="form-control" autocomplete="off" />
                             <span asp-validation-for="Email" class="text-danger"></span>
                         </div>
                     </div>
-                </div>
+                </div><input type="hidden" asp-for="TrangThai" value="1" />
                 <div class="col-6">
                     <div class="p-3">
                         <div class="form-group">
-                            <label asp-for="TrangThai" class="control-label">Trạng thái</label>
-                            <input asp-for="TrangThai" class="form-control" />
-                            <span asp-validation-for="TrangThai" class="text-danger"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="p-3">
-                        <div class="form-group">
-                            <label asp-for="PassWord" class="control-label">Password</label>
-                            <input asp-for="PassWord" class="form-control" />
+                            <label asp-for="PassWord" class="control-label">Mật khẩu</label>
+                            <input asp-for="PassWord" type="password" class="form-control" autocomplete="off" />
                             <span asp-validation-for="PassWord" class="text-danger"></span>
+                            <span class="text-danger" id="passwordErrorMessage"></span>
                         </div>
                     </div>
                 </div>
+                <input type="hidden" asp-for="IDVaiTro" value="@(dBContext.VaiTros.FirstOrDefault(x => x.Ten == "Nhân viên").ID)" />
 
                 <div class="col-6">
                     <div class="p-3">
                         <div class="form-group">
-                            <lable>Tên Vai Trò</lable>
-                            <div>
-                                <select class="form-control" name="IDVaiTro">
-                                    @foreach (var VaiTro in dBContext.VaiTros.ToList())
-                                    {
-                                        <option value="@VaiTro.ID">@VaiTro.Ten</option>
-                                    }
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="p-3">
-                        <div class="form-group">
                             <label asp-for="SDT" class="control-label">Số điện thoại </label>
-                            <input asp-for="SDT" class="form-control" />
+                            <input asp-for="SDT" class="form-control" autocomplete="off" />
                             <span asp-validation-for="SDT" class="text-danger"></span>
+                            <span class="text-danger" id="sdtErrorMessage"></span>
                         </div>
                     </div>
                 </div>
                 <div class="col-6">
                     <div class="p-3">
                         <div class="form-group" style="margin-left:300px; margin-top: 30px">
-                            <input type="submit" value="Create" class="btn btn-primary" />
-
+                            <input type="submit" value="Lưu" class="btn btn-primary" />
                         </div>
                     </div>
                 </div>
@@ -103,10 +86,37 @@
         </form>
     </div>
 </div>
-@*<div style="margin-left: 200px;">
-    <a asp-action="Show">Back to List</a>
-</div>*@
+<script>
+    $("input[name='SDT']").on("input", function () {
+        $(this).removeClass("is-invalid"); // Xóa class "is-invalid" khi nhập số điện thoại
+        $("#sdtErrorMessage").text(""); // Xóa thông báo lỗi
+    });
 
+    $("input[name='PassWord']").on("input", function () {
+        $(this).removeClass("is-invalid"); // Xóa class "is-invalid" khi nhập password
+        $("#passwordErrorMessage").text(""); // Xóa thông báo lỗi
+    });
+    $("form").submit(function () {
+        var passwordInput = $("input[name='PassWord']");
+        var passwordValue = passwordInput.val();
+        if (passwordValue.trim() !== "" && passwordValue.length < 8) {
+            passwordInput.addClass("is-invalid");
+            $("#passwordErrorMessage").text("Password phai lon hon 8 ki tu.");
+            return false;
+        }
+
+        var sdtInput = $("input[name='SDT']");
+        var sdtValue = sdtInput.val();
+        var sdtRegex = /^(0)\d{9}$/;
+        if (sdtValue.trim() !== "" && (!(/^\d+$/.test(sdtValue)) || !sdtRegex.test(sdtValue))) {
+            sdtInput.addClass("is-invalid");
+            $("#sdtErrorMessage").text("Số điện thoại không đúng định dạng."); // Thêm dòng này
+            return false;
+        }
+        return true;
+    });
+
+</script>
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

@@ -48,6 +48,7 @@ namespace AppAPI.Controllers
                                      TenAnh = (from anh in _dbcontext.Anhs where sp.ID == anh.IDSanPham && mausac.ID == anh.IDMauSac select anh.DuongDan).FirstOrDefault(),
                                      IdKhuyenMai = (from km in _dbcontext.KhuyenMais where CTSP.IDKhuyenMai == km.ID select CTSP.IDKhuyenMai).FirstOrDefault(),
                                      TenMauSac = mausac.Ten,
+                                     MaMauSac=mausac.Ma,
                                      TenKichCo = size.Ten,
                                      GiaGoc = CTSP.GiaBan,
                                      GiaKhuyenMai = CTSP.GiaBan,
@@ -103,8 +104,7 @@ namespace AppAPI.Controllers
                                 MoTa = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.MoTa,
                                 TenAnh = (from anhs in _dbcontext.Anhs where @group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.ID == anhs.IDSanPham select anhs.DuongDan).FirstOrDefault(),
                                 IdKhuyenMai = (from km in _dbcontext.KhuyenMais where @group.FirstOrDefault().chitietsps.IDKhuyenMai == km.ID select km.ID).FirstOrDefault(),
-                                TongSoSao = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.TongSoSao,
-                                TongDanhGia = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.TongDanhGia,
+                                
                                 GiaBan = group.FirstOrDefault().chitietsps.GiaBan,
                                 IDLoaiSP = group.FirstOrDefault().sp_cl_lsp_ctsp.loaisps.ID,
                                 IDLoaiSPCha = group.FirstOrDefault().sp_cl_lsp_ctsp.loaisps.IDLoaiSPCha,
@@ -135,8 +135,7 @@ namespace AppAPI.Controllers
                                MoTa = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.MoTa,
                                TenAnh = (from anhs in _dbcontext.Anhs where @group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.ID == anhs.IDSanPham select anhs.DuongDan).FirstOrDefault(),
                                IdKhuyenMai = (from km in _dbcontext.KhuyenMais where @group.FirstOrDefault().chitietsps.IDKhuyenMai == km.ID select km.ID).FirstOrDefault(),
-                               TongSoSao = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.TongSoSao,
-                               TongDanhGia = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.TongDanhGia,
+                             
                                GiaBan = group.FirstOrDefault().chitietsps.GiaBan,
                                IDLoaiSP = group.FirstOrDefault().sp_cl_lsp_ctsp.loaisps.ID,
                                IDLoaiSPCha = group.FirstOrDefault().sp_cl_lsp_ctsp.loaisps.IDLoaiSPCha,
@@ -178,8 +177,7 @@ namespace AppAPI.Controllers
                 MoTa = c.SP.MoTa,
                 TenAnh = c.anh.DuongDan,
                 IdKhuyenMai = c.km.ID,
-                TongSoSao = c.SP.TongSoSao,
-                TongDanhGia = c.SP.TongDanhGia,
+              
                 GiaBan = c.CTSP.GiaBan,
                 IDLoaiSP = c.SP.IDLoaiSP,
                 IDLoaiSPCha = c.loaisp.IDLoaiSPCha,
@@ -210,8 +208,7 @@ namespace AppAPI.Controllers
                                MoTa = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.MoTa,
                                TenAnh = (from anhs in _dbcontext.Anhs where @group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.ID == anhs.IDSanPham select anhs.DuongDan).FirstOrDefault(),
                                IdKhuyenMai = (from km in _dbcontext.KhuyenMais where @group.FirstOrDefault().chitietsps.IDKhuyenMai == km.ID select km.ID).FirstOrDefault(),
-                               TongSoSao = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.TongSoSao,
-                               TongDanhGia = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.TongDanhGia,
+                              
                                GiaBan = group.FirstOrDefault().chitietsps.GiaBan,
                                IDLoaiSP = group.FirstOrDefault().sp_cl_lsp_ctsp.loaisps.ID,
                                IDLoaiSPCha = group.FirstOrDefault().sp_cl_lsp_ctsp.loaisps.IDLoaiSPCha,
@@ -276,8 +273,7 @@ namespace AppAPI.Controllers
                                MoTa = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.MoTa,
                                TenAnh = (from anhs in _dbcontext.Anhs where @group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.ID == anhs.IDSanPham select anhs.DuongDan).FirstOrDefault(),
                                IdKhuyenMai = (from km in _dbcontext.KhuyenMais where @group.FirstOrDefault().chitietsps.IDKhuyenMai == km.ID select km.ID).FirstOrDefault(),
-                               TongSoSao = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.TongSoSao,
-                               TongDanhGia = group.FirstOrDefault().sp_cl_lsp_ctsp.sp_cl_lsp.sp_cl.TongDanhGia,
+                              
                                GiaBan = group.FirstOrDefault().chitietsps.GiaBan,
                                IDLoaiSP = group.FirstOrDefault().sp_cl_lsp_ctsp.loaisps.ID,
                                IDLoaiSPCha = group.FirstOrDefault().sp_cl_lsp_ctsp.loaisps.IDLoaiSPCha,

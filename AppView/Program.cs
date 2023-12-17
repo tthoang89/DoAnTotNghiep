@@ -1,5 +1,7 @@
 using AppView.IServices;
 using AppView.Services;
+using Microsoft.AspNetCore.Mvc.Razor;
+using Rotativa.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +13,6 @@ builder.Services.AddSession(cfg =>
 {
     cfg.IdleTimeout = new TimeSpan(1,0,0);
 });
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -34,6 +35,8 @@ app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}");
+    pattern: "{controller=TrangChu}/{action=Index}");
 
+IWebHostEnvironment env = app.Environment;
+Rotativa.AspNetCore.RotativaConfiguration.Setup(env.WebRootPath, "../Rotativa/Windows");
 app.Run();

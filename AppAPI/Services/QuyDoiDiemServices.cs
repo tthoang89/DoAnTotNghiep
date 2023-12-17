@@ -13,7 +13,7 @@ namespace AppAPI.Services
         {
             _allRepository=new AllRepository<QuyDoiDiem>(context,context.QuyDoiDiems);
         }
-        public bool Add(int sodiem, int TiLeTichDiem, int TiLeTieuDiem, int TrangThai)
+        public bool Add(/*int sodiem,*/ int TiLeTichDiem, int TiLeTieuDiem, int TrangThai)
         {
             var quydoidiem = new QuyDoiDiem();
             quydoidiem.ID=Guid.NewGuid();
@@ -48,14 +48,14 @@ namespace AppAPI.Services
             return _allRepository.GetAll().FirstOrDefault(x => x.ID == Id);
         }
 
-        public bool Update(Guid Id, int sodiem, int TiLeTichDiem, int TiLeTieuDiem, int TrangThai)
+        public bool Update(Guid Id, int TrangThai)
         {
             var quydoidiem= _allRepository.GetAll().FirstOrDefault(x => x.ID == Id);
             if(quydoidiem != null)
             {
                 //quydoidiem.SoDiem = sodiem;
-                quydoidiem.TiLeTichDiem = TiLeTichDiem;
-                quydoidiem.TiLeTieuDiem = TiLeTieuDiem;
+                //quydoidiem.TiLeTichDiem = TiLeTichDiem;
+                //quydoidiem.TiLeTieuDiem = TiLeTieuDiem;
                 quydoidiem.TrangThai = TrangThai;
                 return _allRepository.Update(quydoidiem);
             }

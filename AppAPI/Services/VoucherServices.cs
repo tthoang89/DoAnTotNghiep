@@ -65,10 +65,10 @@ namespace AppAPI.Services
             if (voucher != null)
             {
               
-                voucher.Ten = voucherview.Ten;
-                voucher.HinhThucGiamGia = voucherview.HinhThucGiamGia;
+                //voucher.Ten = voucherview.Ten;
+                //voucher.HinhThucGiamGia = voucherview.HinhThucGiamGia;
                 voucher.SoTienCan = voucherview.SoTienCan;
-                voucher.GiaTri = voucherview.GiaTri;
+                //voucher.GiaTri = voucherview.GiaTri;
                 voucher.NgayApDung = voucherview.NgayApDung;
                 voucher.NgayKetThuc = voucherview.NgayKetThuc;
                 if (voucher.NgayApDung > voucher.NgayKetThuc)
@@ -85,9 +85,13 @@ namespace AppAPI.Services
                 return false;
             }
         }
-        public Voucher GetVoucherByMa(string ma)
+        public Voucher? GetVoucherByMa(string ma)
         {
-            return _allRepository.GetAll().FirstOrDefault(x => x.Ten == ma);
+            return _allRepository.GetAll().FirstOrDefault(x => x.Ten.ToUpper() == ma.ToUpper());
+        }
+        public List<Voucher> GetAllVoucherByTien(int tongTien) 
+        {
+            return _allRepository.GetAll().Where(x=>x.NgayApDung<DateTime.Now && x.NgayKetThuc>DateTime.Now && x.SoTienCan<tongTien && x.TrangThai>0).ToList();
         }
     }
 }

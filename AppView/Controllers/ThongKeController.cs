@@ -1,8 +1,11 @@
 ﻿using AppData.ViewModels;
 using AppData.ViewModels.ThongKe;
 using AppView.PhanTrang;
+using ClosedXML.Excel;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Data;
+using System.Web.WebPages;
 
 namespace AppView.Controllers
 {
@@ -324,11 +327,43 @@ namespace AppView.Controllers
 
         //Tam
         [HttpGet]
-        public async Task<IActionResult> ThongKeAdmin()
+        public async Task<IActionResult> ThongKeAdmin(string startDate, string endDate)
         {
-            var response = await _httpClient.GetAsync("https://localhost:7095/api/ThongKe/ThongKe");
-            return View(JsonConvert.DeserializeObject<ThongKeViewModel>(response.Content.ReadAsStringAsync().Result));
-        }  
+            if(startDate == null || endDate == null)
+            {
+                startDate = DateTime.Now.AddDays(-7).ToString();
+                endDate = DateTime.Now.ToString();
+            }
+            var response = await _httpClient.GetAsync("https://localhost:7095/api/ThongKe/ThongKe?startDate=" + startDate + "&endDate=" + endDate);
+            var lst = JsonConvert.DeserializeObject<ThongKeViewModel>(response.Content.ReadAsStringAsync().Result);
+            return View(lst);
+        }
+        public async Task<FileResult> ExportExcel()
+        {
+            var response = await _httpClient.GetAsync("https://localhost:7095/api/ThongKe/ThongKeSanPham");
+            var lst = JsonConvert.DeserializeObject<List<ThongKeSanPham>>(await response.Content.ReadAsStringAsync());
+            var fileName = "thongKeSanPham.xlsx";
+            DataTable dataTable = new DataTable("SanPham");
+            dataTable.Columns.AddRange(new DataColumn[]
+            {
+                new DataColumn("Tên sản phẩm"),
+                new DataColumn("Số lượng bán ra"),
+                new DataColumn("Tổng doanh thu")
+            });
+            foreach(var item in lst)
+            {
+                dataTable.Rows.Add(item.TenSP, item.SoLuong,item.DoanhThu);
+            }
+            using(XLWorkbook wb = new XLWorkbook())
+            {
+                wb.Worksheets.Add(dataTable);
+                using(MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",fileName);
+                }
+            }
+        }
         //End
     }
 }

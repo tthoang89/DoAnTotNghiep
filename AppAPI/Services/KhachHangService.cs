@@ -21,6 +21,7 @@ namespace AppAPI.Services
                 Ten = nv.Name,
                 Email = nv.Email,
                 Password = nv.Password,
+                SDT = nv.SDT,
 
             };
             await _dbContext.KhachHangs.AddAsync(kh);
@@ -59,7 +60,18 @@ namespace AppAPI.Services
         {
             return _dbContext.KhachHangs.ToList();
         }
-
+        //Nhinh thêm
+        public async Task<List<HoaDon>> GetAllHDKH(Guid idkh)
+        {
+            return await (from hd in _dbContext.HoaDons.AsNoTracking()
+                          join lstd in _dbContext.LichSuTichDiems.AsNoTracking() on hd.ID equals lstd.IDHoaDon into lstdGroup
+                          from lstd in lstdGroup.DefaultIfEmpty()
+                          join kh in _dbContext.KhachHangs.AsNoTracking() on lstd.IDKhachHang equals kh.IDKhachHang into khGroup
+                          from kh in khGroup.DefaultIfEmpty()
+                          where kh.IDKhachHang == idkh
+                          select hd).ToListAsync();
+        }
+        //Nhinh-end
         public KhachHang GetById(Guid id)
         {
             return _dbContext.KhachHangs.FirstOrDefault(x => x.IDKhachHang == id);

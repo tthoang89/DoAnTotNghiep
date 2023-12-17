@@ -5,8 +5,11 @@
     Layout = "~/Views/Shared/_LayoutForAdmin.cshtml";
 }
 
-<h1>Thêm Quy Đổi Điểm</h1>
-
+<h1>Thêm quy đổi điểm</h1>
+<h2> Công thức tính quy đổi điểm</h2>
+<h2> số điểm được tích khi mua hàng = tiền hàng / tỉ lệ tích điểm </h2>
+<h2> số điểm được sử dụng khi mua hàng = số điểm khách hàng đã có * tỉ lệ tiêu điểm = số tiền được sử dụng</h2>
+<h2>(số tiền được sử dụng không vượt quá 30% tiền hàng)</h2>
 
 <hr />
 <div class="row">
@@ -20,30 +23,43 @@
                 <span asp-validation-for="SoDiem" class="text-danger"></span>
             </div>*@
             <div class="form-group">
-                <label  class="control-label">Tỉ Lệ Tích Điểm</label>
+                <label  class="control-label">Tỉ lệ tích điểm</label>
                 <input asp-for="TiLeTichDiem" class="form-control" />
-                <span asp-validation-for="TiLeTichDiem" class="text-danger"></span>
+                <span  class="text-danger">@ViewData["TiLeTichDiem"]</span>
             </div>
             <div class="form-group">
-                <label  class="control-label">Tỉ Lệ Tiêu Điểm</label>
+                <label  class="control-label">Tỉ lệ tiêu điểm</label>
                 <input asp-for="TiLeTieuDiem" class="form-control" />
-                <span asp-validation-for="TiLeTieuDiem" class="text-danger"></span>
+                <span class="text-danger">@ViewData["TiLeTieuDiem"]</span>
             </div>
             <div class="form-group">
-                <label  class="control-label">Trạng Thái</label>
-                <input asp-for="TrangThai" class="form-control" />
-                <span asp-validation-for="TrangThai" class="text-danger"></span>
+                <label class="control-label">Trạng thái</label>
+               
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="trangthai" value="1" asp-for="TrangThai">
+                    <label class="form-check-label" for="flexRadioDefault2">
+                        Chỉ tích điểm hoặc tiêu điểm
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="trangthai" value="2" asp-for="TrangThai">
+                    <label class="form-check-label" for="flexRadioDefault3">
+                        Vừa tích điểm và vừa tiêu điểm
+                    </label>
+                </div>
             </div>
+            <span  class="text-danger">@ViewData["TrangThai"]</span>
             <div class="form-group">
-                <input type="submit" value="Thêm Quy Đổi Điểm" class="btn btn-success" />
+                <input type="submit" value="Thêm quy đổi điểm" class="btn btn-success" />
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="GetAllQuyDoiDiem">Quay Lại</a>
-</div>
+<br />
+<button class="btn btn-primary">
+    <a asp-action="GetAllQuyDoiDiem" style="color:white;">Quay lại</a>
+</button>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

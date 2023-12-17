@@ -3,6 +3,7 @@ using AppAPI.Services;
 using AppData.Models;
 using AppData.ViewModels;
 using AppData.ViewModels.BanOffline;
+using AppData.ViewModels.SanPham;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -55,8 +56,13 @@ namespace AppAPI.Controllers
         {
             return _iHoaDonService.CheckHDHasLSGD(idhd);
         }
+        [HttpGet("CheckCustomerUseVoucher")]
+        public bool CheckKHUseVoucher(Guid idkh, Guid idvoucher)
+        {
+            return _iHoaDonService.CheckCusUseVoucher(idkh, idvoucher);
+        }
         [HttpPost]
-        public bool CreateHoaDon(HoaDonViewModel hoaDon)
+        public DonMuaSuccessViewModel CreateHoaDon(HoaDonViewModel hoaDon)
         {
             return _iHoaDonService.CreateHoaDon(hoaDon.ChiTietHoaDons, hoaDon);
         }
@@ -100,11 +106,41 @@ namespace AppAPI.Controllers
         {
             return _iHoaDonService.UpdateHoaDon(hoaDon);
         }
+        [HttpPut("HuyHD")]
+        public IActionResult HuyHD(Guid idhd, Guid idnv, string Ghichu)
+        {
+            var result = _iHoaDonService.HuyHD(idhd,idnv,Ghichu);
+            return Ok(result);
+        }
+        [HttpPut("GiaoThanhCong")]
+        public IActionResult GiaoThanhCong(Guid idhd, Guid idnv)
+        {
+            var result = _iHoaDonService.ThanhCong(idhd, idnv);
+            return Ok(result);
+        }
+        [HttpPut("HoanHD")]
+        public IActionResult HoanHD(Guid idhd, Guid idnv)
+        {
+            var result = _iHoaDonService.HoanHang(idhd, idnv);
+            return Ok(result);
+        }
+        [HttpPut("HoanTCHD")]
+        public IActionResult HoanTCHD(Guid idhd, Guid idnv)
+        {
+            var result = _iHoaDonService.HoanHangThanhCong(idhd, idnv);
+            return Ok(result);
+        }
+        [HttpPut("CopyHD")]
+        public IActionResult TraHD(Guid idhd, Guid idnv)
+        {
+            var result = _iHoaDonService.CopyHD(idhd, idnv);
+            return Ok(result);
+        }
 
         [HttpPut("UpdateGhichu")]
-        public bool UpdateGhiChuHD(Guid idhd, string ghichu)
+        public bool UpdateGhiChuHD(Guid idhd, Guid idnv, string ghichu)
         {
-            return _iHoaDonService.UpdateGhiChuHD(idhd, ghichu);
+            return _iHoaDonService.UpdateGhiChuHD(idhd, idnv, ghichu);
         }
 
         [HttpDelete("deleteHoaDon/{id}")]

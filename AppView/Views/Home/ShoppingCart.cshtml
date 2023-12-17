@@ -1,10 +1,18 @@
-﻿@using AppData.ViewModels;
-@model List<ChiTietSanPhamViewModel>
+﻿@using AppData.ViewModels.SanPham;
+@model List<GioHangRequest>
 @{
     Layout = "_Layout"; 
-    string tongTien = TempData.Peek("TongTien") as string;
+    string? temp = TempData.Peek("TongTien") as string;
+    string tongTien = temp == null ? "0" : temp;
 }
+
     <!-- Breadcrumb Section Begin -->
+    <style>
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+        }
+    </style>
     <section class="breadcrumb-option">
         <div class="container">
             <div class="row">
@@ -45,23 +53,24 @@
                                 <tr>
                                     <td class="product__cart__item">
                                         <div class="product__cart__item__pic">
-                                            <img style="height:128px;width:100px" src="/img/product/@item.Anh" alt="">
+                                            <a asp-controller="Home" asp-action="ProductDetailFromCart" asp-route-idctsp="@item.IDChiTietSanPham"><img style="height:100px;width:100px" src="/img/product/@item.Anh" alt=""></a>
                                         </div>
                                         <div class="product__cart__item__text">
                                             <h6>@item.Ten</h6>
                                             <h5>@item.MauSac/@item.KichCo</h5>
+                                            <p id="validate_@item.IDChiTietSanPham" style="display:none;color:red;font-size:12px">Số lượng không thể đáp ứng</p>
                                         </div>
                                     </td>
-                                    <td class="cart__price">@item.GiaBan.ToString("n0") </td>
+                                    <td class="cart__price">@item.DonGia.Value.ToString("n0") </td>
                                     <td class="quantity__item">
                                         <div class="quantity">
-                                            <div class="pro-qty-2" oninput="Getvalue(@item.ID,1)">
-                                                <input class="soLuong" name="@item.ID" type="text" value="@item.SoLuong">
+                                            <div class="pro-qty-2">
+                                                <input class="soLuongCart" style="-webkit-appearance:none;" name="@item.IDChiTietSanPham" type="number" value="@item.SoLuong">
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="cart__price">@((item.GiaBan*item.SoLuong).ToString("n0")) </td>
-                                    <td class="cart__close"><a asp-controller="Home" asp-action="DeleteFromCart" asp-route-id="@item.ID"><i class="fa fa-close"></i></a></td>
+                                    <td style="color: #111111; font-size: 18px; font-weight: 700; width: 140px;" class="cart__price__sub">@((item.DonGia.Value * item.SoLuong).ToString("n0")) </td>
+                                    <td class="cart__close"><a asp-controller="Home" asp-action="DeleteFromCart" asp-route-id="@item.IDChiTietSanPham"><i class="fa fa-close"></i></a></td>
                                 </tr>
                             }
                             </tbody>
@@ -70,13 +79,11 @@
                     <div class="row">
                         <div class="col-lg-6 col-md-6 col-sm-6">
                             <div class="continue__btn">
-                                <a href="#">Tiếp tục mua sắm</a>
+                                <a href="https://localhost:5001/Home/Shop">Tiếp tục mua sắm</a>
                             </div>
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-6">
-                            <div class="continue__btn update__btn">
-                            <a onclick="UpdateCart()"><i class="fa fa-spinner"></i> Cập nhật giỏ hàng</a>
-                            </div>
+                           
                         </div>
                     </div>
                 </div>
@@ -84,23 +91,27 @@
                     <div class="cart__total">
                     <h6>Tổng số giỏ hàng</h6>
                         <ul>
-                            <li>Tổng <span>@tongTien VNĐ</span></li>
+                            <li>Tổng <span id="SubTotal">@Convert.ToInt32(tongTien).ToString("n0") VNĐ</span></li>
                         </ul>
-                    <a href="CheckOut" class="primary-btn">Proceed to checkout</a>
+                    <a onclick="CheckCart()" href="#" class="primary-btn" >Mua hàng</a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+<script src="/js/jquery-3.3.1.min.js"></script>
     <script>
+        var checkSoLuong = [];
+        $(document).ready(function () {
+            UpdateCart();
+        });
         function UpdateCart(){
-            var dl = document.getElementsByClassName("soLuong");
+        var dl = document.getElementsByClassName("soLuongCart");
             var lst = [];
             for(var i = 0;i<dl.length;i++){
                 lst.push(dl[i].name + dl[i].value)
             }
             var postData = { dssl: lst };
-            console.log(postData);
             $.ajax({
                 async: true,
                 type: 'POST',
@@ -109,7 +120,25 @@
                 url: '/Home/UpdateCart',
                 success: function (response) {
                     if (response.success == true) {
-                        window.location = 'https://localhost:5001/Home/ShoppingCart';
+                        var subCart = document.getElementsByClassName("cart__price__sub");
+                        var tongtien = 0;
+                        for (var i = 0; i < subCart.length; i++) {
+                            var tongTienHang = subCart[i].innerHTML.replaceAll(".", "");
+                            tongTienHang = tongTienHang.replaceAll(",", "");
+                            tongtien += parseInt(tongTienHang);
+                        }
+                        document.getElementById("SubTotal").innerHTML = Intl.NumberFormat().format(tongtien) + "VNĐ";
+                        if (response.data.length > 0) {
+                            for (let i = 0; i < response.data.length; i++) {
+                                if (response.data[i].hetHang) {
+                                    document.getElementById("validate_" + response.data[i].idChiTietSanPham).style.display = "none";
+                                }else{
+                                    document.getElementById("validate_" + response.data[i].idChiTietSanPham).style.display = "block";
+                                }
+                            }
+                        }
+                        checkSoLuong = response.data.filter(x => x.hetHang == false).length <= 0;
+                    $('#tongsoluong').text(response.cout);
                     } else {
                         toastr.error(response.message, 'Error Alert', { timeOut: 300 });
                     }
@@ -119,8 +148,27 @@
                     toastr.error(response.message, 'Error Alert', { timeOut: 300 });
                 }
             });
-            }
-        
+        }
 
+        function CheckCart(){
+
+            if(@Model.Count == 0){
+                alert("Vui lòng thêm sản phẩm vào giỏ hàng");
+            }
+            else if(checkSoLuong == false){
+                alert("Yêu cầu không thể đáp ứng");
+            }
+            else{
+                location.href = 'CheckOut';
+            }
+        }
+        //const elements = document.querySelectorAll(".pro-qty-2");
+        
+        //for (var i = 0; i < elements.length; i++) {
+        //    elements[i].addEventListener('click', UpdateCart);
+        //    console.log(elements[i]);
+        //}
     </script>
     <!-- Shopping Cart Section End -->
+
+ 

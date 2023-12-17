@@ -24,6 +24,7 @@ namespace AppData.ViewModels.BanOffline
         public string PTTT { get; set; }
         public int? TruTieuDiem { get; set; }
         public string GhiChu { get; set; }
+        public int? KhachCanTra { get; set; }
         public int? TienKhachTra { get; set; }
         public List<HoaDonChiTietViewModel> listsp { get; set; }
         public List<LichSuTichDiem> lstlstd { get; set; }

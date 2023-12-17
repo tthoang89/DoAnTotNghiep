@@ -2,6 +2,7 @@
 using AppData.ViewModels;
 using AppView.PhanTrang;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Net.Http;
 
@@ -10,11 +11,13 @@ namespace AppView.Controllers
     public class QuanLyKMController : Controller
     {
         private readonly HttpClient _httpClient;
+        private readonly AssignmentDBContext dBContext;
         public QuanLyKMController()
         {
             _httpClient = new HttpClient();
+            dBContext = new AssignmentDBContext();
         }
-        public int PageSize = 8;
+        public int PageSize = 10;
         #region QL Khuyen Mai Cho SP
         // Get All QL Khuyen Mai
         [HttpGet]
@@ -122,6 +125,8 @@ namespace AppView.Controllers
             var response1 = await _httpClient.GetAsync(apiURL1);
             var apiData1 = await response1.Content.ReadAsStringAsync();
             var bienthes = JsonConvert.DeserializeObject<List<AllViewCTSP>>(apiData1);
+            var idkhuyenmai = Guid.Parse(HttpContext.Session.GetString("IdKhuyenMai"));
+            ViewBag.IdKhuyenMai = idkhuyenmai;
             return View(new PhanTrangCTSPBySP
             {
                 listallctspbysp = bienthes
@@ -142,6 +147,7 @@ namespace AppView.Controllers
             // lay IdkhuyenMai Tu session
             var idkhuyenmai = Guid.Parse(HttpContext.Session.GetString("IdKhuyenMai"));
             var response = await _httpClient.PutAsJsonAsync($"https://localhost:7095/api/KhuyenMai/AddKmVoBT?IdKhuyenMai={idkhuyenmai}", bienthes);
+         
             if (response.IsSuccessStatusCode) return Json(new { success = true, message = "Cập nhật thành công!" });
             return Json(new { success = false });
         }
@@ -213,15 +219,46 @@ namespace AppView.Controllers
        
         public async Task<IActionResult> Create(KhuyenMaiView kmv)
         {
-            var response = await
-           _httpClient.PostAsJsonAsync("https://localhost:7095/api/KhuyenMai", kmv);
-            if (response.IsSuccessStatusCode) return RedirectToAction("GetAllKM");
+            string apiURL = $"https://localhost:7095/api/KhuyenMai";
+            var response1 = await _httpClient.GetAsync(apiURL);
+            var apiData = await response1.Content.ReadAsStringAsync();
+            var roles = JsonConvert.DeserializeObject<List<KhuyenMaiView>>(apiData);
+            if (kmv.GiaTri != null || kmv.NgayApDung != null || kmv.NgayKetThuc != null||kmv.Ten!=null)
+            {
+                if (kmv.GiaTri <= 0)
+                {
+                    ViewData["GiaTri"] = "Mời Bạn nhập giá trị lớn hơn 0";
+                }
+                if (kmv.NgayApDung == null)
+                {
+                    ViewData["NgayApDung"] = "Mời bạn nhập ngày áp dụng";
+                }
+                if (kmv.NgayKetThuc == null)
+                {
+                    ViewData["NgayKetThuc"] = "Mời bạn nhập ngày kết thúc";
+                }
+                if (kmv.NgayKetThuc < kmv.NgayApDung)
+                {
+                    ViewData["Ngay"] = "Ngày kết thúc phải lớn hơn hoặc bằng ngày áp dụng";
+                }
+                var timkiem=roles.FirstOrDefault(x=>x.Ten==kmv.Ten);
+                if (timkiem != null)
+                {
+                    ViewData["Ma"] = "Mã này đã tồn tại";
+                }
+                if (kmv.GiaTri > 0 && kmv.NgayKetThuc >= kmv.NgayApDung&&timkiem==null)
+                {
+                    var response = await
+          _httpClient.PostAsJsonAsync("https://localhost:7095/api/KhuyenMai", kmv);
+                    if (response.IsSuccessStatusCode) return RedirectToAction("GetAllKM");
+                    return View();
+                }       
+            }
             return View();
         }
         // update
         public  IActionResult Update(Guid id)
-        {
-           
+        {           
             var url = $"https://localhost:7095/api/KhuyenMai/{id}";
             var response = _httpClient.GetAsync(url).Result;
             var result = response.Content.ReadAsStringAsync().Result;
@@ -232,12 +269,95 @@ namespace AppView.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(KhuyenMaiView kmv)
         {
-            
 
-            var response = await _httpClient.PutAsJsonAsync($"https://localhost:7095/api/KhuyenMai/{kmv.ID}", kmv);
-            if (response.IsSuccessStatusCode) return RedirectToAction("GetAllKM");
+            if (kmv.NgayKetThuc >= kmv.NgayApDung)
+            {
+                var response = await _httpClient.PutAsJsonAsync($"https://localhost:7095/api/KhuyenMai/{kmv.ID}", kmv);
+                if (response.IsSuccessStatusCode) return RedirectToAction("GetAllKM");
+                return View();
+            }
+            ViewData["Ngay"] = "Ngày kết thúc phải lớn hơn hoặc bằng ngày áp dụng";
             return View();
+
+
+
         }
+        public async Task<IActionResult> SuDung(Guid id)
+        {
+            var timkiem = dBContext.KhuyenMais.FirstOrDefault(x => x.ID == id);
+            if (timkiem != null)
+            {
+                if (timkiem.TrangThai == 2)
+                {
+                    timkiem.TrangThai = 0;
+                    dBContext.KhuyenMais.Update(timkiem);
+                }
+                if (timkiem.TrangThai == 3)
+                {
+                    timkiem.TrangThai = 1;
+                    dBContext.KhuyenMais.Update(timkiem);
+                }
+                dBContext.SaveChanges();
+                return RedirectToAction("GetAllKM");
+            }
+            else
+            {
+                return View();
+            }
+        }
+        public async Task<IActionResult> KoSuDung(Guid id)
+        {
+            var timkiem = dBContext.KhuyenMais.FirstOrDefault(x => x.ID == id);
+            if (timkiem != null)
+            {
+                if (timkiem.TrangThai == 0)
+                {
+                    timkiem.TrangThai = 2;
+                    dBContext.KhuyenMais.Update(timkiem);
+                }
+                if (timkiem.TrangThai == 1)
+                {
+                    timkiem.TrangThai = 3;
+                    dBContext.KhuyenMais.Update(timkiem);
+                }
+                dBContext.SaveChanges();
+                return RedirectToAction("GetAllKM");
+            }
+            else
+            {
+                return View();
+            }
+        }
+        //public async Task<IActionResult> SuDung(Guid id)
+        //{
+        //    var timkiem = dBContext.KhuyenMais.FirstOrDefault(x => x.ID == id);
+        //    if (timkiem != null)
+        //    {
+        //        timkiem.TrangThai = 3;
+        //        dBContext.KhuyenMais.Update(timkiem);
+        //        dBContext.SaveChanges();
+        //        return RedirectToAction("GetAllKM");
+        //    }
+        //    else
+        //    {
+        //        return View();
+        //    }
+        //}
+        //public async Task<IActionResult> KoSuDung(Guid id)
+        //{
+        //    var timkiem = dBContext.KhuyenMais.FirstOrDefault(x => x.ID == id);
+        //    if (timkiem != null)
+        //    {
+        //        timkiem.TrangThai = 4;
+        //        dBContext.KhuyenMais.Update(timkiem);
+        //        dBContext.SaveChanges();
+        //        return RedirectToAction("GetAllKM");
+        //    }
+        //    else
+        //    {
+        //        return View();
+        //    }
+        //}
         public async Task<IActionResult> Delete(Guid id)
         {
             var url = $"https://localhost:7095/api/KhuyenMai/{id}";
@@ -290,13 +410,14 @@ namespace AppView.Controllers
             var response1 = await _httpClient.GetAsync(apiURL1);
             var apiData1 = await response1.Content.ReadAsStringAsync();
             var bienthes = JsonConvert.DeserializeObject<List<AllViewSp>>(apiData1);
+            
            
             
            
            
             return View(new PhanTrangAllQLKMSP
             {
-                listallsp = bienthes
+                listallsp = bienthes.Where(x=>x.TrangThai==1)
                         .Skip((ProductPage - 1) * PageSize).Take(PageSize),
                 PagingInfo = new PagingInfo
                 {
@@ -310,7 +431,8 @@ namespace AppView.Controllers
         [HttpGet]
         public async Task<IActionResult> GetSPNoKM(int ProductPage = 1)
         {
-            var idkhuyenmai = Guid.Parse(HttpContext.Session.GetString("IdKhuyenMai"));
+            var idkhuyenmai = Guid.Parse(HttpContext.Session.GetString("IdKhuyenMai"));          
+            ViewBag.IdKhuyenMai = idkhuyenmai;
             // // list AllViewsp
             string apiURL1 = $"https://localhost:7095/api/KhuyenMai/GetAllSPNoKM?id={idkhuyenmai}";
             var response1 = await _httpClient.GetAsync(apiURL1);
@@ -318,7 +440,7 @@ namespace AppView.Controllers
             var qlsanphams = JsonConvert.DeserializeObject<List<AllViewSp>>(apiData1);
             return View(new PhanTrangAllQLKMSP
             {
-                listallsp = qlsanphams.Where(x=>x.IdKhuyenMai!=idkhuyenmai)
+                listallsp = qlsanphams.Where(x=>x.IdKhuyenMai!=idkhuyenmai&&x.TrangThai==1)
                         .Skip((ProductPage - 1) * PageSize).Take(PageSize),
                 PagingInfo = new PagingInfo
                 {
@@ -341,7 +463,7 @@ namespace AppView.Controllers
             var qlsanphams = JsonConvert.DeserializeObject<List<AllViewSp>>(apiData1);
             return View("GetSPNoKM",new PhanTrangAllQLKMSP
             {
-                listallsp = qlsanphams.Where(x => x.IdKhuyenMai != idkhuyenmai)
+                listallsp = qlsanphams.Where(x => x.IdKhuyenMai != idkhuyenmai&&x.TrangThai==1)
                         .Skip((ProductPage - 1) * PageSize).Take(PageSize),
                 PagingInfo = new PagingInfo
                 {

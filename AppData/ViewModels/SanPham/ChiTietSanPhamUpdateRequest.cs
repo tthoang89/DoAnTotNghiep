@@ -10,7 +10,10 @@ namespace AppData.ViewModels.SanPham
     public class ChiTietSanPhamUpdateRequest
     {
         public Guid IDSanPham { get; set; }
+        public string? Ma { get; set; }
         public List<ChiTietSanPhamRequest> ChiTietSanPhams { get; set; }
-        public string TrangThai {  get; set; }
+        public string? TrangThai {  get; set; }
+        public int? Location { get; set; }
+        public List<MauSac>? MauSacs { get; set; }
     }
 }

@@ -29,7 +29,7 @@ namespace AppAPI.Controllers
         [HttpGet]
         public List<NhanVien> GetAllNhanVien(string? name)
         {
-            return _dbContext.NhanViens.Where(v => v.Ten.Contains(name)).ToList();
+            return _dbContext.NhanViens.Where(v => v.Ten.Contains(name) || v.SDT.Contains(name)).ToList();
 
 
         }
@@ -45,7 +45,7 @@ namespace AppAPI.Controllers
 
         // POST api/<NhanVienController>
         [HttpPost("DangKyNhanVien")]
-        public bool Add(string ten, string email, string password, string sdt, string diachi, int trangthai, Guid idvaitro)
+        public bool Add(string ten, string email, string password, string sdt, string diachi)
         {
             NhanVien nv = new NhanVien();
             nv.ID = Guid.NewGuid();
@@ -54,8 +54,8 @@ namespace AppAPI.Controllers
             nv.PassWord = password;
             nv.SDT = sdt;
             nv.DiaChi = diachi;
-            nv.TrangThai = trangthai;
-            nv.IDVaiTro = idvaitro;
+            nv.TrangThai = 1;
+            nv.IDVaiTro = Guid.Parse("9ea902ac-4093-4889-9a9f-dc33d1af1e3c");
             _dbContext.NhanViens.Add(nv);
             _dbContext.SaveChanges();
             return true;

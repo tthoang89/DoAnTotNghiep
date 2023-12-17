@@ -25,29 +25,20 @@ namespace AppAPI.Controllers
 
         // POST api/<DangNhapController>
         [HttpGet("DangNhap")]
-        public async Task<IActionResult>Login(string lg, string password)
+        public async Task<IActionResult> Login(string lg, string password)
         {
             LoginViewModel login = await service.Login(lg, password);
-            if(login == null)
+
+            if (login.IsAccountLocked)
             {
-                ModelState.AddModelError(string.Empty, "Dang nhap that bai");
+                return Unauthorized(login.Message);
+            }
+            else if (login.Message != null) // Other error messages
+            {
+                ModelState.AddModelError(string.Empty, login.Message);
                 return BadRequest(ModelState);
             }
-            else
-            {
-                return Ok(login);
-            }
-            //var result = await service.Login(email, password,  vaitro);
-            //if (result != null)
-            //{
-            //    return Ok(result);
-            //}
-            //else
-            //{
-            //    ModelState.AddModelError(string.Empty, "Dang nhap that bai, ban nhap sai email hoac password");
-            //    //return BadRequest("Dang nhap that bai");
-            //}
-            //return BadRequest("dang nhap that bai");
+            return Ok(login);
         }
 
         // POST api/<DangKyController>
@@ -73,8 +64,8 @@ namespace AppAPI.Controllers
             }
 
             return Ok("Đăng ký thành công");
-        }
 
+        }
         //[HttpPut("DoiMatKhauNhanVien")]
         //public async Task<IActionResult> DoiMatKhauNV(string email, string oldPassword,string newPassword)
         //{
@@ -94,11 +85,12 @@ namespace AppAPI.Controllers
             var dmk = await service.ChangePassword(email, oldPassword, newPassword);
             if (!dmk)
             {
-                return Ok("Đổi mật khẩu khong  thành công");
+                return BadRequest("Đổi mật khẩu  thành công");
+                
             }
             else
             {
-                return BadRequest("Đổi mật khẩu  thành công");
+                return Ok("Đổi mật khẩu khong  thành công");
             }
         }
         [HttpPost("ForgotPassword")]
@@ -214,6 +206,24 @@ namespace AppAPI.Controllers
             {
                 return Ok("Đổi mật khẩu  thành công");
             }
+        }
+        [HttpPut("UpdateProfile1")]
+        public async Task<IActionResult> UpdateProfile(LoginViewModel request)
+        {
+            LoginViewModel dmk = await service.UpdateProfile(request);
+            if (dmk == null)
+            {
+                return BadRequest("Đổi thông tin người dùng không  thành công");
+            }
+            else
+            {
+                return Ok(dmk);
+            }
+        }
+        [HttpGet("UseDiemTich")]
+        public async Task<int> UseDiemTich(int diem, string id)
+        {
+            return await service.UseDiemTich(diem, id);
         }
         //End
     }

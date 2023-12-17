@@ -52,20 +52,29 @@ namespace AppAPI.Services
         }
         public async Task<List<DanhGiaViewModel>> GetDanhGiaByIdSanPham(Guid idsp)
         {
-            //var query = await (from sp in _context.SanPhams
-            //                   join bt in _context.BienThes on sp.ID equals bt.IDSanPham
-            //                   join dg in _context.DanhGias on bt.ID equals dg.IDBienThe
-            //                   join kh in _context.KhachHangs on dg.IDKhachHang equals kh.IDKhachHang
-            //                   where sp.ID == idsp && dg.TrangThai != 3
-            //                   select new DanhGiaViewModel()
-            //                   {
-            //                       ID = dg.ID,
-            //                       Sao = dg.Sao,
-            //                       BinhLuan = dg.BinhLuan,
-            //                       IDBienThe = dg.IDBienThe,
-            //                       TenKH = kh.Ten,
-            //                   }).ToListAsync();
-            //return query;
+            var query = await (from sp in _context.SanPhams.Where(p => p.ID == idsp)
+                               join ctsp in _context.ChiTietSanPhams on sp.ID equals ctsp.IDSanPham
+                               join cthd in _context.ChiTietHoaDons on ctsp.ID equals cthd.IDCTSP
+                               join dg in _context.DanhGias.Where(p => p.TrangThai == 1) on cthd.ID equals dg.ID
+                               join hd in _context.HoaDons on cthd.IDHoaDon equals hd.ID
+                               //join lstd in _context.LichSuTichDiems on hd.ID equals lstd.IDHoaDon
+                               // kh in _context.KhachHangs on lstd.IDKhachHang equals kh.IDKhachHang
+                               join cl in _context.ChatLieus on sp.IDChatLieu equals cl.ID
+                               join ms in _context.MauSacs on ctsp.IDMauSac equals ms.ID
+                               join kc in _context.KichCos on ctsp.IDKichCo equals kc.ID
+                               select new DanhGiaViewModel()
+                               {
+                                   ID = dg.ID,
+                                   Sao = dg.Sao,
+                                   BinhLuan = dg.BinhLuan,
+                                   TrangThai = dg.TrangThai,
+                                   TenKH = _context.KhachHangs.FirstOrDefault(p=>p.IDKhachHang == _context.LichSuTichDiems.FirstOrDefault(p=>p.IDHoaDon == hd.ID).IDKhachHang).Ten,
+                                   ChatLieu = cl.Ten,
+                                   MauSac = ms.Ten,
+                                   KichCo = kc.Ten,
+                                   NgayDanhGia = dg.NgayDanhGia
+                               }).ToListAsync();
+            return query;
             throw new NotImplementedException();
         }
 
@@ -140,7 +149,7 @@ namespace AppAPI.Services
             throw new NotImplementedException();
         }
 
-        public bool UpdateDanhGia(Guid idCTHD, int soSao, string binhLuan)
+        public bool UpdateDanhGia(Guid idCTHD, int soSao, string? binhLuan)
         {
             try
             {

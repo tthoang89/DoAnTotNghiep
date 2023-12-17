@@ -16,7 +16,7 @@ namespace AppView.Controllers
             httpClients = new HttpClient();
         }
 
-        public int PageSize = 8;
+        public int PageSize = 10;
         // Get ALl KH
         public async Task<IActionResult> GetAllKhachHang(int ProductPage = 1)
         {
@@ -36,6 +36,29 @@ namespace AppView.Controllers
                 }
 
             });
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetAllLSTDByIDKH(Guid id, int ProductPage = 1)
+        {
+           
+            string apiURL = $"https://localhost:7095/api/LichSuTichDiem/GetLSTDByIdKH?idkh={id}";
+            var response = await httpClients.GetAsync(apiURL);
+            var apiData = await response.Content.ReadAsStringAsync();
+            var roles = JsonConvert.DeserializeObject<List<LichSuTichDiemView>>(apiData);
+            return View(new PhanTrangLSTD
+            {
+                listLSTDs = roles
+                        .Skip((ProductPage - 1) * PageSize).Take(PageSize),
+                PagingInfo = new PagingInfo
+                {
+                    ItemsPerPage = PageSize,
+                    CurrentPage = ProductPage,
+                    TotalItems = roles.Count()
+                }
+
+            }
+                );
+
         }
         // tim kiem KH theo Ten Hoac SDT
         [HttpGet]
@@ -64,12 +87,58 @@ namespace AppView.Controllers
         }
         [HttpPost]
 
-        public async Task<IActionResult> Create(KhachHangView kh)
+        public async Task<IActionResult> Create(KhachHangView kh, string nhaplai)
         {
-            var url = $"https://localhost:7095/api/KhachHang/PostKHView";
-            var response = await httpClients.PostAsJsonAsync(url, kh);
-            if (response.IsSuccessStatusCode) return RedirectToAction("GetAllKhachHang");
-            return View();
+            string apiUrl1 = "https://localhost:7095/api/KhachHang";
+            var response1 = await httpClients.GetAsync(apiUrl1);
+            string apiData1 = await response1.Content.ReadAsStringAsync();
+            var kh1 = JsonConvert.DeserializeObject<List<KhachHangView>>(apiData1);
+            if (kh.Password != null  || kh.Email != null)
+            {
+                if (kh.Password.Length < 8)
+                {
+                    ViewBag.MatKhau = "Mật Khẩu phải lớn hơn 7 kí tự";
+                }
+                var timkiem = kh1.Where(x => x.SDT == kh.SDT).FirstOrDefault();
+                    
+                if (!kh.Email.Contains("@"))
+                {
+                    ViewBag.email = kh.Email.Replace("@", "%40");
+                }
+                var email = kh1.Where(x => x.Email == kh.Email).FirstOrDefault();
+                if (email != null)
+                {
+                    ViewBag.email = "email đã tồn tại";
+
+                }
+                if (nhaplai != kh.Password)
+                {
+                    ViewBag.NhapLai = "Nhập lại mật khẩu không đúng ";
+                }
+                if (kh.SDT != null)
+                {
+                    if (kh.SDT.Length < 10)
+                    {
+                        ViewBag.SDT = "Số Điện thoại không hợp lệ";
+                    }
+                    else
+                    {
+                        if (timkiem != null)
+                        {
+                            ViewBag.SDT = "Số Điện thoại này đã được đăng kí";
+                            return View();
+                        }
+                    }
+                }
+                if ( (kh.Email.Contains("@") && email == null && nhaplai == kh.Password)||(kh.Email.Contains("@") && email == null && nhaplai == kh.Password&& kh.SDT.Length >= 10 &&timkiem==null))
+                {
+                    var url = $"https://localhost:7095/api/KhachHang/PostKHView";
+                    var response = await httpClients.PostAsJsonAsync(url, kh);
+                    if (response.IsSuccessStatusCode) return RedirectToAction("GetAllKhachHang");
+                    return View();
+                }
+            }            
+                return View();
         }
         [HttpGet]
 
@@ -95,15 +164,12 @@ namespace AppView.Controllers
         }
         [HttpPost]
 
-        public async Task<IActionResult> Update(KhachHangView kh)
+        public async Task<IActionResult> Updates(KhachHangView kh)
         {
-
             var url =
-                $"https://localhost:7095/api/KhachHang/{kh.IDKhachHang}";
+         $"https://localhost:7095/api/KhachHang/PutKhView";
             var response = await httpClients.PutAsJsonAsync(url, kh);
             if (response.IsSuccessStatusCode) return RedirectToAction("GetAllKhachHang");
-
-
             return View();
         }
 

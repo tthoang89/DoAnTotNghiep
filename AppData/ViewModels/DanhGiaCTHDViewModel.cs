@@ -11,6 +11,6 @@ namespace AppData.ViewModels
         public Guid idCTHD { get; set; }
         public Guid idHD { get; set; }  
         public int soSao { get; set; }
-        public string danhgia { get; set; }
+        public string? danhgia { get; set; }
     }
 }

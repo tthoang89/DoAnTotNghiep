@@ -14,10 +14,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Rotativa\Windows\wkhtmltoimage.exe" />
+    <Content Include="Rotativa\Windows\wkhtmltopdf.exe" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Chart.js" Version="3.7.1" />
+    <PackageReference Include="ClosedXML" Version="0.101.0" />
     <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.9" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.16" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="QRCoder" Version="1.4.1" />
+    <PackageReference Include="Rotativa.AspNetCore" Version="1.3.2" />
     <PackageReference Include="SpecFlow" Version="3.9.74" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageReference Include="X.PagedList" Version="8.4.7" />
@@ -46,7 +54,6 @@
     <None Include="Views\LoaiSP\Edit.cshtml" />
     <None Include="Views\LoaiSP\Show.cshtml" />
     <None Include="Views\NhanVien\Create.cshtml" />
-    <None Include="Views\NhanVien\Delete.cshtml" />
     <None Include="Views\NhanVien\Details.cshtml" />
     <None Include="Views\NhanVien\Edit.cshtml" />
     <None Include="Views\NhanVien\Show.cshtml" />

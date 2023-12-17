@@ -56,13 +56,14 @@ namespace AppAPI.Controllers
             }
             else return new KhachHangViewModel();
         }
-        [HttpPost("ChangeForgotPassword")]
-        public async Task<bool> ChangeForgotPassword(KhachHangViewModel khachHang)
+        [HttpGet("ChangeForgotPassword")]
+        public async Task<bool> ChangeForgotPassword(string id, string password)
         {
             try
             {
-                var temp = _dbcontext.KhachHangs.First(x => x.IDKhachHang == khachHang.Id);
-                temp.Password = khachHang.Password;
+                var tempID = new Guid(id);  
+                var temp = _dbcontext.KhachHangs.First(x => x.IDKhachHang == tempID);
+                temp.Password = MaHoaMatKhauS(password);
                 _dbcontext.Update(temp);
                 await _dbcontext.SaveChangesAsync();
                 return true;
@@ -72,11 +73,26 @@ namespace AppAPI.Controllers
                 return false;
             }
         }
+        private string MaHoaMatKhauS(string matKhau)
+        {
+            // Ở đây, bạn có thể sử dụng bất kỳ phương thức mã hóa mật khẩu nào phù hợp
+            // Ví dụ: sử dụng thư viện BCrypt.Net để mã hóa mật khẩu
+            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(matKhau);
+            return hashedPassword;
+
+            // Đây chỉ là ví dụ đơn giản, không nên sử dụng trong môi trường thực tế
+            //return matKhau;
+        }
         //Nhinh
         [HttpGet("getBySDT")]
         public KhachHang GetBySDT(string sdt)
         {
             return _khachHangService.GetBySDT(sdt);
+        }
+        [HttpGet("getAllHDKH")]
+        public async Task<List<HoaDon>> GetAllHDKH(Guid idkh)
+        {
+            return await _khachHangService.GetAllHDKH(idkh);
         }
 
         // GET api/<SanPhamController>/5
@@ -88,7 +104,7 @@ namespace AppAPI.Controllers
             KhachHang kh = new KhachHang();
             kh.IDKhachHang = khv.IDKhachHang;
             kh.Ten = khv.Ten;
-            kh.Password = khv.Password;
+            kh.Password = MaHoaMatKhau(khv.Password);
             kh.GioiTinh=khv.GioiTinh;
             kh.NgaySinh=khv.NgaySinh;
             kh.Email = khv.Email;
@@ -102,10 +118,18 @@ namespace AppAPI.Controllers
             gh.NgayTao=DateTime.Now;
             _dbcontext.GioHangs.Add(gh);
             _dbcontext.SaveChanges();
-             
             return true;
         }
-       
+        private string MaHoaMatKhau(string matKhau)
+        {
+            // Ở đây, bạn có thể sử dụng bất kỳ phương thức mã hóa mật khẩu nào phù hợp
+            // Ví dụ: sử dụng thư viện BCrypt.Net để mã hóa mật khẩu
+            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(matKhau);
+            return hashedPassword;
+
+            // Đây chỉ là ví dụ đơn giản, không nên sử dụng trong môi trường thực tế
+            //return matKhau;
+        }
 
 
         // POST api/<SanPhamController>
@@ -121,7 +145,7 @@ namespace AppAPI.Controllers
             return Ok("Đăng ký thành công");
         }
         // PUT api/<SanPhamController>/5
-        [Route("{id}")]
+        [Route("PutKhView")]
         [HttpPut]
         public bool PutKhView(KhachHangView khv)
         {
@@ -130,13 +154,13 @@ namespace AppAPI.Controllers
             {
                 
                 kh.Ten = khv.Ten;
-                kh.Password = khv.Password;
-                kh.GioiTinh = khv.GioiTinh;
+                //kh.Password = MaHoaMatKhau(khv.Password);
+                //kh.GioiTinh = khv.GioiTinh;
                 kh.NgaySinh = khv.NgaySinh;
-                kh.Email = khv.Email;
+                //kh.Email = khv.Email;
                 kh.DiaChi = khv.DiaChi;
-                kh.SDT = khv.SDT;
-                kh.TrangThai = khv.TrangThai;
+                //kh.SDT = khv.SDT;
+                //kh.TrangThai = khv.TrangThai;
                 
                 _dbcontext.KhachHangs.Update(kh);
                 _dbcontext.SaveChanges();
