@@ -17,9 +17,41 @@ namespace AppAPI.Services
         }
 
         #region SanPham
-        public Task<bool> UpdateSanPham(SanPhamRequest request)
+        public async Task<bool> UpdateSanPham(SanPhamUpdateRequest request)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var sanpham = await _context.SanPhams.FirstAsync(x=>x.ID == request.ID);
+                LoaiSP? loaiSPCon = _context.LoaiSPs.Where(x => x.IDLoaiSPCha != null).FirstOrDefault(x => x.Ten == request.TenLoaiSPCon);
+                ChatLieu? chatLieu = _context.ChatLieus.FirstOrDefault(x => x.Ten == request.TenChatLieu);
+                if (loaiSPCon == null)
+                {
+                    LoaiSP? loaiSPCha = _context.LoaiSPs.Where(x => x.IDLoaiSPCha == null).FirstOrDefault(x => x.Ten == request.TenLoaiSPCha);
+                    if (loaiSPCha == null)
+                    {
+                        loaiSPCha = new LoaiSP() { ID = Guid.NewGuid(), Ten = request.TenLoaiSPCha, TrangThai = 1 };
+                        _context.LoaiSPs.AddAsync(loaiSPCha);
+                    }
+                    loaiSPCon = new LoaiSP() { ID = Guid.NewGuid(), Ten = request.TenLoaiSPCon, IDLoaiSPCha = loaiSPCha.ID, TrangThai = 1 };
+                    await _context.LoaiSPs.AddAsync(loaiSPCon);
+                }
+                if (chatLieu == null)
+                {
+                    chatLieu = new ChatLieu() { ID = Guid.NewGuid(), Ten = request.TenChatLieu, TrangThai = 1 };
+                    await _context.AddAsync(chatLieu);
+                }
+                sanpham.Ten = request.Ten;
+                sanpham.MoTa = request.MoTa;
+                sanpham.IDChatLieu = chatLieu.ID;
+                sanpham.IDLoaiSP = loaiSPCon.ID;
+                _context.SanPhams.Update(sanpham);
+                _context.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
         public Task<List<SanPhamViewModel>> TimKiemSanPham(SanPhamTimKiemNangCao sp)
         {
@@ -29,18 +61,36 @@ namespace AppAPI.Services
         {
             throw new NotImplementedException();
         }
-        public Task<SanPhamDetail> GetSanPhamById(Guid id)
+        public async Task<SanPhamUpdateRequest> GetSanPhamById(Guid id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var sanPham = await _context.SanPhams.FirstAsync(x=>x.ID == id);
+                var loaiSP = await _context.LoaiSPs.FirstAsync(x=>x.ID == sanPham.IDLoaiSP);
+                var response = new SanPhamUpdateRequest() { 
+                    ID = sanPham.ID,
+                    Ten = sanPham.Ten,
+                    MoTa = sanPham.MoTa,
+                    TenChatLieu = _context.ChatLieus.First(x=>x.ID == sanPham.IDChatLieu).Ten,
+                    TenLoaiSPCha = _context.LoaiSPs.First(x=>x.ID == loaiSP.IDLoaiSPCha).Ten,
+                    TenLoaiSPCon = loaiSP.Ten
+                };
+                return response;
+            }
+            catch
+            {
+                return new SanPhamUpdateRequest();
+            }
         }
         public List<SanPhamViewModelAdmin> GetAllSanPhamAdmin()
         {
             KhuyenMai? khuyenMai;
-            List<KhuyenMai> khuyenMais = _context.KhuyenMais.Where(x => x.NgayKetThuc > DateTime.Now).ToList();
+            List<KhuyenMai> khuyenMais = _context.KhuyenMais.Where(x => x.NgayKetThuc > DateTime.Now && x.NgayApDung < DateTime.Now).ToList();
             try
             {
                 var lstSanPham = (from a in _context.SanPhams
-                                  join b in _context.ChiTietSanPhams.Where(x => x.TrangThai == 1) on a.ID equals b.IDSanPham
+                                  join b in _context.ChiTietSanPhams.Where(x => x.TrangThai == 1) on a.ID equals b.IDSanPham into sanpham
+                                  from sp in sanpham.DefaultIfEmpty()
                                   join e in _context.LoaiSPs.Where(x => x.LoaiSPCha != null) on a.IDLoaiSP equals e.ID
                                   select new SanPhamViewModelAdmin()
                                   {
@@ -50,11 +100,11 @@ namespace AppAPI.Services
                                       TrangThai = a.TrangThai,
                                       LoaiSPCha = _context.LoaiSPs.First(x => x.ID == e.IDLoaiSPCha).Ten,
                                       LoaiSPCon = e.Ten,
-                                      Anh = _context.Anhs.First(x => x.IDMauSac == b.IDMauSac && x.IDSanPham == a.ID).DuongDan,
+                                      Anh = sp == null ? "" : _context.Anhs.First(x => x.IDMauSac == sp.IDMauSac && x.IDSanPham == a.ID).DuongDan,
                                       ChatLieu = _context.ChatLieus.First(x => x.ID == a.IDChatLieu).Ten,
-                                      GiaGoc = b.GiaBan,
-                                      SoLuong = b.SoLuong,
-                                      IDKhuyenMai = b.IDKhuyenMai
+                                      GiaGoc = sp == null ? -999 : sp.GiaBan,
+                                      SoLuong = sp == null ? -999 : sp.SoLuong,
+                                      IDKhuyenMai = sp == null ? null : sp.IDKhuyenMai,
                                   }).ToList();
                 foreach (var item in lstSanPham)
                 {
@@ -467,6 +517,12 @@ namespace AppAPI.Services
                     {
                         _context.ChiTietSanPhams.Add(new ChiTietSanPham() { ID = x.IDChiTietSanPham, SoLuong = x.SoLuong.Value, GiaBan = x.GiaBan.Value, NgayTao = DateTime.Now, TrangThai = x.IDChiTietSanPham == tempTrangThai ? 1 : 2, IDSanPham = request.IDSanPham, IDMauSac = x.IDMauSac.Value, IDKichCo = x.IDKichCo.Value, Ma = RemoveUnicode(request.Ma + x.TenMauSac.Trim().ToUpper() + x.TenKichCo.ToUpper()) });
                     }
+                    var chiTietSanPhamMacDinh = _context.ChiTietSanPhams.FirstOrDefault(x=>x.IDSanPham == request.IDSanPham && x.TrangThai == 1);
+                    if(chiTietSanPhamMacDinh != null)
+                    {
+                        chiTietSanPhamMacDinh.TrangThai = 2;
+                        _context.ChiTietSanPhams.Update(chiTietSanPhamMacDinh);
+                    }
                 }
                 else
                 {
@@ -525,12 +581,16 @@ namespace AppAPI.Services
         {
             try
             {
-                var chiTietSanPhamNew = _context.ChiTietSanPhams.First(x => x.ID == id);
-                var chiTietSanPhamOld = _context.ChiTietSanPhams.First(x => (x.TrangThai == 1) && x.IDSanPham == chiTietSanPhamNew.IDSanPham);
-                chiTietSanPhamOld.TrangThai = 2;
-                chiTietSanPhamNew.TrangThai = 1;
-                _context.ChiTietSanPhams.Update(chiTietSanPhamOld);
-                _context.ChiTietSanPhams.Update(chiTietSanPhamNew);
+                var chiTietSanPhamNew = _context.ChiTietSanPhams.FirstOrDefault(x => x.ID == id);
+                var chiTietSanPhamOld = _context.ChiTietSanPhams.FirstOrDefault(x => (x.TrangThai == 1) && x.IDSanPham == chiTietSanPhamNew.IDSanPham);
+                if (chiTietSanPhamOld != null) {
+                    chiTietSanPhamOld.TrangThai = 2;
+                    _context.ChiTietSanPhams.Update(chiTietSanPhamOld);
+                }
+                if (chiTietSanPhamNew != null) {
+                    chiTietSanPhamNew.TrangThai = 1;
+                    _context.ChiTietSanPhams.Update(chiTietSanPhamNew);
+                }                
                 await _context.SaveChangesAsync();
                 return true;
             }
@@ -767,7 +827,7 @@ namespace AppAPI.Services
                                            on ms.ID equals a.IDMauSac
                                            where ctsp != null && ctsp.IDMauSac == ms.ID
                                            select a.DuongDan).FirstOrDefault(),
-                                    GiaGoc = ctsp == null? 0: ctsp.GiaBan,
+                                    GiaGoc = ctsp == null ? 0 : ctsp.GiaBan,
                                     GiaBan = (km == null ? ctsp.GiaBan : (km.TrangThai == 1 ? (int)(ctsp.GiaBan / 100 * (100 - km.GiaTri)) : (ctsp.GiaBan - (int)km.GiaTri))),
                                     IdLsp = sp.IDLoaiSP,
                                 }).OrderBy(c => c.MaSP).ToListAsync();
@@ -776,115 +836,115 @@ namespace AppAPI.Services
             return result;
         }
 
-    public async Task<ChiTietSanPhamBanHang> GetChiTietSPBHById(Guid idsp)
-    {
-        var lstMS = (from ctsp in _context.ChiTietSanPhams.AsNoTracking()
-                     join ms in _context.MauSacs.AsNoTracking() on ctsp.IDMauSac equals ms.ID
-                     where ctsp.IDSanPham == idsp && ctsp.TrangThai != 0
-                     select new MauSac
-                     {
-                         ID = ms.ID,
-                         Ma = ms.Ma,
-                         Ten = ms.Ten,
-                     }).Distinct().ToList();
+        public async Task<ChiTietSanPhamBanHang> GetChiTietSPBHById(Guid idsp)
+        {
+            var lstMS = (from ctsp in _context.ChiTietSanPhams.AsNoTracking()
+                         join ms in _context.MauSacs.AsNoTracking() on ctsp.IDMauSac equals ms.ID
+                         where ctsp.IDSanPham == idsp && ctsp.TrangThai != 0
+                         select new MauSac
+                         {
+                             ID = ms.ID,
+                             Ma = ms.Ma,
+                             Ten = ms.Ten,
+                         }).Distinct().ToList();
 
-        var lstKC = (from ctsp in _context.ChiTietSanPhams
-                     join kc in _context.KichCos on ctsp.IDKichCo equals kc.ID
-                     where ctsp.IDSanPham == idsp && ctsp.TrangThai != 0
-                     select new KichCo
-                     {
-                         ID = kc.ID,
-                         Ten = kc.Ten,
-                     }).Distinct().ToList();
+            var lstKC = (from ctsp in _context.ChiTietSanPhams
+                         join kc in _context.KichCos on ctsp.IDKichCo equals kc.ID
+                         where ctsp.IDSanPham == idsp && ctsp.TrangThai != 0
+                         select new KichCo
+                         {
+                             ID = kc.ID,
+                             Ten = kc.Ten,
+                         }).Distinct().ToList();
 
-        var result = await (from sp in _context.SanPhams.AsNoTracking()
-                            where sp.ID == idsp && sp.TrangThai != 0
-                            select new ChiTietSanPhamBanHang()
-                            {
-                                Id = sp.ID,
-                                Ten = sp.Ten,
-                                lstMau = lstMS,
-                                lstKC = lstKC,
-                            }).FirstOrDefaultAsync();
-        return result;
+            var result = await (from sp in _context.SanPhams.AsNoTracking()
+                                where sp.ID == idsp && sp.TrangThai != 0
+                                select new ChiTietSanPhamBanHang()
+                                {
+                                    Id = sp.ID,
+                                    Ten = sp.Ten,
+                                    lstMau = lstMS,
+                                    lstKC = lstKC,
+                                }).FirstOrDefaultAsync();
+            return result;
+        }
+
+        public async Task<List<ChiTietCTSPBanHang>> GetChiTietCTSPBanHang(Guid idsp)
+        {
+            return await (from ctsp in _context.ChiTietSanPhams
+                          join ms in _context.MauSacs on ctsp.IDMauSac equals ms.ID
+                          join kc in _context.KichCos on ctsp.IDKichCo equals kc.ID
+                          join sp in _context.SanPhams on ctsp.IDSanPham equals sp.ID
+                          join km in _context.KhuyenMais.Where(c => c.NgayKetThuc > DateTime.Now && c.TrangThai != 2) on ctsp.IDKhuyenMai equals km.ID
+                          into kmGroup
+                          from km in kmGroup.DefaultIfEmpty()
+                          where ctsp.IDSanPham == idsp && ctsp.TrangThai != 0
+                          select new ChiTietCTSPBanHang()
+                          {
+                              Id = ctsp.ID,
+                              Ten = sp.Ten,
+                              ChiTiet = ms.Ten + " - " + kc.Ten,
+                              idMauSac = ctsp.IDMauSac,
+                              idKichCo = ctsp.IDKichCo,
+                              SoLuong = ctsp.SoLuong,
+                              Anh = (from ms in _context.MauSacs
+                                     join a in _context.Anhs on ms.ID equals a.IDMauSac
+                                     where ms.ID == ctsp.IDMauSac && a.IDSanPham == ctsp.IDSanPham
+                                     select a).FirstOrDefault().DuongDan,
+                              GiaGoc = ctsp.GiaBan,
+                              GiaBan = km.TrangThai == null ? ctsp.GiaBan : (km.TrangThai == 0 ? ctsp.GiaBan - km.GiaTri : (ctsp.GiaBan * (100 - km.GiaTri) / 100)),
+                          }).OrderByDescending(c => c.ChiTiet).ToListAsync();
+        }
+
+        public Guid GetIDsanPhamByIdCTSP(Guid idctsp)
+        {
+            var ctsp = _context.ChiTietSanPhams.FirstOrDefault(p => p.ID == idctsp);
+            return ctsp.IDSanPham;
+        }
+
+        public async Task<List<HomeProductViewModel>> GetAllSanPhamTrangChu()
+        {
+            var result = await (from sp in _context.SanPhams.AsNoTracking().Where(c => c.TrangThai != 0)
+                                join ctsp in _context.ChiTietSanPhams.Where(c => c.TrangThai == 1) on sp.ID equals ctsp.IDSanPham into ctspGroup
+                                from ctsp in ctspGroup.DefaultIfEmpty()
+
+                                join km in _context.KhuyenMais.Where(c => c.NgayKetThuc > DateTime.Now && c.TrangThai != 2) on ctsp.IDKhuyenMai equals km.ID into kmGroup
+                                from km in kmGroup.DefaultIfEmpty()
+                                select new HomeProductViewModel()
+                                {
+                                    Id = sp.ID,
+                                    Ten = sp.Ten,
+                                    IdCTSP = ctsp == null ? null : ctsp.ID,
+                                    Anh = (from ms in _context.MauSacs.AsNoTracking()
+                                           join a in _context.Anhs.Where(c => c.IDSanPham == sp.ID).AsNoTracking()
+                                           on ms.ID equals a.IDMauSac
+                                           where ms.ID == ctsp.IDMauSac
+                                           select a).FirstOrDefault().DuongDan,
+                                    SLBan = (from hd in _context.HoaDons.AsNoTracking().Where(c => c.TrangThaiGiaoHang == 6 && c.LoaiHD == 0)
+                                             join cthd in _context.ChiTietHoaDons.AsNoTracking()
+                                             on hd.ID equals cthd.IDHoaDon
+                                             join ctsp in _context.ChiTietSanPhams.AsNoTracking()
+                                             on cthd.IDCTSP equals ctsp.ID
+                                             into ctspGroup
+                                             from ctsp in ctspGroup.DefaultIfEmpty()
+                                             where ctsp.IDSanPham == sp.ID
+                                             select cthd).AsEnumerable().ToList().Sum(c => c.SoLuong),
+                                    SoSao = (from cthd in _context.ChiTietHoaDons.AsNoTracking()
+                                             join ctsp in _context.ChiTietSanPhams.AsNoTracking()
+                                             on cthd.IDCTSP equals ctsp.ID
+                                             into ctspGroup
+                                             from ctsp in ctspGroup.DefaultIfEmpty()
+                                             join dg in _context.DanhGias.AsNoTracking()
+                                             on cthd.ID equals dg.ID
+                                             where ctsp.IDSanPham == sp.ID
+                                             select dg).AsEnumerable().ToList().Average(c => c.Sao),
+                                    NgayTao = ctsp == null ? null : ctsp.NgayTao,
+                                    GiaGoc = ctsp == null ? 0 : ctsp.GiaBan,
+                                    GiaBan = (km == null ? ctsp.GiaBan : (km.TrangThai == 1 ? (int)(ctsp.GiaBan / 100 * (100 - km.GiaTri)) : (ctsp.GiaBan - (int)km.GiaTri))),
+                                    KhuyenMai = (km == null ? null : km.GiaTri)
+                                }).ToListAsync();
+            return result;
+        }
+        #endregion
     }
-
-    public async Task<List<ChiTietCTSPBanHang>> GetChiTietCTSPBanHang(Guid idsp)
-    {
-        return await (from ctsp in _context.ChiTietSanPhams
-                      join ms in _context.MauSacs on ctsp.IDMauSac equals ms.ID
-                      join kc in _context.KichCos on ctsp.IDKichCo equals kc.ID
-                      join sp in _context.SanPhams on ctsp.IDSanPham equals sp.ID
-                      join km in _context.KhuyenMais.Where(c => c.NgayKetThuc > DateTime.Now && c.TrangThai != 2) on ctsp.IDKhuyenMai equals km.ID
-                      into kmGroup
-                      from km in kmGroup.DefaultIfEmpty()
-                      where ctsp.IDSanPham == idsp && ctsp.TrangThai != 0
-                      select new ChiTietCTSPBanHang()
-                      {
-                          Id = ctsp.ID,
-                          Ten = sp.Ten,
-                          ChiTiet = ms.Ten + " - " + kc.Ten,
-                          idMauSac = ctsp.IDMauSac,
-                          idKichCo = ctsp.IDKichCo,
-                          SoLuong = ctsp.SoLuong,
-                          Anh = (from ms in _context.MauSacs
-                                 join a in _context.Anhs on ms.ID equals a.IDMauSac
-                                 where ms.ID == ctsp.IDMauSac && a.IDSanPham == ctsp.IDSanPham
-                                 select a).FirstOrDefault().DuongDan,
-                          GiaGoc = ctsp.GiaBan,
-                          GiaBan = km.TrangThai == null ? ctsp.GiaBan : (km.TrangThai == 0 ? ctsp.GiaBan - km.GiaTri : (ctsp.GiaBan * (100 - km.GiaTri) / 100)),
-                      }).OrderByDescending(c => c.ChiTiet).ToListAsync();
-    }
-
-    public Guid GetIDsanPhamByIdCTSP(Guid idctsp)
-    {
-        var ctsp = _context.ChiTietSanPhams.FirstOrDefault(p => p.ID == idctsp);
-        return ctsp.IDSanPham;
-    }
-
-    public async Task<List<HomeProductViewModel>> GetAllSanPhamTrangChu()
-    {
-        var result = await (from sp in _context.SanPhams.AsNoTracking().Where(c => c.TrangThai != 0)
-                            join ctsp in _context.ChiTietSanPhams.Where(c => c.TrangThai == 1) on sp.ID equals ctsp.IDSanPham into ctspGroup
-                            from ctsp in ctspGroup.DefaultIfEmpty()
-
-                            join km in _context.KhuyenMais.Where(c => c.NgayKetThuc > DateTime.Now && c.TrangThai != 2) on ctsp.IDKhuyenMai equals km.ID into kmGroup
-                            from km in kmGroup.DefaultIfEmpty()
-                            select new HomeProductViewModel()
-                            {
-                                Id = sp.ID,
-                                Ten = sp.Ten,
-                                IdCTSP = ctsp== null ? null: ctsp.ID,
-                                Anh = (from ms in _context.MauSacs.AsNoTracking()
-                                       join a in _context.Anhs.Where(c => c.IDSanPham == sp.ID).AsNoTracking()
-                                       on ms.ID equals a.IDMauSac
-                                       where ms.ID == ctsp.IDMauSac
-                                       select a).FirstOrDefault().DuongDan,
-                                SLBan = (from hd in _context.HoaDons.AsNoTracking().Where(c => c.TrangThaiGiaoHang == 6 && c.LoaiHD == 0)
-                                         join cthd in _context.ChiTietHoaDons.AsNoTracking()
-                                         on hd.ID equals cthd.IDHoaDon
-                                         join ctsp in _context.ChiTietSanPhams.AsNoTracking()
-                                         on cthd.IDCTSP equals ctsp.ID
-                                         into ctspGroup
-                                         from ctsp in ctspGroup.DefaultIfEmpty()
-                                         where ctsp.IDSanPham == sp.ID
-                                         select cthd).AsEnumerable().ToList().Sum(c => c.SoLuong),
-                                SoSao = (from cthd in _context.ChiTietHoaDons.AsNoTracking()
-                                         join ctsp in _context.ChiTietSanPhams.AsNoTracking()
-                                         on cthd.IDCTSP equals ctsp.ID
-                                         into ctspGroup
-                                         from ctsp in ctspGroup.DefaultIfEmpty()
-                                         join dg in _context.DanhGias.AsNoTracking()
-                                         on cthd.ID equals dg.ID
-                                         where ctsp.IDSanPham == sp.ID
-                                         select dg).AsEnumerable().ToList().Average(c => c.Sao),
-                                NgayTao = ctsp == null ? null : ctsp.NgayTao,
-                                GiaGoc = ctsp == null ? 0: ctsp.GiaBan,
-                                GiaBan = (km == null ? ctsp.GiaBan : (km.TrangThai == 1 ? (int)(ctsp.GiaBan / 100 * (100 - km.GiaTri)) : (ctsp.GiaBan - (int)km.GiaTri))),
-                                KhuyenMai = (km == null ? null : km.GiaTri)
-                            }).ToListAsync();
-        return result;
-    }
-    #endregion
-}
 }

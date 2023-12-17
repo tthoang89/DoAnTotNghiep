@@ -10,6 +10,6 @@ namespace AppAPI.IServices
         decimal DoanhThuThang(int month, int year);
         decimal DoanhThuNam(int year);
         ThongKeViewModel ThongKe(string startDate, string endDate);
-        List<ThongKeCotViewModel> ThongKeSanPham();
+        List<ThongKeSanPham> ThongKeSanPham();
     }
 }

@@ -33,8 +33,8 @@ namespace AppAPI.Controllers
 
 
         }
-    
-    // GET api/<NhanVienController>/5
+
+        // GET api/<NhanVienController>/5
         [Route("GetById")]
         [HttpGet]
         public NhanVien? GetById(Guid id)
@@ -45,20 +45,14 @@ namespace AppAPI.Controllers
 
         // POST api/<NhanVienController>
         [HttpPost("DangKyNhanVien")]
-        public bool Add(string ten, string email, string password, string sdt, string diachi)
+        public async Task<IActionResult> Add(string ten, string email, string password, string sdt, string diachi, int trangthai, Guid idvaitro)
         {
-            NhanVien nv = new NhanVien();
-            nv.ID = Guid.NewGuid();
-            nv.Ten = ten;
-            nv.Email = email;
-            nv.PassWord = password;
-            nv.SDT = sdt;
-            nv.DiaChi = diachi;
-            nv.TrangThai = 1;
-            nv.IDVaiTro = Guid.Parse("9ea902ac-4093-4889-9a9f-dc33d1af1e3c");
-            _dbContext.NhanViens.Add(nv);
-            _dbContext.SaveChanges();
-            return true;
+            var tr = await _nhanVienService.Add(ten, email, password, sdt, diachi, trangthai, idvaitro);
+            if (tr == null)
+            {
+                return BadRequest();
+            }
+            return Ok(tr);
         }
 
         // PUT api/<NhanVienController>/5
