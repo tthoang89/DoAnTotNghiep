@@ -33,7 +33,7 @@
                 <input asp-for="Ten" class="form-control" />
                 <span asp-validation-for="Ten" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            @*<div class="form-group">
                 <label class="control-label"> Tên Loại SP Cha</label>
                 <select class="form-control" asp-for="IDLoaiSPCha" name="IDLoaiSPCha">
                     @if (listLoaiSP != null)
@@ -45,7 +45,7 @@
                         }
                     }
                 </select>
-            </div>
+            </div>*@
             <input type="hidden" asp-for="TrangThai" value="1" />
             <div class="form-group">
                 <input type="submit" value="Sửa loại SP" class="btn btn-primary" style="margin-top: 10px" />
