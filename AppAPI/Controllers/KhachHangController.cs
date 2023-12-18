@@ -103,13 +103,13 @@ namespace AppAPI.Controllers
             khv.IDKhachHang = Guid.NewGuid();
             KhachHang kh = new KhachHang();
             kh.IDKhachHang = khv.IDKhachHang;
-            kh.Ten = khv.Ten;
-            kh.Password = MaHoaMatKhau(khv.Password);
+            kh.Ten = khv.Ten?.Trim();
+            kh.Password = MaHoaMatKhau(khv.Password)?.Trim();
             kh.GioiTinh=khv.GioiTinh;
             kh.NgaySinh=khv.NgaySinh;
-            kh.Email = khv.Email;
-            kh.DiaChi=khv.DiaChi;
-            kh.SDT = khv.SDT;
+            kh.Email = khv.Email?.Trim();
+            kh.DiaChi=khv.DiaChi?.Trim();
+            kh.SDT = khv.SDT?.Trim();
             kh.TrangThai=1;
             kh.DiemTich = 0;
             _dbcontext.KhachHangs.Add(kh);
@@ -153,12 +153,12 @@ namespace AppAPI.Controllers
             if (kh != null)
             {
                 
-                kh.Ten = khv.Ten;
+                kh.Ten = khv.Ten?.Trim();
                 //kh.Password = MaHoaMatKhau(khv.Password);
                 //kh.GioiTinh = khv.GioiTinh;
                 kh.NgaySinh = khv.NgaySinh;
                 //kh.Email = khv.Email;
-                kh.DiaChi = khv.DiaChi;
+                kh.DiaChi = khv.DiaChi?.Trim();
                 //kh.SDT = khv.SDT;
                 //kh.TrangThai = khv.TrangThai;
                 
