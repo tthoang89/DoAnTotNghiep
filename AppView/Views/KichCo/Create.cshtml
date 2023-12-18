@@ -26,17 +26,32 @@
             <div class="form-group">
                 <label asp-for="Ten" class="control-label">Tên</label>
                 <input asp-for="Ten" class="form-control" autocomplete="off" />
-                <span asp-validation-for="Ten" class="text-danger"></span>
+                <div id="emptyNameError" class="invalid-feedback d-none">Vui lòng nhập tên kích cỡ!</div>
             </div>
             <input type="hidden" asp-for="TrangThai" value="1" />
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" style="margin-top: 10px" />
+                <input type="submit" value="Lưu" class="btn btn-primary" style="margin-top: 10px" />
             </div>
         </form>
     </div>
 </div>
 
-
+<script>
+    $("input[name='Ten']").on("input", function () {
+        $(this).removeClass("is-invalid");
+        $("#emptyNameError").text("");
+    });
+    $("form").submit(function () {
+        var tenInput = $("input[name='Ten']");
+        var tenValue = tenInput.val();
+        if (tenValue.trim() === "") {
+            tenInput.addClass("is-invalid");
+            $("#emptyNameError").text("Tên không được bỏ trống");
+            return false;
+        }
+        return true;
+    });
+</script>
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

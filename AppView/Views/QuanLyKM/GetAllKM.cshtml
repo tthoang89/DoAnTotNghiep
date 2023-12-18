@@ -115,14 +115,16 @@
                         @Html.ActionLink("Sửa", "Update", new { id = item.ID }, new { @style = "color:white;" })
                     </button>
 
-                    <button class="btn btn-primary">
-                        @Html.ActionLink("Chi tiết", "GetSPByIdKM", new { id = item.ID }, new { @style = "color:white;" })
-                    </button>
+                    
                     @if (item.TrangThai == 0 || item.TrangThai == 1)
                     {
+                        <button class="btn btn-primary">
+                            @Html.ActionLink("Chi tiết", "GetSPByIdKM", new { id = item.ID }, new { @style = "color:white;" })
+                        </button>
                         <button class="btn btn-danger">
                             @Html.ActionLink("Không sử dụng", "KoSuDung", new { id = item.ID }, new { @style = "color:white;" })
                         </button>
+
                     }
                     else if (item.TrangThai == 2 || item.TrangThai == 3)
                     {

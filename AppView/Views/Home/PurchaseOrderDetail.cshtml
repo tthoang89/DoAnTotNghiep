@@ -68,7 +68,7 @@
             <div class="col">
                 <nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4">
                     <ol class="breadcrumb mb-0">
-                        <li class="breadcrumb-item"><a href="#">Trang chủ</a></li>
+                        <li class="breadcrumb-item"><a href="https://localhost:5001/">Trang chủ</a></li>
                         <li class="breadcrumb-item"><a asp-controller="Home" asp-action="PurchaseOrder">Đơn mua</a></li>
                         <li class="breadcrumb-item active" aria-current="page">Đơn mua chi tiết</li>
                     </ol>
@@ -76,7 +76,49 @@
             </div>
         </div>
         <div class="row">
-            
+            <div class="col">
+                <nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4">
+                    <ol class="breadcrumb mb-0">
+                        @if (Model.FirstOrDefault().TrangThaiGiaoHang == 2)
+                        {
+                            <li class="breadcrumb-item active" aria-current="page">Chờ xác nhận</li>
+                        }
+                        else if (Model.FirstOrDefault().TrangThaiGiaoHang == 3)
+                        {
+                            <li class="breadcrumb-item active" aria-current="page">Đang giao hàng</li>
+                        }
+                        else if (Model.FirstOrDefault().TrangThaiGiaoHang == 4)
+                        {
+                            <li class="breadcrumb-item active" aria-current="page">Đang hoàn hàng</li>
+                        }
+                        else if (Model.FirstOrDefault().TrangThaiGiaoHang == 5)
+                        {
+                            <li class="breadcrumb-item active" aria-current="page">Hoàn hàng thành công</li>
+                        }
+                        else if (Model.FirstOrDefault().TrangThaiGiaoHang == 6)
+                        {
+                            <li class="breadcrumb-item active" aria-current="page">Hoàn thành</li>
+                        }
+                        else if (Model.FirstOrDefault().TrangThaiGiaoHang == 7)
+                        {
+                            <li class="breadcrumb-item active" aria-current="page">Đơn hủy</li>
+                        }
+                        else if (Model.FirstOrDefault().TrangThaiGiaoHang == 8)
+                        {
+                            <li class="breadcrumb-item active" aria-current="page">Chờ xác nhận hủy</li>
+                        }
+                        else if (Model.FirstOrDefault().TrangThaiGiaoHang == 9)
+                        {
+                            <li class="breadcrumb-item active" aria-current="page">Chờ xác nhận hoàn hàng</li>
+                        }
+                        else if (Model.FirstOrDefault().TrangThaiGiaoHang == 10)
+                        {
+                            <li class="breadcrumb-item active" aria-current="page">Chờ đóng hàng</li>
+                        }
+
+                    </ol>
+                </nav>
+            </div>
         </div>
         @*<div id="AllHoaDon">
             <table class="table">
@@ -298,7 +340,7 @@
                 </table>
             </div>
         </div>
-        @if (trangthaiGiaoHang == 2)
+        @if (trangthaiGiaoHang == 2 || trangthaiGiaoHang == 10)
         {
         <div style="text-align:-webkit-right ;">
                 <div style="border: none; color: white; background-color: black; text-align:center;width: 150px; height: 50px; display: grid; align-items: center;">

@@ -19,7 +19,7 @@ namespace AppAPI.Services
             voucherview.Id=Guid.NewGuid();
             var voucher= new Voucher();
             voucher.ID=voucherview.Id;
-            voucher.Ten=voucherview.Ten;
+            voucher.Ten=voucherview.Ten?.Trim();
             voucher.HinhThucGiamGia=voucherview.HinhThucGiamGia;
             voucher.SoTienCan=voucherview.SoTienCan;
             voucher.GiaTri = voucherview.GiaTri;
@@ -30,7 +30,7 @@ namespace AppAPI.Services
                 return false;
             }
             voucher.SoLuong=voucherview.SoLuong;
-            voucher.MoTa = voucherview.MoTa;
+            voucher.MoTa = voucherview.MoTa?.Trim();
             voucher.TrangThai=voucherview.TrangThai;
             return _allRepository.Add(voucher);
         }
@@ -76,8 +76,8 @@ namespace AppAPI.Services
                     return false;
                 }
                 voucher.SoLuong = voucherview.SoLuong;
-                voucher.MoTa = voucherview.MoTa;
-                voucher.TrangThai = voucherview.TrangThai;
+                voucher.MoTa = voucherview.MoTa?.Trim();
+              
                 return _allRepository.Update(voucher);
             }
             else
@@ -91,7 +91,7 @@ namespace AppAPI.Services
         }
         public List<Voucher> GetAllVoucherByTien(int tongTien) 
         {
-            return _allRepository.GetAll().Where(x=>x.NgayApDung<DateTime.Now && x.NgayKetThuc>DateTime.Now && x.SoTienCan<tongTien && x.TrangThai>0).ToList();
+            return _allRepository.GetAll().Where(x=>x.NgayApDung<DateTime.Now && x.NgayKetThuc>DateTime.Now && x.SoTienCan<tongTien && x.TrangThai>0 && x.SoLuong>0).ToList();
         }
     }
 }

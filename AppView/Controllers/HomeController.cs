@@ -631,7 +631,7 @@ namespace AppView.Controllers
                 CookieOptions cookie = new CookieOptions();
                 cookie.Expires = DateTime.Now.AddDays(30);
                 Response.Cookies.Append("Cart", JsonConvert.SerializeObject(lstGioHang), cookie);
-                return Json(new { success = true, message = "Add to cart successfully" });
+                return Json(new { success = true, message = "Thêm vào giỏ hàng thành công" });
             }
             else
             {
@@ -668,8 +668,8 @@ namespace AppView.Controllers
                     var chiTietGioHang = new ChiTietGioHang() { ID = Guid.NewGuid(), SoLuong = (sl != null) ? sl.Value : 1, IDCTSP = new Guid(id), IDNguoiDung = loginInfor.Id };
                     var response = _httpClient.PostAsJsonAsync(_httpClient.BaseAddress + "GioHang/AddCart", chiTietGioHang).Result;
 
-                    if (response.IsSuccessStatusCode) return Json(new { success = true, message = "Add to cart successfully" });
-                    else return Json(new { success = false, message = "Add to cart fail" });
+                    if (response.IsSuccessStatusCode) return Json(new { success = true, message = "Thêm vào giỏ hàng thành công" });
+                    else return Json(new { success = false, message = "Thêm vào giỏ hàng thất bại" });
                 }
                 else return Json(new { success = false, message = "Chỉ khách hàng mới thêm được vào giỏ hàng" });
             }
@@ -706,6 +706,7 @@ namespace AppView.Controllers
                     TempData["TongTien"] = temp.TongTien.ToString();
                     cout = temp.GioHangs.Sum(x => x.SoLuong);
                     TempData["SoLuong"] = cout.ToString();
+                    TempData["ListBienThe"] = JsonConvert.SerializeObject(temp.GioHangs);
                     return Json(new { success = true, message = "Cập nhật giỏ hàng thành công", data = temp.GioHangs, cout });
                 }
                 else
@@ -726,6 +727,7 @@ namespace AppView.Controllers
                         }
                         var responses1 = _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCartLogin?idNguoiDung=" + loginInfor.Id).Result;
                         var temp1 = JsonConvert.DeserializeObject<GioHangViewModel>(responses1.Content.ReadAsStringAsync().Result);
+                        TempData["ListBienThe"] = JsonConvert.SerializeObject(temp1.GioHangs);
                         return Json(new { success = true, message = "Cập nhật giỏ hàng thành công", data = temp1.GioHangs, cout });
                     }
                     else return Json(new { success = false, message = "Chỉ khách hàng mới thêm được vào giỏ hàng" });
@@ -792,14 +794,14 @@ namespace AppView.Controllers
                     {
                         var chiTietGioHang = new ChiTietGioHang() { ID = Guid.NewGuid(), SoLuong = (soLuong != null) ? soLuong : 1, IDCTSP = new Guid(id), IDNguoiDung = loginInfor.Id };
                         var response1 = _httpClient.PostAsJsonAsync(_httpClient.BaseAddress + "GioHang/AddCart", chiTietGioHang).Result;
-                        if (response1.IsSuccessStatusCode) return Json(new { success = true, message = "Add to cart successfully" });
-                        else return Json(new { success = false, message = "Add to cart fail" });
+                        if (response1.IsSuccessStatusCode) return Json(new { success = true, message = "Thêm vào giỏ hàng thành công" });
+                        else return Json(new { success = false, message = "Thêm vào giỏ hàng thất bại" });
                     }
                     else return Json(new { success = false, message = "Chỉ khách hàng mới thêm được vào giỏ hàng" });
                 }
 
             }
-            else return Json(new { success = false, message = "Add to cart fail" });
+            else return Json(new { success = false, message = "Mua hàng thất bại" });
         }
         #endregion
 
@@ -1021,9 +1023,9 @@ namespace AppView.Controllers
             HttpResponseMessage responseDonMuaCT = _httpClient.PutAsync(_httpClient.BaseAddress + $"DanhGia?idCTHD={danhGiaCTHDView.idCTHD}&soSao={danhGiaCTHDView.soSao}&binhLuan={danhGiaCTHDView.danhgia}", null).Result;
             if (responseDonMuaCT.IsSuccessStatusCode)
             {
-                RedirectToAction("PurchaseOrderDetail", danhGiaCTHDView.idHD);
+                RedirectToAction("PurchaseOrderDetail", "Home", new { idHoaDon = danhGiaCTHDView.idHD});
             }
-            return RedirectToAction("PurchaseOrderDetail", danhGiaCTHDView.idHD);
+            return RedirectToAction("PurchaseOrderDetail", "Home", new { idHoaDon = danhGiaCTHDView.idHD });
         }
         public IActionResult HuyDonHang(Guid idHoaDon)
         {
@@ -1140,6 +1142,7 @@ namespace AppView.Controllers
         [HttpGet]
         public IActionResult ForgotPassword()
         {
+            HttpContext.Session.Remove("LoginInfor");
             return View();
         }
         [HttpPost]

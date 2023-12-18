@@ -82,13 +82,28 @@ namespace AppView.Controllers
         {
             ms.TrangThai = 1;
             string apiUrl = $"https://localhost:7095/api/MauSac/ThemMauSac?ten={ms.Ten}&ma={ms.Ma}";
-            var content = new StringContent(JsonConvert.SerializeObject(ms), Encoding.UTF8, "application/json");
-            var reponsen = await _httpClient.PostAsync(apiUrl, content);
+            
+            if (string.IsNullOrEmpty(ms.Ma))
+            {
+                ViewBag.ErrorMessage = "Vui lòng chọn mã màu!";
+                return View(ms);
+            }
+            if (string.IsNullOrEmpty(ms.Ten))
+            {
+                ViewBag.ErrorMessage = "Vui lòng chọn tên màu!";
+                return View(ms);
+            }
+            var reponsen = await _httpClient.PostAsync(apiUrl, null);
             if (reponsen.IsSuccessStatusCode)
             {
                 return RedirectToAction("Show");
             }
-            return View();
+            else if (reponsen.StatusCode == HttpStatusCode.BadRequest)
+            {
+                ViewBag.ErrorMessage = "Kích cỡ này đã có trong danh sách";
+                return View();
+            }
+            return View(ms);
         }
 
         [HttpGet]
