@@ -1,5 +1,4 @@
 ﻿@model AppView.PhanTrang.PhanTrangMauSac
-
 @{
     Layout = "~/Views/Shared/_LayoutForAdmin.cshtml";
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
@@ -9,7 +8,6 @@
     int stt = 1;
     string searchData = "";
 }
-
 <h1>
     <b>Danh sách màu sắc </b>
 </h1>
@@ -18,7 +16,7 @@
         <a class="btn btn-primary" asp-action="Create">Thêm mới</a>
     </div>
     <div class="col-5">
-        <form asp-action="SearchTheoTen" asp-controller="MauSac" method="get" enctype="multipart/form-data" style="margin-left: 30px;">
+        <form asp-action="SearchTheoTen" asp-controller="MauSac" method="get" enctype="multipart/form-data" style="margin-left: 30px; text-align:end">
             <input class="tk1" type="text" name="Ten" placeholder="Tìm kiếm theo tên hoặc mã " autocomplete="off" />
             <input class="btn btn-primary" type="submit" value="Tìm kiếm" style="margin-bottom: 3px;" />
         </form>
@@ -113,7 +111,6 @@
             window.location.href = url;
         }
     });
-
     window.addEventListener('load', function (event) {
         // Lấy dữ liệu tìm kiếm từ biến toàn cục
         var searchInput = document.querySelector('.tk1');
@@ -123,7 +120,6 @@
             searchInput.value = searchData;
         }
     });
-
     document.addEventListener('keydown', function (event) {
         // Nếu ấn backspace, thì load lại trang ban đầu
         if (event.key === 'Backspace') {
