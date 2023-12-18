@@ -130,7 +130,7 @@ namespace AppView.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllKHTheoTimKiem(string? Ten, string? SDT,int ProductPage = 1)
         {
-            string apiUrl = $"https://localhost:7095/api/KhachHang/TimKiemKH?Ten={Ten}&SDT={SDT}";
+            string apiUrl = $"https://localhost:7095/api/KhachHang/TimKiemKH?Ten={Ten?.Trim()}&SDT={SDT?.Trim()}";
             var response = await httpClients.GetAsync(apiUrl);
             string apiData = await response.Content.ReadAsStringAsync();
             var kh = JsonConvert.DeserializeObject<List<KhachHangView>>(apiData);
@@ -165,13 +165,13 @@ namespace AppView.Controllers
                 {
                     ViewBag.MatKhau = "Mật Khẩu phải lớn hơn 7 kí tự";
                 }
-                var timkiem = kh1.Where(x => x.SDT == kh.SDT).FirstOrDefault();
+                var timkiem = kh1.Where(x => x.SDT == kh.SDT.Trim()).FirstOrDefault();
                     
                 if (!kh.Email.Contains("@"))
                 {
                     ViewBag.email = kh.Email.Replace("@", "%40");
                 }
-                var email = kh1.Where(x => x.Email == kh.Email).FirstOrDefault();
+                var email = kh1.Where(x => x.Email == kh.Email.Trim()).FirstOrDefault();
                 if (email != null)
                 {
                     ViewBag.email = "email đã tồn tại";
