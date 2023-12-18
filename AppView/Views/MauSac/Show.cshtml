@@ -1,5 +1,4 @@
 ﻿@model AppView.PhanTrang.PhanTrangMauSac
-
 @{
     Layout = "~/Views/Shared/_LayoutForAdmin.cshtml";
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
@@ -9,7 +8,6 @@
     int stt = 1;
     string searchData = "";
 }
-
 <h1>
     <b>Danh sách màu sắc </b>
 </h1>
@@ -113,7 +111,6 @@
             window.location.href = url;
         }
     });
-
     window.addEventListener('load', function (event) {
         // Lấy dữ liệu tìm kiếm từ biến toàn cục
         var searchInput = document.querySelector('.tk1');
@@ -123,7 +120,6 @@
             searchInput.value = searchData;
         }
     });
-
     document.addEventListener('keydown', function (event) {
         // Nếu ấn backspace, thì load lại trang ban đầu
         if (event.key === 'Backspace') {
