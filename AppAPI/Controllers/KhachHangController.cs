@@ -104,7 +104,7 @@ namespace AppAPI.Controllers
             KhachHang kh = new KhachHang();
             kh.IDKhachHang = khv.IDKhachHang;
             kh.Ten = khv.Ten?.Trim();
-            kh.Password = MaHoaMatKhau(khv.Password)?.Trim();
+            kh.Password = MaHoaMatKhau(khv.Password).Trim();
             kh.GioiTinh=khv.GioiTinh;
             kh.NgaySinh=khv.NgaySinh;
             kh.Email = khv.Email?.Trim();
