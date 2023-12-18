@@ -251,7 +251,7 @@
         $("#tichdiemhd").text(@(Model.DiemTichHD));
         let diemtoida = 0;
         if(@(ViewBag.TLTieu) !== 0 ){
-            diemtoida = parseInt(@(Model.TongTien)*0.3)/ @(ViewBag.TLTieu);
+            diemtoida = parseInt((@(Model.TongTien)*0.3)/ @(ViewBag.TLTieu));
         }
         if(diemtoida >= @(Model.DiemKH)){
             diemtoida = @(Model.DiemKH);
@@ -291,7 +291,6 @@
         //Áp dụng tích điểm
         $('#diemKHSD').on("input",function(){
             var diem = $(this).val();
-            console.log(diem);
             var tien = diem * @(ViewBag.TLTieu);
             if(@(ViewBag.LoaiQDD) === 1){ // Chỉ tích hoặc tiêu
                 if($(this).val() ===''){ // không nhập
@@ -412,10 +411,7 @@
             TinhTien();
         }
         function khachDua(value){
-            if(isNaN(value)){
-                toastr.error("Số tiền nhập không hợp lệ", "Error Alert", { timeOut: 1000 });
-            }
-            else if(value > 1000000000){
+            if(value > 1000000000){
                 toastr.error("Số tiền bạn nhập vào quá lớn", "Error Alert", { timeOut: 1000 });
                 $("#tientrakhach").text('');
             }else{
@@ -429,6 +425,9 @@
         function checkVoucher(){
            var idvoucher = $('input[name="radiovoucher"]:checked').attr('id');
            var tongtien = @Model.TongTien;
+           var khachtra = $("#khachCanTra").text().replaceAll(',','');
+           khachtra = parseInt(khachtra.replaceAll('.',''));
+           console.log(khachtra);
            $.ajax({
                 url: "/BanHangTaiQuay/CheckVoucher",
                 type: "GET",
@@ -439,10 +438,18 @@
                 dataType: "json",
                 success: function(response) {
                     if(response.success === true){
-                        toastr.success(response.message, "Success Alert", { timeOut: 1000 });
-                        $("#idvoucher").text(response.idvoucher);
-                        $("#tienkhuyenmai").css('display', 'block');
-                        $("#giatrivoucher").text(Intl.NumberFormat().format(response.giatri));
+                        if(parseInt(response.giatri) - khachtra <= 0){
+                            toastr.success(response.message, "Success Alert", { timeOut: 1000 });
+                            $("#idvoucher").text(response.idvoucher);
+                            $("#tienkhuyenmai").css('display', 'block');
+                            $("#giatrivoucher").text(Intl.NumberFormat().format(response.giatri));
+                        }else{
+                            
+                            toastr.error('Khuyến mãi vượt quá quy định', "Success Alert", { timeOut: 1000 });
+                            $("#idvoucher").val('');
+                            $("#tienkhuyenmai").css('display', 'none');
+                            $("#giatrivoucher").text('');
+                        }
                     }else{
                         toastr.error(response.message, "Error Alert", { timeOut: 1000 });
                         $("#idvoucher").val('');
