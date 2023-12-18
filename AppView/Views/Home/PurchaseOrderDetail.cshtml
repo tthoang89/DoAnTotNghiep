@@ -165,9 +165,9 @@
                                     <h5>@item.TenKichCo/@item.TenMau</h5>
                                 </div>
                             </td>
-                            <td class="cart__price">@item.DonGia.ToString("n0") VNĐ</td>
+                            <td class="cart__price">@item.DonGia.ToString("n0").Replace(',','.') VNĐ</td>
                             <td class="cart__price">@item.SoLuong</td>
-                            <td class="cart__price">@((item.DonGia * item.SoLuong).ToString("n0")) VNĐ</td>
+                            <td class="cart__price">@((item.DonGia * item.SoLuong).ToString("n0").Replace(',','.')) VNĐ</td>
                             @if (item.TrangThaiGiaoHang == 6 && item.TrangThaiDanhGia == 0)
                             {
                                 <td class="cart__price">
@@ -243,14 +243,14 @@
                                 <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: 70%;">
                                     Giá sản phẩm
                                 </td>
-                                <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: 130px;padding-right: 70px; text-align: right;">@giaSP.ToString("n0") VNĐ</td>
+                                <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: 130px;padding-right: 70px; text-align: right;">@giaSP.ToString("n0").Replace(',','.') VNĐ</td>
                             </tr>
                             @if(loaiHD == 0){
                                 <tr>
                                     <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;">
                                         Phí vận chuyển
                                     </td>
-                                    <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: 130px;padding-right: 70px; text-align: right;">+ @tienShip.ToString("n0") VNĐ</td>
+                                    <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: 130px;padding-right: 70px; text-align: right;">+ @tienShip.ToString("n0").Replace(',','.') VNĐ</td>
                                 </tr>
                             }
                             @if (hinhThucGiamGia == 1)
@@ -268,7 +268,7 @@
                                     <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;">
                                         Voucher
                                     </td>
-                                    <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: 130px;padding-right: 70px; text-align: right;">- @Convert.ToInt32(giaTri).ToString("n0") VNĐ</td>
+                                    <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: 130px;padding-right: 70px; text-align: right;">- @Convert.ToInt32(giaTri).ToString("n0").Replace(',','.') VNĐ</td>
                                 </tr>
                             }
                             @{
@@ -280,7 +280,7 @@
                                             <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;">
                                                 Điểm sử dụng
                                             </td>
-                                            <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: 130px;padding-right: 70px; text-align: right;">- @diemsudung.ToString("n0") VNĐ</td>
+                                            <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: 130px;padding-right: 70px; text-align: right;">- @diemsudung.ToString("n0").Replace(',','.') VNĐ</td>
                                         </tr>
                                     }
                                 }
@@ -289,7 +289,7 @@
                                 <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;">
                                     Tổng tiền
                                 </td>
-                                <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: 130px;padding-right: 70px; text-align: right;">@tongtien.ToString("n0") VNĐ</td>
+                                <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: 130px;padding-right: 70px; text-align: right;">@tongtien.ToString("n0").Replace(',','.') VNĐ</td>
                             </tr>
                             
                         </tbody>
@@ -326,7 +326,7 @@
                                     <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;">
                                         Điểm được tích
                                     </td>
-                                    <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: auto;padding-right: 70px; text-align: right;">@diemtich.ToString("n0") Điểm</td>
+                                    <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: auto;padding-right: 70px; text-align: right;">@diemtich.ToString("n0").Replace(',','.') Điểm</td>
                                 </tr>
                             }
                         }
