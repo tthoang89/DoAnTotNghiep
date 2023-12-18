@@ -64,7 +64,7 @@
             <div class="col">
                 <nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4">
                     <ol class="breadcrumb mb-0">
-                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item"><a href="https://localhost:5001/">Home</a></li>
                         <li class="breadcrumb-item active" aria-current="page">Đơn mua</li>
                     </ol>
                 </nav>
@@ -241,6 +241,7 @@
                                     response.data[i].trangThaiGiaoHang === 7 ? '<label>Đơn hủy</label>' :
                                     response.data[i].trangThaiGiaoHang === 8 ? '<label>Chờ xác nhận hủy</label>' :
                                     response.data[i].trangThaiGiaoHang === 9 ? '<label>Chờ xác nhận hoàn hàng</label>' :
+                                    response.data[i].trangThaiGiaoHang === 10 ? '<label>Chờ đóng hàng</label>' :
                                     '<label>Chờ xác nhận hoàn hàng</label>'}
                             </td>
                             <td>${response.data[i].loaiHoaDon === 0 ? '<label>Mua hàng online</label>' : '<label>Mua hàng tại quầy</label>'}</td>

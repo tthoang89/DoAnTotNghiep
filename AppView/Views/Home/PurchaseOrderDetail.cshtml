@@ -68,7 +68,7 @@
             <div class="col">
                 <nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4">
                     <ol class="breadcrumb mb-0">
-                        <li class="breadcrumb-item"><a href="#">Trang chủ</a></li>
+                        <li class="breadcrumb-item"><a href="https://localhost:5001/">Trang chủ</a></li>
                         <li class="breadcrumb-item"><a asp-controller="Home" asp-action="PurchaseOrder">Đơn mua</a></li>
                         <li class="breadcrumb-item active" aria-current="page">Đơn mua chi tiết</li>
                     </ol>
@@ -76,7 +76,49 @@
             </div>
         </div>
         <div class="row">
-            
+            <div class="col">
+                <nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4">
+                    <ol class="breadcrumb mb-0">
+                        @if (Model.FirstOrDefault().TrangThaiGiaoHang == 2)
+                        {
+                            <li class="breadcrumb-item active" aria-current="page">Chờ xác nhận</li>
+                        }
+                        else if (Model.FirstOrDefault().TrangThaiGiaoHang == 3)
+                        {
+                            <li class="breadcrumb-item active" aria-current="page">Đang giao hàng</li>
+                        }
+                        else if (Model.FirstOrDefault().TrangThaiGiaoHang == 4)
+                        {
+                            <li class="breadcrumb-item active" aria-current="page">Đang hoàn hàng</li>
+                        }
+                        else if (Model.FirstOrDefault().TrangThaiGiaoHang == 5)
+                        {
+                            <li class="breadcrumb-item active" aria-current="page">Hoàn hàng thành công</li>
+                        }
+                        else if (Model.FirstOrDefault().TrangThaiGiaoHang == 6)
+                        {
+                            <li class="breadcrumb-item active" aria-current="page">Hoàn thành</li>
+                        }
+                        else if (Model.FirstOrDefault().TrangThaiGiaoHang == 7)
+                        {
+                            <li class="breadcrumb-item active" aria-current="page">Đơn hủy</li>
+                        }
+                        else if (Model.FirstOrDefault().TrangThaiGiaoHang == 8)
+                        {
+                            <li class="breadcrumb-item active" aria-current="page">Chờ xác nhận hủy</li>
+                        }
+                        else if (Model.FirstOrDefault().TrangThaiGiaoHang == 9)
+                        {
+                            <li class="breadcrumb-item active" aria-current="page">Chờ xác nhận hoàn hàng</li>
+                        }
+                        else if (Model.FirstOrDefault().TrangThaiGiaoHang == 10)
+                        {
+                            <li class="breadcrumb-item active" aria-current="page">Chờ đóng hàng</li>
+                        }
+
+                    </ol>
+                </nav>
+            </div>
         </div>
         @*<div id="AllHoaDon">
             <table class="table">
@@ -123,9 +165,9 @@
                                     <h5>@item.TenKichCo/@item.TenMau</h5>
                                 </div>
                             </td>
-                            <td class="cart__price">@item.DonGia.ToString("n0") VNĐ</td>
+                            <td class="cart__price">@item.DonGia.ToString("n0").Replace(',','.') VNĐ</td>
                             <td class="cart__price">@item.SoLuong</td>
-                            <td class="cart__price">@((item.DonGia * item.SoLuong).ToString("n0")) VNĐ</td>
+                            <td class="cart__price">@((item.DonGia * item.SoLuong).ToString("n0").Replace(',','.')) VNĐ</td>
                             @if (item.TrangThaiGiaoHang == 6 && item.TrangThaiDanhGia == 0)
                             {
                                 <td class="cart__price">
@@ -201,14 +243,14 @@
                                 <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: 70%;">
                                     Giá sản phẩm
                                 </td>
-                                <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: 130px;padding-right: 70px; text-align: right;">@giaSP.ToString("n0") VNĐ</td>
+                                <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: 130px;padding-right: 70px; text-align: right;">@giaSP.ToString("n0").Replace(',','.') VNĐ</td>
                             </tr>
                             @if(loaiHD == 0){
                                 <tr>
                                     <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;">
                                         Phí vận chuyển
                                     </td>
-                                    <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: 130px;padding-right: 70px; text-align: right;">+ @tienShip.ToString("n0") VNĐ</td>
+                                    <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: 130px;padding-right: 70px; text-align: right;">+ @tienShip.ToString("n0").Replace(',','.') VNĐ</td>
                                 </tr>
                             }
                             @if (hinhThucGiamGia == 1)
@@ -226,7 +268,7 @@
                                     <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;">
                                         Voucher
                                     </td>
-                                    <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: 130px;padding-right: 70px; text-align: right;">- @Convert.ToInt32(giaTri).ToString("n0") VNĐ</td>
+                                    <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: 130px;padding-right: 70px; text-align: right;">- @Convert.ToInt32(giaTri).ToString("n0").Replace(',','.') VNĐ</td>
                                 </tr>
                             }
                             @{
@@ -238,7 +280,7 @@
                                             <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;">
                                                 Điểm sử dụng
                                             </td>
-                                            <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: 130px;padding-right: 70px; text-align: right;">- @diemsudung.ToString("n0") VNĐ</td>
+                                            <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: 130px;padding-right: 70px; text-align: right;">- @diemsudung.ToString("n0").Replace(',','.') VNĐ</td>
                                         </tr>
                                     }
                                 }
@@ -247,7 +289,7 @@
                                 <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;">
                                     Tổng tiền
                                 </td>
-                                <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: 130px;padding-right: 70px; text-align: right;">@tongtien.ToString("n0") VNĐ</td>
+                                <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: 130px;padding-right: 70px; text-align: right;">@tongtien.ToString("n0").Replace(',','.') VNĐ</td>
                             </tr>
                             
                         </tbody>
@@ -284,7 +326,7 @@
                                     <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;">
                                         Điểm được tích
                                     </td>
-                                    <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: auto;padding-right: 70px; text-align: right;">@diemtich.ToString("n0") Điểm</td>
+                                    <td style="padding-left: 20px;color: #111111;font-size: 18px;font-weight: 700;width: auto;padding-right: 70px; text-align: right;">@diemtich.ToString("n0").Replace(',','.') Điểm</td>
                                 </tr>
                             }
                         }
@@ -298,7 +340,7 @@
                 </table>
             </div>
         </div>
-        @if (trangthaiGiaoHang == 2)
+        @if (trangthaiGiaoHang == 2 || trangthaiGiaoHang == 10)
         {
         <div style="text-align:-webkit-right ;">
                 <div style="border: none; color: white; background-color: black; text-align:center;width: 150px; height: 50px; display: grid; align-items: center;">

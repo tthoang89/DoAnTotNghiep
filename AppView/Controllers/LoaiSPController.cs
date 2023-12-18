@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using AppView.PhanTrang;
 using AppData.ViewModels;
 using DocumentFormat.OpenXml.InkML;
+using System.Net;
 
 namespace AppView.Controllers
 {
@@ -76,11 +77,21 @@ namespace AppView.Controllers
         {
             lsp.TrangThai = 1;
             string apiURL = $"https://localhost:7095/api/LoaiSP/save";
+            if (string.IsNullOrEmpty(lsp.Ten))
+            {
+                ViewBag.ErrorMessage = "Vui lòng nhập tên loại sản phẩm!";
+                return View();
+            }
             var content = new StringContent(JsonConvert.SerializeObject(lsp), Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync(apiURL, content);
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToAction("Show");
+            }
+            else if (response.StatusCode == HttpStatusCode.BadRequest)
+            {
+                ViewBag.ErrorMessage = "Loại sản phẩm này đã có trong danh sách";
+                return View();
             }
             return View();
         }

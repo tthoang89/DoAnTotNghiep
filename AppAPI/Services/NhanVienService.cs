@@ -68,7 +68,7 @@ namespace AppAPI.Services
         }
         public async Task<NhanVien> Add(string ten, string email, string password, string sdt, string diachi, int trangthai, Guid idVaiTro)
         {
-            var check = await _dbContext.NhanViens.FirstOrDefaultAsync(x => x.Email == email || x.SDT == sdt);
+            var check = await _dbContext.NhanViens.FirstOrDefaultAsync(x => x.Email.Trim().ToUpper() == email.Trim().ToUpper() || x.SDT.Trim().ToUpper() == sdt.Trim().ToUpper());
             if (check != null)
             {
                 return null;

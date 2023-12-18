@@ -31,7 +31,7 @@
             <div class="form-group">
                 <label class="control-label">Tên Loại SP</label>
                 <input asp-for="Ten" class="form-control" />
-                <span asp-validation-for="Ten" class="text-danger"></span>
+                <div id="emptyNameError" class="invalid-feedback d-none">Vui lòng nhập tên loại sản phẩm!</div>
             </div>
             @*<div class="form-group">
                 <label class="control-label"> Tên Loại SP Cha</label>
@@ -53,7 +53,22 @@
         </form>
     </div>
 </div>
-
+<script>
+    $("input[name='Ten']").on("input", function () {
+        $(this).removeClass("is-invalid");
+        $("#emptyNameError").text("");
+    });
+    $("form").submit(function () {
+        var tenInput = $("input[name='Ten']");
+        var tenValue = tenInput.val();
+        if (tenValue.trim() === "") {
+            tenInput.addClass("is-invalid");
+            $("#emptyNameError").text("Tên không được bỏ trống");
+            return false;
+        }
+        return true;
+    });
+</script>
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

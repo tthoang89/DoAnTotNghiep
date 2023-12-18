@@ -32,9 +32,9 @@ namespace AppAPI.Services
             kmv.ID = Guid.NewGuid();
             var khuyenmai = new KhuyenMai();
             khuyenmai.ID = kmv.ID;
-            khuyenmai.Ten = kmv.Ten;
+            khuyenmai.Ten = kmv.Ten?.Trim();
             khuyenmai.GiaTri = kmv.GiaTri;
-            khuyenmai.MoTa = kmv.MoTa;
+            khuyenmai.MoTa = kmv.MoTa?.Trim();
             khuyenmai.NgayApDung = kmv.NgayApDung;
             khuyenmai.NgayKetThuc = kmv.NgayKetThuc;
             if (khuyenmai.NgayApDung > khuyenmai.NgayKetThuc)
@@ -124,7 +124,7 @@ namespace AppAPI.Services
                 //khuyenmai.TrangThai = kmv.TrangThai;
                 //khuyenmai.Ten = kmv.Ten;
                 //khuyenmai.GiaTri = kmv.GiaTri;
-                khuyenmai.MoTa = kmv.MoTa;
+                khuyenmai.MoTa = kmv.MoTa?.Trim();
                 khuyenmai.NgayApDung = kmv.NgayApDung;
                 khuyenmai.NgayKetThuc = kmv.NgayKetThuc;
                 if (khuyenmai.NgayApDung > khuyenmai.NgayKetThuc)

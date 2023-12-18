@@ -251,7 +251,7 @@
         $("#tichdiemhd").text(@(Model.DiemTichHD));
         let diemtoida = 0;
         if(@(ViewBag.TLTieu) !== 0 ){
-            diemtoida = (@(Model.TongTien)*0.3)/ @(ViewBag.TLTieu);
+            diemtoida = parseInt((@(Model.TongTien)*0.3)/ @(ViewBag.TLTieu));
         }
         if(diemtoida >= @(Model.DiemKH)){
             diemtoida = @(Model.DiemKH);
@@ -263,28 +263,26 @@
             if(@(ViewBag.LoaiQDD) === 1){ // Chỉ tích hoặc tiêu
                 if($(this).is(':checked')){
                    $('#diemKHSD').val(diemtoida);
-                    $("#tichdiemhd").text("");
-                    $("#tdhd").css('display', 'none');
+                   $("#tdhd").css('display', 'none');
+                   $("#tichdiemhd").text("");
                    $('#tientrutichdiem').text(Intl.NumberFormat().format(diemtoida*@(ViewBag.TLTieu)));
                 }else{
                      $('#diemKHSD').val('');
-                      $("#tdhd").css('display', 'block');
-                        $("#tichdiemhd").text(@(Model.DiemTichHD));
-                        $("#tichdiemhd").text(@(Model.DiemTichHD));
-                    $('#tientrutichdiem').text(0);
+                     $("#tdhd").css('display', 'block');
+                     $("#tichdiemhd").text(@(Model.DiemTichHD));
+                     $('#tientrutichdiem').text(0);
                 }
             }else if(@(ViewBag.LoaiQDD) === 2){// Vừa tích vừa tiêu
                 if($(this).is(':checked')){
                    $('#diemKHSD').val(diemtoida);
-                    $("#tichdiemhd").text("");
-                    $("#tdhd").css('display', 'block');
+                   $("#tdhd").css('display', 'block');
+                   $("#tichdiemhd").text(@(Model.DiemTichHD));
                    $('#tientrutichdiem').text(Intl.NumberFormat().format(diemtoida*@(ViewBag.TLTieu)));
                 }else{
                      $('#diemKHSD').val('');
-                      $("#tdhd").css('display', 'block');
-                        $("#tichdiemhd").text(@(Model.DiemTichHD));
-                        $("#tichdiemhd").text(@(Model.DiemTichHD));
-                    $('#tientrutichdiem').text(0);
+                     $("#tdhd").css('display', 'block');
+                     $("#tichdiemhd").text(@(Model.DiemTichHD));
+                     $('#tientrutichdiem').text(0);
                 }
             }
             TinhTien();
@@ -293,7 +291,6 @@
         //Áp dụng tích điểm
         $('#diemKHSD').on("input",function(){
             var diem = $(this).val();
-            console.log(diem);
             var tien = diem * @(ViewBag.TLTieu);
             if(@(ViewBag.LoaiQDD) === 1){ // Chỉ tích hoặc tiêu
                 if($(this).val() ===''){ // không nhập
@@ -414,7 +411,7 @@
             TinhTien();
         }
         function khachDua(value){
-             if(value > 1000000000){
+            if(value > 1000000000){
                 toastr.error("Số tiền bạn nhập vào quá lớn", "Error Alert", { timeOut: 1000 });
                 $("#tientrakhach").text('');
             }else{
@@ -428,6 +425,9 @@
         function checkVoucher(){
            var idvoucher = $('input[name="radiovoucher"]:checked').attr('id');
            var tongtien = @Model.TongTien;
+           var khachtra = $("#khachCanTra").text().replaceAll(',','');
+           khachtra = parseInt(khachtra.replaceAll('.',''));
+           console.log(khachtra);
            $.ajax({
                 url: "/BanHangTaiQuay/CheckVoucher",
                 type: "GET",
@@ -438,10 +438,18 @@
                 dataType: "json",
                 success: function(response) {
                     if(response.success === true){
-                        toastr.success(response.message, "Success Alert", { timeOut: 1000 });
-                        $("#idvoucher").text(response.idvoucher);
-                        $("#tienkhuyenmai").css('display', 'block');
-                        $("#giatrivoucher").text(Intl.NumberFormat().format(response.giatri));
+                        if(parseInt(response.giatri) - khachtra <= 0){
+                            toastr.success(response.message, "Success Alert", { timeOut: 1000 });
+                            $("#idvoucher").text(response.idvoucher);
+                            $("#tienkhuyenmai").css('display', 'block');
+                            $("#giatrivoucher").text(Intl.NumberFormat().format(response.giatri));
+                        }else{
+                            
+                            toastr.error('Khuyến mãi vượt quá quy định', "Success Alert", { timeOut: 1000 });
+                            $("#idvoucher").val('');
+                            $("#tienkhuyenmai").css('display', 'none');
+                            $("#giatrivoucher").text('');
+                        }
                     }else{
                         toastr.error(response.message, "Error Alert", { timeOut: 1000 });
                         $("#idvoucher").val('');
