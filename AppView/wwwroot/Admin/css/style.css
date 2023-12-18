@@ -1390,36 +1390,38 @@ h6 {
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
 
 .btn-create {
-    color: #fff;
+    /*color: #fff;*/
     font-size: 1rem;
     height: 50px;
     float: right;
 }
 
-    .btn-create button {
-        border-radius: 50%;
-        border: 0px solid transparent;
-        height: 37px;
-        width: 36px;
-        align-items: center;
+    /*.btn-create button {*/
+        /*border-radius: 50%;*/
+        /*border: 0px solid transparent;
+        height: 37px;*/
+        /*width: 36px;*/
+        /*align-items: center;
         justify-content: center;
         text-align: center;
-    }
+        background:#fff;
+        color:#012970;
+    }*/
 
-        .btn-create button :hover {
+       /* .btn-create button :hover {
             background: #0070f4;
-        }
+        }*/
 
-        .btn-create button i {
+        /*.btn-create button i {
             pointer-events: none;
-        }
+        }*/
 
 .tabbill {
     padding-top: 5px;
     position: relative;
     overflow: hidden;
     height: 50px;
-    width: 750px;
+    width: 650px;
 }
 
     .tabbill .icon {

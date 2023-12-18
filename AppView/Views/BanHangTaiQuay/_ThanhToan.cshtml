@@ -251,7 +251,7 @@
         $("#tichdiemhd").text(@(Model.DiemTichHD));
         let diemtoida = 0;
         if(@(ViewBag.TLTieu) !== 0 ){
-            diemtoida = (@(Model.TongTien)*0.3)/ @(ViewBag.TLTieu);
+            diemtoida = parseInt(@(Model.TongTien)*0.3)/ @(ViewBag.TLTieu);
         }
         if(diemtoida >= @(Model.DiemKH)){
             diemtoida = @(Model.DiemKH);
@@ -263,28 +263,26 @@
             if(@(ViewBag.LoaiQDD) === 1){ // Chỉ tích hoặc tiêu
                 if($(this).is(':checked')){
                    $('#diemKHSD').val(diemtoida);
-                    $("#tichdiemhd").text("");
-                    $("#tdhd").css('display', 'none');
+                   $("#tdhd").css('display', 'none');
+                   $("#tichdiemhd").text("");
                    $('#tientrutichdiem').text(Intl.NumberFormat().format(diemtoida*@(ViewBag.TLTieu)));
                 }else{
                      $('#diemKHSD').val('');
-                      $("#tdhd").css('display', 'block');
-                        $("#tichdiemhd").text(@(Model.DiemTichHD));
-                        $("#tichdiemhd").text(@(Model.DiemTichHD));
-                    $('#tientrutichdiem').text(0);
+                     $("#tdhd").css('display', 'block');
+                     $("#tichdiemhd").text(@(Model.DiemTichHD));
+                     $('#tientrutichdiem').text(0);
                 }
             }else if(@(ViewBag.LoaiQDD) === 2){// Vừa tích vừa tiêu
                 if($(this).is(':checked')){
                    $('#diemKHSD').val(diemtoida);
-                    $("#tichdiemhd").text("");
-                    $("#tdhd").css('display', 'block');
+                   $("#tdhd").css('display', 'block');
+                   $("#tichdiemhd").text(@(Model.DiemTichHD));
                    $('#tientrutichdiem').text(Intl.NumberFormat().format(diemtoida*@(ViewBag.TLTieu)));
                 }else{
                      $('#diemKHSD').val('');
-                      $("#tdhd").css('display', 'block');
-                        $("#tichdiemhd").text(@(Model.DiemTichHD));
-                        $("#tichdiemhd").text(@(Model.DiemTichHD));
-                    $('#tientrutichdiem').text(0);
+                     $("#tdhd").css('display', 'block');
+                     $("#tichdiemhd").text(@(Model.DiemTichHD));
+                     $('#tientrutichdiem').text(0);
                 }
             }
             TinhTien();
@@ -414,7 +412,10 @@
             TinhTien();
         }
         function khachDua(value){
-             if(value > 1000000000){
+            if(isNaN(value)){
+                toastr.error("Số tiền nhập không hợp lệ", "Error Alert", { timeOut: 1000 });
+            }
+            else if(value > 1000000000){
                 toastr.error("Số tiền bạn nhập vào quá lớn", "Error Alert", { timeOut: 1000 });
                 $("#tientrakhach").text('');
             }else{
