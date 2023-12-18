@@ -228,9 +228,9 @@ namespace AppAPI.Controllers
         //End
         //Nhinh
         [HttpPost("AddNhanhKH")]
-        public bool AddNhanhKH(KhachHang kh)
+        public async Task<bool> AddNhanhKH(KhachHang kh)
         {
-            return service.AddNhanhKH(kh);
+            return await service.AddNhanhKH(kh);
         }
     }
 }

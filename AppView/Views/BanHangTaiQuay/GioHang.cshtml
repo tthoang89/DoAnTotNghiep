@@ -40,7 +40,7 @@
                 else
                 {
                     <form class="search-form d-flex align-items-center">
-                        <input type="text" style="outline: none; color:#007bff; font-weight:700" id="searchkh" value="@Model.TenKhachHang">
+                        <input type="text" style="outline: none; color:#007bff; font-weight:700" id="searchkh" value="@Model.TenKhachHang" readonly>
                         <button type="button" id="deletekh"><i class="bi bi-x-circle" style="color: #a6a8ab;"></i></button>
                     </form>
                 }
@@ -236,6 +236,8 @@
         });
        //Thêm nhanh khách hàng
          $("#btn-saveKH").on("click",function(){
+         var phoneNumberRegex = /^\d{10}$/;
+         var emailRegex = /^[a-zA-Z0-9._%+-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
          var tenkh = $("#inputTenKhachHang").val();
          var sdt = $("#inputSDT").val();
          var email = $("#inputEmail").val();
@@ -243,13 +245,20 @@
          var dob = $("#inputNgaySinh").val();
          var gtinh = $('input[name="gioitinh"]:checked').val();
          var idhd = $("#IDHD").val();
-         //if(tenkh === ''){
-         //   $("#validatekh").css('display','block');
-         //   $("#validatekh").text('Tên khách hàng không được để trống');
-         //}else if(sdt ===''){
-         //   $("#validatekh").css('display','block');
-         //   $("#validatekh").text('Số điện thoại không được để trống');
-         //}else{
+         if(tenkh.trim().length == 0){
+            $("#validatekh").css('display','block');
+            $("#validatekh").text('Tên khách hàng không được để trống');
+         }else if(sdt.trim().length == 0 && email.trim().length == 0){
+            $("#validatekh").css('display','block');
+            $("#validatekh").text('Nhập SĐT hoặc Email');
+         }else if(sdt.trim().length != 0 && !phoneNumberRegex.test(sdt)){
+            $("#validatekh").css('display','block');
+            $("#validatekh").text('Số điện thoại không hợp lệ');
+         }else if(email.trim().length != 0 &&!emailRegex.test(email)){
+            $("#validatekh").css('display','block');
+            $("#validatekh").text('Email không hợp lệ');
+         }else{
+              $("#validatekh").css('display','none');
               var khachHang = {IDKhachHang: idhd, Ten: tenkh, GioiTinh: gtinh, NgaySinh: dob, Email: email, DiaChi: dchi, SDT: sdt};
              console.log(khachHang);
              $.ajax({
@@ -272,7 +281,7 @@
                     toastr.error(response.message, 'Error Alert', { timeOut: 300 });       
                  }
              });
-         //}
+         }
      })
         // Mở modal thanh toán
     $("#btnThanhToan").on("click", function() {

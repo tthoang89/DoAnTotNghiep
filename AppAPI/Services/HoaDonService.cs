@@ -422,6 +422,7 @@ namespace AppAPI.Services
                                   MaHD = hd.MaHD,
                                   NgayTao = hd.NgayTao,
                                   NgayThanhToan = hd.NgayThanhToan != null ? hd.NgayThanhToan : null,
+                                  NgayNhanHang = hd.NgayNhanHang != null ? hd.NgayNhanHang : null,
                                   PTTT = hd.PhuongThucThanhToan,
                                   NhanVien = nv != null ? nv.Ten : null,
                                   LoaiHD = hd.LoaiHD,
@@ -908,6 +909,7 @@ namespace AppAPI.Services
                 hd.TrangThaiGiaoHang = 6;
                 hd.IDNhanVien = idnv;
                 hd.NgayNhanHang = DateTime.Now;
+                hd.NgayThanhToan = DateTime.Now;
                 context.HoaDons.Update(hd);
                 context.SaveChanges();
                 //Cộng tích điểm cho khách

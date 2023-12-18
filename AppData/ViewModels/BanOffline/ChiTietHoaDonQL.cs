@@ -13,6 +13,7 @@ namespace AppData.ViewModels.BanOffline
         public string MaHD { get; set; }
         public DateTime NgayTao { get; set; }
         public DateTime? NgayThanhToan { get; set; }
+        public DateTime? NgayNhanHang { get; set; }
         public string? NhanVien { get; set; }
         public string KhachHang { get; set; }
         public string? NguoiNhan { get; set; }

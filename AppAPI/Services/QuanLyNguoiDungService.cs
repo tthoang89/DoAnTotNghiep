@@ -389,11 +389,19 @@ namespace AppAPI.Services
         }
         //End
         //Nhinh thêm
-        public bool AddNhanhKH(KhachHang kh)
+        public async Task<bool> AddNhanhKH(KhachHang kh)
         {
             try
             {
                 KhachHang KH = new KhachHang();
+                GioHang gioHang = new GioHang()
+                {
+                    IDKhachHang = kh.IDKhachHang,
+                    NgayTao = DateTime.Now,
+                };
+                await context.GioHangs.AddAsync(gioHang);
+                await context.SaveChangesAsync();
+
                 KH.IDKhachHang = Guid.NewGuid();
                 KH.Ten = kh.Ten;
                 KH.Email = kh.Email;
@@ -403,15 +411,9 @@ namespace AppAPI.Services
                 KH.TrangThai = 1;
                 KH.DiaChi = kh.DiaChi;
                 KH.DiemTich = 0;
-                context.KhachHangs.AddAsync(kh);
-                context.SaveChangesAsync();
-                GioHang gioHang = new GioHang()
-                {
-                    IDKhachHang = kh.IDKhachHang,
-                    NgayTao = DateTime.Now,
-                };
-                context.GioHangs.AddAsync(gioHang);
-                context.SaveChangesAsync();
+                await context.KhachHangs.AddAsync(kh);
+                await context.SaveChangesAsync();
+               
                 return true;
             }
             catch (Exception ex)

@@ -16,7 +16,7 @@ namespace AppAPI.IServices
         Task<bool> ResetPassword(ResetPasswordRequest model);
         public Task<int> UseDiemTich(int diem, string id);
         //Nhinh thêm
-        public bool AddNhanhKH(KhachHang kh);
+        Task<bool> AddNhanhKH(KhachHang kh);
 
     }
 }
