@@ -1142,6 +1142,7 @@ namespace AppView.Controllers
         [HttpGet]
         public IActionResult ForgotPassword()
         {
+            HttpContext.Session.Remove("LoginInfor");
             return View();
         }
         [HttpPost]
