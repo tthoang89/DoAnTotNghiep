@@ -1023,9 +1023,9 @@ namespace AppView.Controllers
             HttpResponseMessage responseDonMuaCT = _httpClient.PutAsync(_httpClient.BaseAddress + $"DanhGia?idCTHD={danhGiaCTHDView.idCTHD}&soSao={danhGiaCTHDView.soSao}&binhLuan={danhGiaCTHDView.danhgia}", null).Result;
             if (responseDonMuaCT.IsSuccessStatusCode)
             {
-                RedirectToAction("PurchaseOrderDetail", danhGiaCTHDView.idHD);
+                RedirectToAction("PurchaseOrderDetail", "Home", new { idHoaDon = danhGiaCTHDView.idHD});
             }
-            return RedirectToAction("PurchaseOrderDetail", danhGiaCTHDView.idHD);
+            return RedirectToAction("PurchaseOrderDetail", "Home", new { idHoaDon = danhGiaCTHDView.idHD });
         }
         public IActionResult HuyDonHang(Guid idHoaDon)
         {
