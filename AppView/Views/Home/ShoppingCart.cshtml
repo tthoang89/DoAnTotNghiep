@@ -61,7 +61,7 @@
                                             <p id="validate_@item.IDChiTietSanPham" style="display:none;color:red;font-size:12px">Số lượng không thể đáp ứng</p>
                                         </div>
                                     </td>
-                                    <td class="cart__price">@item.DonGia.Value.ToString("n0") </td>
+                                    <td class="cart__price">@item.DonGia.Value.ToString("n0").Replace(',','.') </td>
                                     <td class="quantity__item">
                                         <div class="quantity">
                                             <div class="pro-qty-2">
@@ -69,7 +69,7 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td style="color: #111111; font-size: 18px; font-weight: 700; width: 140px;" class="cart__price__sub">@((item.DonGia.Value * item.SoLuong).ToString("n0")) </td>
+                                    <td style="color: #111111; font-size: 18px; font-weight: 700; width: 140px;" class="cart__price__sub">@((item.DonGia.Value * item.SoLuong).ToString("n0").Replace(',','.')) </td>
                                     <td class="cart__close"><a asp-controller="Home" asp-action="DeleteFromCart" asp-route-id="@item.IDChiTietSanPham"><i class="fa fa-close"></i></a></td>
                                 </tr>
                             }
@@ -104,6 +104,7 @@
         var checkSoLuong = [];
         $(document).ready(function () {
             UpdateCart();
+            document.getElementById("SubTotal").innerHTML = Intl.NumberFormat().format(@tongTien) + " VNĐ" 
         });
         function UpdateCart(){
         var dl = document.getElementsByClassName("soLuongCart");
