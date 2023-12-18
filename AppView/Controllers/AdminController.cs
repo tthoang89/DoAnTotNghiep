@@ -97,14 +97,15 @@ namespace AppView.Controllers
             }
             else return Json(new { status = false });           
         }
-        public IActionResult UpdateTrangThaiSanPham(string idSanPham,int trangThai)
+        [HttpPost]
+        public JsonResult UpdateTrangThaiSanPham(string idSanPham,int trangThai)
         {
             var response = _httpClient.DeleteAsync(_httpClient.BaseAddress + "SanPham/UpdateTrangThaiSanPham?id=" + idSanPham+"&trangThai="+trangThai).Result;
             if (response.IsSuccessStatusCode)
             {
-                return RedirectToAction("ProductManager");
+                return Json(new {KetQua=trangThai,Status=true});
             }
-            else return BadRequest();
+            else return Json(new { Status = false });
         }
         public JsonResult GetLoaiSPCha()
         {

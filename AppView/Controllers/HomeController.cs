@@ -1349,8 +1349,8 @@ namespace AppView.Controllers
                 TempData["HoaDon"] = JsonConvert.SerializeObject(hoaDon);
                 string vnp_Returnurl = "https://localhost:5001/Home/PaymentCallBack"; //URL nhan ket qua tra ve 
                 string vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"; //URL thanh toan cua VNPAY 
-                string vnp_TmnCode = "OFZ9Q6W4"; //Ma định danh merchant kết nối (Terminal Id)
-                string vnp_HashSecret = "IKQOFVXJPGYEIDNVNICTIIFPXNTXRYCX"; //Secret Key
+                string vnp_TmnCode = "P4VW9FD1"; //Ma định danh merchant kết nối (Terminal Id)
+                string vnp_HashSecret = "OPHRXNCKQAUVHIJNWXXTMPPYBVPAXUTF"; //Secret Key
                 string ipAddr = HttpContext.Connection.RemoteIpAddress?.ToString();
                 //Get payment input
                 OrderInfo order = new OrderInfo();
@@ -1365,7 +1365,7 @@ namespace AppView.Controllers
 
                 vnpay.AddRequestData("vnp_Version", VnPayLibrary.VERSION);
                 vnpay.AddRequestData("vnp_Command", "pay");
-                vnpay.AddRequestData("vnp_TmnCode", "OFZ9Q6W4");
+                vnpay.AddRequestData("vnp_TmnCode", vnp_TmnCode);
                 vnpay.AddRequestData("vnp_Amount", (order.Amount * 100).ToString());
                 vnpay.AddRequestData("vnp_CreateDate", order.CreatedDate.ToString("yyyyMMddHHmmss"));
                 vnpay.AddRequestData("vnp_CurrCode", "VND");
@@ -1380,7 +1380,7 @@ namespace AppView.Controllers
                 //Add Params of 2.1.0 Version
                 //Billing
 
-                string paymentUrl = vnpay.CreateRequestUrl(vnp_Url, "IKQOFVXJPGYEIDNVNICTIIFPXNTXRYCX");
+                string paymentUrl = vnpay.CreateRequestUrl(vnp_Url, vnp_HashSecret);
                 //log.InfoFormat("VNPAY URL: {0}", paymentUrl);
 
                 return paymentUrl;
@@ -1392,7 +1392,7 @@ namespace AppView.Controllers
         {
             if (Request.Query.Count > 0)
             {
-                string vnp_HashSecret = "IKQOFVXJPGYEIDNVNICTIIFPXNTXRYCX"; //Chuoi bi mat
+                string vnp_HashSecret = "OPHRXNCKQAUVHIJNWXXTMPPYBVPAXUTF"; //Chuoi bi mat
                 var vnpayData = Request.Query;
                 VnPayLibrary vnpay = new VnPayLibrary();
 
