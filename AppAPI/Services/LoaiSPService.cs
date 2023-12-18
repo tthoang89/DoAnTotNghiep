@@ -37,6 +37,11 @@ namespace AppAPI.Services
 
         public async Task<LoaiSP> SaveLoaiSP(LoaiSPRequest lsp)
         {
+            if (!CheckTrungLoaiSP(lsp))
+            {
+                // Tên loại sản phẩm đã tồn tại
+                return null;
+            }
             var Lsp = await _context.LoaiSPs.FindAsync(lsp.ID);
             //Check tồn tại
             if (Lsp != null) //Update
@@ -65,7 +70,9 @@ namespace AppAPI.Services
 
         public bool CheckTrungLoaiSP(LoaiSPRequest lsp)
         {
-            if (_context.LoaiSPs.Any(c => c.Ten == lsp.Ten && c.ID != lsp.ID))
+            var existingColor = _context.LoaiSPs.FirstOrDefaultAsync(x => x.Ten.Trim().ToUpper() == lsp.Ten.Trim().ToUpper() && x.ID != lsp.ID);
+
+            if (existingColor != null)
             {
                 return false;
             }
