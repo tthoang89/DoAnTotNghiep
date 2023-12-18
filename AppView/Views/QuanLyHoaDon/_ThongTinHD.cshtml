@@ -362,13 +362,43 @@
                                         </td>
                                     </tr>
                                 }
-                                else
+                                else if(item.TrangThai == 0)
                                 {
                                     <tr>
                                         <td>@item.ID</td>
                                         <td class="text-danger">@item.Diem</td>
                                         <td class="text-danger">
                                             Tiêu điểm
+                                        </td>
+                                    </tr>
+                                }
+                                else if(item.TrangThai == 2)
+                                {
+                                    <tr>
+                                        <td>@item.ID</td>
+                                        <td class="text-success">@item.Diem</td>
+                                        <td class="text-success">
+                                            Hoàn điểm đơn hủy
+                                        </td>
+                                    </tr>
+                                }
+                                else if(item.TrangThai == 3)
+                                {
+                                    <tr>
+                                        <td>@item.ID</td>
+                                        <td class="text-success">@item.Diem</td>
+                                        <td class="text-success">
+                                            Hoàn điểm đơn hoàn
+                                        </td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td>@item.ID</td>
+                                        <td class="text-danger">@item.Diem</td>
+                                        <td class="text-danger">
+                                            Trừ điểm đơn hoàn
                                         </td>
                                     </tr>
                                 }
