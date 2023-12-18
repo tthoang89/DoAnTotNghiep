@@ -82,6 +82,17 @@ namespace AppView.Controllers
         {
             ms.TrangThai = 1;
             string apiUrl = $"https://localhost:7095/api/MauSac/ThemMauSac?ten={ms.Ten}&ma={ms.Ma}";
+            
+            if (string.IsNullOrEmpty(ms.Ma))
+            {
+                ViewBag.ErrorMessage = "Vui lòng chọn mã màu!";
+                return View(ms);
+            }
+            if (string.IsNullOrEmpty(ms.Ten))
+            {
+                ViewBag.ErrorMessage = "Vui lòng chọn tên màu!";
+                return View(ms);
+            }
             var reponsen = await _httpClient.PostAsync(apiUrl, null);
             if (reponsen.IsSuccessStatusCode)
             {
@@ -92,7 +103,7 @@ namespace AppView.Controllers
                 ViewBag.ErrorMessage = "Kích cỡ này đã có trong danh sách";
                 return View();
             }
-            return View(kc);
+            return View(ms);
         }
 
         [HttpGet]

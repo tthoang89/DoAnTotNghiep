@@ -37,7 +37,7 @@ namespace AppAPI.Controllers
         {
             var cl = await service.GetChatLieuById(id);
             if (cl == null) return BadRequest();
-            return Ok();
+            return Ok(cl);
         }
         [HttpPost("ThemChatLieu")]
         public async Task<IActionResult> Add(string ten, int trangthai)
