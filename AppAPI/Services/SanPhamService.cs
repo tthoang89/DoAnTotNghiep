@@ -845,7 +845,7 @@ namespace AppAPI.Services
                                     GiaGoc = ctsp == null ? null : ctsp.GiaBan,
                                     GiaBan = km == null ? ctsp.GiaBan :
                     (km.TrangThai == 1 ? (int)(ctsp.GiaBan / 100 * (100 - km.GiaTri)) :
-                    (km.GiaTri < ctsp.GiaBan ? (ctsp.GiaBan - (int)km.GiaTri) : ctsp.GiaBan)),
+                    (km.GiaTri < ctsp.GiaBan ? (ctsp.GiaBan - (int)km.GiaTri) : 0)),
                                     IdLsp = sp.IDLoaiSP,
                                 }).OrderBy(c => c.MaSP).ToListAsync();
 
@@ -910,7 +910,7 @@ namespace AppAPI.Services
                               GiaGoc = ctsp.GiaBan,
                               GiaBan = km == null ? ctsp.GiaBan :
                     (km.TrangThai == 1 ? (int)(ctsp.GiaBan / 100 * (100 - km.GiaTri)) :
-                    (km.GiaTri < ctsp.GiaBan ? (ctsp.GiaBan - (int)km.GiaTri) : ctsp.GiaBan)),
+                    (km.GiaTri < ctsp.GiaBan ? (ctsp.GiaBan - (int)km.GiaTri) : 0)),
                           }).OrderByDescending(c => c.ChiTiet).ToListAsync();
         }
 
@@ -960,7 +960,7 @@ namespace AppAPI.Services
                                     GiaGoc = ctsp == null ? 0 : ctsp.GiaBan,
                                     GiaBan = km == null ? ctsp.GiaBan :
                     (km.TrangThai == 1 ? (int)(ctsp.GiaBan / 100 * (100 - km.GiaTri)) :
-                    (km.GiaTri < ctsp.GiaBan ? (ctsp.GiaBan - (int)km.GiaTri) : ctsp.GiaBan)),
+                    (km.GiaTri < ctsp.GiaBan ? (ctsp.GiaBan - (int)km.GiaTri) : 0)),
                                     KhuyenMai = (km == null ? null : km.GiaTri)
                                 }).ToListAsync();
             return result;

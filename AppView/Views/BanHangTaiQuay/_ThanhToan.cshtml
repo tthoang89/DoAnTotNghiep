@@ -437,7 +437,7 @@
                 success: function(response) {
                    
                     if(response.success === true){
-                        if(parseInt(response.giatri) - khachtra <= 0){
+                        if(parseInt(response.giatri) - khachtra < 0){
                             toastr.success(response.message, "Success Alert", { timeOut: 1000 });
                             $("#idvoucher").text(response.idvoucher);
                             $("#tienkhuyenmai").css('display', 'block');
