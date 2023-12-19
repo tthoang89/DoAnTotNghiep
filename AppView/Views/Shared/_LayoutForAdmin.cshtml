@@ -7,8 +7,6 @@
     if (session != null)
     {
         loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(Context.Session.GetString("LoginInfor"));
-
-
     }
 
 }
@@ -71,8 +69,24 @@
 
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                         <li class="dropdown-header">
-                            <h6>Kevin Anderson</h6>
-                            <span>Chức vụ</span>
+                            <h6 id="TenNV">@loginInfor.Ten</h6>
+                            @{
+                                var nhanvien = context.NhanViens.FirstOrDefault(x => x.ID == loginInfor.Id);
+                                if (nhanvien != null)
+                                {
+                                    var phanquyen1 = context.VaiTros.FirstOrDefault(x => x.ID == nhanvien.IDVaiTro);
+                                    if (phanquyen1!= null)
+                                    {
+                                        if (phanquyen1.Ten == "Admin")
+                                        {
+                                            <span id="ChucVu">Admin</span>
+                                        }else{
+                                            <span id="ChucVu">Nhân viên</span>
+                                        }
+                                    }
+                                }
+                            }
+                            
                         </li>
                         <li>
                             <hr class="dropdown-divider">
@@ -105,7 +119,6 @@
     <!-- ======= Sidebar ======= -->
     <aside id="sidebar" class="sidebar">
         @{
-            var nhanvien = context.NhanViens.FirstOrDefault(x => x.ID == loginInfor.Id);
             if (nhanvien != null)
             {
                 var phanquyen = context.VaiTros.FirstOrDefault(x => x.ID == nhanvien.IDVaiTro);
@@ -466,3 +479,4 @@
 
 </body>
 </html>
+

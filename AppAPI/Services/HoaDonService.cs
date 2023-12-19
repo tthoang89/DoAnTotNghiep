@@ -474,7 +474,7 @@ namespace AppAPI.Services
                                             }).ToList(),
                                   lstlstd = (from lstd in context.LichSuTichDiems
                                              where lstd.IDHoaDon == hd.ID
-                                             select lstd).ToList()
+                                             select lstd).OrderBy(c=>c.TrangThai).ToList()
                               }).FirstOrDefault();
 
                 return result;
@@ -545,7 +545,7 @@ namespace AppAPI.Services
                 //Update hd
                 hd.IDNhanVien = idnv;
                 hd.TrangThaiGiaoHang = 7;
-                hd.TongTien = 0;
+                //hd.TongTien = 0;
                 context.HoaDons.Update(hd);
                 context.SaveChanges();
 
@@ -582,9 +582,21 @@ namespace AppAPI.Services
                             kh.DiemTich += tieud.Diem;
                             context.KhachHangs.Update(kh);
                             context.SaveChanges();
-                            tieud.Diem = 0;
-                            context.LichSuTichDiems.Update(tieud);
+                            //Thêm 1 lịch sử trả lại điểm
+                            LichSuTichDiem diemtra = new LichSuTichDiem()
+                            {
+                                ID = new Guid(),
+                                IDHoaDon = hd.ID,
+                                IDKhachHang = kh.IDKhachHang,
+                                Diem = tieud.Diem,
+                                TrangThai = 2,
+                                IDQuyDoiDiem = tieud.IDQuyDoiDiem,
+                            };
+                            context.LichSuTichDiems.Add(diemtra);
                             context.SaveChanges();
+                            //tieud.Diem = 0;
+                            //context.LichSuTichDiems.Update(tieud);
+                            //context.SaveChanges();
                         }
                         else
                         {
@@ -600,12 +612,27 @@ namespace AppAPI.Services
                         kh.DiemTich += tieud.Diem;
                         context.KhachHangs.Update(kh);
                         context.SaveChanges();
-                        //Xóa tích sửa tiêu = 0
-                        context.LichSuTichDiems.Remove(tieud);
-                        context.SaveChanges();
 
-                        tichd.Diem = 0;
-                        context.LichSuTichDiems.Update(tichd);
+                        //Thêm 1 lịch sử trả lại điểm
+                        LichSuTichDiem diemtra = new LichSuTichDiem()
+                        {
+                            ID = new Guid(),
+                            IDHoaDon = hd.ID,
+                            IDKhachHang = kh.IDKhachHang,
+                            Diem = tieud.Diem,
+                            TrangThai = 2,
+                            IDQuyDoiDiem = tieud.IDQuyDoiDiem,
+                        };
+                        context.LichSuTichDiems.Add(diemtra);
+                        context.SaveChanges();
+                        //Xóa tích sửa tiêu = 0
+                        //context.LichSuTichDiems.Remove(tieud);
+                        //context.SaveChanges();
+
+                        
+                        //tichd.Diem = 0;
+                        //tichd.TrangThai = 2;
+                        context.LichSuTichDiems.Remove(tichd);
                         context.SaveChanges();
                     }
                 }
@@ -954,10 +981,22 @@ namespace AppAPI.Services
                         kh.DiemTich -= td.Diem;
                         context.KhachHangs.Update(kh);
                         context.SaveChanges();
-                        //Cập nhật tích điểm
-                        td.Diem = 0;
-                        context.LichSuTichDiems.Update(td);
+                        // Tạo 1 lịch sử trừ điểm 
+                        LichSuTichDiem diemtru = new LichSuTichDiem()
+                        {
+                            ID = new Guid(),
+                            IDHoaDon = hd.ID,
+                            IDKhachHang = kh.IDKhachHang,
+                            Diem = td.Diem,
+                            TrangThai = 3,
+                            IDQuyDoiDiem = td.IDQuyDoiDiem,
+                        };
+                        context.LichSuTichDiems.Add(diemtru);
                         context.SaveChanges();
+                        //Cập nhật tích điểm
+                        //td.Diem = 0;
+                        //context.LichSuTichDiems.Update(td);
+                        //context.SaveChanges();
                     }
                 }
                 context.HoaDons.Update(hd);
@@ -1011,18 +1050,30 @@ namespace AppAPI.Services
                         kh.DiemTich += tieud.Diem;
                         context.KhachHangs.Update(kh);
                         context.SaveChanges();
-                        if (lsthdct.Count == 2)
+                        //Thêm 1 lịch sử trả lại điểm cho đơn hoàn thành công
+                        LichSuTichDiem diemtra = new LichSuTichDiem()
                         {
-                            context.LichSuTichDiems.Remove(tieud);
-                            context.SaveChanges();
-                        }
-                        else
-                        {
-                            //Cập nhật tích điểm
-                            tieud.Diem = 0;
-                            context.LichSuTichDiems.Update(tieud);
-                            context.SaveChanges();
-                        }
+                            ID = new Guid(),
+                            IDHoaDon = hd.ID,
+                            IDKhachHang = kh.IDKhachHang,
+                            Diem = tieud.Diem,
+                            TrangThai = 4,
+                            IDQuyDoiDiem = tieud.IDQuyDoiDiem,
+                        };
+                        context.LichSuTichDiems.Add(diemtra);
+                        context.SaveChanges();
+                        //if (lsthdct.Count == 2)
+                        //{
+                        //    context.LichSuTichDiems.Remove(tieud);
+                        //    context.SaveChanges();
+                        //}
+                        //else
+                        //{
+                        //    //Cập nhật tích điểm
+                        //    tieud.Diem = 0;
+                        //    context.LichSuTichDiems.Update(tieud);
+                        //    context.SaveChanges();
+                        //}
                     }
 
                 }

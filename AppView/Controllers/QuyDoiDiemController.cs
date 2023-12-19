@@ -44,18 +44,7 @@ namespace AppView.Controllers
         public IActionResult Create()
         {
 
-            var Diem = dbcontext.QuyDoiDiems.ToList();
-            foreach (var tk in Diem)
-            {
-                var trangthai = dbcontext.QuyDoiDiems.FirstOrDefault(x => x.ID == tk.ID);
-                if (trangthai != null)
-                {
-                    trangthai.TrangThai = 0;
-                    dbcontext.QuyDoiDiems.Update(trangthai);
-                }
-
-            }
-            dbcontext.SaveChangesAsync();
+           
             return View();
         }
 
@@ -78,8 +67,86 @@ namespace AppView.Controllers
                 {
                     ViewData["TrangThai"] = "Yêu cầu chọn trạng thái ";
                 }
-                if (qdd.TrangThai != 0 && qdd.TiLeTichDiem > 0 && qdd.TiLeTieuDiem > 0)
+                if (qdd.TiLeTichDiem == 0)
                 {
+                    if(qdd.TiLeTieuDiem == 0)
+                    {
+                        ViewData["TiLeTieuDiem"] = "Một trong 2 cái phải lớn hơn 0";
+                        return View();
+                    }
+                    if (qdd.TiLeTieuDiem > 0)
+                    {
+                        if (qdd.TrangThai != 0)
+                        {
+                            var Diem = dbcontext.QuyDoiDiems.ToList();
+                            foreach (var tk in Diem)
+                            {
+                                var trangthai = dbcontext.QuyDoiDiems.FirstOrDefault(x => x.ID == tk.ID);
+                                if (trangthai != null)
+                                {
+                                    trangthai.TrangThai = 0;
+                                    dbcontext.QuyDoiDiems.Update(trangthai);
+                                }
+
+                            }
+                            dbcontext.SaveChangesAsync();
+                            var response = await _httpClient.PostAsync($" https://localhost:7095/api/QuyDoiDiem?TiLeTichDiem={qdd.TiLeTichDiem}&TiLeTieuDiem={qdd.TiLeTieuDiem}&TrangThai={qdd.TrangThai}", null);
+
+                            if (response.IsSuccessStatusCode)
+                            {
+                                return RedirectToAction("GetAllQuyDoiDiem");
+                            }
+                            return View();
+                        }
+                    }
+                }
+                if (qdd.TiLeTieuDiem == 0)
+                {
+                    if (qdd.TiLeTichDiem == 0)
+                    {
+                        ViewData["TiLeTichDiem"] = "Một trong 2 cái phải lớn hơn 0";
+                        return View();
+                    }
+                    if (qdd.TiLeTichDiem > 0)
+                    {
+                        if (qdd.TrangThai != 0)
+                        {
+                            var Diem = dbcontext.QuyDoiDiems.ToList();
+                            foreach (var tk in Diem)
+                            {
+                                var trangthai = dbcontext.QuyDoiDiems.FirstOrDefault(x => x.ID == tk.ID);
+                                if (trangthai != null)
+                                {
+                                    trangthai.TrangThai = 0;
+                                    dbcontext.QuyDoiDiems.Update(trangthai);
+                                }
+
+                            }
+                            dbcontext.SaveChangesAsync();
+                            var response = await _httpClient.PostAsync($" https://localhost:7095/api/QuyDoiDiem?TiLeTichDiem={qdd.TiLeTichDiem}&TiLeTieuDiem={qdd.TiLeTieuDiem}&TrangThai={qdd.TrangThai}", null);
+
+                            if (response.IsSuccessStatusCode)
+                            {
+                                return RedirectToAction("GetAllQuyDoiDiem");
+                            }
+                            return View();
+                        }
+                    }
+                }
+                if (qdd.TiLeTichDiem > 0 && qdd.TiLeTieuDiem > 0 && qdd.TrangThai != 0)
+                {
+                    var Diem = dbcontext.QuyDoiDiems.ToList();
+                    foreach (var tk in Diem)
+                    {
+                        var trangthai = dbcontext.QuyDoiDiems.FirstOrDefault(x => x.ID == tk.ID);
+                        if (trangthai != null)
+                        {
+                            trangthai.TrangThai = 0;
+                            dbcontext.QuyDoiDiems.Update(trangthai);
+                        }
+
+                    }
+                    dbcontext.SaveChangesAsync();
                     var response = await _httpClient.PostAsync($" https://localhost:7095/api/QuyDoiDiem?TiLeTichDiem={qdd.TiLeTichDiem}&TiLeTieuDiem={qdd.TiLeTieuDiem}&TrangThai={qdd.TrangThai}", null);
 
                     if (response.IsSuccessStatusCode)
@@ -88,6 +155,7 @@ namespace AppView.Controllers
                     }
                     return View();
                 }
+                
             }
             return View();
                        

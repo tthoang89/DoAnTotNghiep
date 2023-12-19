@@ -121,7 +121,7 @@
                     <div class="flex-fill">
                         <label class="form-label">
                             Điểm
-                            <i class="bx bx-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Áp dụng tối đa 30% giá trị đơn hàng"></i>
+                            <i class="bx bx-info-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Áp dụng tối đa 20% giá trị đơn hàng"></i>
                             <label class="badge bg-success">
                                 Tối đa: <span class="text-white" id="dtoida"></span>
                             </label>
@@ -251,7 +251,7 @@
         $("#tichdiemhd").text(@(Model.DiemTichHD));
         let diemtoida = 0;
         if(@(ViewBag.TLTieu) !== 0 ){
-            diemtoida = parseInt((@(Model.TongTien)*0.3)/ @(ViewBag.TLTieu));
+            diemtoida = parseInt((@(Model.TongTien)*0.2)/ @(ViewBag.TLTieu));
         }
         if(diemtoida >= @(Model.DiemKH)){
             diemtoida = @(Model.DiemKH);

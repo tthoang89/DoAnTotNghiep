@@ -209,7 +209,7 @@
     var diemTich = 0;
     $(document).ready(function () {
         var tienHang = @tongtien;
-        document.getElementById("tienHang").innerHTML = tienHang.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
+    document.getElementById("tienHang").innerHTML = tienHang.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
         document.getElementById("total").innerHTML = tienHang.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
         $.ajax({
             type: "GET",
@@ -307,7 +307,11 @@
                     $('#dfward').remove();
                     tienShip = data.data.total;
                     document.getElementById("fee").innerHTML = data.data.total.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
-                    document.getElementById("total").innerHTML = (tienShip + @tongtien-tienVoucher - tienDiem).toLocaleString('it-IT', { style: 'currency', currency: 'VND' }) ;
+                    var total = tienShip + @tongtien-tienVoucher - tienDiem;
+                    if (total < 0) {
+                        total = 0
+                    }
+                    document.getElementById("total").innerHTML = total.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
                 },
                 error: function (reponse) {
                     alert(reponse.responseText);
@@ -335,9 +339,6 @@
         var xa = $("#ward option:selected").text().trim();
         var diachi = $("#address").val();
         var pttt = $('input[name="pttt"]:checked').val();
-
-        var voucher = $("#voucher").val();
-
         var ghiChu = $("#note").val();
         $('.invalid-feedback').text('');
         $('.is-invalid').removeClass('is-invalid');
@@ -442,7 +443,11 @@
                     var ipVoucher = document.getElementById("moneyvoucher");
                     ipVoucher.hidden = false;
                     ipVoucher.innerHTML = "Số tiền giảm (Voucher)<span>" + tienVoucher.toLocaleString('it-IT', { style: 'currency', currency: 'VND' }) + " </span>";
-                    document.getElementById("total").innerHTML = (tienShip + @tongtien-tienVoucher - tienDiem).toLocaleString('it-IT', { style: 'currency', currency: 'VND' }) ;
+                    var total = tienShip + @tongtien-tienVoucher - tienDiem;
+                    if (total < 0) {
+                        total = 0
+                    }
+                    document.getElementById("total").innerHTML = total.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
                 }
                 else {
                     alert(response.loi);
@@ -486,7 +491,11 @@
                         ipDiem.hidden = false;
                         tienDiem = response.soTienGiam;
                         ipDiem.innerHTML = "Số tiền giảm (Điểm)<span>" + tienDiem.toLocaleString('it-IT', { style: 'currency', currency: 'VND' }) + "</span>";
-                        document.getElementById("total").innerHTML = (tienShip + @tongtien-tienVoucher - tienDiem).toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
+                        var total = tienShip + @tongtien-tienVoucher - tienDiem;
+                        if(total < 0){
+                            total = 0
+                        }
+                        document.getElementById("total").innerHTML = total.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
                     }
                     else {
                         alert(response.loi);

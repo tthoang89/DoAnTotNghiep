@@ -129,7 +129,7 @@ namespace AppView.Controllers
             ViewBag.IdKhuyenMai = idkhuyenmai;
             return View(new PhanTrangCTSPBySP
             {
-                listallctspbysp = bienthes
+                listallctspbysp = bienthes.Where(x=>x.TrangThai==1||x.TrangThai==2)
                         .Skip((ProductPage - 1) * PageSize).Take(PageSize),
                 PagingInfo = new PagingInfo
                 {
@@ -199,7 +199,7 @@ namespace AppView.Controllers
 
             return View("GetAllKM", new PhanTrangKhuyenMai
             {
-                listkms = roles.Where(x => x.Ten.Contains(TenKM))
+                listkms = roles.Where(x => x.Ten.Contains(TenKM.Trim()))
                         .Skip((ProductPage - 1) * PageSize).Take(PageSize),
                 PagingInfo = new PagingInfo
                 {
@@ -241,18 +241,49 @@ namespace AppView.Controllers
                 {
                     ViewData["Ngay"] = "Ngày kết thúc phải lớn hơn hoặc bằng ngày áp dụng";
                 }
-                var timkiem=roles.FirstOrDefault(x=>x.Ten==kmv.Ten);
+                var timkiem=roles.FirstOrDefault(x=>x.Ten==kmv.Ten.Trim());
                 if (timkiem != null)
                 {
                     ViewData["Ma"] = "Mã này đã tồn tại";
                 }
-                if (kmv.GiaTri > 0 && kmv.NgayKetThuc >= kmv.NgayApDung&&timkiem==null)
+                if (kmv.TrangThai == 1)
                 {
-                    var response = await
-          _httpClient.PostAsJsonAsync("https://localhost:7095/api/KhuyenMai", kmv);
-                    if (response.IsSuccessStatusCode) return RedirectToAction("GetAllKM");
-                    return View();
-                }       
+                    if(kmv.GiaTri<=0 || kmv.GiaTri > 100)
+                    {
+                        ViewData["GiaTri"] = "Giá trị từ 1 đến 100";
+                        return View();
+                    }
+                    if(kmv.GiaTri>0&&kmv.GiaTri <= 100)
+                    {
+                        if (kmv.GiaTri > 0 && kmv.NgayKetThuc >= kmv.NgayApDung && timkiem == null)
+                        {
+                            var response = await
+                  _httpClient.PostAsJsonAsync("https://localhost:7095/api/KhuyenMai", kmv);
+                            if (response.IsSuccessStatusCode) return RedirectToAction("GetAllKM");
+                            return View();
+                        }
+                    }
+                }
+                if (kmv.TrangThai == 0)
+                {
+                    if (kmv.GiaTri <= 0 )
+                    {
+                        ViewData["GiaTri"] = "Giá trị phải lớn hơn 0";
+                        return View();
+                    }
+                    if (kmv.GiaTri > 0 )
+                    {
+                        if (kmv.GiaTri > 0 && kmv.NgayKetThuc >= kmv.NgayApDung && timkiem == null)
+                        {
+                            var response = await
+                  _httpClient.PostAsJsonAsync("https://localhost:7095/api/KhuyenMai", kmv);
+                            if (response.IsSuccessStatusCode) return RedirectToAction("GetAllKM");
+                            return View();
+                        }
+                    }
+                }
+
+
             }
             return View();
         }

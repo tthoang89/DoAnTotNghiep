@@ -362,7 +362,7 @@
      $(function() {
 
         var start = moment().subtract(29, 'days');
-        var end = moment();
+        var end = moment().endOf('day');
 
         function cb(start, end) {
             $('#bdau').text(start.format('DD/MM/YYYY HH:mm'));
