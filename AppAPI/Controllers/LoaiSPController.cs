@@ -26,6 +26,13 @@ namespace AppAPI.Controllers
             var listLsp = await _loaiSPService.GetAllLoaiSP();
             return Ok(listLsp);
         }
+        [Route("TimKiemLoaiSP")]
+        [HttpGet]
+        public async Task<IActionResult> GetAllLoaiSP(string name)
+        {
+            var tr = context.LoaiSPs.Where(v => v.Ten.Contains(name)).ToList();
+            return Ok(tr);
+        }
 
         [HttpGet("getById/{id}")]
         public async Task<IActionResult> GetById(Guid id)
@@ -34,7 +41,8 @@ namespace AppAPI.Controllers
             if (lsp == null) return BadRequest();
             return Ok(lsp);
         }
-        [HttpPost("save")]
+        [Route("save")]
+        [HttpPost, HttpPut]
         public async Task<IActionResult> SaveLoaiSP(LoaiSPRequest lsp)
         {
             if (lsp == null) return BadRequest();

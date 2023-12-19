@@ -123,11 +123,18 @@ namespace AppView.Controllers
         [HttpGet]
         public IActionResult Edit(Guid id)
         {
-            string apiUrl = $"https://localhost:7095/api/MauSac/GetMauSacById?id={id}";
-            var response = _httpClient.GetAsync(apiUrl).Result;
-            var apiData = response.Content.ReadAsStringAsync().Result;
-            var user = JsonConvert.DeserializeObject<MauSac>(apiData);
-            return View(user);
+            try
+            {
+                string apiUrl = $"https://localhost:7095/api/MauSac/GetMauSacById?id={id}";
+                var response = _httpClient.GetAsync(apiUrl).Result;
+                var apiData = response.Content.ReadAsStringAsync().Result;
+                var user = JsonConvert.DeserializeObject<MauSac>(apiData);
+                return View(user);
+            }
+            catch
+            {
+                return Redirect("https://localhost:5001/");
+            }
         }
         [HttpPut]
         [ValidateAntiForgeryToken]
