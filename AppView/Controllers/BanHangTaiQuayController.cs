@@ -37,7 +37,7 @@ namespace AppView.Controllers
         public async Task<IActionResult> LoadSp(int page, int pagesize)
         {
             var listsanPham = await _httpClient.GetFromJsonAsync<List<SanPhamBanHang>>("SanPham/getAllSPBanHang");
-            listsanPham = listsanPham.Where(c => c.GiaGoc != 0).ToList();
+            listsanPham = listsanPham.Where(c => c.GiaGoc > 0).ToList();
             var model = listsanPham.Skip((page - 1) * pagesize).Take(pagesize).ToList();
             int totalRow = listsanPham.Count;
             return Json(new
@@ -212,6 +212,7 @@ namespace AppView.Controllers
         public async Task<IActionResult> getCTHD(string id)
         {
             var hdon = await _httpClient.GetFromJsonAsync<HoaDonViewModelBanHang>($"HoaDon/GetHDBanHang/{id}");
+
             var kh = await _httpClient.GetFromJsonAsync<List<KhachHang>>($"KhachHang");
             ViewBag.lstKH = kh;
             return PartialView("GioHang", hdon);

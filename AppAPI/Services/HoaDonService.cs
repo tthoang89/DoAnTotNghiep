@@ -182,7 +182,7 @@ namespace AppAPI.Services
                                         IDKhachHang = hoaDon.IDNguoiDung,
                                         IDQuyDoiDiem = quyDoiDiem.ID,
                                         IDHoaDon = hoaDon1.ID,
-                                        Diem = quyDoiDiem.TiLeTichDiem != 0 ? subtotal / quyDoiDiem.TiLeTichDiem:0,
+                                        Diem = quyDoiDiem.TiLeTichDiem != 0 ? subtotal / quyDoiDiem.TiLeTichDiem : 0,
                                         TrangThai = 1
                                     };
                                     reposLichSuTichDiem.Add(lichSuTichDiem);
@@ -219,7 +219,7 @@ namespace AppAPI.Services
                                     IDKhachHang = hoaDon.IDNguoiDung,
                                     IDQuyDoiDiem = quyDoiDiem.ID,
                                     IDHoaDon = hoaDon1.ID,
-                                    Diem = quyDoiDiem.TiLeTichDiem != 0 ? subtotal / quyDoiDiem.TiLeTichDiem: 0,
+                                    Diem = quyDoiDiem.TiLeTichDiem != 0 ? subtotal / quyDoiDiem.TiLeTichDiem : 0,
                                     TrangThai = 1
                                 };
                                 reposLichSuTichDiem.Add(lichSuTichDiem);
@@ -407,6 +407,30 @@ namespace AppAPI.Services
         {
             try
             {
+                var lsthdct = (from cthd in context.ChiTietHoaDons
+                               join ctsp in context.ChiTietSanPhams on cthd.IDCTSP equals ctsp.ID
+                               join ms in context.MauSacs on ctsp.IDMauSac equals ms.ID
+                               join kc in context.KichCos on ctsp.IDKichCo equals kc.ID
+                               join sp in context.SanPhams on ctsp.IDSanPham equals sp.ID
+                               join km in context.KhuyenMais on ctsp.IDKhuyenMai equals km.ID into kmGroup
+                               from km in kmGroup.DefaultIfEmpty()
+                               where cthd.IDHoaDon == idhd
+                               select new HoaDonChiTietViewModel
+                               {
+                                   Id = cthd.ID,
+                                   IdHoaDon = cthd.IDHoaDon,
+                                   IdSP = sp.ID,
+                                   Ten = sp.Ten,
+                                   MaCTSP = ctsp.Ma,
+                                   PhanLoai = ms.Ten + " - " + kc.Ten,
+                                   SoLuong = cthd.SoLuong,
+                                   GiaGoc = ctsp.GiaBan,
+                                   GiaLuu = cthd.DonGia == null ? 0 : cthd.DonGia,
+                                   GiaKM = km == null ? ctsp.GiaBan :
+                    (km.TrangThai == 1 ? (int)(ctsp.GiaBan / 100 * (100 - km.GiaTri)) :
+                    (km.GiaTri < ctsp.GiaBan ? (ctsp.GiaBan - (int)km.GiaTri) : ctsp.GiaBan)),
+                               }).ToList();
+
                 var result = (from hd in context.HoaDons
                               join nv in context.NhanViens on hd.IDNhanVien equals nv.ID
                               into nvGroup
@@ -451,32 +475,10 @@ namespace AppAPI.Services
                                                  TrangThai = vc.TrangThai,
                                                  HinhThucGiamGia = vc.HinhThucGiamGia,
                                              }).FirstOrDefault(),
-                                  listsp = (from cthd in context.ChiTietHoaDons
-                                            join ctsp in context.ChiTietSanPhams on cthd.IDCTSP equals ctsp.ID
-                                            join ms in context.MauSacs on ctsp.IDMauSac equals ms.ID
-                                            join kc in context.KichCos on ctsp.IDKichCo equals kc.ID
-                                            join sp in context.SanPhams on ctsp.IDSanPham equals sp.ID
-                                            join km in context.KhuyenMais on ctsp.IDKhuyenMai equals km.ID into kmGroup
-                                            from km in kmGroup.DefaultIfEmpty()
-                                            where cthd.IDHoaDon == hd.ID
-                                            select new HoaDonChiTietViewModel
-                                            {
-                                                Id = cthd.ID,
-                                                IdHoaDon = cthd.IDHoaDon,
-                                                IdSP = sp.ID,
-                                                Ten = sp.Ten,
-                                                MaCTSP = ctsp.Ma,
-                                                PhanLoai = ms.Ten + " - " + kc.Ten,
-                                                SoLuong = cthd.SoLuong,
-                                                GiaGoc = ctsp.GiaBan,
-                                                GiaLuu = cthd.DonGia == null ? 0 : cthd.DonGia,
-                                                GiaKM = km == null ? ctsp.GiaBan :
-                    (km.TrangThai == 1 ? (int)(ctsp.GiaBan / 100 * (100 - km.GiaTri)) :
-                    (km.GiaTri < ctsp.GiaBan ? (ctsp.GiaBan - (int)km.GiaTri) : ctsp.GiaBan)),
-                                            }).ToList(),
+                                  listsp = lsthdct,
                                   lstlstd = (from lstd in context.LichSuTichDiems
                                              where lstd.IDHoaDon == hd.ID
-                                             select lstd).OrderBy(c=>c.TrangThai).ToList()
+                                             select lstd).OrderBy(c => c.TrangThai).ToList()
                               }).FirstOrDefault();
 
                 return result;
@@ -509,7 +511,10 @@ namespace AppAPI.Services
                                                         PhanLoai = ms.Ten + " - " + kc.Ten,
                                                         SoLuong = cthd.SoLuong,
                                                         GiaGoc = ctsp.GiaBan,
-                                                        GiaKM = km.TrangThai == null ? ctsp.GiaBan : (km.TrangThai == 0 ? ctsp.GiaBan - km.GiaTri : (ctsp.GiaBan * (100 - km.GiaTri) / 100)),
+                                                        GiaKM = km == null ? ctsp.GiaBan :
+                    (km.TrangThai == 1 ? (int)(ctsp.GiaBan / 100 * (100 - km.GiaTri)) :
+                    (km.GiaTri < ctsp.GiaBan ? (ctsp.GiaBan - (int)km.GiaTri) : ctsp.GiaBan)),
+
                                                     }).AsEnumerable().Reverse().ToList();
             var result = (from hd in reposHoaDon.GetAll()
                           join lstd in reposLichSuTichDiem.GetAll() on hd.ID equals lstd.IDHoaDon into lstdGroup
@@ -631,7 +636,7 @@ namespace AppAPI.Services
                         //context.LichSuTichDiems.Remove(tieud);
                         //context.SaveChanges();
 
-                        
+
                         //tichd.Diem = 0;
                         //tichd.TrangThai = 2;
                         context.LichSuTichDiems.Remove(tichd);
@@ -801,6 +806,7 @@ namespace AppAPI.Services
             var delete = lsthdct.Where(c => c.SoLuong == 0).ToList();
             context.ChiTietHoaDons.RemoveRange(delete);
             context.SaveChanges();
+
             lsthdct = context.ChiTietHoaDons.Where(c => c.IDHoaDon == hoaDon.Id).ToList();
             foreach (var item in lsthdct)
             {
@@ -810,8 +816,7 @@ namespace AppAPI.Services
                                   on ctsp.IDKhuyenMai equals km.ID into kmGroup
                               from km in kmGroup.DefaultIfEmpty()
                               where ctsp.ID == item.IDCTSP
-                              select km != null ? (km.TrangThai == 0 ? (ctsp.GiaBan - km.GiaTri) : (ctsp.GiaBan * (100 - km.GiaTri) / 100))
-                                               : ctsp.GiaBan)
+                              select km != null ? (km.TrangThai == 0 ? (km.GiaTri < ctsp.GiaBan ? (ctsp.GiaBan - km.GiaTri) : ctsp.GiaBan) : (ctsp.GiaBan * (100 - km.GiaTri) / 100)): ctsp.GiaBan)
                              .FirstOrDefault();
                 item.DonGia = result;
                 context.ChiTietHoaDons.Update(item);
@@ -970,7 +975,7 @@ namespace AppAPI.Services
                 var hd = context.HoaDons.FirstOrDefault(c => c.ID == idhd);
                 hd.TrangThaiGiaoHang = 4;
                 hd.IDNhanVien = idnv;
-                
+
                 //Trừ đi điểm tích của khách hàng nếu có
                 var lstlstd = context.LichSuTichDiems.Where(c => c.IDHoaDon == idhd).ToList();
                 if (lstlstd.Count != 0)
