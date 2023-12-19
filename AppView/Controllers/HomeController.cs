@@ -1352,13 +1352,13 @@ namespace AppView.Controllers
             if (response.IsSuccessStatusCode)
             {
                 var soTienGiam = Convert.ToInt32(response.Content.ReadAsStringAsync().Result);
-                if (soTienGiam < (tongTien / 2))
+                if (soTienGiam <= (tongTien / 5))
                 {
                     return Json(new { SoTienGiam = soTienGiam, TrangThai = true });
                 }
                 else
                 {
-                    return Json(new { Loi = "Số tiền giảm khi sử dụng điểm phải nhỏ hơn 50% giá trị đơn hàng", TrangThai = false });
+                    return Json(new { Loi = "Số tiền giảm khi sử dụng điểm phải nhỏ hơn 20% giá trị đơn hàng", TrangThai = false });
                 }
             }
             else return Json(new { Loi = "Không kết nối được với server", TrangThai = false });
