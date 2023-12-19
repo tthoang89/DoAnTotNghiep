@@ -307,7 +307,11 @@
                     $('#dfward').remove();
                     tienShip = data.data.total;
                     document.getElementById("fee").innerHTML = data.data.total.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
-                    document.getElementById("total").innerHTML = (tienShip + @tongtien-tienVoucher - tienDiem).toLocaleString('it-IT', { style: 'currency', currency: 'VND' }) ;
+                    var total = tienShip + @tongtien-tienVoucher - tienDiem;
+                    if (total < 0) {
+                        total = 0
+                    }
+                    document.getElementById("total").innerHTML = total.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
                 },
                 error: function (reponse) {
                     alert(reponse.responseText);
@@ -439,7 +443,11 @@
                     var ipVoucher = document.getElementById("moneyvoucher");
                     ipVoucher.hidden = false;
                     ipVoucher.innerHTML = "Số tiền giảm (Voucher)<span>" + tienVoucher.toLocaleString('it-IT', { style: 'currency', currency: 'VND' }) + " </span>";
-                    document.getElementById("total").innerHTML = (tienShip + @tongtien-tienVoucher - tienDiem).toLocaleString('it-IT', { style: 'currency', currency: 'VND' }) ;
+                    var total = tienShip + @tongtien-tienVoucher - tienDiem;
+                    if (total < 0) {
+                        total = 0
+                    }
+                    document.getElementById("total").innerHTML = total.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
                 }
                 else {
                     alert(response.loi);
@@ -483,7 +491,11 @@
                         ipDiem.hidden = false;
                         tienDiem = response.soTienGiam;
                         ipDiem.innerHTML = "Số tiền giảm (Điểm)<span>" + tienDiem.toLocaleString('it-IT', { style: 'currency', currency: 'VND' }) + "</span>";
-                        document.getElementById("total").innerHTML = (tienShip + @tongtien-tienVoucher - tienDiem).toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
+                        var total = tienShip + @tongtien-tienVoucher - tienDiem;
+                        if(total < 0){
+                            total = 0
+                        }
+                        document.getElementById("total").innerHTML = total.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
                     }
                     else {
                         alert(response.loi);
