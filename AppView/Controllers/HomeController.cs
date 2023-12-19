@@ -374,11 +374,19 @@ namespace AppView.Controllers
 
                         TempData["TrangThai"] = "false";
 
+                            HttpResponseMessage response = await _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllChiTietSanPhamHome?idSanPham=" + idSanPham);
+                            var chiTietSanPham = JsonConvert.DeserializeObject<ChiTietSanPhamViewModelHome>(response.Content.ReadAsStringAsync().Result);
+                            return View(chiTietSanPham);
+                        }
+                        else return BadRequest();
+                    }
+                    else
+                    {
+                        TempData["TongTien"] = "0";
                         HttpResponseMessage response = await _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllChiTietSanPhamHome?idSanPham=" + idSanPham);
                         var chiTietSanPham = JsonConvert.DeserializeObject<ChiTietSanPhamViewModelHome>(response.Content.ReadAsStringAsync().Result);
                         return View(chiTietSanPham);
                     }
-                    else return BadRequest();
                 }
                 else
                 {
@@ -406,7 +414,9 @@ namespace AppView.Controllers
                     else
                     {
                         TempData["SoLuong"] = "0";
-                        return View(new List<GioHangRequest>());
+                        HttpResponseMessage response = await _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllChiTietSanPhamHome?idSanPham=" + idSanPham);
+                        var chiTietSanPham = JsonConvert.DeserializeObject<ChiTietSanPhamViewModelHome>(response.Content.ReadAsStringAsync().Result);
+                        return View(chiTietSanPham);
                     }
 
                 }
