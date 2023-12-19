@@ -86,6 +86,7 @@ namespace AppView.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+            
             return View();
         }
         [HttpPost]
