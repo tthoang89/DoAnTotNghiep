@@ -833,7 +833,7 @@ namespace AppView.Controllers
                 if (user.vaiTro == 1)
                 {
                     string actionName = TempData["ActionName"].ToString();
-                    return RedirectToAction(actionName);
+                    return RedirectToAction("Index","TrangChu");
                 }
                 else return RedirectToAction("BanHang", "BanHangTaiQuay");
             }
@@ -1464,7 +1464,6 @@ namespace AppView.Controllers
             if(temp!=null && donMua!=null)
             {
                 var loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(temp);
-                loginInfor.DiemTich += donMua.DiemTich;
                 loginInfor.DiemTich -= donMua.DiemSuDung;
                 HttpContext.Session.SetString("LoginInfor", JsonConvert.SerializeObject(loginInfor));
             }
