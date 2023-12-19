@@ -92,17 +92,23 @@ namespace AppView.Controllers
             try
             {
                 ms.TrangThai = 1;
-                string apiUrl = $"https://localhost:7095/api/MauSac/ThemMauSac?ten={ms.Ten}&ma={ms.Ma}&trangthai={ms.TrangThai}";
+                
                 if (string.IsNullOrEmpty(ms.Ten))
                 {
                     ViewBag.ErrorMessage = "Vui lòng nhập tên màu sắc!";
                     return View();
                 }
-                var content = new StringContent(JsonConvert.SerializeObject(ms), Encoding.UTF8, "application/json");
-                var response = await _httpClient.PostAsync(apiUrl, content);
-                if (response.IsSuccessStatusCode)
+                else
                 {
-                    return RedirectToAction("Show");
+                    string encodedMauSac = Uri.EscapeDataString(ms.Ma);
+                    string apiUrl = $"https://localhost:7095/api/MauSac/ThemMauSac?ten={ms.Ten}&ma={encodedMauSac}&trangthai={ms.TrangThai}";
+                    ///*var content = new StringContent(JsonConvert.SerializeObject(ms), */Encoding.UTF8, "application/json");
+                    var response = await _httpClient.PostAsync(apiUrl, null);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return RedirectToAction("Show");
+                    }
+                    return View();
                 }
                 return View();
             }
