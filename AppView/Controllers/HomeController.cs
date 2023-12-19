@@ -17,6 +17,7 @@ using System.Globalization;
 using System.Net;
 using System.Net.Http.Json;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web.Helpers;
 using TechTalk.SpecFlow.Infrastructure;
 using X.PagedList;
@@ -635,33 +636,6 @@ namespace AppView.Controllers
             }
             else
             {
-                if (string.IsNullOrEmpty(result))
-                {
-                    //chiTietSanPham.SoLuong = (sl != null)?sl.Value:1;
-                    lstGioHang = new List<GioHangRequest>() { new GioHangRequest() { IDChiTietSanPham = new Guid(id), SoLuong = (sl != null) ? sl.Value : 1 } };
-                }
-                else
-                {
-                    lstGioHang = JsonConvert.DeserializeObject<List<GioHangRequest>>(result);
-                    var tempBienThe = lstGioHang.FirstOrDefault(x => x.IDChiTietSanPham == new Guid(id));
-                    if (tempBienThe != null)
-                    {
-                        //Sua 
-                        if (sl == null)
-                        {
-                            tempBienThe.SoLuong++;
-                        }
-                        else
-                        {
-                            tempBienThe.SoLuong = tempBienThe.SoLuong + sl.Value;
-                        }
-
-                    }
-                    else
-                    {
-                        lstGioHang.Add(new GioHangRequest() { IDChiTietSanPham = new Guid(id), SoLuong = (sl != null) ? sl.Value : 1 });
-                    }
-                }
                 var loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
                 if (loginInfor.vaiTro == 1)
                 {
@@ -874,47 +848,73 @@ namespace AppView.Controllers
         public IActionResult Profile()
         {
             var session = HttpContext.Session.GetString("LoginInfor");
-            LoginViewModel loginViewModel = JsonConvert.DeserializeObject<LoginViewModel>(session);
-            //LoginViewModel loginViewModel = JsonConvert.DeserializeObject<LoginViewModel>(loginInfor);
-            var response = _httpClient.GetAsync(_httpClient.BaseAddress + $"KhachHang/GetById?id={loginViewModel.Id}").Result;
-            if (response.IsSuccessStatusCode)
+            if (session != null)
             {
-                loginViewModel.DiemTich = JsonConvert.DeserializeObject<KhachHang>(response.Content.ReadAsStringAsync().Result).DiemTich;
-                return View(loginViewModel);
+                LoginViewModel loginViewModel = JsonConvert.DeserializeObject<LoginViewModel>(session);
+                //LoginViewModel loginViewModel = JsonConvert.DeserializeObject<LoginViewModel>(loginInfor);
+                var response = _httpClient.GetAsync(_httpClient.BaseAddress + $"KhachHang/GetById?id={loginViewModel.Id}").Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    loginViewModel.DiemTich = JsonConvert.DeserializeObject<KhachHang>(response.Content.ReadAsStringAsync().Result).DiemTich;
+                    return View(loginViewModel);
+                }
+                else
+                {
+                    return View(loginViewModel);
+                }
             }
-            else
-            {
-                return View(loginViewModel);
-            }
+            return Redirect("https://localhost:5001/");
            
         }
         [HttpPut]
         public ActionResult UpdateProfile(string ten, string email, string sdt, int? gioitinh, DateTime? ngaysinh, string? diachi)
         {
-            var session = HttpContext.Session.GetString("LoginInfor");
-            LoginViewModel khachhang = new LoginViewModel();
-            khachhang.Id = JsonConvert.DeserializeObject<LoginViewModel>(session).Id;
-            khachhang.Ten = ten;
-            khachhang.Email = email;
-            khachhang.SDT = sdt;
-            khachhang.GioiTinh = gioitinh;
-            khachhang.NgaySinh = ngaysinh;
-            khachhang.DiaChi = diachi;
-            khachhang.DiemTich = JsonConvert.DeserializeObject<LoginViewModel>(session).DiemTich;
-            khachhang.vaiTro = JsonConvert.DeserializeObject<LoginViewModel>(session).vaiTro;
-            khachhang.IsAccountLocked = JsonConvert.DeserializeObject<LoginViewModel>(session).IsAccountLocked;
-            khachhang.Message = "lmao";
-            var response = _httpClient.PutAsJsonAsync(_httpClient.BaseAddress + "QuanLyNguoiDung/UpdateProfile1", khachhang).Result;
-            if (response.IsSuccessStatusCode)
+            try
             {
-                HttpContext.Session.Remove("LoginInfor");
-                HttpContext.Session.SetString("LoginInfor", response.Content.ReadAsStringAsync().Result);
-                return Json(new { success = true, message = "Cập nhật thông tin cá nhân thành công" });
+                if (ten == null || email == null)
+                {
+                    return Json(new { success = false, message = "Không được để trống thông tin" });
+                }
+                Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
+                Match match = regex.Match(email);
+                if (!match.Success)
+                {
+                    return Json(new { success = false, message = "Email sai" });
+                }
+                if (Regex.Match(sdt, @"^(\+[0-9])$").Success)
+                {
+                    return Json(new { success = false, message = "Số điện thoại sai sai" });
+                }
+                var session = HttpContext.Session.GetString("LoginInfor");
+                LoginViewModel khachhang = new LoginViewModel();
+                khachhang.Id = JsonConvert.DeserializeObject<LoginViewModel>(session).Id;
+                khachhang.Ten = ten;
+                khachhang.Email = email;
+                khachhang.SDT = sdt;
+                khachhang.GioiTinh = gioitinh;
+                khachhang.NgaySinh = ngaysinh;
+                khachhang.DiaChi = diachi;
+                khachhang.DiemTich = JsonConvert.DeserializeObject<LoginViewModel>(session).DiemTich;
+                khachhang.vaiTro = JsonConvert.DeserializeObject<LoginViewModel>(session).vaiTro;
+                khachhang.IsAccountLocked = JsonConvert.DeserializeObject<LoginViewModel>(session).IsAccountLocked;
+                khachhang.Message = "lmao";
+                var response = _httpClient.PutAsJsonAsync(_httpClient.BaseAddress + "QuanLyNguoiDung/UpdateProfile1", khachhang).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    HttpContext.Session.Remove("LoginInfor");
+                    HttpContext.Session.SetString("LoginInfor", response.Content.ReadAsStringAsync().Result);
+                    return Json(new { success = true, message = "Cập nhật thông tin cá nhân thành công" });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "Cập nhật thông tin cá nhân thất bại" });
+                }
             }
-            else
+            catch (Exception)
             {
                 return Json(new { success = false, message = "Cập nhật thông tin cá nhân thất bại" });
             }
+            
         }
         public IActionResult PurchaseOrder()
         {
@@ -947,6 +947,7 @@ namespace AppView.Controllers
             var session = HttpContext.Session.GetString("LoginInfor");
             LoginViewModel loginViewModel = JsonConvert.DeserializeObject<LoginViewModel>(session);
             List<LichSuTichDiemTieuDiemViewModel> listLSTD = new List<LichSuTichDiemTieuDiemViewModel>();
+            List<LichSuTichDiemTieuDiemViewModel> listLSTDFN = new List<LichSuTichDiemTieuDiemViewModel>();
             HttpResponseMessage responseDonMua = _httpClient.GetAsync(_httpClient.BaseAddress + $"LichSuTichDiem/GetALLLichSuTichDiembyIdUser?IDkhachHang={loginViewModel.Id}").Result;
             if (responseDonMua.IsSuccessStatusCode)
             {
@@ -963,27 +964,84 @@ namespace AppView.Controllers
                 {
                     if (danhGiaCTHDView.TrangThaiGiaoHang == 0)
                     {
-                        listLSTD = listLSTD.Where(p => p.TrangThaiLSTD == 0).ToList();
+                        List<LichSuTichDiemTieuDiemViewModel> listLSTD1 = new List<LichSuTichDiemTieuDiemViewModel>();
+                        listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 0  || (p.TrangThaiLSTD == 4 && p.TrangThaiGiaoHang == 5)).ToList();
+                        foreach (var item in listLSTD1)
+                        {
+                            listLSTDFN.Add(item);
+                        }
+                        //List<LichSuTichDiemTieuDiemViewModel> listLSTD2 = new List<LichSuTichDiemTieuDiemViewModel>();
+                        listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 4 && p.TrangThaiGiaoHang == 5).ToList();
+                        foreach (var item in listLSTD1)
+                        {
+                            listLSTDFN.Add(item);
+                        }
                     }
                     else
                     {
-                        listLSTD = listLSTD.Where(p => p.TrangThaiLSTD == 1).ToList();
+                        List<LichSuTichDiemTieuDiemViewModel> listLSTD1 = new List<LichSuTichDiemTieuDiemViewModel>();
+                        listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 1 && p.TrangThaiGiaoHang == 6).ToList();
+                        foreach (var item in listLSTD1)
+                        {
+                            listLSTDFN.Add(item);
+                        }
+                        //List<LichSuTichDiemTieuDiemViewModel> listLSTD1 = new List<LichSuTichDiemTieuDiemViewModel>();
+                        listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 2 && p.TrangThaiGiaoHang == 7).ToList();
+                        foreach (var item in listLSTD1)
+                        {
+                            listLSTDFN.Add(item);
+                        }
+                        //List<LichSuTichDiemTieuDiemViewModel> listLSTD5 = new List<LichSuTichDiemTieuDiemViewModel>();
+                        listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 3 && p.TrangThaiGiaoHang == 5).ToList();
+                        foreach (var item in listLSTD1)
+                        {
+                            listLSTDFN.Add(item);
+                        }
                     }
-                    var model = listLSTD.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+                    var model = listLSTDFN.Skip((page - 1) * pageSize).Take(pageSize).ToList();
                     return Json(new
                     {
                         data = model,
-                        total = listLSTD.Count,
+                        total = listLSTDFN.Count,
                         status = true
                     });
                 }
                 else
                 {
-                    var model = listLSTD.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+                    List<LichSuTichDiemTieuDiemViewModel> listLSTD1 = new List<LichSuTichDiemTieuDiemViewModel>();
+                    listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 0 || (p.TrangThaiLSTD == 4 && p.TrangThaiGiaoHang == 5)).ToList();
+                    foreach (var item in listLSTD1)
+                    {
+                        listLSTDFN.Add(item);
+                    }
+                    listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 4 && p.TrangThaiGiaoHang == 5).ToList();
+                    foreach (var item in listLSTD1)
+                    {
+                        listLSTDFN.Add(item);
+                    }
+                    listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 1 && p.TrangThaiGiaoHang == 6).ToList();
+                    foreach (var item in listLSTD1)
+                    {
+                        listLSTDFN.Add(item);
+                    }
+                    //List<LichSuTichDiemTieuDiemViewModel> listLSTD1 = new List<LichSuTichDiemTieuDiemViewModel>();
+                    listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 2 && p.TrangThaiGiaoHang == 7).ToList();
+                    foreach (var item in listLSTD1)
+                    {
+                        listLSTDFN.Add(item);
+                    }
+                    //List<LichSuTichDiemTieuDiemViewModel> listLSTD5 = new List<LichSuTichDiemTieuDiemViewModel>();
+                    listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 3 && p.TrangThaiGiaoHang == 5).ToList();
+                    foreach (var item in listLSTD1)
+                    {
+                        listLSTDFN.Add(item);
+                    }
+                    //listLSTD = listLSTD.Where(p=>p.TrangThaiLSTD == 0 || (p.TrangThaiGiaoHang == 6 && p.TrangThaiLSTD == 0) || (p.TrangThaiLSTD == 4 && p.TrangThaiGiaoHang == 5) || (p.TrangThaiLSTD == 2 && p.TrangThaiGiaoHang == 7) || (p.TrangThaiLSTD == 3 && p.TrangThaiGiaoHang == 5)).ToList();
+                    var model = listLSTDFN.Skip((page - 1) * pageSize).Take(pageSize).ToList();
                     return Json(new
                     {
                         data = model,
-                        total = listLSTD.Count,
+                        total = listLSTDFN.Count,
                         status = true
                     });
                 }

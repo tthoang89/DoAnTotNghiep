@@ -172,6 +172,8 @@
             // Don't allow decrementing below zero
             if (oldValue > 1) {
                 var newVal = parseFloat(oldValue) - 1;
+            } else if (oldValue >= 100000) {
+                newVal = 100000;
             } else {
                 newVal = 1;
             }
@@ -192,6 +194,8 @@
             if (oldValue > 1) {
                 var newVal = parseFloat(oldValue) - 1;
                 
+            } else if (oldValue >= 100000) {
+                newVal = 100000;
             } else {
                 newVal = 1;
             }
@@ -210,6 +214,8 @@
         var oldValue = $button.val();
         if (oldValue == "" && oldValue == 0) {
             var newVal = 1;
+        } else if (oldValue >= 100000) {
+            newVal = 100000;
         } else {
             var newVal = parseFloat(oldValue);
         }

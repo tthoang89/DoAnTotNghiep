@@ -78,16 +78,49 @@ namespace AppView.Controllers
                 {
                     ViewData["TrangThai"] = "Yêu cầu chọn trạng thái ";
                 }
-                if (qdd.TrangThai != 0 && qdd.TiLeTichDiem > 0 && qdd.TiLeTieuDiem > 0)
+                if (qdd.TiLeTichDiem == 0)
                 {
-                    var response = await _httpClient.PostAsync($" https://localhost:7095/api/QuyDoiDiem?TiLeTichDiem={qdd.TiLeTichDiem}&TiLeTieuDiem={qdd.TiLeTieuDiem}&TrangThai={qdd.TrangThai}", null);
-
-                    if (response.IsSuccessStatusCode)
+                    if(qdd.TiLeTieuDiem == 0)
                     {
-                        return RedirectToAction("GetAllQuyDoiDiem");
+                        ViewData["TiLeTieuDiem"] = "Một trong 2 cái phải lớn hơn 0";
+                        return View();
                     }
-                    return View();
+                    if (qdd.TiLeTieuDiem > 0)
+                    {
+                        if (qdd.TrangThai != 0)
+                        {
+                            var response = await _httpClient.PostAsync($" https://localhost:7095/api/QuyDoiDiem?TiLeTichDiem={qdd.TiLeTichDiem}&TiLeTieuDiem={qdd.TiLeTieuDiem}&TrangThai={qdd.TrangThai}", null);
+
+                            if (response.IsSuccessStatusCode)
+                            {
+                                return RedirectToAction("GetAllQuyDoiDiem");
+                            }
+                            return View();
+                        }
+                    }
                 }
+                if (qdd.TiLeTieuDiem == 0)
+                {
+                    if (qdd.TiLeTichDiem == 0)
+                    {
+                        ViewData["TiLeTichDiem"] = "Một trong 2 cái phải lớn hơn 0";
+                        return View();
+                    }
+                    if (qdd.TiLeTichDiem > 0)
+                    {
+                        if (qdd.TrangThai != 0)
+                        {
+                            var response = await _httpClient.PostAsync($" https://localhost:7095/api/QuyDoiDiem?TiLeTichDiem={qdd.TiLeTichDiem}&TiLeTieuDiem={qdd.TiLeTieuDiem}&TrangThai={qdd.TrangThai}", null);
+
+                            if (response.IsSuccessStatusCode)
+                            {
+                                return RedirectToAction("GetAllQuyDoiDiem");
+                            }
+                            return View();
+                        }
+                    }
+                }
+                
             }
             return View();
                        
