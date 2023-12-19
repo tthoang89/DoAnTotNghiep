@@ -17,6 +17,7 @@ using System.Globalization;
 using System.Net;
 using System.Net.Http.Json;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web.Helpers;
 using TechTalk.SpecFlow.Infrastructure;
 using X.PagedList;
@@ -806,7 +807,7 @@ namespace AppView.Controllers
                 if (user.vaiTro == 1)
                 {
                     string actionName = TempData["ActionName"].ToString();
-                    return RedirectToAction(actionName);
+                    return RedirectToAction("Index","TrangChu");
                 }
                 else return RedirectToAction("BanHang", "BanHangTaiQuay");
             }
@@ -847,47 +848,73 @@ namespace AppView.Controllers
         public IActionResult Profile()
         {
             var session = HttpContext.Session.GetString("LoginInfor");
-            LoginViewModel loginViewModel = JsonConvert.DeserializeObject<LoginViewModel>(session);
-            //LoginViewModel loginViewModel = JsonConvert.DeserializeObject<LoginViewModel>(loginInfor);
-            var response = _httpClient.GetAsync(_httpClient.BaseAddress + $"KhachHang/GetById?id={loginViewModel.Id}").Result;
-            if (response.IsSuccessStatusCode)
+            if (session != null)
             {
-                loginViewModel.DiemTich = JsonConvert.DeserializeObject<KhachHang>(response.Content.ReadAsStringAsync().Result).DiemTich;
-                return View(loginViewModel);
+                LoginViewModel loginViewModel = JsonConvert.DeserializeObject<LoginViewModel>(session);
+                //LoginViewModel loginViewModel = JsonConvert.DeserializeObject<LoginViewModel>(loginInfor);
+                var response = _httpClient.GetAsync(_httpClient.BaseAddress + $"KhachHang/GetById?id={loginViewModel.Id}").Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    loginViewModel.DiemTich = JsonConvert.DeserializeObject<KhachHang>(response.Content.ReadAsStringAsync().Result).DiemTich;
+                    return View(loginViewModel);
+                }
+                else
+                {
+                    return View(loginViewModel);
+                }
             }
-            else
-            {
-                return View(loginViewModel);
-            }
+            return Redirect("https://localhost:5001/");
            
         }
         [HttpPut]
         public ActionResult UpdateProfile(string ten, string email, string sdt, int? gioitinh, DateTime? ngaysinh, string? diachi)
         {
-            var session = HttpContext.Session.GetString("LoginInfor");
-            LoginViewModel khachhang = new LoginViewModel();
-            khachhang.Id = JsonConvert.DeserializeObject<LoginViewModel>(session).Id;
-            khachhang.Ten = ten;
-            khachhang.Email = email;
-            khachhang.SDT = sdt;
-            khachhang.GioiTinh = gioitinh;
-            khachhang.NgaySinh = ngaysinh;
-            khachhang.DiaChi = diachi;
-            khachhang.DiemTich = JsonConvert.DeserializeObject<LoginViewModel>(session).DiemTich;
-            khachhang.vaiTro = JsonConvert.DeserializeObject<LoginViewModel>(session).vaiTro;
-            khachhang.IsAccountLocked = JsonConvert.DeserializeObject<LoginViewModel>(session).IsAccountLocked;
-            khachhang.Message = "lmao";
-            var response = _httpClient.PutAsJsonAsync(_httpClient.BaseAddress + "QuanLyNguoiDung/UpdateProfile1", khachhang).Result;
-            if (response.IsSuccessStatusCode)
+            try
             {
-                HttpContext.Session.Remove("LoginInfor");
-                HttpContext.Session.SetString("LoginInfor", response.Content.ReadAsStringAsync().Result);
-                return Json(new { success = true, message = "Cập nhật thông tin cá nhân thành công" });
+                if (ten == null || email == null)
+                {
+                    return Json(new { success = false, message = "Không được để trống thông tin" });
+                }
+                Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
+                Match match = regex.Match(email);
+                if (!match.Success)
+                {
+                    return Json(new { success = false, message = "Email sai" });
+                }
+                if (Regex.Match(sdt, @"^(\+[0-9])$").Success)
+                {
+                    return Json(new { success = false, message = "Số điện thoại sai sai" });
+                }
+                var session = HttpContext.Session.GetString("LoginInfor");
+                LoginViewModel khachhang = new LoginViewModel();
+                khachhang.Id = JsonConvert.DeserializeObject<LoginViewModel>(session).Id;
+                khachhang.Ten = ten;
+                khachhang.Email = email;
+                khachhang.SDT = sdt;
+                khachhang.GioiTinh = gioitinh;
+                khachhang.NgaySinh = ngaysinh;
+                khachhang.DiaChi = diachi;
+                khachhang.DiemTich = JsonConvert.DeserializeObject<LoginViewModel>(session).DiemTich;
+                khachhang.vaiTro = JsonConvert.DeserializeObject<LoginViewModel>(session).vaiTro;
+                khachhang.IsAccountLocked = JsonConvert.DeserializeObject<LoginViewModel>(session).IsAccountLocked;
+                khachhang.Message = "lmao";
+                var response = _httpClient.PutAsJsonAsync(_httpClient.BaseAddress + "QuanLyNguoiDung/UpdateProfile1", khachhang).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    HttpContext.Session.Remove("LoginInfor");
+                    HttpContext.Session.SetString("LoginInfor", response.Content.ReadAsStringAsync().Result);
+                    return Json(new { success = true, message = "Cập nhật thông tin cá nhân thành công" });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "Cập nhật thông tin cá nhân thất bại" });
+                }
             }
-            else
+            catch (Exception)
             {
                 return Json(new { success = false, message = "Cập nhật thông tin cá nhân thất bại" });
             }
+            
         }
         public IActionResult PurchaseOrder()
         {
@@ -920,43 +947,101 @@ namespace AppView.Controllers
             var session = HttpContext.Session.GetString("LoginInfor");
             LoginViewModel loginViewModel = JsonConvert.DeserializeObject<LoginViewModel>(session);
             List<LichSuTichDiemTieuDiemViewModel> listLSTD = new List<LichSuTichDiemTieuDiemViewModel>();
+            List<LichSuTichDiemTieuDiemViewModel> listLSTDFN = new List<LichSuTichDiemTieuDiemViewModel>();
             HttpResponseMessage responseDonMua = _httpClient.GetAsync(_httpClient.BaseAddress + $"LichSuTichDiem/GetALLLichSuTichDiembyIdUser?IDkhachHang={loginViewModel.Id}").Result;
             if (responseDonMua.IsSuccessStatusCode)
             {
                 listLSTD = JsonConvert.DeserializeObject<List<LichSuTichDiemTieuDiemViewModel>>(responseDonMua.Content.ReadAsStringAsync().Result);
-                listLSTD = listLSTD.OrderByDescending(p => p.NgayTao).ToList();
+                listLSTD = listLSTD.OrderBy(p => p.TrangThaiLSTD).ToList();
 
-                foreach (var item in listLSTD)
-                {
-                    item.Ngaytao1 = item.NgayTao.ToString("dd/MM/yyyy");
-                    item.Ngaythanhtoan1 = item.NgayThanhToan != null ? item.NgayThanhToan.Value.ToString("dd/MM/yyyy") : null;
-                    item.Ngaynhanhang1 = item.NgayNhanHang != null ? item.NgayNhanHang.Value.ToString("dd/MM/yyyy") : null;
-                }
+                //foreach (var item in listLSTD)
+                //{
+                //    item.Ngaytao1 = item.NgayTao.ToString("dd/MM/yyyy");
+                //    item.Ngaythanhtoan1 = item.NgayThanhToan != null ? item.NgayThanhToan.Value.ToString("dd/MM/yyyy") : null;
+                //    item.Ngaynhanhang1 = item.NgayNhanHang != null ? item.NgayNhanHang.Value.ToString("dd/MM/yyyy") : null;
+                //}
                 if (danhGiaCTHDView.TrangThaiGiaoHang != 2 && danhGiaCTHDView.TrangThaiGiaoHang != null)
                 {
                     if (danhGiaCTHDView.TrangThaiGiaoHang == 0)
                     {
-                        listLSTD = listLSTD.Where(p => p.TrangThaiLSTD == 0).ToList();
+                        List<LichSuTichDiemTieuDiemViewModel> listLSTD1 = new List<LichSuTichDiemTieuDiemViewModel>();
+                        listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 0  || (p.TrangThaiLSTD == 3 && p.TrangThaiGiaoHang == 5)).ToList();
+                        foreach (var item in listLSTD1)
+                        {
+                            listLSTDFN.Add(item);
+                        }
+                        //List<LichSuTichDiemTieuDiemViewModel> listLSTD2 = new List<LichSuTichDiemTieuDiemViewModel>();
+                        listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 3 && p.TrangThaiGiaoHang == 5).ToList();
+                        foreach (var item in listLSTD1)
+                        {
+                            listLSTDFN.Add(item);
+                        }
                     }
                     else
                     {
-                        listLSTD = listLSTD.Where(p => p.TrangThaiLSTD == 1).ToList();
+                        List<LichSuTichDiemTieuDiemViewModel> listLSTD1 = new List<LichSuTichDiemTieuDiemViewModel>();
+                        listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 1 && p.TrangThaiGiaoHang == 6).ToList();
+                        foreach (var item in listLSTD1)
+                        {
+                            listLSTDFN.Add(item);
+                        }
+                        //List<LichSuTichDiemTieuDiemViewModel> listLSTD1 = new List<LichSuTichDiemTieuDiemViewModel>();
+                        listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 2 && p.TrangThaiGiaoHang == 7).ToList();
+                        foreach (var item in listLSTD1)
+                        {
+                            listLSTDFN.Add(item);
+                        }
+                        //List<LichSuTichDiemTieuDiemViewModel> listLSTD5 = new List<LichSuTichDiemTieuDiemViewModel>();
+                        listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 4 && p.TrangThaiGiaoHang == 5).ToList();
+                        foreach (var item in listLSTD1)
+                        {
+                            listLSTDFN.Add(item);
+                        }
                     }
-                    var model = listLSTD.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+                    var model = listLSTDFN.Skip((page - 1) * pageSize).Take(pageSize).ToList();
                     return Json(new
                     {
                         data = model,
-                        total = listLSTD.Count,
+                        total = listLSTDFN.Count,
                         status = true
                     });
                 }
                 else
                 {
-                    var model = listLSTD.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+                    List<LichSuTichDiemTieuDiemViewModel> listLSTD1 = new List<LichSuTichDiemTieuDiemViewModel>();
+                    listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 0 || (p.TrangThaiLSTD == 3 && p.TrangThaiGiaoHang == 5)).ToList();
+                    foreach (var item in listLSTD1)
+                    {
+                        listLSTDFN.Add(item);
+                    }
+                    listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 3 && p.TrangThaiGiaoHang == 5).ToList();
+                    foreach (var item in listLSTD1)
+                    {
+                        listLSTDFN.Add(item);
+                    }
+                    listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 1 && p.TrangThaiGiaoHang == 6).ToList();
+                    foreach (var item in listLSTD1)
+                    {
+                        listLSTDFN.Add(item);
+                    }
+                    //List<LichSuTichDiemTieuDiemViewModel> listLSTD1 = new List<LichSuTichDiemTieuDiemViewModel>();
+                    listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 2 && p.TrangThaiGiaoHang == 7).ToList();
+                    foreach (var item in listLSTD1)
+                    {
+                        listLSTDFN.Add(item);
+                    }
+                    //List<LichSuTichDiemTieuDiemViewModel> listLSTD5 = new List<LichSuTichDiemTieuDiemViewModel>();
+                    listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 4 && p.TrangThaiGiaoHang == 5).ToList();
+                    foreach (var item in listLSTD1)
+                    {
+                        listLSTDFN.Add(item);
+                    }
+                    //listLSTD = listLSTD.Where(p=>p.TrangThaiLSTD == 0 || (p.TrangThaiGiaoHang == 6 && p.TrangThaiLSTD == 0) || (p.TrangThaiLSTD == 4 && p.TrangThaiGiaoHang == 5) || (p.TrangThaiLSTD == 2 && p.TrangThaiGiaoHang == 7) || (p.TrangThaiLSTD == 3 && p.TrangThaiGiaoHang == 5)).ToList();
+                    var model = listLSTDFN.Skip((page - 1) * pageSize).Take(pageSize).ToList();
                     return Json(new
                     {
                         data = model,
-                        total = listLSTD.Count,
+                        total = listLSTDFN.Count,
                         status = true
                     });
                 }
@@ -1267,13 +1352,13 @@ namespace AppView.Controllers
             if (response.IsSuccessStatusCode)
             {
                 var soTienGiam = Convert.ToInt32(response.Content.ReadAsStringAsync().Result);
-                if (soTienGiam < (tongTien / 2))
+                if (soTienGiam <= (tongTien / 5))
                 {
                     return Json(new { SoTienGiam = soTienGiam, TrangThai = true });
                 }
                 else
                 {
-                    return Json(new { Loi = "Số tiền giảm khi sử dụng điểm phải nhỏ hơn 50% giá trị đơn hàng", TrangThai = false });
+                    return Json(new { Loi = "Số tiền giảm khi sử dụng điểm phải nhỏ hơn 20% giá trị đơn hàng", TrangThai = false });
                 }
             }
             else return Json(new { Loi = "Không kết nối được với server", TrangThai = false });
@@ -1325,8 +1410,8 @@ namespace AppView.Controllers
                 TempData["HoaDon"] = JsonConvert.SerializeObject(hoaDon);
                 string vnp_Returnurl = "https://localhost:5001/Home/PaymentCallBack"; //URL nhan ket qua tra ve 
                 string vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"; //URL thanh toan cua VNPAY 
-                string vnp_TmnCode = "OFZ9Q6W4"; //Ma định danh merchant kết nối (Terminal Id)
-                string vnp_HashSecret = "IKQOFVXJPGYEIDNVNICTIIFPXNTXRYCX"; //Secret Key
+                string vnp_TmnCode = "P4VW9FD1"; //Ma định danh merchant kết nối (Terminal Id)
+                string vnp_HashSecret = "OPHRXNCKQAUVHIJNWXXTMPPYBVPAXUTF"; //Secret Key
                 string ipAddr = HttpContext.Connection.RemoteIpAddress?.ToString();
                 //Get payment input
                 OrderInfo order = new OrderInfo();
@@ -1341,7 +1426,7 @@ namespace AppView.Controllers
 
                 vnpay.AddRequestData("vnp_Version", VnPayLibrary.VERSION);
                 vnpay.AddRequestData("vnp_Command", "pay");
-                vnpay.AddRequestData("vnp_TmnCode", "OFZ9Q6W4");
+                vnpay.AddRequestData("vnp_TmnCode", vnp_TmnCode);
                 vnpay.AddRequestData("vnp_Amount", (order.Amount * 100).ToString());
                 vnpay.AddRequestData("vnp_CreateDate", order.CreatedDate.ToString("yyyyMMddHHmmss"));
                 vnpay.AddRequestData("vnp_CurrCode", "VND");
@@ -1356,7 +1441,7 @@ namespace AppView.Controllers
                 //Add Params of 2.1.0 Version
                 //Billing
 
-                string paymentUrl = vnpay.CreateRequestUrl(vnp_Url, "IKQOFVXJPGYEIDNVNICTIIFPXNTXRYCX");
+                string paymentUrl = vnpay.CreateRequestUrl(vnp_Url, vnp_HashSecret);
                 //log.InfoFormat("VNPAY URL: {0}", paymentUrl);
 
                 return paymentUrl;
@@ -1368,7 +1453,7 @@ namespace AppView.Controllers
         {
             if (Request.Query.Count > 0)
             {
-                string vnp_HashSecret = "IKQOFVXJPGYEIDNVNICTIIFPXNTXRYCX"; //Chuoi bi mat
+                string vnp_HashSecret = "OPHRXNCKQAUVHIJNWXXTMPPYBVPAXUTF"; //Chuoi bi mat
                 var vnpayData = Request.Query;
                 VnPayLibrary vnpay = new VnPayLibrary();
 
@@ -1437,7 +1522,6 @@ namespace AppView.Controllers
             if(temp!=null && donMua!=null)
             {
                 var loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(temp);
-                loginInfor.DiemTich += donMua.DiemTich;
                 loginInfor.DiemTich -= donMua.DiemSuDung;
                 HttpContext.Session.SetString("LoginInfor", JsonConvert.SerializeObject(loginInfor));
             }

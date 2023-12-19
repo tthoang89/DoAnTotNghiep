@@ -364,7 +364,8 @@ namespace AppAPI.Services
                 if (temp != null)
                 {
                     var anh = _context.Anhs.FirstOrDefault(x => x.IDMauSac == temp.IDMauSac && x.IDSanPham == temp.IDSanPham);
-                    ChiTietSanPhamViewModel chiTietSanPham = new ChiTietSanPhamViewModel() { ID = temp.ID, Ten = _context.SanPhams.First(x => x.ID == temp.IDSanPham).Ten, SoLuong = temp.SoLuong, GiaGoc = temp.GiaBan, TrangThai = temp.TrangThai, Anh = anh != null ? anh.DuongDan : null, MauSac = _context.MauSacs.First(x => x.ID == temp.IDMauSac).Ten, KichCo = _context.KichCos.First(x => x.ID == temp.IDKichCo).Ten };
+                    ChiTietSanPhamViewModel chiTietSanPham = new ChiTietSanPhamViewModel() { ID = temp.ID, Ten = _context.SanPhams.First(x => x.ID == temp.IDSanPham).Ten, SoLuong = temp.SoLuong, GiaGoc = temp.GiaBan, TrangThai = _context.SanPhams.First(x=>x.ID==temp.IDSanPham).TrangThai == 0?0:
+                        temp.TrangThai, Anh = anh != null ? anh.DuongDan : null, MauSac = _context.MauSacs.First(x => x.ID == temp.IDMauSac).Ten, KichCo = _context.KichCos.First(x => x.ID == temp.IDKichCo).Ten };
                     var khuyenMai = _context.KhuyenMais.FirstOrDefault(x => x.ID == temp.IDKhuyenMai && x.NgayKetThuc > DateTime.Now);
                     chiTietSanPham.GiaBan = khuyenMai != null ? GetKhuyenMai(khuyenMai.GiaTri, chiTietSanPham.GiaGoc, khuyenMai.TrangThai) : chiTietSanPham.GiaGoc;
                     return chiTietSanPham;
@@ -459,7 +460,7 @@ namespace AppAPI.Services
                                   TenSP = sp.Ten,
                                   GiaSPTT = ctsp.GiaBan,
                                   DuongDanSPTT = _context.Anhs.FirstOrDefault(x => x.IDMauSac == ms.ID && x.IDSanPham == sp.ID).DuongDan,
-                              }).Take(10).ToListAsync();
+                              }).Take(5).ToListAsync();
             chiTietSanPham.SoSao = chiTietSanPham.SoSao / query.Count();
             chiTietSanPham.sosaoPercent = float.IsNaN(chiTietSanPham.SoSao) ? 0 : Convert.ToInt32((chiTietSanPham.SoSao / 5) * 100);
             chiTietSanPham.SoDanhGia = query.Count();

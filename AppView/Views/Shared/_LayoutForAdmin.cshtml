@@ -7,8 +7,6 @@
     if (session != null)
     {
         loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(Context.Session.GetString("LoginInfor"));
-
-
     }
 
 }
@@ -71,8 +69,8 @@
 
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                         <li class="dropdown-header">
-                            <h6>Kevin Anderson</h6>
-                            <span>Chức vụ</span>
+                            <h6 id="TenNV">@loginInfor.Ten</h6>
+                            <span id="ChucVu">Chức vụ</span>
                         </li>
                         <li>
                             <hr class="dropdown-divider">
@@ -466,3 +464,4 @@
 
 </body>
 </html>
+
