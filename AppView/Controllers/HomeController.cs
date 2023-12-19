@@ -364,19 +364,22 @@ namespace AppView.Controllers
                     // laam them
                     int cout = lstGioHang.Sum(c => c.SoLuong);
                     TempData["SoLuong"] = cout.ToString();
-                    var response1 = await _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCart?request=" + Request.Cookies["Cart"]);
-                    if (response1.IsSuccessStatusCode)
+
+                    if (Request.Cookies["Cart"] != null)
                     {
-                        var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response1.Content.ReadAsStringAsync().Result);
+                        var response1 = await _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCart?request=" + Request.Cookies["Cart"]);
+                        if (response1.IsSuccessStatusCode)
+                        {
+                            var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response1.Content.ReadAsStringAsync().Result);
 
 
-                        // lam end
+                            // lam end
 
-                        TempData["TrangThai"] = "false";
-
+                            TempData["TrangThai"] = "false";
                             HttpResponseMessage response = await _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllChiTietSanPhamHome?idSanPham=" + idSanPham);
                             var chiTietSanPham = JsonConvert.DeserializeObject<ChiTietSanPhamViewModelHome>(response.Content.ReadAsStringAsync().Result);
                             return View(chiTietSanPham);
+
                         }
                         else return BadRequest();
                     }
@@ -386,6 +389,7 @@ namespace AppView.Controllers
                         HttpResponseMessage response = await _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllChiTietSanPhamHome?idSanPham=" + idSanPham);
                         var chiTietSanPham = JsonConvert.DeserializeObject<ChiTietSanPhamViewModelHome>(response.Content.ReadAsStringAsync().Result);
                         return View(chiTietSanPham);
+
                     }
                 }
                 else
@@ -408,6 +412,7 @@ namespace AppView.Controllers
                             HttpResponseMessage response = await _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllChiTietSanPhamHome?idSanPham=" + idSanPham);
                             var chiTietSanPham = JsonConvert.DeserializeObject<ChiTietSanPhamViewModelHome>(response.Content.ReadAsStringAsync().Result);
                             return View(chiTietSanPham);
+
                         }
                         else return BadRequest();
                     }
@@ -417,9 +422,11 @@ namespace AppView.Controllers
                         HttpResponseMessage response = await _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllChiTietSanPhamHome?idSanPham=" + idSanPham);
                         var chiTietSanPham = JsonConvert.DeserializeObject<ChiTietSanPhamViewModelHome>(response.Content.ReadAsStringAsync().Result);
                         return View(chiTietSanPham);
+
                     }
 
                 }
+
                 // lam end
             }
             catch (Exception)
