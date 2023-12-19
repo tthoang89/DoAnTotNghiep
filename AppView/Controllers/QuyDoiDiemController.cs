@@ -133,6 +133,28 @@ namespace AppView.Controllers
                         }
                     }
                 }
+                if (qdd.TiLeTichDiem > 0 && qdd.TiLeTieuDiem > 0 && qdd.TrangThai != 0)
+                {
+                    var Diem = dbcontext.QuyDoiDiems.ToList();
+                    foreach (var tk in Diem)
+                    {
+                        var trangthai = dbcontext.QuyDoiDiems.FirstOrDefault(x => x.ID == tk.ID);
+                        if (trangthai != null)
+                        {
+                            trangthai.TrangThai = 0;
+                            dbcontext.QuyDoiDiems.Update(trangthai);
+                        }
+
+                    }
+                    dbcontext.SaveChangesAsync();
+                    var response = await _httpClient.PostAsync($" https://localhost:7095/api/QuyDoiDiem?TiLeTichDiem={qdd.TiLeTichDiem}&TiLeTieuDiem={qdd.TiLeTieuDiem}&TrangThai={qdd.TrangThai}", null);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return RedirectToAction("GetAllQuyDoiDiem");
+                    }
+                    return View();
+                }
                 
             }
             return View();
