@@ -121,21 +121,33 @@
                             {
                                 if (tk.TrangThai == 0)
                                 {
-                                    <div style="color:green">@(item.GiaGoc - tk.GiaTri) VND</div>
+                                    if(item.GiaGoc<=tk.GiaTri){
+                                        <div style="color:green">0 VND</div>
+                                    }
+                                    else{
+                                        <div style="color:green">@(item.GiaGoc-tk.GiaTri) VND</div>
+                                    }
+                                   
                                 }
                                 else
                                 {
-                                    <div style="color:green">$@(item.GiaGoc - item.GiaGoc * tk.GiaTri / 100) VND</div>
+                                    if(item.GiaGoc-item.GiaGoc*tk.GiaTri/100>0){
+                                        <div style="color:green">@(item.GiaGoc - item.GiaGoc * tk.GiaTri / 100) VND</div>
+                                    }
+                                    else{
+                                        <div style="color:green">0 VND</div>
+                                    }
+                                    
                                 }
                             }
                             else if (tk.NgayKetThuc < DateTime.Now)
                             {
-                                <div style="color:red">$@item.GiaGoc.ToString("n0") VND</div>
+                                <div style="color:red">@item.GiaGoc.ToString("n0") VND</div>
                             }
                         }
                         else
                         {
-                            <div style="color:red">$@item.GiaGoc.ToString("n0") VND</div>
+                            <div style="color:red">@item.GiaGoc.ToString("n0") VND</div>
                         }
                     }
 
