@@ -437,7 +437,7 @@
         //    toastr.error('Phiếu hàng đang trống', 'Error Alert', { timeOut: 300 });
         //}
 
-        if (ttien <= 0) {
+        if (ttien < 0) {
             toastr.error('Số tiền thanh toán không hợp lệ', 'Error Alert', { timeOut: 300 });
         }else if(khachdua < ttien && pttt === "Tiền mặt"){
             toastr.error('Khách chưa thanh toán đủ tiền hàng', 'Error Alert', { timeOut: 300 });
