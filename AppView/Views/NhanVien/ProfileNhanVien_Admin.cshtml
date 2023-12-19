@@ -87,16 +87,9 @@
                             <div class="col-sm-3">
                                 <p class="mb-0">Vai trò</p>
                             </div>
-                            @if (Model.vaiTro == 0)
-                            {
-                                <div class="col-sm-3">
-                                    <input style="border:none;width: 100%; background: white;" type="text" value="Admin" disabled />
-                                </div>
-                            }else{
-                                <div class="col-sm-3">
-                                    <input style="border:none;width: 100%; background: white;" type="text" value="Nhân viên" disabled />
-                                </div>
-                            }
+                            <div class="col-sm-3">
+                                <input style="border:none;width: 100%; background: white;" type="text" id="VaiTro1" value="Admin" disabled />
+                            </div>
                             
                         </div>
                     </div>
@@ -110,8 +103,12 @@
         </div>
     </div>
 </section>
+<script src="/js/jquery-3.3.1.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+    $(document).ready(function () {
+        document.getElementById("VaiTro1").value = document.getElementById("ChucVu").innerHTML;
+    });
     function LichsuTichDiem() {
         location.href = 'LichSuTieuDiemTichDiem';
     }

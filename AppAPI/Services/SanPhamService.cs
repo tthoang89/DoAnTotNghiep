@@ -156,6 +156,7 @@ namespace AppAPI.Services
                                             IDKichCo = b.IDKichCo,
                                             IDChatLieu = a.IDChatLieu,
                                             GiaGoc = b.GiaBan,
+                                            SoLuong = b.SoLuong,
                                             soSao = (from cthd in _context.ChiTietHoaDons.AsNoTracking()
                                                      join ctsp in _context.ChiTietSanPhams.AsNoTracking()
                                                      on cthd.IDCTSP equals ctsp.ID

@@ -67,7 +67,7 @@ namespace AppView.Controllers
                         TempData["SoLuong"] = cout.ToString();
                         // lam end
                         TempData["TrangThai"] = "true";
-                        return View(temp.GioHangs);
+                        return View(cout);
                     }
                     else return BadRequest();
                 }
