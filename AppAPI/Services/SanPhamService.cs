@@ -757,14 +757,14 @@ namespace AppAPI.Services
         }
         public async Task<List<LoaiSP>> GetAllLoaiSPCha()
         {
-            return await _context.LoaiSPs.Where(x => x.IDLoaiSPCha == null).ToListAsync();
+            return await _context.LoaiSPs.Where(x => x.IDLoaiSPCha == null && x.TrangThai == 1).ToListAsync();
         }
         public async Task<List<LoaiSP>?> GetAllLoaiSPCon(string tenLoaiSPCha)
         {
             var loaiSPCha = await _context.LoaiSPs.Where(x => x.IDLoaiSPCha == null).FirstOrDefaultAsync(x => x.Ten == tenLoaiSPCha);
             if (loaiSPCha != null)
             {
-                return await _context.LoaiSPs.Where(x => x.IDLoaiSPCha == loaiSPCha.ID).ToListAsync();
+                return await _context.LoaiSPs.Where(x => x.IDLoaiSPCha == loaiSPCha.ID && x.TrangThai == 1).ToListAsync();
             }
             else return null;
         }
@@ -784,16 +784,16 @@ namespace AppAPI.Services
         }
         public async Task<List<MauSac>> GetAllMauSac()
         {
-            return await _context.MauSacs.ToListAsync();
+            return await _context.MauSacs.Where(x=>x.TrangThai == 1).ToListAsync();
         }
 
         public async Task<List<KichCo>> GetAllKichCo()
         {
-            return await _context.KichCos.ToListAsync();
+            return await _context.KichCos.Where(x => x.TrangThai == 1).ToListAsync();
         }
         public async Task<List<ChatLieu>> GetAllChatLieu()
         {
-            return await _context.ChatLieus.ToListAsync();
+            return await _context.ChatLieus.Where(x => x.TrangThai == 1).ToListAsync();
         }
 
         public Task<List<ChiTietSanPham>> GetAllChiTietSanPham(Guid idSanPham)
@@ -812,7 +812,7 @@ namespace AppAPI.Services
             {
                 tienKhuyenMai -= (giaTri * giaSP) / 100;
             }
-            return tienKhuyenMai;
+            return tienKhuyenMai<0?0:tienKhuyenMai;
         }
         public void DeleteKhuyenMai(Guid id)
         {

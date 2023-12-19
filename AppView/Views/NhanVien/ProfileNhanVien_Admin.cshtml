@@ -39,7 +39,7 @@
                              class="rounded-circle img-fluid" style="width: 150px;">
                         <h5 id="tenanh" class="my-3">@Model.Ten</h5>
                         <div class="d-flex justify-content-center mb-2">
-                            <a href="https://localhost:5001/Home/ForgotPassword" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Đổi mật khẩu</a>
+                            <button type="button" onclick="doiMatKhau()" class="btn btn-primary">Đổi mật khẩu</button>
                         </div>
                     </div>
                 </div>
@@ -103,6 +103,14 @@
         </div>
     </div>
 </section>
+<div class="modal border-0 rounded-0 fade" id="doimatkhau" tabindex="-1">
+    <div class="modal-dialog" id="doimatkhau-dialog">
+        <div class="modal-content" id="doimatkhau-content">
+            <div class="modal-body" id="doimatkhaubody">
+            </div>
+        </div>
+    </div>
+</div>
 <script src="/js/jquery-3.3.1.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
@@ -111,6 +119,10 @@
     });
     function LichsuTichDiem() {
         location.href = 'LichSuTieuDiemTichDiem';
+    }
+    function doiMatKhau() {
+        $("#doimatkhaubody").load("/NhanVien/ChangePassword");
+        $("#doimatkhau").modal("show");
     }
     function SuaThongTinCN() {
         var x = document.getElementById("ten").disabled;

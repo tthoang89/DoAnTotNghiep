@@ -167,7 +167,7 @@
     function themKichCo(count, element) {
         $("#lstKichCo").append(`<div class="row" style='width:450px' id="size${count}">
             <div class="col-lg-10" style='padding-right:0px'>
-            <input name="KichCos[${count}]" class="form-control" list="kichCo" id="tenkc${count}"/>
+            <input name="KichCos[${count}]" class="form-control" list="kichCo" id="tenkc${count}" autocomplete="off" />
             </div>
             <div class="col-lg-2" style='padding-left:0px'>
             <input type="button" class= "form-control" value="-" hidden id="xoasize${count}" onclick="xoaSize(${count})"/>
@@ -177,7 +177,7 @@
         element.remove();
     }
     function themMauSac() {
-        $("#tbbody").append("<tr id='mau"+countMauSac+"'><td style='width:70%'> <input name='MauSacs[" + countMauSac + "].Ten' class='form-control' list='mauSac' id='tenMau" + countMauSac + "' onchange='changeTenMau(" + countMauSac + ")'/></td><td style='width: 45.6px'><input name='MauSacs[" + countMauSac + "].Ma' type='color' onchange='changeMaMau(" + countMauSac + ")' class='form-control' id='maMau" + countMauSac + "' style='height: 41.6px;width:100%'/></td><td style='width: 50px'><input type='button' class='form-control' value='-' hidden id = 'xoamau"+countMauSac+"' onclick='xoaMau("+countMauSac+")' /></td></tr > ");
+        $("#tbbody").append("<tr id='mau" + countMauSac + "'><td style='width:70%'> <input name='MauSacs[" + countMauSac + "].Ten' class='form-control' list='mauSac' id='tenMau" + countMauSac + "' onchange='changeTenMau(" + countMauSac + ")' autocomplete=\"off\" /></td><td style='width: 45.6px'><input name='MauSacs[" + countMauSac + "].Ma' type='color' onchange='changeMaMau(" + countMauSac + ")' class='form-control' id='maMau" + countMauSac + "' style='height: 41.6px;width:100%' /></td><td style='width: 50px'><input type='button' class='form-control' value='-' hidden id = 'xoamau" + countMauSac + "' onclick='xoaMau(" + countMauSac + ")' /></td></tr > ");
         document.getElementById("xoamau" + (countMauSac - 1)).hidden = false;
         countMauSac++;
     }

@@ -277,5 +277,9 @@ namespace AppView.Controllers
             }
             
         }
+        public IActionResult ChangePassword()
+        {
+            return PartialView("ChangePassword");
+        }
     }
 }
