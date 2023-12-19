@@ -350,10 +350,75 @@ namespace AppView.Controllers
         }
         [HttpGet]
         public async Task<IActionResult> ProductDetail(string idSanPham)
-        {
-            HttpResponseMessage response = await _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllChiTietSanPhamHome?idSanPham=" + idSanPham);
-            var chiTietSanPham = JsonConvert.DeserializeObject<ChiTietSanPhamViewModelHome>(response.Content.ReadAsStringAsync().Result);
-            return View(chiTietSanPham);
+        { // lam start
+            var session = HttpContext.Session.GetString("LoginInfor");
+            if (String.IsNullOrEmpty(session))
+            {
+                List<GioHangRequest> lstGioHang = new List<GioHangRequest>();
+                if (Request.Cookies["Cart"] != null)
+                {
+                    lstGioHang = JsonConvert.DeserializeObject<List<GioHangRequest>>(Request.Cookies["Cart"]);
+                }
+                // laam them
+                int cout = lstGioHang.Sum(c => c.SoLuong);
+                TempData["SoLuong"] = cout.ToString();
+
+                if (Request.Cookies["Cart"] != null)
+                {
+                    var response1 = await _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCart?request=" + Request.Cookies["Cart"]);
+                    if (response1.IsSuccessStatusCode)
+                    {
+                        var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response1.Content.ReadAsStringAsync().Result);
+
+
+                        // lam end
+
+                        TempData["TrangThai"] = "false";
+
+                        HttpResponseMessage response = await _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllChiTietSanPhamHome?idSanPham=" + idSanPham);
+                        var chiTietSanPham = JsonConvert.DeserializeObject<ChiTietSanPhamViewModelHome>(response.Content.ReadAsStringAsync().Result);
+                        return View(chiTietSanPham);
+                    }
+                    else return BadRequest();
+                }
+                else
+                {
+                    TempData["TongTien"] = "0";
+                    return View(new List<GioHangRequest>());
+                }
+            }
+            else
+            {
+                var loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
+                if (loginInfor.vaiTro == 1)
+                {
+                    var response2 = await _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCartLogin?idNguoiDung=" + loginInfor.Id);
+                    if (response2.IsSuccessStatusCode)
+                    {
+                        var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response2.Content.ReadAsStringAsync().Result);
+
+
+                        // lam them
+                        int cout = temp.GioHangs.Sum(c => c.SoLuong);
+
+                        TempData["SoLuong"] = cout.ToString();
+                        // lam end
+                        TempData["TrangThai"] = "true";
+                        HttpResponseMessage response = await _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllChiTietSanPhamHome?idSanPham=" + idSanPham);
+                        var chiTietSanPham = JsonConvert.DeserializeObject<ChiTietSanPhamViewModelHome>(response.Content.ReadAsStringAsync().Result);
+                        return View(chiTietSanPham);
+                    }
+                    else return BadRequest();
+                }
+                else
+                {
+                    TempData["SoLuong"] = "0";
+                    return View(new List<GioHangRequest>());
+                }
+
+            }
+            // lam end
+            
         }
         [HttpGet]
         public async Task<IActionResult> ProductDetailFromCart(Guid idctsp)
@@ -952,26 +1017,30 @@ namespace AppView.Controllers
             if (responseDonMua.IsSuccessStatusCode)
             {
                 listLSTD = JsonConvert.DeserializeObject<List<LichSuTichDiemTieuDiemViewModel>>(responseDonMua.Content.ReadAsStringAsync().Result);
-                listLSTD = listLSTD.OrderByDescending(p => p.NgayTao).ToList();
+                listLSTD = listLSTD.OrderBy(p => p.TrangThaiLSTD).ToList();
 
-                foreach (var item in listLSTD)
-                {
-                    item.Ngaytao1 = item.NgayTao.ToString("dd/MM/yyyy");
-                    item.Ngaythanhtoan1 = item.NgayThanhToan != null ? item.NgayThanhToan.Value.ToString("dd/MM/yyyy") : null;
-                    item.Ngaynhanhang1 = item.NgayNhanHang != null ? item.NgayNhanHang.Value.ToString("dd/MM/yyyy") : null;
-                }
+                //foreach (var item in listLSTD)
+                //{
+                //    item.Ngaytao1 = item.NgayTao.ToString("dd/MM/yyyy");
+                //    item.Ngaythanhtoan1 = item.NgayThanhToan != null ? item.NgayThanhToan.Value.ToString("dd/MM/yyyy") : null;
+                //    item.Ngaynhanhang1 = item.NgayNhanHang != null ? item.NgayNhanHang.Value.ToString("dd/MM/yyyy") : null;
+                //}
                 if (danhGiaCTHDView.TrangThaiGiaoHang != 2 && danhGiaCTHDView.TrangThaiGiaoHang != null)
                 {
                     if (danhGiaCTHDView.TrangThaiGiaoHang == 0)
                     {
                         List<LichSuTichDiemTieuDiemViewModel> listLSTD1 = new List<LichSuTichDiemTieuDiemViewModel>();
-                        listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 0  || (p.TrangThaiLSTD == 4 && p.TrangThaiGiaoHang == 5)).ToList();
+                        listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 0).ToList();
                         foreach (var item in listLSTD1)
                         {
                             listLSTDFN.Add(item);
                         }
-                        //List<LichSuTichDiemTieuDiemViewModel> listLSTD2 = new List<LichSuTichDiemTieuDiemViewModel>();
-                        listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 4 && p.TrangThaiGiaoHang == 5).ToList();
+                        listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 3 && p.TrangThaiGiaoHang == 5).ToList();
+                        foreach (var item in listLSTD1)
+                        {
+                            listLSTDFN.Add(item);
+                        }
+                        listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 3 && p.TrangThaiGiaoHang == 4).ToList();
                         foreach (var item in listLSTD1)
                         {
                             listLSTDFN.Add(item);
@@ -985,19 +1054,33 @@ namespace AppView.Controllers
                         {
                             listLSTDFN.Add(item);
                         }
-                        //List<LichSuTichDiemTieuDiemViewModel> listLSTD1 = new List<LichSuTichDiemTieuDiemViewModel>();
+                        listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 1 && p.TrangThaiGiaoHang == 9).ToList();
+                        foreach (var item in listLSTD1)
+                        {
+                            listLSTDFN.Add(item);
+                        }
+                        listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 1 && p.TrangThaiGiaoHang == 4).ToList();
+                        foreach (var item in listLSTD1)
+                        {
+                            listLSTDFN.Add(item);
+                        }
+                        listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 1 && p.TrangThaiGiaoHang == 5).ToList();
+                        foreach (var item in listLSTD1)
+                        {
+                            listLSTDFN.Add(item);
+                        }
                         listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 2 && p.TrangThaiGiaoHang == 7).ToList();
                         foreach (var item in listLSTD1)
                         {
                             listLSTDFN.Add(item);
                         }
-                        //List<LichSuTichDiemTieuDiemViewModel> listLSTD5 = new List<LichSuTichDiemTieuDiemViewModel>();
-                        listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 3 && p.TrangThaiGiaoHang == 5).ToList();
+                        listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 4 && p.TrangThaiGiaoHang == 5).ToList();
                         foreach (var item in listLSTD1)
                         {
                             listLSTDFN.Add(item);
                         }
                     }
+                    listLSTDFN = listLSTDFN.OrderBy(p => p.TrangThaiLSTD).ToList();
                     var model = listLSTDFN.Skip((page - 1) * pageSize).Take(pageSize).ToList();
                     return Json(new
                     {
@@ -1009,12 +1092,17 @@ namespace AppView.Controllers
                 else
                 {
                     List<LichSuTichDiemTieuDiemViewModel> listLSTD1 = new List<LichSuTichDiemTieuDiemViewModel>();
-                    listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 0 || (p.TrangThaiLSTD == 4 && p.TrangThaiGiaoHang == 5)).ToList();
+                    listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 0).ToList();
                     foreach (var item in listLSTD1)
                     {
                         listLSTDFN.Add(item);
                     }
-                    listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 4 && p.TrangThaiGiaoHang == 5).ToList();
+                    listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 3 && p.TrangThaiGiaoHang == 4).ToList();
+                    foreach (var item in listLSTD1)
+                    {
+                        listLSTDFN.Add(item);
+                    }
+                    listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 3 && p.TrangThaiGiaoHang == 5).ToList();
                     foreach (var item in listLSTD1)
                     {
                         listLSTDFN.Add(item);
@@ -1024,19 +1112,32 @@ namespace AppView.Controllers
                     {
                         listLSTDFN.Add(item);
                     }
-                    //List<LichSuTichDiemTieuDiemViewModel> listLSTD1 = new List<LichSuTichDiemTieuDiemViewModel>();
+                    listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 1 && p.TrangThaiGiaoHang == 9).ToList();
+                    foreach (var item in listLSTD1)
+                    {
+                        listLSTDFN.Add(item);
+                    }
+                    listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 1 && p.TrangThaiGiaoHang == 4).ToList();
+                    foreach (var item in listLSTD1)
+                    {
+                        listLSTDFN.Add(item);
+                    }
+                    listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 1 && p.TrangThaiGiaoHang == 5).ToList();
+                    foreach (var item in listLSTD1)
+                    {
+                        listLSTDFN.Add(item);
+                    }
                     listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 2 && p.TrangThaiGiaoHang == 7).ToList();
                     foreach (var item in listLSTD1)
                     {
                         listLSTDFN.Add(item);
                     }
-                    //List<LichSuTichDiemTieuDiemViewModel> listLSTD5 = new List<LichSuTichDiemTieuDiemViewModel>();
-                    listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 3 && p.TrangThaiGiaoHang == 5).ToList();
+                    listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 4 && p.TrangThaiGiaoHang == 5).ToList();
                     foreach (var item in listLSTD1)
                     {
                         listLSTDFN.Add(item);
                     }
-                    //listLSTD = listLSTD.Where(p=>p.TrangThaiLSTD == 0 || (p.TrangThaiGiaoHang == 6 && p.TrangThaiLSTD == 0) || (p.TrangThaiLSTD == 4 && p.TrangThaiGiaoHang == 5) || (p.TrangThaiLSTD == 2 && p.TrangThaiGiaoHang == 7) || (p.TrangThaiLSTD == 3 && p.TrangThaiGiaoHang == 5)).ToList();
+                    listLSTDFN = listLSTDFN.OrderBy(p=>p.TrangThaiLSTD).ToList();
                     var model = listLSTDFN.Skip((page - 1) * pageSize).Take(pageSize).ToList();
                     return Json(new
                     {

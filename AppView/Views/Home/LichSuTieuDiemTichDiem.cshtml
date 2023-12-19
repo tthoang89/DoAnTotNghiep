@@ -127,7 +127,18 @@
                 $("#DShoaDon").empty();
                 console.log(response.data);
                 for (let i = 0; i < response.data.length; i++) {
-                    if (response.data[i].trangThaiLSTD === 1 && response.data[i].trangThaiGiaoHang == 6) {
+                    if (response.data[i].trangThaiLSTD === 0) {
+                        $("#DShoaDon").append(`<tr>
+                            <th class="adon" scope="row"><a href="PurchaseOrderDetail?idHoaDon=${response.data[i].idHoaDon}">${response.data[i].maHD}</a></th>
+                                <td>
+                                    Trừ điểm khi mua hàng thành công
+                                </td>
+                                <td>
+                                   <label>-${response.data[i].diem}</label>
+                                </td>
+                        </tr>`);
+                    }
+                    else if(response.data[i].trangThaiLSTD === 1 && response.data[i].trangThaiGiaoHang == 6){
                         $("#DShoaDon").append(`<tr>
                             <th class="adon" scope="row"><a href="PurchaseOrderDetail?idHoaDon=${response.data[i].idHoaDon}">${response.data[i].maHD}</a></th>
                                 <td>
@@ -137,14 +148,37 @@
                                    <label>+${response.data[i].diem}</label>
                                 </td>
                         </tr>`);
-                    }else if(response.data[i].trangThaiLSTD === 0){
+                    }
+                    else if(response.data[i].trangThaiLSTD === 1 && response.data[i].trangThaiGiaoHang == 9){
                         $("#DShoaDon").append(`<tr>
                             <th class="adon" scope="row"><a href="PurchaseOrderDetail?idHoaDon=${response.data[i].idHoaDon}">${response.data[i].maHD}</a></th>
                                 <td>
-                                    Tiêu điểm khi mua hàng
+                                    Cộng điểm khi mua hàng thành công
                                 </td>
                                 <td>
-                                   <label>-${response.data[i].diem}</label>
+                                   <label>+${response.data[i].diem}</label>
+                                </td>
+                        </tr>`);
+                    }
+                    else if(response.data[i].trangThaiLSTD === 1 && response.data[i].trangThaiGiaoHang == 4){
+                        $("#DShoaDon").append(`<tr>
+                            <th class="adon" scope="row"><a href="PurchaseOrderDetail?idHoaDon=${response.data[i].idHoaDon}">${response.data[i].maHD}</a></th>
+                                <td>
+                                    Cộng điểm khi mua hàng thành công
+                                </td>
+                                <td>
+                                   <label>+${response.data[i].diem}</label>
+                                </td>
+                        </tr>`);
+                    }
+                    else if(response.data[i].trangThaiLSTD === 1 && response.data[i].trangThaiGiaoHang == 5){
+                        $("#DShoaDon").append(`<tr>
+                            <th class="adon" scope="row"><a href="PurchaseOrderDetail?idHoaDon=${response.data[i].idHoaDon}">${response.data[i].maHD}</a></th>
+                                <td>
+                                    Cộng điểm khi mua hàng thành công
+                                </td>
+                                <td>
+                                   <label>+${response.data[i].diem}</label>
                                 </td>
                         </tr>`);
                     }
@@ -159,18 +193,7 @@
                                 </td>
                         </tr>`);
                     }
-                    else if (response.data[i].trangThaiGiaoHang == 5 && response.data[i].trangThaiLSTD === 3) {
-                        $("#DShoaDon").append(`<tr>
-                            <th class="adon" scope="row"><a href="PurchaseOrderDetail?idHoaDon=${response.data[i].idHoaDon}">${response.data[i].maHD}</a></th>
-                                <td>
-                                    Cộng lại điểm khi hoàn lại đơn hàng
-                                </td>
-                                <td>
-                                   <label>+${response.data[i].diem}</label>
-                                </td>
-                        </tr>`);
-                    }
-                    else if (response.data[i].trangThaiGiaoHang == 5 && response.data[i].trangThaiLSTD === 4) {
+                    else if (response.data[i].trangThaiGiaoHang == 4 && response.data[i].trangThaiLSTD === 3) {
                         $("#DShoaDon").append(`<tr>
                             <th class="adon" scope="row"><a href="PurchaseOrderDetail?idHoaDon=${response.data[i].idHoaDon}">${response.data[i].maHD}</a></th>
                                 <td>
@@ -181,7 +204,28 @@
                                 </td>
                         </tr>`);
                     }
-                    
+                    else if (response.data[i].trangThaiGiaoHang == 5 && response.data[i].trangThaiLSTD === 3) {
+                        $("#DShoaDon").append(`<tr>
+                            <th class="adon" scope="row"><a href="PurchaseOrderDetail?idHoaDon=${response.data[i].idHoaDon}">${response.data[i].maHD}</a></th>
+                                <td>
+                                    Trừ điểm khi hoàn lại đơn hàng
+                                </td>
+                                <td>
+                                   <label>-${response.data[i].diem}</label>
+                                </td>
+                        </tr>`);
+                    }
+                    else if (response.data[i].trangThaiGiaoHang == 5 && response.data[i].trangThaiLSTD === 4) {
+                        $("#DShoaDon").append(`<tr>
+                            <th class="adon" scope="row"><a href="PurchaseOrderDetail?idHoaDon=${response.data[i].idHoaDon}">${response.data[i].maHD}</a></th>
+                                <td>
+                                    Cộng lại điểm khi hoàn lại đơn hàng
+                                </td>
+                                <td>
+                                   <label>+${response.data[i].diem}</label>
+                                </td>
+                        </tr>`);
+                    }
                 }
                 paginghd(response.total, function () {
                     FilterHoaDon()
