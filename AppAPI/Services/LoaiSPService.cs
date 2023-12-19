@@ -63,6 +63,15 @@ namespace AppAPI.Services
             {
                 var Lsp = await _context.LoaiSPs.FindAsync(lsp.ID);
                 //Check tồn tại
+                var existingLoaiSP = await _context.LoaiSPs
+            .Where(x => x.Ten.ToUpper().Trim() == lsp.Ten.ToUpper().Trim() && x.ID != lsp.ID)
+            .FirstOrDefaultAsync();
+
+                // Throw exception if duplicate name found
+                if (existingLoaiSP != null)
+                {
+                    return null;
+                }
                 if (Lsp != null) //Update
                 {
                     Lsp.Ten = lsp.Ten;

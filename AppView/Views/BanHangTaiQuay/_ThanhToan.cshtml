@@ -299,7 +299,6 @@
                     $("#tichdiemhd").text(@(Model.DiemTichHD));
                 }
                 else if(diem < 0){
-                    console.log(0);
                     toastr.error('Số điểm nhập không hợp lệ', "Error Alert", { timeOut: 1000 });
                     $('#tientrutichdiem').text(0);
                 }else if(diem > diemtoida){
@@ -318,7 +317,6 @@
                 }
             }else if(@(ViewBag.LoaiQDD) === 2){ // Vừa tích vừa tiêu
                 if(diem < 0){
-                    console.log(0);
                     toastr.error('Số điểm nhập không hợp lệ', "Error Alert", { timeOut: 1000 });
                     $('#tientrutichdiem').text(0);
                 }
@@ -427,7 +425,7 @@
            var tongtien = @Model.TongTien;
            var khachtra = $("#khachCanTra").text().replaceAll(',','');
            khachtra = parseInt(khachtra.replaceAll('.',''));
-           console.log(khachtra);
+           
            $.ajax({
                 url: "/BanHangTaiQuay/CheckVoucher",
                 type: "GET",
@@ -437,6 +435,7 @@
                 },
                 dataType: "json",
                 success: function(response) {
+                   
                     if(response.success === true){
                         if(parseInt(response.giatri) - khachtra <= 0){
                             toastr.success(response.message, "Success Alert", { timeOut: 1000 });
@@ -468,14 +467,21 @@
         //Tính tiền
        function TinhTien() {
             var tt = @Model.TongTien;
+            
             $("#tongTienHang").text(Intl.NumberFormat().format(tt));
             var trutd = $("#tientrutichdiem").text() === '' ? '' : $("#tientrutichdiem").text().replaceAll('.', '');
             var voucher = $("#giatrivoucher").text() === '' ? '' : $("#giatrivoucher").text().replaceAll('.', '');
             trutd = trutd.replaceAll(",", "");
             voucher = voucher.replaceAll(",", "");
             var tienkhachtra = tt - trutd - voucher;
-            $("#khachCanTra").text(Intl.NumberFormat().format(tienkhachtra));
-            $("#khachdua").val();
-            khachDua($("#khachdua").val());
+            if(tienkhachtra > 0){
+                $("#khachCanTra").text(Intl.NumberFormat().format(tienkhachtra));
+                 $("#khachdua").val();
+                 khachDua($("#khachdua").val());
+            }else{
+                $("#khachCanTra").text(0);
+                 $("#khachdua").val();
+                 khachDua($("#khachdua").val());
+            }
        }
 </script>

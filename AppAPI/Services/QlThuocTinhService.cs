@@ -172,13 +172,14 @@ namespace AppAPI.Services
                 var nv = await _dbContext.MauSacs.FirstOrDefaultAsync(x => x.ID == id);
                 if (nv != null)
                 {
-                    var existingColor = await _dbContext.MauSacs.FirstOrDefaultAsync(x => x.Ten.Trim().ToUpper() == ten.Trim().ToUpper() && x.Ma.Trim().ToUpper() == ma.Trim().ToUpper());
-                    if (existingColor == null)
+                    var existingColor = await _dbContext.MauSacs.FirstOrDefaultAsync(x => x.Ten.Trim().ToUpper() == ten.Trim().ToUpper());
+                    if (existingColor != null)
                     {
-                        return null; // Trả về null để báo hiệu tên trùng
+                        return null;
                     }
+                    bool isHasHash = ma.StartsWith("#");
                     nv.Ten = ten;
-                    nv.Ma = ma;
+                    nv.Ma = isHasHash ? ma : $"#{Uri.EscapeDataString(ma)}";
                     nv.TrangThai = 1;
                     _dbContext.MauSacs.Update(nv);
                     _dbContext.SaveChanges();

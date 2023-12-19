@@ -1,23 +1,24 @@
 ﻿@model AppData.Models.LoaiSP
+
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "EditLoaiSPCon";
 }
 
-<h1>Chỉnh sửa tên loại sản phẩm cha</h1>
-
+<h1>Chỉnh sửa tên loại sản phẩm con</h1>
+<hr />
 <div class="row">
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <div class="alert alert-danger">
+            @ViewBag.ErrorMessage
+        </div>
+    }
     <div class="col-md-4">
-        @if (ViewBag.ErrorMessage != null)
-        {
-            <div class="alert alert-danger">
-                @ViewBag.ErrorMessage
-            </div>
-        }
-        <form asp-action="Edit" method="post">
+        <form asp-action="EditLoaiSPCon">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group" hidden>
                 <label asp-for="ID" class="control-label"></label>
-                <input asp-for="ID" type="hidden" class="form-control" />
+                <input asp-for="ID" class="form-control" />
                 <span asp-validation-for="ID" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -27,7 +28,7 @@
             </div>
             <div class="form-group" hidden>
                 <label asp-for="TrangThai" class="control-label"></label>
-                <input asp-for="TrangThai" type="hidden" class="form-control" value="1" />
+                <input asp-for="TrangThai" class="form-control" />
                 <span asp-validation-for="TrangThai" class="text-danger"></span>
             </div>
             <div class="form-group" hidden>
@@ -42,8 +43,4 @@
     </div>
 </div>
 
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-}
+

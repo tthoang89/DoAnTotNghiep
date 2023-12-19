@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AppData.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,5 +16,6 @@ namespace AppData.ViewModels.BanOffline
         public int? GiaBan { get; set; }
         public Guid IdLsp { get; set; }
         public int? GiaGoc { get; set; }
+
     }
 }

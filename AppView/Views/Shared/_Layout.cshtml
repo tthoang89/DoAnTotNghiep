@@ -49,14 +49,14 @@
                 <div class="row">
                     <div class="col-lg-6 col-md-7">
                         <div class="header__top__left">
-                            <p>Miễn phí vận chuyển, đảm bảo hoàn trả hoặc hoàn tiền trong 30 ngày.</p>
+                            <p>Đăng ký ngay tài khoản để hưởng những ưu đãi hấp dẫn</p>
                         </div>
                     </div>
                     <div class="col-lg-6 col-md-5">
                         <div class="header__top__right">
                             <div class="header__top__links">
 
-                                <a href="#">Câu hỏi thường gặp</a>
+                                @*<a href="#">Câu hỏi thường gặp</a>*@
                             </div>
                             <div class="header__top__hover">
                                 @{
@@ -64,7 +64,7 @@
                                     {
                                         <span>
                                             <a id="helloTen" style="color:white">
-                                                Hello: @loginInfor.Ten
+                                                Tài khoản: @loginInfor.Ten
                                             </a>
                                             @*<i class="arrow_carrot-down"></i>*@
                                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
@@ -117,8 +117,6 @@
                                     <li><a asp-controller="Home" asp-action="BlogDetails">Chi tiết Blog</a></li>
                                 </ul>
                             </li>
-
-                            <li><a asp-controller="Home" asp-action="Blog">Blog</a></li>
                             <li><a asp-controller="Home" asp-action="Contacts">Liên lạc </a></li>
 
                         </ul>
@@ -145,13 +143,15 @@
     <footer class="footer">
         <div class="container">
             <div class="row">
-                <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="col-lg-4 col-md-6 col-sm-6">
                     <div class="footer__about">
-                        <p>Khách hàng là trung tâm của mô hình kinh doanh độc đáo của chúng tôi, bao gồm cả thiết kế.</p>
-                        <a href="#"><img src="/img/payment.png" alt=""></a>
+                        <h6 class="text-white fw-bold">Thời trang nam REPUTATION</h6>
+                        <p>Hệ thống thời trang cho phái mạnh, hướng tới phong cách nam tính, lịch lãm và trẻ trung.</p>
+                        <p>Phương thức thanh toán:</p>
+                        <span><img src="/img/paymentvnpay.png" style="height: 30px; width:50px" alt=""></span>
                     </div>
                 </div>
-                <div class="col-lg-2 offset-lg-1 col-md-3 col-sm-6">
+                <div class="col-lg-3 offset-lg-1 col-md-3 col-sm-6">
                     <div class="footer__widget">
                         <h6>Mua sắm</h6>
                         <ul>
@@ -162,7 +162,7 @@
                         </ul>
                     </div>
                 </div>
-                <div class="col-lg-2 col-md-3 col-sm-6">
+                <div class="col-lg-3 col-md-3 col-sm-6">
                     <div class="footer__widget">
                         <h6>MUA SẮM</h6>
                         <ul>
@@ -173,7 +173,7 @@
                         </ul>
                     </div>
                 </div>
-                <div class="col-lg-3 offset-lg-1 col-md-6 col-sm-6">
+                @*<div class="col-lg-3 offset-lg-1 col-md-6 col-sm-6">
                     <div class="footer__widget">
                         <h6>Tin tức thư</h6>
                         <div class="footer__newslatter">
@@ -184,7 +184,7 @@
                             </form>
                         </div>
                     </div>
-                </div>
+                </div>*@
             </div>
             @*<div class="row">
                 <div class="col-lg-12 text-center">

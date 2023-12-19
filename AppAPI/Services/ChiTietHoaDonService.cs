@@ -120,7 +120,10 @@ namespace AppAPI.Services
                                                               PhanLoai = ms.Ten + " - " + kc.Ten,
                                                               SoLuong = cthd.SoLuong,
                                                               GiaGoc = ctsp.GiaBan,
-                                                              GiaKM = km.TrangThai == null ? ctsp.GiaBan : (km.TrangThai == 0 ? ctsp.GiaBan - km.GiaTri : (ctsp.GiaBan / 100 * (100 - km.GiaTri))),
+                                                              GiaKM = km == null ? ctsp.GiaBan :
+                    (km.TrangThai == 1 ? (int)(ctsp.GiaBan / 100 * (100 - km.GiaTri)) :
+                    (km.GiaTri < ctsp.GiaBan ? (ctsp.GiaBan - (int)km.GiaTri) : ctsp.GiaBan)),
+                                                              
                                                           }).ToListAsync();
             return lsthdct;
         }
