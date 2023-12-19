@@ -18,20 +18,25 @@
         }
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group" hidden>
+                <label asp-for="ID" class="control-label"></label>
+                <input asp-for="ID" type="hidden" class="form-control" />
+                <span asp-validation-for="ID" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <label class="control-label">Tên Loại SP</label>
-                <input asp-for="Ten" class="form-control" class="form-control"/>
+                <input asp-for="Ten" class="form-control" />
                 <div id="emptyNameError" class="invalid-feedback d-none">Vui lòng nhập tên loại sản phẩm!</div>
             </div>
             <div class="form-group">
                 <label asp-for="IDLoaiSPCha" class="control-label"> Tên Loại SP Cha</label>
-                <select class="form-control" asp-for="IDLoaiSPCha" name="IDLoaiSPCha">
+                <select class="form-control" asp-for="IDLoaiSPCha">
                     @if (listLoaiSP != null)
                     {
                         <option value="null">Chọn loại sản phẩm cha</option>
                         @foreach (var item in listLoaiSP.Where(p => p.IDLoaiSPCha == null).ToList())
                         {
-                            <option value="@item.IDLoaiSPCha">@item.Ten</option>
+                            <option value="@item.ID">@item.Ten</option>
                         }
                     }
                 </select>

@@ -15,51 +15,91 @@ namespace AppAPI.Services
 
         public bool CreateVaiTro(string ten, int trangthai)
         {
-            var vaitro = new VaiTro();
-            vaitro.ID = Guid.NewGuid();
-            vaitro.Ten = ten;
-            vaitro.TrangThai = trangthai;
-            dBContext.VaiTros.Add(vaitro);
-            dBContext.SaveChanges();
-            return true;
+            try
+            {
+                var vaitro = new VaiTro();
+                vaitro.ID = Guid.NewGuid();
+                vaitro.Ten = ten;
+                vaitro.TrangThai = trangthai;
+                dBContext.VaiTros.Add(vaitro);
+                dBContext.SaveChanges();
+                return true;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
 
         }
 
         public bool DeleteVaiTro(Guid id)
         {
-            var vt =  dBContext.VaiTros.FirstOrDefault(a=>a.ID == id);
-            if (vt != null)
+            try
             {
-                dBContext.VaiTros.Remove(vt);
-                return true;
+                var vt = dBContext.VaiTros.FirstOrDefault(a => a.ID == id);
+                if (vt != null)
+                {
+                    dBContext.VaiTros.Remove(vt);
+                    return true;
+                }
+                return false;
             }
-            return false;
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public List<VaiTro> GetAllVaiTro()
         {
-            return  dBContext.VaiTros.ToList();
+            try
+            {
+                return dBContext.VaiTros.ToList();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public VaiTro GetVaiTroById(Guid id)
         {
-            return  dBContext.VaiTros.FirstOrDefault(x => x.ID == id);
+            try
+            {
+                return dBContext.VaiTros.FirstOrDefault(x => x.ID == id);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public bool UpdateVaiTro(Guid id, string ten, int trangthai)
         {
-            var vaitro =  dBContext.VaiTros.FirstOrDefault(a=>a.ID == id);
-            if (vaitro == null)
+            try
             {
-                return false;
+                var vaitro = dBContext.VaiTros.FirstOrDefault(a => a.ID == id);
+                if (vaitro == null)
+                {
+                    return false;
+                }
+                else
+                {
+                    vaitro.Ten = ten;
+                    vaitro.TrangThai = trangthai;
+                    dBContext.VaiTros.Update(vaitro);
+                    dBContext.SaveChanges();
+                    return true;
+                }
             }
-            else
+            catch (Exception)
             {
-                vaitro.Ten = ten;
-                vaitro.TrangThai = trangthai;
-                dBContext.VaiTros.Update(vaitro);
-                dBContext.SaveChanges();
-                return true;
+
+                throw;
             }
         }
 

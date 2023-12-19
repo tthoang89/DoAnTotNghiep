@@ -17,15 +17,20 @@
         #resultsp {
             position: absolute;
             width: 100%;
-            max-width: 360px;
+            max-width: 400px;
             cursor: pointer;
             overflow-y: auto;
             max-height: 400px;
             box-sizing: border-box;
             z-index: 1001;
             padding-top: 20px;
+            background:#e1e3e6!important;
+            display:none;
         }
 
+        #sptk{
+             background: #fff;
+        }
         #sptk:hover {
             border: 2px solid #4154f1;
             background: #cce2fd;
@@ -121,7 +126,7 @@
             </div>
             <!--Lọc-->
             <div class="d-flex me-auto align-content-center">
-                <div class="btn-create d-flex align-items-center">
+                <div class="btn-filter d-flex align-items-center">
                     <button type="button" onclick="showFilter()" class="btn btn-primary d-flex align-items-center ms-auto" title="Lọc sản phẩm">
                         <i class="bx bx-filter-alt"></i>
                     </button>
@@ -301,7 +306,6 @@
                 const item = data[i];
                 const itemID = item.id;
                 const index = i + 1;
-                console.log(item);
                 if(item.trangThaiGiaoHang === 1){
                     $(".tabs-box").append(`
                         <li class="tab" onclick="gethdct('${itemID}')">
@@ -329,7 +333,6 @@
     }
     //THÊM HÓA ĐƠN CHỜ
     function addHDCho() {
-        console.log(12);
         $.ajax({
             url: "/BanHangTaiQuay/AddHDCho",
             type: "GET",
@@ -430,24 +433,23 @@
         ttien = parseInt(ttien.replaceAll(',', ''));
         var pttt = $('input[name="pttt"]:checked').val();
         var khachdua = $("#khachdua").val();
-        console.log(khachdua);
-        if (ttien < 0) {
+        //else if (ttien <= 0) {
+        //    toastr.error('Phiếu hàng đang trống', 'Error Alert', { timeOut: 300 });
+        //}
+
+        if (ttien <= 0) {
             toastr.error('Số tiền thanh toán không hợp lệ', 'Error Alert', { timeOut: 300 });
-        }else if (ttien === 0) {
-            toastr.error('Phiếu hàng đang trống', 'Error Alert', { timeOut: 300 });
         }else if(khachdua < ttien && pttt === "Tiền mặt"){
             toastr.error('Khách chưa thanh toán đủ tiền hàng', 'Error Alert', { timeOut: 300 });
         }else {
             var pttt = $('input[name="pttt"]:checked').val();
             var idvoucher = $("#idvoucher").text();
             var tichdiemhd = $("#tichdiemhd").text();
-            console.log(tichdiemhd);
             var tichdiemsd = $('#diemKHSD').val();
             if ($('#tientrutichdiem').text() === 0 || $('#tientrutichdiem').text() === '') {
                 tichdiemsd = 0;
             };
             var request = { Id: id, PTTT: pttt, IdNhanVien: '@loginInfor.Id', IdVoucher: idvoucher, TongTien: ttien, DiemTichHD: tichdiemhd, DiemSD: tichdiemsd };
-            console.log(request);
             $.ajax({
                 url: "/BanHangTaiQuay/ThanhToan",
                 async: false,
@@ -514,10 +516,12 @@
                                     `);
                             }
                     }else{
+                        $("#resultsp").empty();
                         $("#resultsp").css("display","none");
                     }
                 },
                 error: function (response) {
+                     $("#resultsp").empty();
                      $("#resultsp").css("display","none");
                 }
             });

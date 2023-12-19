@@ -413,7 +413,7 @@
 <script>
             $("#save").click(function(){
                 var inputValue = $("#ghiChuinTTHD").val();
-                if(inputValue === ''){
+                if(inputValue === '' || inputValue.trim == ''){
                     toastr.error("Ghi chú hiện tại đang để trống", 'Error Alert', { timeOut: 300 });
                 }else{
                      $.ajax({
@@ -461,6 +461,7 @@
             }
             function huyDon(IDHD){
                 var gc = $("#ghiChuinTTHD").val();
+                console.long(gc);
                 if(@Model.TrangThai === 4){
                     toastr.error('Đơn hàng trong trạng thái hoàn, không thể hủy', "Error Alert", { timeOut: 1000 });
                 }

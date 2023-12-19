@@ -471,14 +471,22 @@
             console.log(chiTietSP);
             if (typeof (chiTietSP) != "undefined") {
                 if (chiTietSP.soLuong > 0) {
-                    var giatrikichco = kichCos.find(x => x.id == chiTietSP.kichCo).giaTri;
-                    console.log(giatrikichco);
-                    document.getElementById("rd_" + giatrikichco).disabled = false;
-                    document.getElementById("rd_" + giatrikichco).checked = false;
-                    document.getElementById("trangthai").innerHTML = "Còn hàng"
-                    document.getElementById("label_" + giatrikichco).style.opacity = "1";
-                    document.getElementById("label_" + giatrikichco).style.cursor = "pointer";
-
+                    if (chiTietSP.trangThai > 0) {
+                        var giatrikichco = kichCos.find(x => x.id == chiTietSP.kichCo).giaTri;
+                        document.getElementById("rd_" + giatrikichco).disabled = false;
+                        document.getElementById("rd_" + giatrikichco).checked = false;
+                        document.getElementById("trangthai").innerHTML = "Còn hàng"
+                        document.getElementById("label_" + giatrikichco).style.opacity = "1";
+                        document.getElementById("label_" + giatrikichco).style.cursor = "pointer";
+                    }else{
+                        var giatrikichco = kichCos.find(x => x.id == chiTietSP.kichCo).giaTri;
+                        console.log(giatrikichco);
+                        document.getElementById("rd_" + giatrikichco).disabled = true;
+                        document.getElementById("rd_" + giatrikichco).checked = false;
+                        document.getElementById("label_" + giatrikichco).style.cursor = "no-drop";
+                        document.getElementById("label_" + giatrikichco).style.opacity = "0.5";
+                        document.getElementById("trangthai").innerHTML = "Hết hàng";
+                    }
                 } else {
                     var giatrikichco = kichCos.find(x => x.id == chiTietSP.kichCo).giaTri;
                     console.log(giatrikichco);
@@ -515,7 +523,11 @@
         document.getElementById("maSP").innerHTML = chiTietSP.maCTSP;
         document.getElementById("giaCTSP").innerHTML = Intl.NumberFormat().format(chiTietSP.giaBan) + " " + "VNĐ";
         if (chiTietSP.soLuong > 0) {
-            document.getElementById("trangthai").innerHTML = "Còn hàng";
+            if(chiTietSP.trangThai > 0){
+                document.getElementById("trangthai").innerHTML = "Còn hàng";
+            }else{
+                document.getElementById("trangthai").innerHTML = "Hết hàng";
+            }
         } else {
             document.getElementById("trangthai").innerHTML = "Hết hàng";
         }
@@ -661,7 +673,7 @@
                     url: '/Home/BuyNow',
                     success: function (response) {
                         if (response.success == true) {
-                            window.location = 'https://localhost:5001/Home/ShoppingCart';
+                            location.href = 'ShoppingCart';
 
                         } else {
                             toastr.error(response.message, 'Error Alert', { timeOut: 1000 });

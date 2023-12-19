@@ -51,14 +51,14 @@ namespace AppView.Controllers
             {
                 if (filter.loaitk == 1)
                 {
-                    listhdql = listhdql.Where(c => c.MaHD.ToLower().Contains(filter.keyWord.ToLower()) || (c.SDTnhanhang != null && c.SDTnhanhang.Contains(filter.keyWord))).ToList();
+                    listhdql = listhdql.Where(c => c.MaHD.ToLower().Contains(filter.keyWord.Trim().ToLower()) || (c.SDTnhanhang != null && c.SDTnhanhang.Contains(filter.keyWord.Trim()))).ToList();
                 }
                 else if (filter.loaitk == 2)
                 {
-                    listhdql = listhdql.Where(c => c.KhachHang.ToLower().Contains(filter.keyWord.ToLower()) || (c.SDTKH != null && c.SDTKH.Contains(filter.keyWord))).ToList();
+                    listhdql = listhdql.Where(c => c.KhachHang.ToLower().Contains(filter.keyWord.Trim().ToLower()) || (c.SDTKH != null && c.SDTKH.Contains(filter.keyWord.Trim()))).ToList();
                 }
             }
-            //Trả hàng
+
             //Lọc kênh
             if (filter.loaiHD != null)
             {
@@ -99,134 +99,179 @@ namespace AppView.Controllers
         [HttpGet("/QuanLyHoaDon/CopyHD")]
         public async Task<IActionResult> CopyHD(string idhd)
         {
-            var loginInfor = new LoginViewModel();
-            string? session = HttpContext.Session.GetString("LoginInfor");
-            if (session != null)
+            try
             {
-                loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
-            }
-            var idnv = loginInfor.Id;
+                var loginInfor = new LoginViewModel();
+                string? session = HttpContext.Session.GetString("LoginInfor");
+                if (session != null)
+                {
+                    loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
+                }
+                var idnv = loginInfor.Id;
 
-            string url = $"HoaDon/CopyHD?idhd={idhd}&idnv={idnv}";
-            var response = await _httpClient.PutAsync(url, null);
-            if (response.IsSuccessStatusCode)
-            {
-                return RedirectToAction("BanHang", "BanHangTaiQuay");
+                string url = $"HoaDon/CopyHD?idhd={idhd}&idnv={idnv}";
+                var response = await _httpClient.PutAsync(url, null);
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("BanHang", "BanHangTaiQuay");
+                }
+                return Json(new { success = false, message = "Sao chép hóa đơn thất bại" });
             }
-            return Json(new { success = false, message = "Sao chép hóa đơn thất bại" });
+            catch (Exception ex)
+            {
+                return RedirectToAction("_QuanLyHoaDon", "QuanLyHoaDon");
+            }
         }
         // Cập nhật trạng thái
         public async Task<IActionResult> DoiTrangThai(Guid idhd, int trangthai)// Dùng cho trạng thái truyền  vào: 10, 3
         {
-            var loginInfor = new LoginViewModel();
-            string? session = HttpContext.Session.GetString("LoginInfor");
-            if (session != null)
+            try
             {
-                loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
-                var idnv = loginInfor.Id;
-                if(trangthai == 6)
+                var loginInfor = new LoginViewModel();
+                string? session = HttpContext.Session.GetString("LoginInfor");
+                if (session != null)
                 {
-                    string url = $"HoaDon/GiaoThanhCong?idhd={idhd}&idnv={idnv}";
-                    var response = await _httpClient.PutAsync(url, null);
-                    if (response.IsSuccessStatusCode)
+                    loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
+                    var idnv = loginInfor.Id;
+                    if (trangthai == 6)
                     {
-                        return Json(new { success = true, message = "Cập nhật trạng thái thành công" });
+                        string url = $"HoaDon/GiaoThanhCong?idhd={idhd}&idnv={idnv}";
+                        var response = await _httpClient.PutAsync(url, null);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            return Json(new { success = true, message = "Cập nhật trạng thái thành công" });
+                        }
+                    }
+                    else
+                    {
+                        string url = $"HoaDon?idhoadon={idhd}&trangthai={trangthai}&idnhanvien={idnv}";
+                        var response = await _httpClient.PutAsync(url, null);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            return Json(new { success = true, message = "Cập nhật trạng thái thành công" });
+                        }
                     }
                 }
-                else
-                {
-                    string url = $"HoaDon?idhoadon={idhd}&trangthai={trangthai}&idnhanvien={idnv}";
-                    var response = await _httpClient.PutAsync(url, null);
-                    if (response.IsSuccessStatusCode)
-                    {
-                        return Json(new { success = true, message = "Cập nhật trạng thái thành công" });
-                    }
-                }
+                return Json(new { success = false, message = "Cập nhật trạng thái thất bại" });
             }
-            return Json(new { success = false, message = "Cập nhật trạng thái thất bại" });
+            catch (Exception)
+            {
+                return RedirectToAction("_QuanLyHoaDon", "QuanLyHoaDon");
+            }
         }
         //Hủy hóa đơn
-        [HttpGet("/QuanLyHoaDon/HuyHD")] //
+        [HttpGet("/QuanLyHoaDon/HuyHD")]
         public async Task<IActionResult> HuyHD(Guid idhd, string ghichu)
         {
-            var loginInfor = new LoginViewModel();
-            string? session = HttpContext.Session.GetString("LoginInfor");
-            if (session != null)
+            try
             {
-                loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
-            }
-            var idnv = loginInfor.Id;
-            string url = $"HoaDon/HuyHD?idhd={idhd}&idnv={idnv}";
-            var response = await _httpClient.PutAsync(url, null);
-            if (response.IsSuccessStatusCode)
-            {
-                var stringURL = $"https://localhost:7095/api/HoaDon/UpdateGhichu?idhd={idhd}&idnv={loginInfor.Id}&ghichu={ghichu}";
-                var responseghichu = await _httpClient.PutAsync(stringURL, null);
-                if (responseghichu.IsSuccessStatusCode)
+                var loginInfor = new LoginViewModel();
+                string? session = HttpContext.Session.GetString("LoginInfor");
+                if (session != null)
                 {
-                    return Json(new { success = true, message = "Cập nhật trạng thái thành công" });
+                    loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
                 }
+                var idnv = loginInfor.Id;
+                if(ghichu != null)
+                {
+                    string url = $"HoaDon/HuyHD?idhd={idhd}&idnv={idnv}";
+                    var response = await _httpClient.PutAsync(url, null);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var stringURL = $"https://localhost:7095/api/HoaDon/UpdateGhichu?idhd={idhd}&idnv={loginInfor.Id}&ghichu={ghichu}";
+                        var responseghichu = await _httpClient.PutAsync(stringURL, null);
+                        if (responseghichu.IsSuccessStatusCode)
+                        {
+                            return Json(new { success = true, message = "Cập nhật trạng thái thành công" });
+                        }
+                    }
+                }
+                return Json(new { success = false, message = "Ghi chú không được để null" });
             }
-            return Json(new { success = false, message = "Cập nhật trạng thái thất bại" });
+            catch (Exception ex)
+            {
+                return RedirectToAction("_QuanLyHoaDon", "QuanLyHoaDon");
+            }
         }
         //Hoàn hàng
         [HttpGet("/QuanLyHoaDon/HoanHang")] //
         public async Task<IActionResult> HoanHang(Guid idhd, string ghichu)
         {
-            var loginInfor = new LoginViewModel();
-            string? session = HttpContext.Session.GetString("LoginInfor");
-            if (session != null)
+            try
             {
-                loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
-            }
-            var idnv = loginInfor.Id;
-
-            string url = $"HoaDon/HoanHD?idhd={idhd}&idnv={idnv}";
-            var response = await _httpClient.PutAsync(url, null);
-            if (response.IsSuccessStatusCode)
-            {
-                var stringURL = $"https://localhost:7095/api/HoaDon/UpdateGhichu?idhd={idhd}&idnv={loginInfor.Id}&ghichu={ghichu}";
-                var responseghichu = await _httpClient.PutAsync(stringURL, null);
-                if (responseghichu.IsSuccessStatusCode)
+                var loginInfor = new LoginViewModel();
+                string? session = HttpContext.Session.GetString("LoginInfor");
+                if (session != null)
                 {
-                    return Json(new { success = true, message = "Cập nhật trạng thái thành công" });
+                    loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
                 }
+                var idnv = loginInfor.Id;
+
+                string url = $"HoaDon/HoanHD?idhd={idhd}&idnv={idnv}";
+                var response = await _httpClient.PutAsync(url, null);
+                if (response.IsSuccessStatusCode)
+                {
+                    var stringURL = $"https://localhost:7095/api/HoaDon/UpdateGhichu?idhd={idhd}&idnv={loginInfor.Id}&ghichu={ghichu}";
+                    var responseghichu = await _httpClient.PutAsync(stringURL, null);
+                    if (responseghichu.IsSuccessStatusCode)
+                    {
+                        return Json(new { success = true, message = "Cập nhật trạng thái thành công" });
+                    }
+                }
+                return Json(new { success = false, message = "Cập nhật trạng thái thất bại" });
             }
-            return Json(new { success = false, message = "Cập nhật trạng thái thất bại" });
+            catch (Exception ex)
+            {
+                return RedirectToAction("_QuanLyHoaDon", "QuanLyHoaDon");
+            }
         }
         //Hoàn hàng thành công
         [HttpGet("/QuanLyHoaDon/HoanHangTC")] //
         public async Task<IActionResult> HoanHangTC(Guid idhd)
         {
-            var loginInfor = new LoginViewModel();
-            string? session = HttpContext.Session.GetString("LoginInfor");
-            if (session != null)
+            try
             {
-                loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
-            }
-            var idnv = loginInfor.Id;
+                var loginInfor = new LoginViewModel();
+                string? session = HttpContext.Session.GetString("LoginInfor");
+                if (session != null)
+                {
+                    loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
+                }
+                var idnv = loginInfor.Id;
 
-            string url = $"HoaDon/HoanTCHD?idhd={idhd}&idnv={idnv}";
-            var response = await _httpClient.PutAsync(url, null);
-            if (response.IsSuccessStatusCode)
-            {
-                return Json(new { success = true, message = "Cập nhật trạng thái thành công" });
+                string url = $"HoaDon/HoanTCHD?idhd={idhd}&idnv={idnv}";
+                var response = await _httpClient.PutAsync(url, null);
+                if (response.IsSuccessStatusCode)
+                {
+                    return Json(new { success = true, message = "Cập nhật trạng thái thành công" });
+                }
+                return Json(new { success = false, message = "Cập nhật trạng thái thất bại" });
             }
-            return Json(new { success = false, message = "Cập nhật trạng thái thất bại" });
+            catch (Exception ex)
+            {
+                return RedirectToAction("_QuanLyHoaDon", "QuanLyHoaDon");
+            }
         }
 
         //Xuất PDF
         [HttpGet("/Admin/QuanLyHoaDon/ExportPDF/{idhd}")]
         public async Task<IActionResult> ExportPDF(Guid idhd)
         {
-            var cthd = await _httpClient.GetFromJsonAsync<ChiTietHoaDonQL>($"HoaDon/ChiTietHoaDonQL/{idhd}");
-            var view = new ViewAsPdf("ExportHD", cthd)
+            try
             {
-                FileName = $"{cthd.MaHD}.pdf",
-                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
-                PageSize = Rotativa.AspNetCore.Options.Size.A4,
-            };
-            return view;
+                var cthd = await _httpClient.GetFromJsonAsync<ChiTietHoaDonQL>($"HoaDon/ChiTietHoaDonQL/{idhd}");
+                var view = new ViewAsPdf("ExportHD", cthd)
+                {
+                    FileName = $"{cthd.MaHD}.pdf",
+                    PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
+                    PageSize = Rotativa.AspNetCore.Options.Size.A4,
+                };
+                return view;
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("_QuanLyHoaDon", "QuanLyHoaDon");
+            }
         }
         //In hóa đơn
         [HttpGet("/QuanLyHoaDon/PrintHD/{idhd}")]

@@ -19,56 +19,65 @@ namespace AppView.Controllers
         {
             _httpClient = new HttpClient();
             dBContext = new AssignmentDBContext();
+            _httpClient.BaseAddress = new Uri("https://localhost:7095/api/");
         }
         // GET: ChatLieuController
         public int PageSize = 8;
 
         public async Task<IActionResult> Show(int ProductPage = 1)
         {
-            string apiUrl = $"https://localhost:7095/api/ChatLieu/GetAllChatLieu";
-            var response = await _httpClient.GetAsync(apiUrl);
-            string apiData = await response.Content.ReadAsStringAsync();
-            var users = JsonConvert.DeserializeObject<List<ChatLieu>>(apiData);
-            return View(new PhanTrangChatLieu
+            try
             {
-                listNv = users
-                        .Skip((ProductPage - 1) * PageSize).Take(PageSize),
-                PagingInfo = new PagingInfo
+                string apiUrl = $"https://localhost:7095/api/ChatLieu/GetAllChatLieu";
+                var response = await _httpClient.GetAsync(apiUrl);
+                string apiData = await response.Content.ReadAsStringAsync();
+                var users = JsonConvert.DeserializeObject<List<ChatLieu>>(apiData);
+                return View(new PhanTrangChatLieu
                 {
-                    ItemsPerPage = PageSize,
-                    CurrentPage = ProductPage,
-                    TotalItems = users.Count()
-                }
-            });
+                    listNv = users
+                            .Skip((ProductPage - 1) * PageSize).Take(PageSize),
+                    PagingInfo = new PagingInfo
+                    {
+                        ItemsPerPage = PageSize,
+                        CurrentPage = ProductPage,
+                        TotalItems = users.Count()
+                    }
+                });
+            }
+            catch { return Redirect("https://localhost:5001/"); }
         }
 
         [HttpGet]
         public async Task<IActionResult> SearchTheoTen(string? Ten, int ProductPage = 1)
         {
-            if (string.IsNullOrWhiteSpace(Ten))
+            try
             {
-                ViewData["SearchError"] = "Vui lòng nhập tên để tìm kiếm";
-                return RedirectToAction("Show");
-            }
-            string apiUrl = $"https://localhost:7095/api/ChatLieu/TimKiemChatLieu?name={Ten}";
-            var response = await _httpClient.GetAsync(apiUrl);
-            string apiData = await response.Content.ReadAsStringAsync();
-            var users = JsonConvert.DeserializeObject<List<ChatLieu>>(apiData);
-            if (users.Count == 0)
-            {
-                ViewData["SearchError"] = "Không tìm thấy kết quả phù hợp";
-            }
-            return View("Show", new PhanTrangChatLieu
-            {
-                listNv = users
-                         .Skip((ProductPage - 1) * PageSize).Take(PageSize),
-                PagingInfo = new PagingInfo
+                if (string.IsNullOrWhiteSpace(Ten))
                 {
-                    ItemsPerPage = PageSize,
-                    CurrentPage = ProductPage,
-                    TotalItems = users.Count()
+                    ViewData["SearchError"] = "Vui lòng nhập tên để tìm kiếm";
+                    return RedirectToAction("Show");
                 }
-            });
+                string apiUrl = $"https://localhost:7095/api/ChatLieu/TimKiemChatLieu?name={Ten}";
+                var response = await _httpClient.GetAsync(apiUrl);
+                string apiData = await response.Content.ReadAsStringAsync();
+                var users = JsonConvert.DeserializeObject<List<ChatLieu>>(apiData);
+                if (users.Count == 0)
+                {
+                    ViewData["SearchError"] = "Không tìm thấy kết quả phù hợp";
+                }
+                return View("Show", new PhanTrangChatLieu
+                {
+                    listNv = users
+                             .Skip((ProductPage - 1) * PageSize).Take(PageSize),
+                    PagingInfo = new PagingInfo
+                    {
+                        ItemsPerPage = PageSize,
+                        CurrentPage = ProductPage,
+                        TotalItems = users.Count()
+                    }
+                });
+            }
+            catch { return Redirect("https://localhost:5001/"); }
         }
 
         [HttpGet]
@@ -81,19 +90,26 @@ namespace AppView.Controllers
         public async Task<IActionResult> Create(ChatLieu mauSac)
         {
 
-            mauSac.TrangThai = 1;
-            string apiUrl = $"https://localhost:7095/api/ChatLieu/ThemChatLieu?ten={mauSac.Ten}";
-            var reponsen = await _httpClient.PostAsync(apiUrl, null);
-            if (reponsen.IsSuccessStatusCode)
+            try
             {
-                return RedirectToAction("Show");
+                mauSac.TrangThai = 1;
+                string apiUrl = $"https://localhost:7095/api/ChatLieu/ThemChatLieu?ten={mauSac.Ten}";
+                var reponsen = await _httpClient.PostAsync(apiUrl, null);
+                if (reponsen.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Show");
+                }
+                else if (reponsen.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    ViewBag.ErrorMessage = "Chất liệu này đã có trong danh sách";
+                    return View();
+                }
+                return View(mauSac);
             }
-            else if (reponsen.StatusCode == HttpStatusCode.BadRequest)
+            catch
             {
-                ViewBag.ErrorMessage = "Chất liệu này đã có trong danh sách";
-                return View();
+                return Redirect("https://localhost:5001/");
             }
-            return View(mauSac);
 
         }
 
@@ -119,21 +135,25 @@ namespace AppView.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(Guid id, ChatLieu nv)
         {
-            nv.TrangThai = 1;
-            string apiUrl = $"https://localhost:7095/api/ChatLieu/{id}?ten={nv.Ten}";
-            var content = new StringContent(JsonConvert.SerializeObject(nv), Encoding.UTF8, "application/json");
-            var reponsen = await _httpClient.PutAsync(apiUrl, content);
+            try
+            {
+                nv.TrangThai = 1;
+                string apiUrl = $"https://localhost:7095/api/ChatLieu/{id}?ten={nv.Ten}";
+                var content = new StringContent(JsonConvert.SerializeObject(nv), Encoding.UTF8, "application/json");
+                var reponsen = await _httpClient.PutAsync(apiUrl, content);
 
-            if (reponsen.IsSuccessStatusCode)
-            {
-                return RedirectToAction("Show");
+                if (reponsen.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Show");
+                }
+                else if (reponsen.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    ViewBag.ErrorMessage = "Chất liệu này đã có trong danh sách";
+                    return View();
+                }
+                return View(nv);
             }
-            else if (reponsen.StatusCode == HttpStatusCode.BadRequest)
-            {
-                ViewBag.ErrorMessage = "Chất liệu này đã có trong danh sách";
-                return View();
-            }
-            return View(nv);
+            catch { return Redirect("https://localhost:5001/"); }
 
         }
         public async Task<IActionResult> Delete(Guid id)
@@ -148,17 +168,25 @@ namespace AppView.Controllers
         }
         public async Task<IActionResult> Sua(Guid id)
         {
-            var timkiem = dBContext.ChatLieus.FirstOrDefault(x => x.ID == id);
-            if (timkiem != null)
+            try
             {
-                timkiem.TrangThai = timkiem.TrangThai == 0 ? 1 : 0;
-                dBContext.ChatLieus.Update(timkiem);
-                dBContext.SaveChanges();
-                return RedirectToAction("Show");
+                var timkiem = dBContext.ChatLieus.FirstOrDefault(x => x.ID == id);
+                if (timkiem != null)
+                {
+                    timkiem.TrangThai = timkiem.TrangThai == 0 ? 1 : 0;
+                    dBContext.ChatLieus.Update(timkiem);
+                    dBContext.SaveChanges();
+                    return RedirectToAction("Show");
+                }
+                else
+                {
+                    return View();
+                }
             }
-            else
+            catch 
             {
-                return View();
+
+                return Redirect("https://localhost:5001/");
             }
         }
 

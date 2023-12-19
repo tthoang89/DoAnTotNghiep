@@ -16,85 +16,135 @@ namespace AppAPI.Services
         #region LoaiSP
         public async Task<bool> DeleteLoaiSP(Guid id)
         {
-            var lsp = await _context.LoaiSPs.FindAsync(id);
-            if (lsp == null) throw new Exception($"Không tìm thấy Loại sản phẩm: {id}");
-            // Check LoaiSP đag đc sử dụng k
-            if (_context.SanPhams.Any(c => c.IDLoaiSP == id)) return false;
-            _context.LoaiSPs.Remove(lsp);
-            await _context.SaveChangesAsync();
-            return true;
+
+            try
+            {
+                var lsp = await _context.LoaiSPs.FindAsync(id);
+                if (lsp == null) throw new Exception($"Không tìm thấy Loại sản phẩm: {id}");
+                // Check LoaiSP đag đc sử dụng k
+                if (_context.SanPhams.Any(c => c.IDLoaiSP == id)) return false;
+                _context.LoaiSPs.Remove(lsp);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public async Task<List<LoaiSP>> GetAllLoaiSP()
         {
-            return await _context.LoaiSPs.AsNoTracking().OrderByDescending(x => x.TrangThai).ToListAsync();
+            try
+            {
+                return await _context.LoaiSPs.AsNoTracking().OrderByDescending(x => x.TrangThai).ToListAsync();
+            }
+            catch (Exception) { throw; }
         }
 
         public async Task<LoaiSP> GetLoaiSPById(Guid id)
         {
-            return await _context.LoaiSPs.FindAsync(id);
+            try
+            {
+                return await _context.LoaiSPs.FindAsync(id);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public async Task<LoaiSP> SaveLoaiSP(LoaiSPRequest lsp)
         {
-            if (!CheckTrungLoaiSP(lsp))
+
+            try
             {
-                // Tên loại sản phẩm đã tồn tại
-                return null;
-            }
-            var Lsp = await _context.LoaiSPs.FindAsync(lsp.ID);
-            //Check tồn tại
-            if (Lsp != null) //Update
-            {
-                Lsp.Ten = lsp.Ten;
-                Lsp.TrangThai = 1;
-                Lsp.IDLoaiSPCha = lsp.IDLoaiSPCha;
-                _context.LoaiSPs.Update(Lsp);
-                await _context.SaveChangesAsync();
-                return Lsp;
-            }
-            else // Tạo mới
-            {
-                LoaiSP loaiSP = new LoaiSP()
+                var Lsp = await _context.LoaiSPs.FindAsync(lsp.ID);
+                //Check tồn tại
+                var existingLoaiSP = await _context.LoaiSPs
+            .Where(x => x.Ten.ToUpper().Trim() == lsp.Ten.ToUpper().Trim() && x.ID != lsp.ID)
+            .FirstOrDefaultAsync();
+
+                // Throw exception if duplicate name found
+                if (existingLoaiSP != null)
                 {
-                    ID = new Guid(),
-                    Ten = lsp.Ten,
-                    IDLoaiSPCha = lsp.IDLoaiSPCha,
-                    TrangThai = 1,
-                };
-                await _context.AddAsync(loaiSP);
-                await _context.SaveChangesAsync();
-                return loaiSP;
+                    return null;
+                }
+                if (Lsp != null) //Update
+                {
+                    Lsp.Ten = lsp.Ten;
+                    Lsp.TrangThai = 1;
+                    Lsp.IDLoaiSPCha = lsp.IDLoaiSPCha;
+                    _context.LoaiSPs.Update(Lsp);
+                    await _context.SaveChangesAsync();
+                    return Lsp;
+                }
+                else // Tạo mới
+                {
+                    LoaiSP loaiSP = new LoaiSP()
+                    {
+                        ID = new Guid(),
+                        Ten = lsp.Ten,
+                        IDLoaiSPCha = lsp.IDLoaiSPCha,
+                        TrangThai = 1,
+                    };
+                    await _context.AddAsync(loaiSP);
+                    await _context.SaveChangesAsync();
+                    return loaiSP;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
             }
         }
 
         public bool CheckTrungLoaiSP(LoaiSPRequest lsp)
         {
-            var existingColor = _context.LoaiSPs.FirstOrDefaultAsync(x => x.Ten.Trim().ToUpper() == lsp.Ten.Trim().ToUpper() && x.ID != lsp.ID);
-
-            if (existingColor != null)
+            try
             {
-                return false;
+                var existingColor = _context.LoaiSPs.FirstOrDefaultAsync(x => x.Ten.Trim().ToUpper() == lsp.Ten.Trim().ToUpper() && x.ID != lsp.ID);
+
+                if (existingColor != null)
+                {
+                    return false;
+                }
+                return true;
             }
-            return true;
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public async Task<LoaiSP> AddSpCha(Guid idLoaiSPCha, string ten, int trangthai)
         {
-            var check = _context.LoaiSPs.FirstOrDefaultAsync(x => x.Ten == ten && x.IDLoaiSPCha != idLoaiSPCha);
-            if (check != null)
+            try
             {
-                return null;
+                var check = _context.LoaiSPs.FirstOrDefaultAsync(x => x.Ten == ten && x.IDLoaiSPCha != idLoaiSPCha);
+                if (check != null)
+                {
+                    return null;
+                }
+                LoaiSP kc = new LoaiSP()
+                {
+                    IDLoaiSPCha = Guid.NewGuid(),
+                    Ten = ten,
+                    TrangThai = 1
+                };
+                _context.LoaiSPs.Add(kc);
+                _context.SaveChanges();
+                return kc;
             }
-            LoaiSP kc = new LoaiSP()
+            catch (Exception)
             {
-                IDLoaiSPCha = Guid.NewGuid(),
-                Ten = ten,
-                TrangThai = 1
-            };
-            _context.LoaiSPs.Add(kc);
-            _context.SaveChanges();
-            return kc;
+
+                throw;
+            }
         }
 
 
