@@ -474,7 +474,7 @@ namespace AppAPI.Services
                                             }).ToList(),
                                   lstlstd = (from lstd in context.LichSuTichDiems
                                              where lstd.IDHoaDon == hd.ID
-                                             select lstd).ToList()
+                                             select lstd).OrderBy(c=>c.TrangThai).ToList()
                               }).FirstOrDefault();
 
                 return result;
@@ -624,13 +624,15 @@ namespace AppAPI.Services
                             IDQuyDoiDiem = tieud.IDQuyDoiDiem,
                         };
                         context.LichSuTichDiems.Add(diemtra);
-                        context.SaveChanges();                       
+                        context.SaveChanges();
                         //Xóa tích sửa tiêu = 0
                         //context.LichSuTichDiems.Remove(tieud);
                         //context.SaveChanges();
-                        // Sửa tích điểm về 0
-                        tichd.Diem = 0;
-                        context.LichSuTichDiems.Update(tichd);
+
+                        
+                        //tichd.Diem = 0;
+                        //tichd.TrangThai = 2;
+                        context.LichSuTichDiems.Remove(tichd);
                         context.SaveChanges();
                     }
                 }
@@ -986,7 +988,7 @@ namespace AppAPI.Services
                             IDHoaDon = hd.ID,
                             IDKhachHang = kh.IDKhachHang,
                             Diem = td.Diem,
-                            TrangThai = 4,
+                            TrangThai = 3,
                             IDQuyDoiDiem = td.IDQuyDoiDiem,
                         };
                         context.LichSuTichDiems.Add(diemtru);
@@ -1055,7 +1057,7 @@ namespace AppAPI.Services
                             IDHoaDon = hd.ID,
                             IDKhachHang = kh.IDKhachHang,
                             Diem = tieud.Diem,
-                            TrangThai = 3,
+                            TrangThai = 4,
                             IDQuyDoiDiem = tieud.IDQuyDoiDiem,
                         };
                         context.LichSuTichDiems.Add(diemtra);

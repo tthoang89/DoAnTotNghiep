@@ -56,7 +56,7 @@
                 <div class="row">
                     <label class="col-sm-5 col-form-label">Trạng thái:</label>
                     <div class="col-sm-7">
-                        <label class="col-form-label">
+                        <label class="col-form-label text-primary">
                             @{
                                 @(Model.TrangThai == 2 ? "Chờ xác nhận" :
                             (Model.TrangThai == 10 ? "Đang đóng hàng" :
@@ -386,9 +386,9 @@
                                 {
                                     <tr>
                                         <td>@item.ID</td>
-                                        <td class="text-success">@item.Diem</td>
-                                        <td class="text-success">
-                                            Hoàn điểm đơn hoàn
+                                        <td class="text-danger">@item.Diem</td>
+                                        <td class="text-danger">
+                                            Trừ điểm đơn hoàn hàng
                                         </td>
                                     </tr>
                                 }
@@ -396,9 +396,9 @@
                                 {
                                     <tr>
                                         <td>@item.ID</td>
-                                        <td class="text-danger">@item.Diem</td>
-                                        <td class="text-danger">
-                                            Trừ điểm đơn hoàn
+                                        <td class="text-success">@item.Diem</td>
+                                        <td class="text-success">
+                                            Hoàn điểm đơn hoàn hàng
                                         </td>
                                     </tr>
                                 }

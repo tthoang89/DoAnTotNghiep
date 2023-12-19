@@ -392,11 +392,11 @@ namespace AppView.Controllers
                 khview.TrangThai = 1;
                 khview.DiemTich = 0;
                 var lstkh = await _httpClient.GetFromJsonAsync<List<KhachHang>>("KhachHang");
-                if (request.SDT != null && lstkh.Any(c => c.SDT.Equals(request.SDT)))
+                if (request.SDT != null && lstkh.Any(c =>c.SDT !=null && c.SDT.Equals(request.SDT)))
                 {
                     return Json(new { success = false, message = "Số điện thoại đã được sử dụng" });
                 }
-                if (request.Email != null && lstkh.Any(c => c.Email.Equals(request.Email)))
+                if (request.Email != null && lstkh.Any(c => c.Email != null && c.Email.Equals(request.Email)))
                 {
                     return Json(new { success = false, message = "Email đã được sử dụng" });
                 }
