@@ -510,7 +510,6 @@ namespace AppView.Controllers
         {
             try
             {
-                if (!ModelState.IsValid) return RedirectToAction("UpdateChiTietSanPham");
                 request.IDSanPham = new Guid(TempData.Peek("SanPham").ToString());
                 request.Ma = TempData["MaSP"] as string;
                 request.Location = Convert.ToInt32(TempData["Location"] as string);

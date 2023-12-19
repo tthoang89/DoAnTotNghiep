@@ -46,7 +46,7 @@ namespace AppAPI.Services
             var start = Convert.ToDateTime(startDate);
             var end = Convert.ToDateTime(endDate);
             //Sua
-            List<HoaDon> lstHoaDon = context.HoaDons.Where(x => (x.TrangThaiGiaoHang == 6 || x.TrangThaiGiaoHang==7) && x.NgayThanhToan >= start && x.NgayThanhToan<=end).ToList();
+            List<HoaDon> lstHoaDon = context.HoaDons.Where(x => (x.TrangThaiGiaoHang == 6 || x.TrangThaiGiaoHang==7 || x.TrangThaiGiaoHang==5) && x.NgayThanhToan >= start && x.NgayThanhToan<=end).ToList();
             //End
             var tongHoaDonTron = lstHoaDon.Count();
             //Lấy biểu đồ cột
@@ -80,11 +80,11 @@ namespace AppAPI.Services
                 thongKeDuong.Add(new ThongKeDuongViewModel() { Ngay = i.Date, DoanhThu = context.HoaDons.Where(x => x.TrangThaiGiaoHang == 6 && x.NgayThanhToan.Value.Date == i.Date).Sum(x=>x.TongTien-x.TienShip).Value });
             }
             //Lấy biểu đồ tròn
-            List<ThongKeTronViewModel> thongKeTron = (from a in lstHoaDon.Where(x=>x.TrangThaiGiaoHang==6 || x.TrangThaiGiaoHang == 7)
+            List<ThongKeTronViewModel> thongKeTron = (from a in lstHoaDon
                                                       group a by a.TrangThaiGiaoHang into g
                                                       select new ThongKeTronViewModel()
                                                       {
-                                                          TrangThaiHoaDon = g.Key == 6 ? "Thành công" : "Hủy",
+                                                          TrangThaiHoaDon = g.Key == 6 ? "Thành công" :g.Key == 5? "Hoàn trả":"Hủy",
                                                           PhanTram = (g.Count() * 100) / tongHoaDonTron,
                                                       }).ToList();
             return new ThongKeViewModel() { SoLuongThanhVien = soLuongThanhVien, SoLuongDonHang = soLuongDonHangCho, SoLuongSanPham = soLuongSanPham, BieuDoCot = thongKeCot, BieuDoDuong = thongKeDuong.OrderBy(x=>x.Ngay).ToList(), BieuDoTron = thongKeTron, Start = start.ToString("MM/dd/yyyy"), End = end.ToString("MM/dd/yyyy") };

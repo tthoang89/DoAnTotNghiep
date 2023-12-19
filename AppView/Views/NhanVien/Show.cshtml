@@ -19,7 +19,7 @@
         <a class="btn btn-primary" asp-action="Create">Thêm mới</a>
     </div>
     <div class="col-5">
-        <form asp-action="SearchTheoTen" asp-controller="NhanVien" method="get" enctype="multipart/form-data" style="margin-left: 30px;">
+        <form asp-action="SearchTheoTen" asp-controller="NhanVien" method="get" enctype="multipart/form-data" style="margin-left: 30px; text-align:end">
             <input class="tk1" type="text" name="Ten" placeholder="Tìm kiếm theo tên hoặc sdt" autocomplete="off" />
             <input class="btn btn-primary" type="submit" value="Tìm kiếm" style="margin-bottom: 3px;" />
         </form>
@@ -54,7 +54,7 @@
             <tr>
                 <td>@stt</td>
                 <td>@Html.DisplayFor(modelItem => item.Ten)</td>
-                <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                <td><div> @item.Email</div></td>
                 <td>
                     @Html.DisplayFor(modelItem => item.SDT)
                 </td>
@@ -76,7 +76,7 @@
                         ;
                     }
                 </td>
-                <td>
+                <td style="text-align:end">
                     <button type="button" class="btn btn-success" onclick="return confirm('Bạn có muốn đổi trạng thái nhân viên @item.Ten sang trạng thái @(item.TrangThai == 1 ? "Nghỉ làm" : "Đang làm") không?');">
                         @Html.ActionLink("Sửa", "Sua", new { id = item.ID }, new { @style = "color:white;" })
                     </button>
