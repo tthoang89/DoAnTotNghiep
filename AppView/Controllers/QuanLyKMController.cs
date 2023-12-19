@@ -144,19 +144,31 @@ namespace AppView.Controllers
         [HttpPost]
         public async Task<IActionResult> AddCTSPByIdKMLayTuSession(List<Guid> bienthes)
         {
-            // lay IdkhuyenMai Tu session
-            var idkhuyenmai = Guid.Parse(HttpContext.Session.GetString("IdKhuyenMai"));
-            var response = await _httpClient.PutAsJsonAsync($"https://localhost:7095/api/KhuyenMai/AddKmVoBT?IdKhuyenMai={idkhuyenmai}", bienthes);
-         
-            if (response.IsSuccessStatusCode) return Json(new { success = true, message = "Cập nhật thành công!" });
-            return Json(new { success = false });
+            try
+            {
+                var idkhuyenmai = Guid.Parse(HttpContext.Session.GetString("IdKhuyenMai"));
+                var response = await _httpClient.PutAsJsonAsync($"https://localhost:7095/api/KhuyenMai/AddKmVoBT?IdKhuyenMai={idkhuyenmai}", bienthes);
+
+                if (response.IsSuccessStatusCode) return Json(new { success = true, message = "Cập nhật thành công!" });
+                return Json(new { success = false });
+            } // lay IdkhuyenMai Tu session
+            catch
+            {
+                return View();
+            }
+           
         }
         [HttpPost]
         public async Task<IActionResult>XoaKHuyenMaiRaSP( List<Guid> bienthes)
         {
-            var response = await _httpClient.PutAsJsonAsync($"https://localhost:7095/api/KhuyenMai/XoaKmRaBT", bienthes);
-            if (response.IsSuccessStatusCode) return Json(new { success = true, message = "Xóa Khuyến Mãi ra  thành công!" });
-            return Json(new { success = false });
+            try
+            {
+                var response = await _httpClient.PutAsJsonAsync($"https://localhost:7095/api/KhuyenMai/XoaKmRaBT", bienthes);
+                if (response.IsSuccessStatusCode) return Json(new { success = true, message = "Xóa Khuyến Mãi ra  thành công!" });
+                return Json(new { success = false });
+            }
+            catch { return View(); }
+           
         }
         #endregion
         #region Khuyen Mai
@@ -219,73 +231,81 @@ namespace AppView.Controllers
        
         public async Task<IActionResult> Create(KhuyenMaiView kmv)
         {
-            string apiURL = $"https://localhost:7095/api/KhuyenMai";
-            var response1 = await _httpClient.GetAsync(apiURL);
-            var apiData = await response1.Content.ReadAsStringAsync();
-            var roles = JsonConvert.DeserializeObject<List<KhuyenMaiView>>(apiData);
-            if (kmv.GiaTri != null || kmv.NgayApDung != null || kmv.NgayKetThuc != null||kmv.Ten!=null)
+            try
             {
-                if (kmv.GiaTri <= 0)
+                string apiURL = $"https://localhost:7095/api/KhuyenMai";
+                var response1 = await _httpClient.GetAsync(apiURL);
+                var apiData = await response1.Content.ReadAsStringAsync();
+                var roles = JsonConvert.DeserializeObject<List<KhuyenMaiView>>(apiData);
+                if (kmv.GiaTri != null || kmv.NgayApDung != null || kmv.NgayKetThuc != null || kmv.Ten != null)
                 {
-                    ViewData["GiaTri"] = "Mời Bạn nhập giá trị lớn hơn 0";
-                }
-                if (kmv.NgayApDung == null)
-                {
-                    ViewData["NgayApDung"] = "Mời bạn nhập ngày áp dụng";
-                }
-                if (kmv.NgayKetThuc == null)
-                {
-                    ViewData["NgayKetThuc"] = "Mời bạn nhập ngày kết thúc";
-                }
-                if (kmv.NgayKetThuc < kmv.NgayApDung)
-                {
-                    ViewData["Ngay"] = "Ngày kết thúc phải lớn hơn hoặc bằng ngày áp dụng";
-                }
-                var timkiem=roles.FirstOrDefault(x=>x.Ten==kmv.Ten.Trim());
-                if (timkiem != null)
-                {
-                    ViewData["Ma"] = "Mã này đã tồn tại";
-                }
-                if (kmv.TrangThai == 1)
-                {
-                    if(kmv.GiaTri<=0 || kmv.GiaTri > 100)
+                    if (kmv.GiaTri <= 0)
                     {
-                        ViewData["GiaTri"] = "Giá trị từ 1 đến 100";
-                        return View();
+                        ViewData["GiaTri"] = "Mời Bạn nhập giá trị lớn hơn 0";
                     }
-                    if(kmv.GiaTri>0&&kmv.GiaTri <= 100)
+                    if (kmv.NgayApDung == null)
                     {
-                        if (kmv.GiaTri > 0 && kmv.NgayKetThuc >= kmv.NgayApDung && timkiem == null)
+                        ViewData["NgayApDung"] = "Mời bạn nhập ngày áp dụng";
+                    }
+                    if (kmv.NgayKetThuc == null)
+                    {
+                        ViewData["NgayKetThuc"] = "Mời bạn nhập ngày kết thúc";
+                    }
+                    if (kmv.NgayKetThuc < kmv.NgayApDung)
+                    {
+                        ViewData["Ngay"] = "Ngày kết thúc phải lớn hơn hoặc bằng ngày áp dụng";
+                    }
+                    var timkiem = roles.FirstOrDefault(x => x.Ten == kmv.Ten.Trim());
+                    if (timkiem != null)
+                    {
+                        ViewData["Ma"] = "Mã này đã tồn tại";
+                    }
+                    if (kmv.TrangThai == 1)
+                    {
+                        if (kmv.GiaTri <= 0 || kmv.GiaTri > 100)
                         {
-                            var response = await
-                  _httpClient.PostAsJsonAsync("https://localhost:7095/api/KhuyenMai", kmv);
-                            if (response.IsSuccessStatusCode) return RedirectToAction("GetAllKM");
+                            ViewData["GiaTri"] = "Giá trị từ 1 đến 100";
                             return View();
                         }
-                    }
-                }
-                if (kmv.TrangThai == 0)
-                {
-                    if (kmv.GiaTri <= 0 )
-                    {
-                        ViewData["GiaTri"] = "Giá trị phải lớn hơn 0";
-                        return View();
-                    }
-                    if (kmv.GiaTri > 0 )
-                    {
-                        if (kmv.GiaTri > 0 && kmv.NgayKetThuc >= kmv.NgayApDung && timkiem == null)
+                        if (kmv.GiaTri > 0 && kmv.GiaTri <= 100)
                         {
-                            var response = await
-                  _httpClient.PostAsJsonAsync("https://localhost:7095/api/KhuyenMai", kmv);
-                            if (response.IsSuccessStatusCode) return RedirectToAction("GetAllKM");
-                            return View();
+                            if (kmv.GiaTri > 0 && kmv.NgayKetThuc >= kmv.NgayApDung && timkiem == null)
+                            {
+                                var response = await
+                      _httpClient.PostAsJsonAsync("https://localhost:7095/api/KhuyenMai", kmv);
+                                if (response.IsSuccessStatusCode) return RedirectToAction("GetAllKM");
+                                return View();
+                            }
                         }
                     }
+                    if (kmv.TrangThai == 0)
+                    {
+                        if (kmv.GiaTri <= 0)
+                        {
+                            ViewData["GiaTri"] = "Giá trị phải lớn hơn 0";
+                            return View();
+                        }
+                        if (kmv.GiaTri > 0)
+                        {
+                            if (kmv.GiaTri > 0 && kmv.NgayKetThuc >= kmv.NgayApDung && timkiem == null)
+                            {
+                                var response = await
+                      _httpClient.PostAsJsonAsync("https://localhost:7095/api/KhuyenMai", kmv);
+                                if (response.IsSuccessStatusCode) return RedirectToAction("GetAllKM");
+                                return View();
+                            }
+                        }
+                    }
+
+
                 }
-
-
+                return View();
             }
-            return View();
+            catch
+            {
+                return View();  
+            }
+           
         }
         // update
         public  IActionResult Update(Guid id)
@@ -300,64 +320,87 @@ namespace AppView.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(KhuyenMaiView kmv)
         {
-
-            if (kmv.NgayKetThuc >= kmv.NgayApDung)
+            try
             {
-                var response = await _httpClient.PutAsJsonAsync($"https://localhost:7095/api/KhuyenMai/{kmv.ID}", kmv);
-                if (response.IsSuccessStatusCode) return RedirectToAction("GetAllKM");
+                if (kmv.NgayKetThuc >= kmv.NgayApDung)
+                {
+                    var response = await _httpClient.PutAsJsonAsync($"https://localhost:7095/api/KhuyenMai/{kmv.ID}", kmv);
+                    if (response.IsSuccessStatusCode) return RedirectToAction("GetAllKM");
+                    return View();
+                }
+                ViewData["Ngay"] = "Ngày kết thúc phải lớn hơn hoặc bằng ngày áp dụng";
                 return View();
             }
-            ViewData["Ngay"] = "Ngày kết thúc phải lớn hơn hoặc bằng ngày áp dụng";
-            return View();
+            catch
+            {
+                return View();
+            }
+           
 
 
 
         }
         public async Task<IActionResult> SuDung(Guid id)
         {
-            var timkiem = dBContext.KhuyenMais.FirstOrDefault(x => x.ID == id);
-            if (timkiem != null)
+            try
             {
-                if (timkiem.TrangThai == 2)
+                var timkiem = dBContext.KhuyenMais.FirstOrDefault(x => x.ID == id);
+                if (timkiem != null)
                 {
-                    timkiem.TrangThai = 0;
-                    dBContext.KhuyenMais.Update(timkiem);
+                    if (timkiem.TrangThai == 2)
+                    {
+                        timkiem.TrangThai = 0;
+                        dBContext.KhuyenMais.Update(timkiem);
+                    }
+                    if (timkiem.TrangThai == 3)
+                    {
+                        timkiem.TrangThai = 1;
+                        dBContext.KhuyenMais.Update(timkiem);
+                    }
+                    dBContext.SaveChanges();
+                    return RedirectToAction("GetAllKM");
                 }
-                if (timkiem.TrangThai == 3)
+                else
                 {
-                    timkiem.TrangThai = 1;
-                    dBContext.KhuyenMais.Update(timkiem);
+                    return View();
                 }
-                dBContext.SaveChanges();
-                return RedirectToAction("GetAllKM");
             }
-            else
+            catch
             {
                 return View();
             }
+            
         }
         public async Task<IActionResult> KoSuDung(Guid id)
         {
-            var timkiem = dBContext.KhuyenMais.FirstOrDefault(x => x.ID == id);
-            if (timkiem != null)
+            try
             {
-                if (timkiem.TrangThai == 0)
+                var timkiem = dBContext.KhuyenMais.FirstOrDefault(x => x.ID == id);
+                if (timkiem != null)
                 {
-                    timkiem.TrangThai = 2;
-                    dBContext.KhuyenMais.Update(timkiem);
+                    if (timkiem.TrangThai == 0)
+                    {
+                        timkiem.TrangThai = 2;
+                        dBContext.KhuyenMais.Update(timkiem);
+                    }
+                    if (timkiem.TrangThai == 1)
+                    {
+                        timkiem.TrangThai = 3;
+                        dBContext.KhuyenMais.Update(timkiem);
+                    }
+                    dBContext.SaveChanges();
+                    return RedirectToAction("GetAllKM");
                 }
-                if (timkiem.TrangThai == 1)
+                else
                 {
-                    timkiem.TrangThai = 3;
-                    dBContext.KhuyenMais.Update(timkiem);
+                    return View();
                 }
-                dBContext.SaveChanges();
-                return RedirectToAction("GetAllKM");
             }
-            else
+            catch
             {
                 return View();
             }
+           
         }
         //public async Task<IActionResult> SuDung(Guid id)
         //{
