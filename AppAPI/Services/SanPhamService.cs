@@ -21,7 +21,7 @@ namespace AppAPI.Services
         {
             try
             {
-                var sanpham = await _context.SanPhams.FirstAsync(x=>x.ID == request.ID);
+                var sanpham = await _context.SanPhams.FirstAsync(x => x.ID == request.ID);
                 LoaiSP? loaiSPCon = _context.LoaiSPs.Where(x => x.IDLoaiSPCha != null).FirstOrDefault(x => x.Ten == request.TenLoaiSPCon);
                 ChatLieu? chatLieu = _context.ChatLieus.FirstOrDefault(x => x.Ten == request.TenChatLieu);
                 if (loaiSPCon == null)
@@ -65,14 +65,15 @@ namespace AppAPI.Services
         {
             try
             {
-                var sanPham = await _context.SanPhams.FirstAsync(x=>x.ID == id);
-                var loaiSP = await _context.LoaiSPs.FirstAsync(x=>x.ID == sanPham.IDLoaiSP);
-                var response = new SanPhamUpdateRequest() { 
+                var sanPham = await _context.SanPhams.FirstAsync(x => x.ID == id);
+                var loaiSP = await _context.LoaiSPs.FirstAsync(x => x.ID == sanPham.IDLoaiSP);
+                var response = new SanPhamUpdateRequest()
+                {
                     ID = sanPham.ID,
                     Ten = sanPham.Ten,
                     MoTa = sanPham.MoTa,
-                    TenChatLieu = _context.ChatLieus.First(x=>x.ID == sanPham.IDChatLieu).Ten,
-                    TenLoaiSPCha = _context.LoaiSPs.First(x=>x.ID == loaiSP.IDLoaiSPCha).Ten,
+                    TenChatLieu = _context.ChatLieus.First(x => x.ID == sanPham.IDChatLieu).Ten,
+                    TenLoaiSPCha = _context.LoaiSPs.First(x => x.ID == loaiSP.IDLoaiSPCha).Ten,
                     TenLoaiSPCon = loaiSP.Ten
                 };
                 return response;
@@ -364,8 +365,18 @@ namespace AppAPI.Services
                 if (temp != null)
                 {
                     var anh = _context.Anhs.FirstOrDefault(x => x.IDMauSac == temp.IDMauSac && x.IDSanPham == temp.IDSanPham);
-                    ChiTietSanPhamViewModel chiTietSanPham = new ChiTietSanPhamViewModel() { ID = temp.ID, Ten = _context.SanPhams.First(x => x.ID == temp.IDSanPham).Ten, SoLuong = temp.SoLuong, GiaGoc = temp.GiaBan, TrangThai = _context.SanPhams.First(x=>x.ID==temp.IDSanPham).TrangThai == 0?0:
-                        temp.TrangThai, Anh = anh != null ? anh.DuongDan : null, MauSac = _context.MauSacs.First(x => x.ID == temp.IDMauSac).Ten, KichCo = _context.KichCos.First(x => x.ID == temp.IDKichCo).Ten };
+                    ChiTietSanPhamViewModel chiTietSanPham = new ChiTietSanPhamViewModel()
+                    {
+                        ID = temp.ID,
+                        Ten = _context.SanPhams.First(x => x.ID == temp.IDSanPham).Ten,
+                        SoLuong = temp.SoLuong,
+                        GiaGoc = temp.GiaBan,
+                        TrangThai = _context.SanPhams.First(x => x.ID == temp.IDSanPham).TrangThai == 0 ? 0 :
+                        temp.TrangThai,
+                        Anh = anh != null ? anh.DuongDan : null,
+                        MauSac = _context.MauSacs.First(x => x.ID == temp.IDMauSac).Ten,
+                        KichCo = _context.KichCos.First(x => x.ID == temp.IDKichCo).Ten
+                    };
                     var khuyenMai = _context.KhuyenMais.FirstOrDefault(x => x.ID == temp.IDKhuyenMai && x.NgayKetThuc > DateTime.Now);
                     chiTietSanPham.GiaBan = khuyenMai != null ? GetKhuyenMai(khuyenMai.GiaTri, chiTietSanPham.GiaGoc, khuyenMai.TrangThai) : chiTietSanPham.GiaGoc;
                     return chiTietSanPham;
@@ -518,8 +529,8 @@ namespace AppAPI.Services
                     {
                         _context.ChiTietSanPhams.Add(new ChiTietSanPham() { ID = x.IDChiTietSanPham, SoLuong = x.SoLuong.Value, GiaBan = x.GiaBan.Value, NgayTao = DateTime.Now, TrangThai = x.IDChiTietSanPham == tempTrangThai ? 1 : 2, IDSanPham = request.IDSanPham, IDMauSac = x.IDMauSac.Value, IDKichCo = x.IDKichCo.Value, Ma = RemoveUnicode(request.Ma + x.TenMauSac.Trim().ToUpper() + x.TenKichCo.ToUpper()) });
                     }
-                    var chiTietSanPhamMacDinh = _context.ChiTietSanPhams.FirstOrDefault(x=>x.IDSanPham == request.IDSanPham && x.TrangThai == 1);
-                    if(chiTietSanPhamMacDinh != null)
+                    var chiTietSanPhamMacDinh = _context.ChiTietSanPhams.FirstOrDefault(x => x.IDSanPham == request.IDSanPham && x.TrangThai == 1);
+                    if (chiTietSanPhamMacDinh != null)
                     {
                         chiTietSanPhamMacDinh.TrangThai = 2;
                         _context.ChiTietSanPhams.Update(chiTietSanPhamMacDinh);
@@ -584,14 +595,16 @@ namespace AppAPI.Services
             {
                 var chiTietSanPhamNew = _context.ChiTietSanPhams.FirstOrDefault(x => x.ID == id);
                 var chiTietSanPhamOld = _context.ChiTietSanPhams.FirstOrDefault(x => (x.TrangThai == 1) && x.IDSanPham == chiTietSanPhamNew.IDSanPham);
-                if (chiTietSanPhamOld != null) {
+                if (chiTietSanPhamOld != null)
+                {
                     chiTietSanPhamOld.TrangThai = 2;
                     _context.ChiTietSanPhams.Update(chiTietSanPhamOld);
                 }
-                if (chiTietSanPhamNew != null) {
+                if (chiTietSanPhamNew != null)
+                {
                     chiTietSanPhamNew.TrangThai = 1;
                     _context.ChiTietSanPhams.Update(chiTietSanPhamNew);
-                }                
+                }
                 await _context.SaveChangesAsync();
                 return true;
             }
@@ -828,12 +841,13 @@ namespace AppAPI.Services
                                            on ms.ID equals a.IDMauSac
                                            where ctsp != null && ctsp.IDMauSac == ms.ID
                                            select a.DuongDan).FirstOrDefault(),
-                                    GiaGoc = ctsp == null ? 0 : ctsp.GiaBan,
-                                    GiaBan = (km == null ? ctsp.GiaBan : (km.TrangThai == 1 ? (int)(ctsp.GiaBan / 100 * (100 - km.GiaTri)) : (ctsp.GiaBan - (int)km.GiaTri))),
+                                    GiaGoc = ctsp == null ? null : ctsp.GiaBan,
+                                    GiaBan = km == null ? ctsp.GiaBan :
+                    (km.TrangThai == 1 ? (int)(ctsp.GiaBan / 100 * (100 - km.GiaTri)) :
+                    (km.GiaTri < ctsp.GiaBan ? (ctsp.GiaBan - (int)km.GiaTri) : ctsp.GiaBan)),
                                     IdLsp = sp.IDLoaiSP,
                                 }).OrderBy(c => c.MaSP).ToListAsync();
 
-            return result;
             return result;
         }
 
@@ -893,7 +907,9 @@ namespace AppAPI.Services
                                      where ms.ID == ctsp.IDMauSac && a.IDSanPham == ctsp.IDSanPham
                                      select a).FirstOrDefault().DuongDan,
                               GiaGoc = ctsp.GiaBan,
-                              GiaBan = km.TrangThai == null ? ctsp.GiaBan : (km.TrangThai == 0 ? ctsp.GiaBan - km.GiaTri : (ctsp.GiaBan * (100 - km.GiaTri) / 100)),
+                              GiaBan = km == null ? ctsp.GiaBan :
+                    (km.TrangThai == 1 ? (int)(ctsp.GiaBan / 100 * (100 - km.GiaTri)) :
+                    (km.GiaTri < ctsp.GiaBan ? (ctsp.GiaBan - (int)km.GiaTri) : ctsp.GiaBan)),
                           }).OrderByDescending(c => c.ChiTiet).ToListAsync();
         }
 
@@ -941,7 +957,9 @@ namespace AppAPI.Services
                                              select dg).AsEnumerable().ToList().Average(c => c.Sao),
                                     NgayTao = ctsp == null ? null : ctsp.NgayTao,
                                     GiaGoc = ctsp == null ? 0 : ctsp.GiaBan,
-                                    GiaBan = (km == null ? ctsp.GiaBan : (km.TrangThai == 1 ? (int)(ctsp.GiaBan / 100 * (100 - km.GiaTri)) : (ctsp.GiaBan - (int)km.GiaTri))),
+                                    GiaBan = km == null ? ctsp.GiaBan :
+                    (km.TrangThai == 1 ? (int)(ctsp.GiaBan / 100 * (100 - km.GiaTri)) :
+                    (km.GiaTri < ctsp.GiaBan ? (ctsp.GiaBan - (int)km.GiaTri) : ctsp.GiaBan)),
                                     KhuyenMai = (km == null ? null : km.GiaTri)
                                 }).ToListAsync();
             return result;

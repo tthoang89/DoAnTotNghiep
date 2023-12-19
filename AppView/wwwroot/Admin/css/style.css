@@ -1393,8 +1393,16 @@ h6 {
     /*color: #fff;*/
     font-size: 1rem;
     height: 50px;
+    width:150px;
     float: right;
 }
+.btn-filter {
+    /*color: #fff;*/
+    font-size: 1rem;
+    height: 50px;
+    float: right;
+}
+
 
     /*.btn-create button {*/
         /*border-radius: 50%;*/

@@ -402,7 +402,7 @@
     var inputElement = document.getElementById("ghichu");
     inputElement.addEventListener("blur", function(event) {
         var inputValue = event.target.value;
-        if(inputValue === ''){
+        if(inputValue === '' || inputValue.trim == ''){
             inputValue = null;
         }
         $.ajax({
