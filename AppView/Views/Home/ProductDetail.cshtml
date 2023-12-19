@@ -673,7 +673,7 @@
                     url: '/Home/BuyNow',
                     success: function (response) {
                         if (response.success == true) {
-                            window.location = 'https://localhost:5001/Home/ShoppingCart';
+                            location.href = 'ShoppingCart';
 
                         } else {
                             toastr.error(response.message, 'Error Alert', { timeOut: 1000 });
