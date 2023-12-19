@@ -87,7 +87,7 @@
                 <thead>
                     <tr>
                         <th scope="col">Mã đơn hàng</th>
-                        <th scope="col">Thời gian</th>
+                        <th scope="col">Mô tả</th>
                         <th scope="col">Điểm</th>
                     </tr>
                 </thead>
@@ -131,7 +131,7 @@
                         $("#DShoaDon").append(`<tr>
                             <th class="adon" scope="row"><a href="PurchaseOrderDetail?idHoaDon=${response.data[i].idHoaDon}">${response.data[i].maHD}</a></th>
                                 <td>
-                                    ${response.data[i].ngaythanhtoan1}
+                                    Cộng điểm khi mua hàng thành công
                                 </td>
                                 <td>
                                    <label>+${response.data[i].diem}</label>
@@ -141,35 +141,46 @@
                         $("#DShoaDon").append(`<tr>
                             <th class="adon" scope="row"><a href="PurchaseOrderDetail?idHoaDon=${response.data[i].idHoaDon}">${response.data[i].maHD}</a></th>
                                 <td>
-                                    ${response.data[i].ngaytao1}
+                                    Tiêu điểm khi mua hàng
                                 </td>
                                 <td>
                                    <label>-${response.data[i].diem}</label>
                                 </td>
                         </tr>`);
                     }
-                    //else if (response.data[i].trangThaiGiaoHang == 5 && response.data[i].trangThaiLSTD === 1) {
-                    //    $("#DShoaDon").append(`<tr>
-                    //        <th class="adon" scope="row"><a href="PurchaseOrderDetail?idHoaDon=${response.data[i].idHoaDon}">${response.data[i].maHD}</a></th>
-                    //            <td>
-                    //                ${response.data[i].ngaythanhtoan1}
-                    //            </td>
-                    //            <td>
-                    //               <label>-${response.data[i].diem}</label>
-                    //            </td>
-                    //    </tr>`);
-                    //}
-                    //else if (response.data[i].trangThaiGiaoHang == 5 && response.data[i].trangThaiLSTD === 0) {
-                    //    $("#DShoaDon").append(`<tr>
-                    //        <th class="adon" scope="row"><a href="PurchaseOrderDetail?idHoaDon=${response.data[i].idHoaDon}">${response.data[i].maHD}</a></th>
-                    //            <td>
-                    //                ${response.data[i].ngaythanhtoan1}
-                    //            </td>
-                    //            <td>
-                    //               <label>+${response.data[i].diem}</label>
-                    //            </td>
-                    //    </tr>`);
-                    //}
+                    else if (response.data[i].trangThaiGiaoHang == 7 && response.data[i].trangThaiLSTD === 2) {
+                        $("#DShoaDon").append(`<tr>
+                            <th class="adon" scope="row"><a href="PurchaseOrderDetail?idHoaDon=${response.data[i].idHoaDon}">${response.data[i].maHD}</a></th>
+                                <td>
+                                    Cộng lại điểm điểm khi hủy đơn hàng
+                                </td>
+                                <td>
+                                   <label>+${response.data[i].diem}</label>
+                                </td>
+                        </tr>`);
+                    }
+                    else if (response.data[i].trangThaiGiaoHang == 5 && response.data[i].trangThaiLSTD === 3) {
+                        $("#DShoaDon").append(`<tr>
+                            <th class="adon" scope="row"><a href="PurchaseOrderDetail?idHoaDon=${response.data[i].idHoaDon}">${response.data[i].maHD}</a></th>
+                                <td>
+                                    Cộng lại điểm khi hoàn lại đơn hàng
+                                </td>
+                                <td>
+                                   <label>+${response.data[i].diem}</label>
+                                </td>
+                        </tr>`);
+                    }
+                    else if (response.data[i].trangThaiGiaoHang == 5 && response.data[i].trangThaiLSTD === 4) {
+                        $("#DShoaDon").append(`<tr>
+                            <th class="adon" scope="row"><a href="PurchaseOrderDetail?idHoaDon=${response.data[i].idHoaDon}">${response.data[i].maHD}</a></th>
+                                <td>
+                                    Trừ điểm khi hoàn lại đơn hàng
+                                </td>
+                                <td>
+                                   <label>-${response.data[i].diem}</label>
+                                </td>
+                        </tr>`);
+                    }
                     
                 }
                 paginghd(response.total, function () {

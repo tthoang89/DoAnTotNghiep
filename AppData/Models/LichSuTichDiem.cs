@@ -4,7 +4,7 @@
     {
         public Guid ID { get; set; }
         public int Diem { get; set; }
-        public int TrangThai { get; set; }//1 là tích điểm,0 tiêu điểm,2 trả điểm sd, 3 trả điểm tích
+        public int TrangThai { get; set; }//1 là tích điểm,0 tiêu điểm,2 là cộng do hủy, 3 là cộng do trả,4 là trừ do trả
         public Guid? IDKhachHang { get; set; }
         public Guid? IDQuyDoiDiem { get; set; }
         public Guid IDHoaDon { get; set; }

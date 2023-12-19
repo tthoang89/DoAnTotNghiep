@@ -459,7 +459,7 @@ namespace AppAPI.Services
                                   TenSP = sp.Ten,
                                   GiaSPTT = ctsp.GiaBan,
                                   DuongDanSPTT = _context.Anhs.FirstOrDefault(x => x.IDMauSac == ms.ID && x.IDSanPham == sp.ID).DuongDan,
-                              }).Take(10).ToListAsync();
+                              }).Take(5).ToListAsync();
             chiTietSanPham.SoSao = chiTietSanPham.SoSao / query.Count();
             chiTietSanPham.sosaoPercent = float.IsNaN(chiTietSanPham.SoSao) ? 0 : Convert.ToInt32((chiTietSanPham.SoSao / 5) * 100);
             chiTietSanPham.SoDanhGia = query.Count();

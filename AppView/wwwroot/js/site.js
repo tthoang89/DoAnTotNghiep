@@ -19,7 +19,7 @@
                         display: true,
                         text: label,
                         font: {
-                            size: 24
+                            size: 16
                         }
                     }
                 },
@@ -75,7 +75,7 @@
                         display: true,
                         text: label,
                         font: {
-                            size: 10
+                            size: 16
                         }
                     }
                 }

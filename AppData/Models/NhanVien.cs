@@ -14,9 +14,8 @@ namespace AppData.Models
         [StringLength(20, ErrorMessage = "Tên không được vượt quá 20 kí tự ")]
         public string Ten { get; set; }
         [Required(ErrorMessage = "Vui lòng nhập Email.")]
-        [StringLength(20, ErrorMessage = "Email không được vượt quá 100 kí tự ")]
+        [StringLength(100, ErrorMessage = "Email không được vượt quá 100 kí tự ")]
         [EmailAddress]
-
         public string Email { get; set; }
         [Required(ErrorMessage = "Vui lòng nhập Password.")]
         public string PassWord { get; set; }
