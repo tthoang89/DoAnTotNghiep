@@ -20,6 +20,7 @@ namespace AppView.Controllers
         {
             _httpClient = new HttpClient();
             dBContext = new AssignmentDBContext();
+            _httpClient.BaseAddress = new Uri("https://localhost:7095/api/");
         }
         public int PageSize = 8;
         // laam them 
@@ -43,25 +44,36 @@ namespace AppView.Controllers
         }
         // Tim kiem Loai SP theo ten
         [HttpGet]
-        public async Task<IActionResult> TimKiemLoaiSPTheoTen(string Ten, int ProductPage = 1)
+        public async Task<IActionResult> TimKiemLoaiSPTheoTen(string? ten, int ProductPage = 1)
         {
-            string apiUrl = "https://localhost:7095/api/LoaiSP/getAll";
-            var response = await _httpClient.GetAsync(apiUrl);
-            string apiData = await response.Content.ReadAsStringAsync();
-            var LoaiSPs = JsonConvert.DeserializeObject<List<LoaiSP>>(apiData);
-            return View(new PhanTrangLoaiSP
+            try
             {
-                listlsp = LoaiSPs.Where(x => x.Ten.Contains(Ten))
-                         .Skip((ProductPage - 1) * PageSize).Take(PageSize),
-                PagingInfo = new PagingInfo
+                if (string.IsNullOrWhiteSpace(ten))
                 {
-                    ItemsPerPage = PageSize,
-                    CurrentPage = ProductPage,
-                    TotalItems = LoaiSPs.Count()
+                    ViewData["SearchError"] = "Vui lòng nhập tên để tìm kiếm";
+                    return RedirectToAction("Show");
                 }
-
+                string apiUrl = $"https://localhost:7095/api/LoaiSP/TimKiemLoaiSP?name={ten}";
+                var response = await _httpClient.GetAsync(apiUrl);
+                string apiData = await response.Content.ReadAsStringAsync();
+                var users = JsonConvert.DeserializeObject<List<LoaiSP>>(apiData);
+                if (users.Count == 0)
+                {
+                    ViewData["SearchError"] = "Không tìm thấy kết quả phù hợp";
+                }
+                return View("Show", new PhanTrangLoaiSP
+                {
+                    listlsp = users
+                             .Skip((ProductPage - 1) * PageSize).Take(PageSize),
+                    PagingInfo = new PagingInfo
+                    {
+                        ItemsPerPage = PageSize,
+                        CurrentPage = ProductPage,
+                        TotalItems = users.Count()
+                    }
+                });
             }
-                 );
+            catch { return Redirect("https://localhost:5001/"); }
         }
         public async Task<IActionResult> Create()
         {
@@ -75,7 +87,6 @@ namespace AppView.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(LoaiSPRequest lsp)
         {
-            lsp.ID = Guid.NewGuid();
             lsp.TrangThai = 1;
             string apiURL = $"https://localhost:7095/api/LoaiSP/save";
             if (string.IsNullOrEmpty(lsp.Ten))
@@ -107,26 +118,49 @@ namespace AppView.Controllers
 
         }
         [HttpGet]
-        public IActionResult Edit(Guid id)
+        public async Task<IActionResult> Edit(Guid id)
         {
             string apiUrl = $"https://localhost:7095/api/LoaiSP/getById/{id}";
-            var response = _httpClient.GetAsync(apiUrl).Result;
-            var apiData = response.Content.ReadAsStringAsync().Result;
-            var user = JsonConvert.DeserializeObject<LoaiSP>(apiData);
-            return View(user);
+            var response = await _httpClient.GetAsync(apiUrl);
+            if (!response.IsSuccessStatusCode)
+            {
+                return BadRequest();
+            }
+
+            var lspJson = await response.Content.ReadAsStringAsync();
+            var lsp = JsonConvert.DeserializeObject<LoaiSP>(lspJson); // sử dụng LoaiSP thay vì LoaiSPRequest
+
+            return View(lsp);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(LoaiSPRequest nv)
+        public async Task<IActionResult> Edit(LoaiSP lsp)
         {
-            nv.TrangThai = 1;
-            string apiUrl = $"https://localhost:7095/api/save";
-            var response = await _httpClient.PutAsJsonAsync(apiUrl, nv);
-            if (response.IsSuccessStatusCode)
+            try
             {
-                return RedirectToAction("Show");
+                string apiUrl = $"https://localhost:7095/api/LoaiSP/save";
+                var content = new StringContent(JsonConvert.SerializeObject(lsp), Encoding.UTF8, "application/json");
+
+                var response = await _httpClient.PutAsync(apiUrl, content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Show");
+                }
+                else if (response.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    ViewBag.ErrorMessage = "Loại sản phẩm này đã có trong danh sách";
+                    return View();
+                }
+                else
+                {
+                    return View();
+                }
             }
-            return View();
+            catch
+            {
+                return Redirect("https://localhost:5001/");
+            }
         }
 
         [HttpGet]
@@ -149,12 +183,63 @@ namespace AppView.Controllers
                 }
             });
         }
-        [HttpPost]
-        public async Task<IActionResult> CreateLoaiSPCon(LoaiSPRequest lsp, Guid id)
-        {
-            lsp.ID = Guid.NewGuid();
-            lsp.TrangThai = 1;
 
+        [HttpGet]
+
+        public async Task<IActionResult> EditLoaiSPCon(Guid id)
+        {
+            string apiUrl = $"https://localhost:7095/api/LoaiSP/getById/{id}";
+            var response = await _httpClient.GetAsync(apiUrl);
+            if (!response.IsSuccessStatusCode)
+            {
+                return BadRequest();
+            }
+
+            var lspJson = await response.Content.ReadAsStringAsync();
+            var lsp = JsonConvert.DeserializeObject<LoaiSP>(lspJson); // sử dụng LoaiSP thay vì LoaiSPRequest
+
+            return View(lsp);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditLoaiSPCon(LoaiSP lsp)
+        {
+            try
+            {
+                lsp.TrangThai = 1;
+                string apiUrl = $"https://localhost:7095/api/LoaiSP/save";
+                var content = new StringContent(JsonConvert.SerializeObject(lsp), Encoding.UTF8, "application/json");
+                var reponsen = await _httpClient.PutAsync(apiUrl, content);
+                if (reponsen.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("GetLoaiSpById");
+                }
+                else if (reponsen.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    ViewBag.ErrorMessage = "Loại sản phẩm này đã có trong danh sách";
+                    return View();
+                }
+                return View(lsp);
+            }
+            catch
+            {
+                return Redirect("https://localhost:5001/");
+            }
+
+        }
+        public async Task<IActionResult> CreateLoaiSPCon()
+        {
+            var responseLoaiSP = _httpClient.GetAsync(_httpClient.BaseAddress + $"https://localhost:7095/api/LoaiSP/getAll").Result;
+            if (responseLoaiSP.IsSuccessStatusCode)
+            {
+                ViewData["listLoaiSP"] = JsonConvert.DeserializeObject<List<LoaiSP>>(responseLoaiSP.Content.ReadAsStringAsync().Result);
+            }
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreateLoaiSPCon(LoaiSP lsp)
+        {
+            lsp.TrangThai = 1;
             string apiURL = $"https://localhost:7095/api/LoaiSP/save";
             var content = new StringContent(JsonConvert.SerializeObject(lsp), Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync(apiURL, content);

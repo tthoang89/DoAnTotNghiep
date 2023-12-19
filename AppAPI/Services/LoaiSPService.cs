@@ -62,6 +62,7 @@ namespace AppAPI.Services
             try
             {
                 var Lsp = await _context.LoaiSPs.FindAsync(lsp.ID);
+
                 //Check tồn tại
                 if (Lsp != null) //Update
                 {
@@ -74,6 +75,7 @@ namespace AppAPI.Services
                 }
                 else // Tạo mới
                 {
+
                     LoaiSP loaiSP = new LoaiSP()
                     {
                         ID = new Guid(),
