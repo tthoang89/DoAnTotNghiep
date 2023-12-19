@@ -351,73 +351,81 @@ namespace AppView.Controllers
         [HttpGet]
         public async Task<IActionResult> ProductDetail(string idSanPham)
         { // lam start
-            var session = HttpContext.Session.GetString("LoginInfor");
-            if (String.IsNullOrEmpty(session))
+            try
             {
-                List<GioHangRequest> lstGioHang = new List<GioHangRequest>();
-                if (Request.Cookies["Cart"] != null)
+                var session = HttpContext.Session.GetString("LoginInfor");
+                if (String.IsNullOrEmpty(session))
                 {
-                    lstGioHang = JsonConvert.DeserializeObject<List<GioHangRequest>>(Request.Cookies["Cart"]);
-                }
-                // laam them
-                int cout = lstGioHang.Sum(c => c.SoLuong);
-                TempData["SoLuong"] = cout.ToString();
-
-                if (Request.Cookies["Cart"] != null)
-                {
-                    var response1 = await _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCart?request=" + Request.Cookies["Cart"]);
-                    if (response1.IsSuccessStatusCode)
+                    List<GioHangRequest> lstGioHang = new List<GioHangRequest>();
+                    if (Request.Cookies["Cart"] != null)
                     {
-                        var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response1.Content.ReadAsStringAsync().Result);
-
-
-                        // lam end
-
-                        TempData["TrangThai"] = "false";
-
-                        HttpResponseMessage response = await _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllChiTietSanPhamHome?idSanPham=" + idSanPham);
-                        var chiTietSanPham = JsonConvert.DeserializeObject<ChiTietSanPhamViewModelHome>(response.Content.ReadAsStringAsync().Result);
-                        return View(chiTietSanPham);
+                        lstGioHang = JsonConvert.DeserializeObject<List<GioHangRequest>>(Request.Cookies["Cart"]);
                     }
-                    else return BadRequest();
+                    // laam them
+                    int cout = lstGioHang.Sum(c => c.SoLuong);
+                    TempData["SoLuong"] = cout.ToString();
+
+                    if (Request.Cookies["Cart"] != null)
+                    {
+                        var response1 = await _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCart?request=" + Request.Cookies["Cart"]);
+                        if (response1.IsSuccessStatusCode)
+                        {
+                            var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response1.Content.ReadAsStringAsync().Result);
+
+
+                            // lam end
+
+                            TempData["TrangThai"] = "false";
+
+                            HttpResponseMessage response = await _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllChiTietSanPhamHome?idSanPham=" + idSanPham);
+                            var chiTietSanPham = JsonConvert.DeserializeObject<ChiTietSanPhamViewModelHome>(response.Content.ReadAsStringAsync().Result);
+                            return View(chiTietSanPham);
+                        }
+                        else return BadRequest();
+                    }
+                    else
+                    {
+                        TempData["TongTien"] = "0";
+                        return View(new List<GioHangRequest>());
+                    }
                 }
                 else
                 {
-                    TempData["TongTien"] = "0";
-                    return View(new List<GioHangRequest>());
-                }
-            }
-            else
-            {
-                var loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
-                if (loginInfor.vaiTro == 1)
-                {
-                    var response2 = await _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCartLogin?idNguoiDung=" + loginInfor.Id);
-                    if (response2.IsSuccessStatusCode)
+                    var loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
+                    if (loginInfor.vaiTro == 1)
                     {
-                        var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response2.Content.ReadAsStringAsync().Result);
+                        var response2 = await _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCartLogin?idNguoiDung=" + loginInfor.Id);
+                        if (response2.IsSuccessStatusCode)
+                        {
+                            var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response2.Content.ReadAsStringAsync().Result);
 
 
-                        // lam them
-                        int cout = temp.GioHangs.Sum(c => c.SoLuong);
+                            // lam them
+                            int cout = temp.GioHangs.Sum(c => c.SoLuong);
 
-                        TempData["SoLuong"] = cout.ToString();
-                        // lam end
-                        TempData["TrangThai"] = "true";
-                        HttpResponseMessage response = await _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllChiTietSanPhamHome?idSanPham=" + idSanPham);
-                        var chiTietSanPham = JsonConvert.DeserializeObject<ChiTietSanPhamViewModelHome>(response.Content.ReadAsStringAsync().Result);
-                        return View(chiTietSanPham);
+                            TempData["SoLuong"] = cout.ToString();
+                            // lam end
+                            TempData["TrangThai"] = "true";
+                            HttpResponseMessage response = await _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllChiTietSanPhamHome?idSanPham=" + idSanPham);
+                            var chiTietSanPham = JsonConvert.DeserializeObject<ChiTietSanPhamViewModelHome>(response.Content.ReadAsStringAsync().Result);
+                            return View(chiTietSanPham);
+                        }
+                        else return BadRequest();
                     }
-                    else return BadRequest();
-                }
-                else
-                {
-                    TempData["SoLuong"] = "0";
-                    return View(new List<GioHangRequest>());
-                }
+                    else
+                    {
+                        TempData["SoLuong"] = "0";
+                        return View(new List<GioHangRequest>());
+                    }
 
+                }
+                // lam end
             }
-            // lam end
+            catch (Exception)
+            {
+                return Redirect("https://localhost:5001/");
+            }
+            
             
         }
         [HttpGet]
@@ -983,25 +991,47 @@ namespace AppView.Controllers
         }
         public IActionResult PurchaseOrder()
         {
-            var session = HttpContext.Session.GetString("LoginInfor");
-            LoginViewModel loginViewModel = JsonConvert.DeserializeObject<LoginViewModel>(session);
-            List<DonMuaViewModel> donMuaViewModels = new List<DonMuaViewModel>();
-            //HttpResponseMessage responseDonMua = _httpClient.GetAsync(_httpClient.BaseAddress + $"LichSuTichDiem/GetAllDonMua?IDkhachHang={loginViewModel.Id}").Result;
-            //if (responseDonMua.IsSuccessStatusCode)
-            //{
-            //    donMuaViewModels = JsonConvert.DeserializeObject<List<DonMuaViewModel>>(responseDonMua.Content.ReadAsStringAsync().Result);
-            //}
-            return View("PurchaseOrder", donMuaViewModels);
+            try
+            {
+                var session = HttpContext.Session.GetString("LoginInfor");
+                if (session != null)
+                {
+                    LoginViewModel loginViewModel = JsonConvert.DeserializeObject<LoginViewModel>(session);
+                    List<DonMuaViewModel> donMuaViewModels = new List<DonMuaViewModel>();
+                    //HttpResponseMessage responseDonMua = _httpClient.GetAsync(_httpClient.BaseAddress + $"LichSuTichDiem/GetAllDonMua?IDkhachHang={loginViewModel.Id}").Result;
+                    //if (responseDonMua.IsSuccessStatusCode)
+                    //{
+                    //    donMuaViewModels = JsonConvert.DeserializeObject<List<DonMuaViewModel>>(responseDonMua.Content.ReadAsStringAsync().Result);
+                    //}
+                    return View("PurchaseOrder", donMuaViewModels);
+                }
+                else
+                {
+                    return Redirect("https://localhost:5001/");
+                }
+            }
+            catch (Exception)
+            {
+                return Redirect("https://localhost:5001/");
+            }
         }
         public IActionResult PurchaseOrderDetail(Guid idHoaDon)
         {
-            List<DonMuaChiTietViewModel> DonMuaCT = new List<DonMuaChiTietViewModel>();
-            HttpResponseMessage responseDonMuaCT = _httpClient.GetAsync(_httpClient.BaseAddress + $"LichSuTichDiem/GetAllDonMuaChiTiet?idHoaDon={idHoaDon}").Result;
-            if (responseDonMuaCT.IsSuccessStatusCode)
+            try
             {
-                DonMuaCT = JsonConvert.DeserializeObject<List<DonMuaChiTietViewModel>>(responseDonMuaCT.Content.ReadAsStringAsync().Result);
+                List<DonMuaChiTietViewModel> DonMuaCT = new List<DonMuaChiTietViewModel>();
+                HttpResponseMessage responseDonMuaCT = _httpClient.GetAsync(_httpClient.BaseAddress + $"LichSuTichDiem/GetAllDonMuaChiTiet?idHoaDon={idHoaDon}").Result;
+                if (responseDonMuaCT.IsSuccessStatusCode)
+                {
+                    DonMuaCT = JsonConvert.DeserializeObject<List<DonMuaChiTietViewModel>>(responseDonMuaCT.Content.ReadAsStringAsync().Result);
+                }
+                return View("PurchaseOrderDetail", DonMuaCT);
             }
-            return View("PurchaseOrderDetail", DonMuaCT);
+            catch (Exception)
+            {
+                return Redirect("https://localhost:5001/");
+            }
+            
         }
         public IActionResult LichSuTieuDiemTichDiem()
         {
@@ -1009,33 +1039,92 @@ namespace AppView.Controllers
         }
         public IActionResult LichSuTieuDiemTichDiembyuser(HoaDon danhGiaCTHDView, int page, int pageSize)
         {
-            var session = HttpContext.Session.GetString("LoginInfor");
-            LoginViewModel loginViewModel = JsonConvert.DeserializeObject<LoginViewModel>(session);
-            List<LichSuTichDiemTieuDiemViewModel> listLSTD = new List<LichSuTichDiemTieuDiemViewModel>();
-            List<LichSuTichDiemTieuDiemViewModel> listLSTDFN = new List<LichSuTichDiemTieuDiemViewModel>();
-            HttpResponseMessage responseDonMua = _httpClient.GetAsync(_httpClient.BaseAddress + $"LichSuTichDiem/GetALLLichSuTichDiembyIdUser?IDkhachHang={loginViewModel.Id}").Result;
-            if (responseDonMua.IsSuccessStatusCode)
+            try
             {
-                listLSTD = JsonConvert.DeserializeObject<List<LichSuTichDiemTieuDiemViewModel>>(responseDonMua.Content.ReadAsStringAsync().Result);
-                listLSTD = listLSTD.OrderBy(p => p.TrangThaiLSTD).ToList();
-
-                //foreach (var item in listLSTD)
-                //{
-                //    item.Ngaytao1 = item.NgayTao.ToString("dd/MM/yyyy");
-                //    item.Ngaythanhtoan1 = item.NgayThanhToan != null ? item.NgayThanhToan.Value.ToString("dd/MM/yyyy") : null;
-                //    item.Ngaynhanhang1 = item.NgayNhanHang != null ? item.NgayNhanHang.Value.ToString("dd/MM/yyyy") : null;
-                //}
-                if (danhGiaCTHDView.TrangThaiGiaoHang != 2 && danhGiaCTHDView.TrangThaiGiaoHang != null)
+                var session = HttpContext.Session.GetString("LoginInfor");
+                LoginViewModel loginViewModel = JsonConvert.DeserializeObject<LoginViewModel>(session);
+                List<LichSuTichDiemTieuDiemViewModel> listLSTD = new List<LichSuTichDiemTieuDiemViewModel>();
+                List<LichSuTichDiemTieuDiemViewModel> listLSTDFN = new List<LichSuTichDiemTieuDiemViewModel>();
+                HttpResponseMessage responseDonMua = _httpClient.GetAsync(_httpClient.BaseAddress + $"LichSuTichDiem/GetALLLichSuTichDiembyIdUser?IDkhachHang={loginViewModel.Id}").Result;
+                if (responseDonMua.IsSuccessStatusCode)
                 {
-                    if (danhGiaCTHDView.TrangThaiGiaoHang == 0)
+                    listLSTD = JsonConvert.DeserializeObject<List<LichSuTichDiemTieuDiemViewModel>>(responseDonMua.Content.ReadAsStringAsync().Result);
+                    listLSTD = listLSTD.OrderBy(p => p.TrangThaiLSTD).ToList();
+
+                    //foreach (var item in listLSTD)
+                    //{
+                    //    item.Ngaytao1 = item.NgayTao.ToString("dd/MM/yyyy");
+                    //    item.Ngaythanhtoan1 = item.NgayThanhToan != null ? item.NgayThanhToan.Value.ToString("dd/MM/yyyy") : null;
+                    //    item.Ngaynhanhang1 = item.NgayNhanHang != null ? item.NgayNhanHang.Value.ToString("dd/MM/yyyy") : null;
+                    //}
+                    if (danhGiaCTHDView.TrangThaiGiaoHang != 2 && danhGiaCTHDView.TrangThaiGiaoHang != null)
+                    {
+                        if (danhGiaCTHDView.TrangThaiGiaoHang == 0)
+                        {
+                            List<LichSuTichDiemTieuDiemViewModel> listLSTD1 = new List<LichSuTichDiemTieuDiemViewModel>();
+                            listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 0).ToList();
+                            foreach (var item in listLSTD1)
+                            {
+                                listLSTDFN.Add(item);
+                            }
+                            listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 3 && p.TrangThaiGiaoHang == 5).ToList();
+                            foreach (var item in listLSTD1)
+                            {
+                                listLSTDFN.Add(item);
+                            }
+                            listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 3 && p.TrangThaiGiaoHang == 4).ToList();
+                            foreach (var item in listLSTD1)
+                            {
+                                listLSTDFN.Add(item);
+                            }
+                        }
+                        else
+                        {
+                            List<LichSuTichDiemTieuDiemViewModel> listLSTD1 = new List<LichSuTichDiemTieuDiemViewModel>();
+                            listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 1 && p.TrangThaiGiaoHang == 6).ToList();
+                            foreach (var item in listLSTD1)
+                            {
+                                listLSTDFN.Add(item);
+                            }
+                            listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 1 && p.TrangThaiGiaoHang == 9).ToList();
+                            foreach (var item in listLSTD1)
+                            {
+                                listLSTDFN.Add(item);
+                            }
+                            listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 1 && p.TrangThaiGiaoHang == 4).ToList();
+                            foreach (var item in listLSTD1)
+                            {
+                                listLSTDFN.Add(item);
+                            }
+                            listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 1 && p.TrangThaiGiaoHang == 5).ToList();
+                            foreach (var item in listLSTD1)
+                            {
+                                listLSTDFN.Add(item);
+                            }
+                            listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 2 && p.TrangThaiGiaoHang == 7).ToList();
+                            foreach (var item in listLSTD1)
+                            {
+                                listLSTDFN.Add(item);
+                            }
+                            listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 4 && p.TrangThaiGiaoHang == 5).ToList();
+                            foreach (var item in listLSTD1)
+                            {
+                                listLSTDFN.Add(item);
+                            }
+                        }
+                        listLSTDFN = listLSTDFN.OrderBy(p => p.TrangThaiLSTD).ToList();
+                        var model = listLSTDFN.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+                        return Json(new
+                        {
+                            data = model,
+                            total = listLSTDFN.Count,
+                            status = true
+                        });
+                    }
+                    else
                     {
                         List<LichSuTichDiemTieuDiemViewModel> listLSTD1 = new List<LichSuTichDiemTieuDiemViewModel>();
                         listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 0).ToList();
-                        foreach (var item in listLSTD1)
-                        {
-                            listLSTDFN.Add(item);
-                        }
-                        listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 3 && p.TrangThaiGiaoHang == 5).ToList();
                         foreach (var item in listLSTD1)
                         {
                             listLSTDFN.Add(item);
@@ -1045,10 +1134,11 @@ namespace AppView.Controllers
                         {
                             listLSTDFN.Add(item);
                         }
-                    }
-                    else
-                    {
-                        List<LichSuTichDiemTieuDiemViewModel> listLSTD1 = new List<LichSuTichDiemTieuDiemViewModel>();
+                        listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 3 && p.TrangThaiGiaoHang == 5).ToList();
+                        foreach (var item in listLSTD1)
+                        {
+                            listLSTDFN.Add(item);
+                        }
                         listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 1 && p.TrangThaiGiaoHang == 6).ToList();
                         foreach (var item in listLSTD1)
                         {
@@ -1079,86 +1169,42 @@ namespace AppView.Controllers
                         {
                             listLSTDFN.Add(item);
                         }
+                        listLSTDFN = listLSTDFN.OrderBy(p => p.TrangThaiLSTD).ToList();
+                        var model = listLSTDFN.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+                        return Json(new
+                        {
+                            data = model,
+                            total = listLSTDFN.Count,
+                            status = true
+                        });
                     }
-                    listLSTDFN = listLSTDFN.OrderBy(p => p.TrangThaiLSTD).ToList();
-                    var model = listLSTDFN.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-                    return Json(new
-                    {
-                        data = model,
-                        total = listLSTDFN.Count,
-                        status = true
-                    });
                 }
-                else
-                {
-                    List<LichSuTichDiemTieuDiemViewModel> listLSTD1 = new List<LichSuTichDiemTieuDiemViewModel>();
-                    listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 0).ToList();
-                    foreach (var item in listLSTD1)
-                    {
-                        listLSTDFN.Add(item);
-                    }
-                    listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 3 && p.TrangThaiGiaoHang == 4).ToList();
-                    foreach (var item in listLSTD1)
-                    {
-                        listLSTDFN.Add(item);
-                    }
-                    listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 3 && p.TrangThaiGiaoHang == 5).ToList();
-                    foreach (var item in listLSTD1)
-                    {
-                        listLSTDFN.Add(item);
-                    }
-                    listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 1 && p.TrangThaiGiaoHang == 6).ToList();
-                    foreach (var item in listLSTD1)
-                    {
-                        listLSTDFN.Add(item);
-                    }
-                    listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 1 && p.TrangThaiGiaoHang == 9).ToList();
-                    foreach (var item in listLSTD1)
-                    {
-                        listLSTDFN.Add(item);
-                    }
-                    listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 1 && p.TrangThaiGiaoHang == 4).ToList();
-                    foreach (var item in listLSTD1)
-                    {
-                        listLSTDFN.Add(item);
-                    }
-                    listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 1 && p.TrangThaiGiaoHang == 5).ToList();
-                    foreach (var item in listLSTD1)
-                    {
-                        listLSTDFN.Add(item);
-                    }
-                    listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 2 && p.TrangThaiGiaoHang == 7).ToList();
-                    foreach (var item in listLSTD1)
-                    {
-                        listLSTDFN.Add(item);
-                    }
-                    listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 4 && p.TrangThaiGiaoHang == 5).ToList();
-                    foreach (var item in listLSTD1)
-                    {
-                        listLSTDFN.Add(item);
-                    }
-                    listLSTDFN = listLSTDFN.OrderBy(p=>p.TrangThaiLSTD).ToList();
-                    var model = listLSTDFN.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-                    return Json(new
-                    {
-                        data = model,
-                        total = listLSTDFN.Count,
-                        status = true
-                    });
-                }
-            }
-            else return Json(new { status = false });
+                else return Json(new { status = false });
 
+            }
+            catch (Exception)
+            {
+                return Redirect("https://localhost:5001/");
+            }
+            
         }
         public IActionResult ReviewProducts(Guid idCTHD)
         {
-            ChiTietHoaDonDanhGiaViewModel hdctDanhGia = new ChiTietHoaDonDanhGiaViewModel();
-            HttpResponseMessage responseDonMuaCT = _httpClient.GetAsync(_httpClient.BaseAddress + $"LichSuTichDiem/GetCTHDDANHGIA?idhdct={idCTHD}").Result;
-            if (responseDonMuaCT.IsSuccessStatusCode)
+            try
             {
-                hdctDanhGia = JsonConvert.DeserializeObject<ChiTietHoaDonDanhGiaViewModel>(responseDonMuaCT.Content.ReadAsStringAsync().Result);
+                ChiTietHoaDonDanhGiaViewModel hdctDanhGia = new ChiTietHoaDonDanhGiaViewModel();
+                HttpResponseMessage responseDonMuaCT = _httpClient.GetAsync(_httpClient.BaseAddress + $"LichSuTichDiem/GetCTHDDANHGIA?idhdct={idCTHD}").Result;
+                if (responseDonMuaCT.IsSuccessStatusCode)
+                {
+                    hdctDanhGia = JsonConvert.DeserializeObject<ChiTietHoaDonDanhGiaViewModel>(responseDonMuaCT.Content.ReadAsStringAsync().Result);
+                }
+                return View("ReviewProducts", hdctDanhGia);
             }
-            return View("ReviewProducts", hdctDanhGia);
+            catch (Exception)
+            {
+                return Redirect("https://localhost:5001/");
+            }
+            
         }
         [HttpPost]
         public IActionResult ChangePassword(string newPassword, string oldPassword)
@@ -1175,52 +1221,93 @@ namespace AppView.Controllers
         }
         public IActionResult DanhGiaSanPham([FromBody] DanhGiaCTHDViewModel danhGiaCTHDView)
         {
-            if (danhGiaCTHDView.danhgia == "")
+            try
             {
-                danhGiaCTHDView.danhgia = "Người dùng này không để lại bình luận";
+                if (danhGiaCTHDView.danhgia == "")
+                {
+                    danhGiaCTHDView.danhgia = "Người dùng này không để lại bình luận";
+                }
+                HttpResponseMessage responseDonMuaCT = _httpClient.PutAsync(_httpClient.BaseAddress + $"DanhGia?idCTHD={danhGiaCTHDView.idCTHD}&soSao={danhGiaCTHDView.soSao}&binhLuan={danhGiaCTHDView.danhgia}", null).Result;
+                if (responseDonMuaCT.IsSuccessStatusCode)
+                {
+                    RedirectToAction("PurchaseOrderDetail", "Home", new { idHoaDon = danhGiaCTHDView.idHD });
+                }
+                return RedirectToAction("PurchaseOrderDetail", "Home", new { idHoaDon = danhGiaCTHDView.idHD });
             }
-            HttpResponseMessage responseDonMuaCT = _httpClient.PutAsync(_httpClient.BaseAddress + $"DanhGia?idCTHD={danhGiaCTHDView.idCTHD}&soSao={danhGiaCTHDView.soSao}&binhLuan={danhGiaCTHDView.danhgia}", null).Result;
-            if (responseDonMuaCT.IsSuccessStatusCode)
+            catch (Exception)
             {
-                RedirectToAction("PurchaseOrderDetail", "Home", new { idHoaDon = danhGiaCTHDView.idHD});
+                return Redirect("https://localhost:5001/");
             }
-            return RedirectToAction("PurchaseOrderDetail", "Home", new { idHoaDon = danhGiaCTHDView.idHD });
+            
         }
         public IActionResult HuyDonHang(Guid idHoaDon)
         {
-            HttpResponseMessage responseDonMua = _httpClient.PutAsync(_httpClient.BaseAddress + $"HoaDon?idhoadon={idHoaDon}&trangthai=8", null).Result;
-            if (responseDonMua.IsSuccessStatusCode)
+            try
             {
-                RedirectToAction("PurchaseOrder");
+                HttpResponseMessage responseDonMua = _httpClient.PutAsync(_httpClient.BaseAddress + $"HoaDon?idhoadon={idHoaDon}&trangthai=8", null).Result;
+                if (responseDonMua.IsSuccessStatusCode)
+                {
+                    RedirectToAction("PurchaseOrder");
+                }
+                return RedirectToAction("PurchaseOrder");
             }
-            return RedirectToAction("PurchaseOrder");
+            catch (Exception)
+            {
+                return RedirectToAction("PurchaseOrder");
+            }
+            
         }
         public IActionResult HoanTacHuyDonHang(Guid idHoaDon)
         {
-            HttpResponseMessage responseDonMua = _httpClient.PutAsync(_httpClient.BaseAddress + $"HoaDon?idhoadon={idHoaDon}&trangthai=2", null).Result;
-            if (responseDonMua.IsSuccessStatusCode)
+            try
             {
-                RedirectToAction("PurchaseOrder");
+                HttpResponseMessage responseDonMua = _httpClient.PutAsync(_httpClient.BaseAddress + $"HoaDon?idhoadon={idHoaDon}&trangthai=2", null).Result;
+                if (responseDonMua.IsSuccessStatusCode)
+                {
+                    RedirectToAction("PurchaseOrder");
+                }
+                return RedirectToAction("PurchaseOrder");
             }
-            return RedirectToAction("PurchaseOrder");
+            catch (Exception)
+            {
+                return RedirectToAction("PurchaseOrder");
+            }
+            
         }
         public IActionResult DoiTraHang(Guid idHoaDon)
         {
-            HttpResponseMessage responseDonMua = _httpClient.PutAsync(_httpClient.BaseAddress + $"HoaDon?idhoadon={idHoaDon}&trangthai=9", null).Result;
-            if (responseDonMua.IsSuccessStatusCode)
+            try
             {
-                RedirectToAction("PurchaseOrder");
+                HttpResponseMessage responseDonMua = _httpClient.PutAsync(_httpClient.BaseAddress + $"HoaDon?idhoadon={idHoaDon}&trangthai=9", null).Result;
+                if (responseDonMua.IsSuccessStatusCode)
+                {
+                    RedirectToAction("PurchaseOrder");
+                }
+                return RedirectToAction("PurchaseOrder");
             }
-            return RedirectToAction("PurchaseOrder");
+            catch (Exception)
+            {
+                return RedirectToAction("PurchaseOrder");
+            }
+            
         }
         public IActionResult HoanTacDoiTraHang(Guid idHoaDon)
         {
-            HttpResponseMessage responseDonMua = _httpClient.PutAsync(_httpClient.BaseAddress + $"HoaDon?idhoadon={idHoaDon}&trangthai=6", null).Result;
-            if (responseDonMua.IsSuccessStatusCode)
+            try
             {
-                RedirectToAction("PurchaseOrder");
+                HttpResponseMessage responseDonMua = _httpClient.PutAsync(_httpClient.BaseAddress + $"HoaDon?idhoadon={idHoaDon}&trangthai=6", null).Result;
+                if (responseDonMua.IsSuccessStatusCode)
+                {
+                    RedirectToAction("PurchaseOrder");
+                }
+                return RedirectToAction("PurchaseOrder");
+
             }
-            return RedirectToAction("PurchaseOrder");
+            catch (Exception)
+            {
+                return RedirectToAction("PurchaseOrder");
+            }
+            
         }
         public IActionResult XacNhanGHTC(Guid idHoaDon)
         {
