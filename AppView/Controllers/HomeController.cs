@@ -952,26 +952,26 @@ namespace AppView.Controllers
             if (responseDonMua.IsSuccessStatusCode)
             {
                 listLSTD = JsonConvert.DeserializeObject<List<LichSuTichDiemTieuDiemViewModel>>(responseDonMua.Content.ReadAsStringAsync().Result);
-                listLSTD = listLSTD.OrderByDescending(p => p.NgayTao).ToList();
+                listLSTD = listLSTD.OrderBy(p => p.TrangThaiLSTD).ToList();
 
-                foreach (var item in listLSTD)
-                {
-                    item.Ngaytao1 = item.NgayTao.ToString("dd/MM/yyyy");
-                    item.Ngaythanhtoan1 = item.NgayThanhToan != null ? item.NgayThanhToan.Value.ToString("dd/MM/yyyy") : null;
-                    item.Ngaynhanhang1 = item.NgayNhanHang != null ? item.NgayNhanHang.Value.ToString("dd/MM/yyyy") : null;
-                }
+                //foreach (var item in listLSTD)
+                //{
+                //    item.Ngaytao1 = item.NgayTao.ToString("dd/MM/yyyy");
+                //    item.Ngaythanhtoan1 = item.NgayThanhToan != null ? item.NgayThanhToan.Value.ToString("dd/MM/yyyy") : null;
+                //    item.Ngaynhanhang1 = item.NgayNhanHang != null ? item.NgayNhanHang.Value.ToString("dd/MM/yyyy") : null;
+                //}
                 if (danhGiaCTHDView.TrangThaiGiaoHang != 2 && danhGiaCTHDView.TrangThaiGiaoHang != null)
                 {
                     if (danhGiaCTHDView.TrangThaiGiaoHang == 0)
                     {
                         List<LichSuTichDiemTieuDiemViewModel> listLSTD1 = new List<LichSuTichDiemTieuDiemViewModel>();
-                        listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 0  || (p.TrangThaiLSTD == 4 && p.TrangThaiGiaoHang == 5)).ToList();
+                        listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 0  || (p.TrangThaiLSTD == 3 && p.TrangThaiGiaoHang == 5)).ToList();
                         foreach (var item in listLSTD1)
                         {
                             listLSTDFN.Add(item);
                         }
                         //List<LichSuTichDiemTieuDiemViewModel> listLSTD2 = new List<LichSuTichDiemTieuDiemViewModel>();
-                        listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 4 && p.TrangThaiGiaoHang == 5).ToList();
+                        listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 3 && p.TrangThaiGiaoHang == 5).ToList();
                         foreach (var item in listLSTD1)
                         {
                             listLSTDFN.Add(item);
@@ -992,7 +992,7 @@ namespace AppView.Controllers
                             listLSTDFN.Add(item);
                         }
                         //List<LichSuTichDiemTieuDiemViewModel> listLSTD5 = new List<LichSuTichDiemTieuDiemViewModel>();
-                        listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 3 && p.TrangThaiGiaoHang == 5).ToList();
+                        listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 4 && p.TrangThaiGiaoHang == 5).ToList();
                         foreach (var item in listLSTD1)
                         {
                             listLSTDFN.Add(item);
@@ -1009,12 +1009,12 @@ namespace AppView.Controllers
                 else
                 {
                     List<LichSuTichDiemTieuDiemViewModel> listLSTD1 = new List<LichSuTichDiemTieuDiemViewModel>();
-                    listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 0 || (p.TrangThaiLSTD == 4 && p.TrangThaiGiaoHang == 5)).ToList();
+                    listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 0 || (p.TrangThaiLSTD == 3 && p.TrangThaiGiaoHang == 5)).ToList();
                     foreach (var item in listLSTD1)
                     {
                         listLSTDFN.Add(item);
                     }
-                    listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 4 && p.TrangThaiGiaoHang == 5).ToList();
+                    listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 3 && p.TrangThaiGiaoHang == 5).ToList();
                     foreach (var item in listLSTD1)
                     {
                         listLSTDFN.Add(item);
@@ -1031,7 +1031,7 @@ namespace AppView.Controllers
                         listLSTDFN.Add(item);
                     }
                     //List<LichSuTichDiemTieuDiemViewModel> listLSTD5 = new List<LichSuTichDiemTieuDiemViewModel>();
-                    listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 3 && p.TrangThaiGiaoHang == 5).ToList();
+                    listLSTD1 = listLSTD.Where(p => p.TrangThaiLSTD == 4 && p.TrangThaiGiaoHang == 5).ToList();
                     foreach (var item in listLSTD1)
                     {
                         listLSTDFN.Add(item);

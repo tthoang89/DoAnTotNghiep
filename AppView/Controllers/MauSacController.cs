@@ -81,8 +81,8 @@ namespace AppView.Controllers
         public async Task<IActionResult> Create(MauSac ms)
         {
             ms.TrangThai = 1;
-            string apiUrl = $"https://localhost:7095/api/MauSac/ThemMauSac?ten={ms.Ten}&ma={ms.Ma}";
-            
+            string apiUrl = $"https://localhost:7095/api/MauSac/ThemMauSac?ten={ms.Ten}&ma={ms.Ma}&trangthai={ms.TrangThai}";
+
             if (string.IsNullOrEmpty(ms.Ma))
             {
                 ViewBag.ErrorMessage = "Vui lòng chọn mã màu!";
