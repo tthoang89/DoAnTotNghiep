@@ -278,11 +278,11 @@ namespace AppView.Controllers
                     }
                     else if (filter.sortSP == "6")
                     {
-                        lstSanphamfn = lstSanphamfn.OrderBy(p => p.NgayTao.Value.Date).ThenBy(p => p.NgayTao.Value.TimeOfDay).ToList();
+                        lstSanphamfn = lstSanphamfn.OrderBy(p => p.NgayTao.Value).ToList();
                     }
                     else if (filter.sortSP == "7")
                     {
-                        lstSanphamfn = lstSanphamfn.OrderByDescending(p => p.NgayTao.Value.Date).ThenBy(p => p.NgayTao.Value.TimeOfDay).ToList();
+                        lstSanphamfn = lstSanphamfn.OrderByDescending(p => p.NgayTao.Value).ToList();
                     }
                     else if (filter.sortSP == "9")
                     {
