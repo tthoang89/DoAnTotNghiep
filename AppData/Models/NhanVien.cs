@@ -22,7 +22,7 @@ namespace AppData.Models
         [Required(ErrorMessage = "Vui lòng nhập Số điện thoại.")]
         public string? SDT { get; set; }
         [Required(ErrorMessage = "Vui lòng nhập Địa chỉ.")]
-        [StringLength(20, ErrorMessage = "Địa chỉ không được vượt quá 20 kí tự ")]
+        [StringLength(250, ErrorMessage = "Địa chỉ không được vượt quá 250 kí tự ")]
         public string? DiaChi { get; set; }
         public int? TrangThai { get; set; }
         public Guid IDVaiTro { get; set; }
