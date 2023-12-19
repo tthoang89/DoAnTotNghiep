@@ -108,9 +108,13 @@ namespace AppView.Controllers
                     {
                         return RedirectToAction("Show");
                     }
+                    else if (response.StatusCode == HttpStatusCode.BadRequest)
+                    {
+                        ViewBag.ErrorMessage = "Loại sản phẩm này đã có trong danh sách";
+                        return View();
+                    }
                     return View();
                 }
-                return View();
             }
             catch { return Redirect("https://localhost:5001/"); }
         }
@@ -142,21 +146,32 @@ namespace AppView.Controllers
                 return Redirect("https://localhost:5001/");
             }
         }
-        [HttpPut]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, MauSac ms)
         {
 
             try
             {
-                string apiUrl = $"https://localhost:7095/api/MauSac/{id}?ten={ms.Ten}&ma={ms.Ma}&trangthai={ms.TrangThai}";
-                var content = new StringContent(JsonConvert.SerializeObject(ms), Encoding.UTF8, "application/json");
-                var reponsen = await _httpClient.PutAsync(apiUrl, content);
-                if (reponsen.IsSuccessStatusCode)
+                ms.TrangThai = 1;
+
+                if (string.IsNullOrEmpty(ms.Ten))
                 {
-                    return RedirectToAction("Show");
+                    ViewBag.ErrorMessage = "Vui lòng nhập tên màu sắc!";
+                    return View();
                 }
-                return View();
+                else
+                {
+                    string encodedMauSac = Uri.EscapeDataString(ms.Ma);
+                    string apiUrl = $"https://localhost:7095/api/MauSac/{id}?ten={ms.Ten}&ma={encodedMauSac}&trangthai={ms.TrangThai}";
+                    //var content = new StringContent(JsonConvert.SerializeObject(ms), Encoding.UTF8, "application/json");
+                    var reponsen = await _httpClient.PutAsync(apiUrl, null);
+                    if (reponsen.IsSuccessStatusCode)
+                    {
+                        return RedirectToAction("Show");
+                    }
+                    return View();
+                }
             }
             catch { return Redirect("https://localhost:5001/"); }
         }
