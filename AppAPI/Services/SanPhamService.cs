@@ -798,7 +798,7 @@ namespace AppAPI.Services
             {
                 tienKhuyenMai -= (giaTri * giaSP) / 100;
             }
-            return tienKhuyenMai;
+            return tienKhuyenMai<0?0:tienKhuyenMai;
         }
         public void DeleteKhuyenMai(Guid id)
         {
