@@ -20,55 +20,64 @@ namespace AppView.Controllers
         public MauSacController()
         {
             _httpClient = new HttpClient();
+            _httpClient.BaseAddress = new Uri("https://localhost:7095/api/");
             dBContext = new AssignmentDBContext();
         }
         public int PageSize = 8;
 
         public async Task<IActionResult> Show(int ProductPage = 1)
         {
-            string apiUrl = $"https://localhost:7095/api/MauSac/GetAllMauSac";
-            var response = await _httpClient.GetAsync(apiUrl);
-            string apiData = await response.Content.ReadAsStringAsync();
-            var users = JsonConvert.DeserializeObject<List<MauSac>>(apiData);
-            return View(new PhanTrangMauSac
+            try
             {
-                listNv = users
-                        .Skip((ProductPage - 1) * PageSize).Take(PageSize),
-                PagingInfo = new PagingInfo
+                string apiUrl = $"https://localhost:7095/api/MauSac/GetAllMauSac";
+                var response = await _httpClient.GetAsync(apiUrl);
+                string apiData = await response.Content.ReadAsStringAsync();
+                var users = JsonConvert.DeserializeObject<List<MauSac>>(apiData);
+                return View(new PhanTrangMauSac
                 {
-                    ItemsPerPage = PageSize,
-                    CurrentPage = ProductPage,
-                    TotalItems = users.Count()
-                }
-            });
+                    listNv = users
+                            .Skip((ProductPage - 1) * PageSize).Take(PageSize),
+                    PagingInfo = new PagingInfo
+                    {
+                        ItemsPerPage = PageSize,
+                        CurrentPage = ProductPage,
+                        TotalItems = users.Count()
+                    }
+                });
+            }
+            catch { return Redirect("https://localhost:5001/"); }
         }
         [HttpGet]
         public async Task<IActionResult> SearchTheoTen(string? Ten, int ProductPage = 1)
         {
-            if (string.IsNullOrWhiteSpace(Ten))
+            try
             {
-                ViewData["SearchError"] = "Vui lòng nhập tên để tìm kiếm";
-                return RedirectToAction("Show");
-            }
-            string apiUrl = $"https://localhost:7095/api/MauSac/TimKiemMauSac?name={Ten}";
-            var response = await _httpClient.GetAsync(apiUrl);
-            string apiData = await response.Content.ReadAsStringAsync();
-            var users = JsonConvert.DeserializeObject<List<MauSac>>(apiData);
-            if (users.Count == 0)
-            {
-                ViewData["SearchError"] = "Không tìm thấy kết quả phù hợp";
-            }
-            return View("Show", new PhanTrangMauSac
-            {
-                listNv = users
-                         .Skip((ProductPage - 1) * PageSize).Take(PageSize),
-                PagingInfo = new PagingInfo
+                if (string.IsNullOrWhiteSpace(Ten))
                 {
-                    ItemsPerPage = PageSize,
-                    CurrentPage = ProductPage,
-                    TotalItems = users.Count()
+                    ViewData["SearchError"] = "Vui lòng nhập tên để tìm kiếm";
+                    return RedirectToAction("Show");
                 }
-            });
+                string apiUrl = $"https://localhost:7095/api/MauSac/TimKiemMauSac?name={Ten}";
+                var response = await _httpClient.GetAsync(apiUrl);
+                string apiData = await response.Content.ReadAsStringAsync();
+                var users = JsonConvert.DeserializeObject<List<MauSac>>(apiData);
+                if (users.Count == 0)
+                {
+                    ViewData["SearchError"] = "Không tìm thấy kết quả phù hợp";
+                }
+                return View("Show", new PhanTrangMauSac
+                {
+                    listNv = users
+                             .Skip((ProductPage - 1) * PageSize).Take(PageSize),
+                    PagingInfo = new PagingInfo
+                    {
+                        ItemsPerPage = PageSize,
+                        CurrentPage = ProductPage,
+                        TotalItems = users.Count()
+                    }
+                });
+            }
+            catch { return Redirect("https://localhost:5001/"); }
         }
 
         [HttpGet]
@@ -80,31 +89,26 @@ namespace AppView.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(MauSac ms)
         {
-            ms.TrangThai = 1;
-            string apiUrl = $"https://localhost:7095/api/MauSac/ThemMauSac?ten={ms.Ten}&ma={ms.Ma}";
-            
-            if (string.IsNullOrEmpty(ms.Ma))
+            try
             {
-                ViewBag.ErrorMessage = "Vui lòng chọn mã màu!";
-                return View(ms);
-            }
-            if (string.IsNullOrEmpty(ms.Ten))
-            {
-                ViewBag.ErrorMessage = "Vui lòng chọn tên màu!";
-                return View(ms);
-            }
-            var reponsen = await _httpClient.PostAsync(apiUrl, null);
-            if (reponsen.IsSuccessStatusCode)
-            {
-                return RedirectToAction("Show");
-            }
-            else if (reponsen.StatusCode == HttpStatusCode.BadRequest)
-            {
-                ViewBag.ErrorMessage = "Kích cỡ này đã có trong danh sách";
+                ms.TrangThai = 1;
+                string apiUrl = $"https://localhost:7095/api/MauSac/ThemMauSac?ten={ms.Ten}&ma={ms.Ma}&trangthai={ms.TrangThai}";
+                if (string.IsNullOrEmpty(ms.Ten))
+                {
+                    ViewBag.ErrorMessage = "Vui lòng nhập tên màu sắc!";
+                    return View();
+                }
+                var content = new StringContent(JsonConvert.SerializeObject(ms), Encoding.UTF8, "application/json");
+                var response = await _httpClient.PostAsync(apiUrl, content);
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Show");
+                }
                 return View();
             }
-            return View(ms);
+            catch { return Redirect("https://localhost:5001/"); }
         }
+
 
         [HttpGet]
         public async Task<IActionResult> Details(Guid id)
@@ -125,19 +129,23 @@ namespace AppView.Controllers
             var user = JsonConvert.DeserializeObject<MauSac>(apiData);
             return View(user);
         }
-        [HttpPost]
+        [HttpPut]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, MauSac ms)
         {
-            ms.TrangThai = 1;
-            string apiUrl = $"https://localhost:7095/api/MauSac/{id}?ten={ms.Ten}&ma={ms.Ma}";
-            var content = new StringContent(JsonConvert.SerializeObject(ms), Encoding.UTF8, "application/json");
-            var reponsen = await _httpClient.PutAsync(apiUrl, content);
-            if (reponsen.IsSuccessStatusCode)
+
+            try
             {
-                return RedirectToAction("Show");
+                string apiUrl = $"https://localhost:7095/api/MauSac/{id}?ten={ms.Ten}&ma={ms.Ma}&trangthai={ms.TrangThai}";
+                var content = new StringContent(JsonConvert.SerializeObject(ms), Encoding.UTF8, "application/json");
+                var reponsen = await _httpClient.PutAsync(apiUrl, content);
+                if (reponsen.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Show");
+                }
+                return View();
             }
-            return View();
+            catch { return Redirect("https://localhost:5001/"); }
         }
         public async Task<IActionResult> Delete(Guid id)
         {
@@ -151,18 +159,22 @@ namespace AppView.Controllers
         }
         public async Task<IActionResult> Sua(Guid id)
         {
-            var timkiem = dBContext.MauSacs.FirstOrDefault(x => x.ID == id);
-            if (timkiem != null)
+            try
             {
-                timkiem.TrangThai = timkiem.TrangThai == 0 ? 1 : 0;
-                dBContext.MauSacs.Update(timkiem);
-                dBContext.SaveChanges();
-                return RedirectToAction("Show");
+                var timkiem = dBContext.MauSacs.FirstOrDefault(x => x.ID == id);
+                if (timkiem != null)
+                {
+                    timkiem.TrangThai = timkiem.TrangThai == 0 ? 1 : 0;
+                    dBContext.MauSacs.Update(timkiem);
+                    dBContext.SaveChanges();
+                    return RedirectToAction("Show");
+                }
+                else
+                {
+                    return View();
+                }
             }
-            else
-            {
-                return View();
-            }
+            catch { return Redirect("https://localhost:5001/"); }
         }
 
         [HttpPost]

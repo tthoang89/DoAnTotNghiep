@@ -15,7 +15,7 @@ namespace AppData.Models
         public string Ten { get; set; }
         [Required(ErrorMessage = "Vui lòng nhập Email.")]
         [StringLength(20, ErrorMessage = "Email không được vượt quá 100 kí tự ")]
-        [EmailAddress]
+        [EmailAddress(ErrorMessage = "Email không đúng định dạng")]
 
         public string Email { get; set; }
         [Required(ErrorMessage = "Vui lòng nhập Password.")]
@@ -23,7 +23,7 @@ namespace AppData.Models
         [Required(ErrorMessage = "Vui lòng nhập Số điện thoại.")]
         public string? SDT { get; set; }
         [Required(ErrorMessage = "Vui lòng nhập Địa chỉ.")]
-        [StringLength(20, ErrorMessage = "Địa chỉ không được vượt quá 20 kí tự ")]
+        [StringLength(250, ErrorMessage = "Địa chỉ không được vượt quá 250 kí tự ")]
         public string? DiaChi { get; set; }
         public int? TrangThai { get; set; }
         public Guid IDVaiTro { get; set; }

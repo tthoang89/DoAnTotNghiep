@@ -75,6 +75,7 @@ namespace AppView.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(LoaiSPRequest lsp)
         {
+            lsp.ID = Guid.NewGuid();
             lsp.TrangThai = 1;
             string apiURL = $"https://localhost:7095/api/LoaiSP/save";
             if (string.IsNullOrEmpty(lsp.Ten))
@@ -108,34 +109,30 @@ namespace AppView.Controllers
         [HttpGet]
         public IActionResult Edit(Guid id)
         {
-            //var  responseLoaiSP = $"https://localhost:7095/api/LoaiSP/getById/{id}";
-            var responseLoaiSP = _httpClient.GetAsync(_httpClient.BaseAddress + $"https://localhost:7095/api/LoaiSP/getAll").Result;
-            if (responseLoaiSP.IsSuccessStatusCode)
-            {
-                ViewData["listLoaiSP"] = JsonConvert.DeserializeObject<List<LoaiSP>>(responseLoaiSP.Content.ReadAsStringAsync().Result);
-            }
-            return View();
+            string apiUrl = $"https://localhost:7095/api/LoaiSP/getById/{id}";
+            var response = _httpClient.GetAsync(apiUrl).Result;
+            var apiData = response.Content.ReadAsStringAsync().Result;
+            var user = JsonConvert.DeserializeObject<LoaiSP>(apiData);
+            return View(user);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(LoaiSPRequest lsp, Guid id)
+        public async Task<IActionResult> Edit(LoaiSPRequest nv)
         {
-            if (lsp == null) return BadRequest();
-            string apiURL = $"https://localhost:7095/api/LoaiSP/save/id={id}";
-            var content = new StringContent(JsonConvert.SerializeObject(lsp), Encoding.UTF8, "application/json");
-            var response = await _httpClient.PutAsync(apiURL, content);
+            nv.TrangThai = 1;
+            string apiUrl = $"https://localhost:7095/api/save";
+            var response = await _httpClient.PutAsJsonAsync(apiUrl, nv);
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToAction("Show");
             }
-            ModelState.AddModelError("", "Có lỗi xảy ra khi chỉnh sửa.");
-            return View(lsp);
+            return View();
         }
 
         [HttpGet]
         public async Task<IActionResult> GetLoaiSpById(Guid id, int ProductPage = 1)
         {
-            // list khuyen mai view
+            // list loai san pham con
             string apiUrl = $"https://localhost:7095/api/LoaiSP?id={id}";
             var response = await _httpClient.GetAsync(apiUrl);
             string apiData = await response.Content.ReadAsStringAsync();
@@ -151,6 +148,21 @@ namespace AppView.Controllers
                     TotalItems = LoaiSPs.Count()
                 }
             });
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreateLoaiSPCon(LoaiSPRequest lsp, Guid id)
+        {
+            lsp.ID = Guid.NewGuid();
+            lsp.TrangThai = 1;
+
+            string apiURL = $"https://localhost:7095/api/LoaiSP/save";
+            var content = new StringContent(JsonConvert.SerializeObject(lsp), Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync(apiURL, content);
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("GetLoaiSpById");
+            }
+            return View();
         }
         public async Task<IActionResult> Sua(Guid id)
         {
