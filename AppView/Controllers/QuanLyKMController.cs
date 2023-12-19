@@ -129,7 +129,7 @@ namespace AppView.Controllers
             ViewBag.IdKhuyenMai = idkhuyenmai;
             return View(new PhanTrangCTSPBySP
             {
-                listallctspbysp = bienthes
+                listallctspbysp = bienthes.Where(x=>x.TrangThai==1||x.TrangThai==2)
                         .Skip((ProductPage - 1) * PageSize).Take(PageSize),
                 PagingInfo = new PagingInfo
                 {
