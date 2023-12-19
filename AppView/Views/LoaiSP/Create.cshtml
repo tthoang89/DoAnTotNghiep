@@ -29,7 +29,7 @@
                         <option value="null">Chọn loại sản phẩm cha</option>
                         @foreach (var item in listLoaiSP.Where(p => p.IDLoaiSPCha == null).ToList())
                         {
-                            <option value="@item.IDLoaiSPCha">@item.Ten</option>
+                            <option value="@item.ID">@item.Ten</option>
                         }
                     }
                 </select>

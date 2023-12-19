@@ -110,7 +110,7 @@ namespace AppView.Controllers
                     }
                     else if (response.StatusCode == HttpStatusCode.BadRequest)
                     {
-                        ViewBag.ErrorMessage = "Loại sản phẩm này đã có trong danh sách";
+                        ViewBag.ErrorMessage = "Màu sắc này đã có trong danh sách";
                         return View();
                     }
                     return View();
@@ -164,12 +164,12 @@ namespace AppView.Controllers
                 {
                     string encodedMauSac = Uri.EscapeDataString(ms.Ma);
                     string apiUrl = $"https://localhost:7095/api/MauSac/{id}?ten={ms.Ten}&ma={encodedMauSac}&trangthai={ms.TrangThai}";
-                    //var content = new StringContent(JsonConvert.SerializeObject(ms), Encoding.UTF8, "application/json");
                     var reponsen = await _httpClient.PutAsync(apiUrl, null);
                     if (reponsen.IsSuccessStatusCode)
                     {
                         return RedirectToAction("Show");
                     }
+                    ViewBag.ErrorMessage = "Màu sắc này đã có trong danh sách";
                     return View();
                 }
             }

@@ -88,27 +88,43 @@ namespace AppView.Controllers
         }
         public async Task<IActionResult> Create()
         {
-            var responseLoaiSP = _httpClient.GetAsync(_httpClient.BaseAddress + $"https://localhost:7095/api/LoaiSP/getAll").Result;
-            if (responseLoaiSP.IsSuccessStatusCode)
+            try
             {
-                ViewData["listLoaiSP"] = JsonConvert.DeserializeObject<List<LoaiSP>>(responseLoaiSP.Content.ReadAsStringAsync().Result);
+                var responseLoaiSP = _httpClient.GetAsync(_httpClient.BaseAddress + $"https://localhost:7095/api/LoaiSP/getAll").Result;
+                if (responseLoaiSP.IsSuccessStatusCode)
+                {
+                    ViewData["listLoaiSP"] = JsonConvert.DeserializeObject<List<LoaiSP>>(responseLoaiSP.Content.ReadAsStringAsync().Result);
+                }
+                return View();
             }
-            return View();
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
         [HttpPost]
         public async Task<IActionResult> Create(LoaiSPRequest lsp)
         {
-            lsp.ID = Guid.NewGuid();
-            lsp.TrangThai = 1;
-            string apiURL = $"https://localhost:7095/api/LoaiSP/save";
-            var content = new StringContent(JsonConvert.SerializeObject(lsp), Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync(apiURL, content);
-            if (response.IsSuccessStatusCode)
+            try
             {
-                return RedirectToAction("Show");
+                lsp.ID = Guid.NewGuid();
+                lsp.TrangThai = 1;
+                string apiURL = $"https://localhost:7095/api/LoaiSP/save";
+                var content = new StringContent(JsonConvert.SerializeObject(lsp), Encoding.UTF8, "application/json");
+                var response = await _httpClient.PostAsync(apiURL, content);
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Show");
+                }
+                ViewBag.ErrorMessage = "Loại sản phẩm này đã có trong danh sách";
+                return View();
             }
-            ViewBag.ErrorMessage = "Loại sản phẩm này đã có trong danh sách";
-            return View();
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
         public async Task<IActionResult> Details(Guid id)
         {
