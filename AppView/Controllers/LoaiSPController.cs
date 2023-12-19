@@ -20,7 +20,6 @@ namespace AppView.Controllers
         {
             _httpClient = new HttpClient();
             dBContext = new AssignmentDBContext();
-            _httpClient.BaseAddress = new Uri("https://localhost:7095/api/");
         }
         public int PageSize = 8;
         // laam them 
@@ -44,7 +43,11 @@ namespace AppView.Controllers
                     }
                 });
             }
-            catch { return Redirect("https://localhost:5001/"); }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
         // Tim kiem Loai SP theo ten
         [HttpGet]
@@ -77,53 +80,44 @@ namespace AppView.Controllers
                     }
                 });
             }
-            catch { return Redirect("https://localhost:5001/"); }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
         public async Task<IActionResult> Create()
         {
-            try
+            var responseLoaiSP = _httpClient.GetAsync(_httpClient.BaseAddress + $"https://localhost:7095/api/LoaiSP/getAll").Result;
+            if (responseLoaiSP.IsSuccessStatusCode)
             {
-                var responseLoaiSP = _httpClient.GetAsync(_httpClient.BaseAddress + $"https://localhost:7095/api/LoaiSP/getAll").Result;
-                if (responseLoaiSP.IsSuccessStatusCode)
-                {
-                    ViewData["listLoaiSP"] = JsonConvert.DeserializeObject<List<LoaiSP>>(responseLoaiSP.Content.ReadAsStringAsync().Result);
-                }
-                return View();
+                ViewData["listLoaiSP"] = JsonConvert.DeserializeObject<List<LoaiSP>>(responseLoaiSP.Content.ReadAsStringAsync().Result);
             }
-            catch
-            {
-                return Redirect("https://localhost:5001/");
-            }
+            return View();
         }
         [HttpPost]
         public async Task<IActionResult> Create(LoaiSPRequest lsp)
         {
-            try
+            lsp.ID = Guid.NewGuid();
+            lsp.TrangThai = 1;
+            string apiURL = $"https://localhost:7095/api/LoaiSP/save";
+            if (string.IsNullOrEmpty(lsp.Ten))
             {
-                lsp.TrangThai = 1;
-                string apiURL = $"https://localhost:7095/api/LoaiSP/save";
-                if (string.IsNullOrEmpty(lsp.Ten))
-                {
-                    ViewBag.ErrorMessage = "Vui lòng nhập tên loại sản phẩm!";
-                    return View();
-                }
-                var content = new StringContent(JsonConvert.SerializeObject(lsp), Encoding.UTF8, "application/json");
-                var response = await _httpClient.PostAsync(apiURL, content);
-                if (response.IsSuccessStatusCode)
-                {
-                    return RedirectToAction("Show");
-                }
-                else if (response.StatusCode == HttpStatusCode.BadRequest)
-                {
-                    ViewBag.ErrorMessage = "Loại sản phẩm này đã có trong danh sách";
-                    return View();
-                }
+                ViewBag.ErrorMessage = "Vui lòng nhập tên loại sản phẩm!";
                 return View();
             }
-            catch
+            var content = new StringContent(JsonConvert.SerializeObject(lsp), Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync(apiURL, content);
+            if (response.IsSuccessStatusCode)
             {
-                return Redirect("https://localhost:5001/");
+                return RedirectToAction("Show");
             }
+            else if (response.StatusCode == HttpStatusCode.BadRequest)
+            {
+                ViewBag.ErrorMessage = "Loại sản phẩm này đã có trong danh sách";
+                return View();
+            }
+            return View();
         }
         public async Task<IActionResult> Details(Guid id)
         {
@@ -152,9 +146,10 @@ namespace AppView.Controllers
 
                 return View(lsp);
             }
-            catch
+            catch (Exception)
             {
-                return Redirect("https://localhost:5001/");
+
+                throw;
             }
         }
         [HttpPost]
@@ -182,9 +177,10 @@ namespace AppView.Controllers
                     return View();
                 }
             }
-            catch
+            catch (Exception)
             {
-                return Redirect("https://localhost:5001/");
+
+                throw;
             }
         }
 
@@ -210,7 +206,7 @@ namespace AppView.Controllers
                     }
                 });
             }
-            catch { return Redirect("https://localhost:5001/"); }
+            catch (Exception) { throw; }
         }
 
         [HttpGet]
@@ -229,7 +225,7 @@ namespace AppView.Controllers
                 var lsp = JsonConvert.DeserializeObject<LoaiSP>(lspJson);
                 return View(lsp);
             }
-            catch { return Redirect("https://localhost:5001/"); }
+            catch (Exception) { throw; }
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -252,11 +248,11 @@ namespace AppView.Controllers
                 }
                 return View(lsp);
             }
-            catch
+            catch (Exception)
             {
-                return Redirect("https://localhost:5001/");
-            }
 
+                throw;
+            }
         }
         public async Task<IActionResult> CreateLoaiSPCon()
         {
@@ -297,7 +293,7 @@ namespace AppView.Controllers
                     return View();
                 }
             }
-            catch { return Redirect("https://localhost:5001/"); }
+            catch (Exception) { throw; }
         }
     }
 }
