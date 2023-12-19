@@ -308,7 +308,7 @@ namespace AppView.Controllers
                             {
                                 lstSanPhamfnR.Add(sanPhamViewModel);
                             }
-                        }                       
+                        }
                     }
                 }
                 //
@@ -364,30 +364,21 @@ namespace AppView.Controllers
                     // laam them
                     int cout = lstGioHang.Sum(c => c.SoLuong);
                     TempData["SoLuong"] = cout.ToString();
-
-                    if (Request.Cookies["Cart"] != null)
+                    var response1 = await _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCart?request=" + Request.Cookies["Cart"]);
+                    if (response1.IsSuccessStatusCode)
                     {
-                        var response1 = await _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCart?request=" + Request.Cookies["Cart"]);
-                        if (response1.IsSuccessStatusCode)
-                        {
-                            var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response1.Content.ReadAsStringAsync().Result);
+                        var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response1.Content.ReadAsStringAsync().Result);
 
 
-                            // lam end
+                        // lam end
 
-                            TempData["TrangThai"] = "false";
+                        TempData["TrangThai"] = "false";
 
-                            HttpResponseMessage response = await _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllChiTietSanPhamHome?idSanPham=" + idSanPham);
-                            var chiTietSanPham = JsonConvert.DeserializeObject<ChiTietSanPhamViewModelHome>(response.Content.ReadAsStringAsync().Result);
-                            return View(chiTietSanPham);
-                        }
-                        else return BadRequest();
+                        HttpResponseMessage response = await _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllChiTietSanPhamHome?idSanPham=" + idSanPham);
+                        var chiTietSanPham = JsonConvert.DeserializeObject<ChiTietSanPhamViewModelHome>(response.Content.ReadAsStringAsync().Result);
+                        return View(chiTietSanPham);
                     }
-                    else
-                    {
-                        TempData["TongTien"] = "0";
-                        return View(new List<GioHangRequest>());
-                    }
+                    else return BadRequest();
                 }
                 else
                 {
@@ -425,8 +416,8 @@ namespace AppView.Controllers
             {
                 return Redirect("https://localhost:5001/");
             }
-            
-            
+
+
         }
         [HttpGet]
         public async Task<IActionResult> ProductDetailFromCart(Guid idctsp)
@@ -540,7 +531,7 @@ namespace AppView.Controllers
                 // laam them
                 int cout = lstGioHang.Sum(c => c.SoLuong);
                 TempData["SoLuong"] = cout.ToString();
-                
+
 
                 if (Request.Cookies["Cart"] != null)
                 {
@@ -880,7 +871,7 @@ namespace AppView.Controllers
                 if (user.vaiTro == 1)
                 {
                     string actionName = TempData["ActionName"].ToString();
-                    return RedirectToAction("Index","TrangChu");
+                    return RedirectToAction("Index", "TrangChu");
                 }
                 else return RedirectToAction("BanHang", "BanHangTaiQuay");
             }
@@ -937,7 +928,7 @@ namespace AppView.Controllers
                 }
             }
             return Redirect("https://localhost:5001/");
-           
+
         }
         [HttpPut]
         public ActionResult UpdateProfile(string ten, string email, string sdt, int? gioitinh, DateTime? ngaysinh, string? diachi)
@@ -987,7 +978,7 @@ namespace AppView.Controllers
             {
                 return Json(new { success = false, message = "Cập nhật thông tin cá nhân thất bại" });
             }
-            
+
         }
         public IActionResult PurchaseOrder()
         {
@@ -1031,7 +1022,7 @@ namespace AppView.Controllers
             {
                 return Redirect("https://localhost:5001/");
             }
-            
+
         }
         public IActionResult LichSuTieuDiemTichDiem()
         {
@@ -1186,7 +1177,7 @@ namespace AppView.Controllers
             {
                 return Redirect("https://localhost:5001/");
             }
-            
+
         }
         public IActionResult ReviewProducts(Guid idCTHD)
         {
@@ -1204,7 +1195,7 @@ namespace AppView.Controllers
             {
                 return Redirect("https://localhost:5001/");
             }
-            
+
         }
         [HttpPost]
         public IActionResult ChangePassword(string newPassword, string oldPassword)
@@ -1216,7 +1207,7 @@ namespace AppView.Controllers
             request.OldPassword = oldPassword;
             var response = _httpClient.PutAsJsonAsync(_httpClient.BaseAddress + "QuanLyNguoiDung/ChangePassword", request).Result;
             HttpContext.Session.Remove("LoginInfor");
-            if (response.IsSuccessStatusCode) return RedirectToAction("Login",new {actionName="Index"});
+            if (response.IsSuccessStatusCode) return RedirectToAction("Login", new { actionName = "Index" });
             else return BadRequest();
         }
         public IActionResult DanhGiaSanPham([FromBody] DanhGiaCTHDViewModel danhGiaCTHDView)
@@ -1238,7 +1229,7 @@ namespace AppView.Controllers
             {
                 return Redirect("https://localhost:5001/");
             }
-            
+
         }
         public IActionResult HuyDonHang(Guid idHoaDon)
         {
@@ -1255,7 +1246,7 @@ namespace AppView.Controllers
             {
                 return RedirectToAction("PurchaseOrder");
             }
-            
+
         }
         public IActionResult HoanTacHuyDonHang(Guid idHoaDon)
         {
@@ -1272,7 +1263,7 @@ namespace AppView.Controllers
             {
                 return RedirectToAction("PurchaseOrder");
             }
-            
+
         }
         public IActionResult DoiTraHang(Guid idHoaDon)
         {
@@ -1289,7 +1280,7 @@ namespace AppView.Controllers
             {
                 return RedirectToAction("PurchaseOrder");
             }
-            
+
         }
         public IActionResult HoanTacDoiTraHang(Guid idHoaDon)
         {
@@ -1307,7 +1298,7 @@ namespace AppView.Controllers
             {
                 return RedirectToAction("PurchaseOrder");
             }
-            
+
         }
         public IActionResult XacNhanGHTC(Guid idHoaDon)
         {
@@ -1461,7 +1452,7 @@ namespace AppView.Controllers
                 HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + "KhachHang/ChangeForgotPassword?id=" + khachHang.Id + "&password=" + khachHang.Password).Result;
                 if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("Login",new {actionName = "Index"});
+                    return RedirectToAction("Login", new { actionName = "Index" });
                 }
                 else
                 {
@@ -1707,7 +1698,7 @@ namespace AppView.Controllers
         {
             var donMua = JsonConvert.DeserializeObject<DonMuaSuccessViewModel>(TempData.Peek("CheckOutSuccess") as string);
             var temp = HttpContext.Session.GetString("LoginInfor");
-            if(temp!=null && donMua!=null)
+            if (temp != null && donMua != null)
             {
                 var loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(temp);
                 loginInfor.DiemTich -= donMua.DiemSuDung;
