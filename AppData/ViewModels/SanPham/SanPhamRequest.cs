@@ -12,7 +12,7 @@ namespace AppData.ViewModels.SanPham
     {
         [Required]
         public string Ten { get; set; }
-        public string MoTa { get; set; }
+        public string? MoTa { get; set; }
         [Required]
         public string TenChatLieu { get; set; }
         public List<MauSac> MauSacs { get; set; }

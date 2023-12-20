@@ -4,6 +4,7 @@ using AppData.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppData.Migrations
 {
     [DbContext(typeof(AssignmentDBContext))]
-    partial class AssignmentDBContextModelSnapshot : ModelSnapshot
+    [Migration("20231219163516_updateSanPham")]
+    partial class updateSanPham
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -537,12 +539,13 @@ namespace AppData.Migrations
                         .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("MoTa")
+                        .IsRequired()
                         .HasColumnType("nvarchar(300)");
 
                     b.Property<string>("Ten")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
 
                     b.Property<int>("TrangThai")
                         .HasColumnType("int");

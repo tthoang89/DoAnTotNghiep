@@ -5,11 +5,10 @@ namespace AppData.Models
     public class SanPham
     {
         public Guid ID { get; set; }
-        [StringLength(40, ErrorMessage = "Ten san pham khong duoc dai qua 40 tu.")]
+        [StringLength(200, ErrorMessage = "Ten san pham khong duoc dai qua 40 tu.")]
         public string Ten { get; set; }
         public string? Ma { get; set; }
-        [Required]
-        public string MoTa { get; set; }
+        public string? MoTa { get; set; }
         public int TrangThai { get; set; }
      
         public Guid IDLoaiSP { get; set; }
