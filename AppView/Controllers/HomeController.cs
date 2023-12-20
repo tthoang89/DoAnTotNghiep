@@ -1175,6 +1175,7 @@ namespace AppView.Controllers
                             }
                         }
                         listLSTDFN = listLSTDFN.OrderBy(p => p.TrangThaiLSTD).ToList();
+                        listLSTDFN = listLSTDFN.OrderBy(p => p.NgayTao).ToList();
                         var model = listLSTDFN.Skip((page - 1) * pageSize).Take(pageSize).ToList();
                         return Json(new
                         {
@@ -1232,6 +1233,7 @@ namespace AppView.Controllers
                             listLSTDFN.Add(item);
                         }
                         listLSTDFN = listLSTDFN.OrderBy(p => p.TrangThaiLSTD).ToList();
+                        listLSTDFN = listLSTDFN.OrderBy(p => p.NgayTao).ToList();
                         var model = listLSTDFN.Skip((page - 1) * pageSize).Take(pageSize).ToList();
                         return Json(new
                         {
