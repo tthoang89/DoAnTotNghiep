@@ -541,8 +541,16 @@ namespace AppView.Controllers
         {
             try
             {
-                var lst = JsonConvert.DeserializeObject<List<MauSac>>(TempData["MauSac"].ToString());
-                return View(lst);
+                var str = TempData["MauSac"] as string;
+                if(str == null)
+                {
+                    return View(new List<MauSac>());
+                }
+                else
+                {
+                    var lst = JsonConvert.DeserializeObject<List<MauSac>>(str);
+                    return View(lst);
+                }               
             }
             catch
             {

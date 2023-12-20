@@ -159,8 +159,20 @@ namespace AppAPI.Services
                             reposChiTietHoaDon.Add(chiTietHoaDon);
                             var CTsanPham = repsCTSanPham.GetAll().FirstOrDefault(p => p.ID == x.IDChiTietSanPham);
                             CTsanPham.SoLuong -= chiTietHoaDon.SoLuong;
-                            subtotal += x.SoLuong * x.DonGia;
-                            repsCTSanPham.Update(CTsanPham);
+                            if (CTsanPham.SoLuong < 0)
+                            {
+                                CTsanPham.SoLuong += chiTietHoaDon.SoLuong;
+                                reposHoaDon.Delete(hoaDon1);
+                                return new DonMuaSuccessViewModel()
+                                {
+                                    TongTien = -1
+                                };
+                            }
+                            else
+                            {
+                                subtotal += x.SoLuong * x.DonGia;
+                                repsCTSanPham.Update(CTsanPham);
+                            }
                             //Tâm
                             donMua.GioHangs.Add(new GioHangRequest() { Anh = context.Anhs.First(y => y.IDSanPham == CTsanPham.IDSanPham && y.IDMauSac == CTsanPham.IDMauSac).DuongDan, SoLuong = x.SoLuong, DonGia = x.DonGia, Ten = context.SanPhams.First(y => y.ID == CTsanPham.IDSanPham).Ten, KichCo = context.KichCos.First(y => y.ID == CTsanPham.IDKichCo).Ten, MauSac = context.MauSacs.First(y => y.ID == CTsanPham.IDMauSac).Ten });
                         }
