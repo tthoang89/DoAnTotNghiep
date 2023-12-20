@@ -39,66 +39,74 @@ namespace AppView.Controllers
         public async Task<IActionResult> Index()
         {
             // lam start
-            var session = HttpContext.Session.GetString("LoginInfor");
-            if (String.IsNullOrEmpty(session))
+            try
             {
-                List<GioHangRequest> lstGioHang = new List<GioHangRequest>();
-                if (Request.Cookies["Cart"] != null)
+                var session = HttpContext.Session.GetString("LoginInfor");
+                if (String.IsNullOrEmpty(session))
                 {
-                    lstGioHang = JsonConvert.DeserializeObject<List<GioHangRequest>>(Request.Cookies["Cart"]);
-                }
-                // laam them
-                int cout = lstGioHang.Sum(c => c.SoLuong);
-                TempData["SoLuong"] = cout.ToString();
-
-                if (Request.Cookies["Cart"] != null)
-                {
-                    var response = await _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCart?request=" + Request.Cookies["Cart"]);
-                    if (response.IsSuccessStatusCode)
+                    List<GioHangRequest> lstGioHang = new List<GioHangRequest>();
+                    if (Request.Cookies["Cart"] != null)
                     {
-                        var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response.Content.ReadAsStringAsync().Result);
-
-
-                        // lam end
-
-                        TempData["TrangThai"] = "false";
-                        return View(temp.GioHangs);
+                        lstGioHang = JsonConvert.DeserializeObject<List<GioHangRequest>>(Request.Cookies["Cart"]);
                     }
-                    else return BadRequest();
+                    // laam them
+                    int cout = lstGioHang.Sum(c => c.SoLuong);
+                    TempData["SoLuong"] = cout.ToString();
+
+                    if (Request.Cookies["Cart"] != null)
+                    {
+                        var response = await _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCart?request=" + Request.Cookies["Cart"]);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response.Content.ReadAsStringAsync().Result);
+
+
+                            // lam end
+
+                            TempData["TrangThai"] = "false";
+                            return View(temp.GioHangs);
+                        }
+                        else return BadRequest();
+                    }
+                    else
+                    {
+                        TempData["TongTien"] = "0";
+                        return View(new List<GioHangRequest>());
+                    }
                 }
                 else
                 {
-                    TempData["TongTien"] = "0";
-                    return View(new List<GioHangRequest>());
+                    var loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
+                    if (loginInfor.vaiTro == 1)
+                    {
+                        var response = await _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCartLogin?idNguoiDung=" + loginInfor.Id);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response.Content.ReadAsStringAsync().Result);
+
+
+                            // lam them
+                            int cout = temp.GioHangs.Sum(c => c.SoLuong);
+
+                            TempData["SoLuong"] = cout.ToString();
+                            // lam end
+                            TempData["TrangThai"] = "true";
+                            return View(temp.GioHangs);
+                        }
+                        else return BadRequest();
+                    }
+                    else
+                    {
+                        TempData["SoLuong"] = "0";
+                        return View(new List<GioHangRequest>());
+                    }
+
                 }
             }
-            else
+            catch
             {
-                var loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
-                if (loginInfor.vaiTro == 1)
-                {
-                    var response = await _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCartLogin?idNguoiDung=" + loginInfor.Id);
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response.Content.ReadAsStringAsync().Result);
-
-
-                        // lam them
-                        int cout = temp.GioHangs.Sum(c => c.SoLuong);
-
-                        TempData["SoLuong"] = cout.ToString();
-                        // lam end
-                        TempData["TrangThai"] = "true";
-                        return View(temp.GioHangs);
-                    }
-                    else return BadRequest();
-                }
-                else
-                {
-                    TempData["SoLuong"] = "0";
-                    return View(new List<GioHangRequest>());
-                }
-
+                TempData["TongTien"] = "0";
+                return View(new List<GioHangRequest>());
             }
         }
 
@@ -118,210 +126,180 @@ namespace AppView.Controllers
         [HttpPost]
         public JsonResult ShowProduct(FilterData filter)
         {
-            HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/getAll").Result;
-            List<SanPhamViewModel> lstSanpham = new List<SanPhamViewModel>();
-            if (response.IsSuccessStatusCode)
+            try
             {
-                lstSanpham = JsonConvert.DeserializeObject<List<SanPhamViewModel>>(response.Content.ReadAsStringAsync().Result);
-                //
-                List<SanPhamViewModel> lstSanphamfn = new List<SanPhamViewModel>();
-                //price-filter
-                if (filter.priceRange != null && filter.priceRange.Count > 0 && !filter.priceRange.Contains("all"))
+                HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/getAll").Result;
+                List<SanPhamViewModel> lstSanpham = new List<SanPhamViewModel>();
+                if (response.IsSuccessStatusCode)
                 {
-                    foreach (var item in filter.priceRange)
+                    lstSanpham = JsonConvert.DeserializeObject<List<SanPhamViewModel>>(response.Content.ReadAsStringAsync().Result);
+                    //
+                    List<SanPhamViewModel> lstSanphamfn = new List<SanPhamViewModel>();
+                    //price-filter
+                    if (filter.priceRange != null && filter.priceRange.Count > 0 && !filter.priceRange.Contains("all"))
                     {
-                        if (item == "1")
+                        foreach (var item in filter.priceRange)
                         {
-                            foreach (var x in lstSanpham.Where(p => p.GiaBan < 100000).ToList())
+                            if (item == "1")
                             {
-                                lstSanphamfn.Add(x);
+                                foreach (var x in lstSanpham.Where(p => p.GiaBan < 100000).ToList())
+                                {
+                                    lstSanphamfn.Add(x);
+                                }
                             }
-                        }
-                        else if (item == "2")
-                        {
-                            foreach (var x in lstSanpham.Where(p => p.GiaBan >= 100000 && p.GiaBan < 200000).ToList())
+                            else if (item == "2")
                             {
-                                lstSanphamfn.Add(x);
+                                foreach (var x in lstSanpham.Where(p => p.GiaBan >= 100000 && p.GiaBan < 200000).ToList())
+                                {
+                                    lstSanphamfn.Add(x);
+                                }
                             }
-                        }
-                        else if (item == "3")
-                        {
-                            foreach (var x in lstSanpham.Where(p => p.GiaBan >= 200000 && p.GiaBan < 300000).ToList())
+                            else if (item == "3")
                             {
-                                lstSanphamfn.Add(x);
+                                foreach (var x in lstSanpham.Where(p => p.GiaBan >= 200000 && p.GiaBan < 300000).ToList())
+                                {
+                                    lstSanphamfn.Add(x);
+                                }
                             }
-                        }
-                        else if (item == "4")
-                        {
-                            foreach (var x in lstSanpham.Where(p => p.GiaBan >= 300000 && p.GiaBan < 400000).ToList())
+                            else if (item == "4")
                             {
-                                lstSanphamfn.Add(x);
+                                foreach (var x in lstSanpham.Where(p => p.GiaBan >= 300000 && p.GiaBan < 400000).ToList())
+                                {
+                                    lstSanphamfn.Add(x);
+                                }
                             }
-                        }
-                        else if (item == "5")
-                        {
-                            foreach (var x in lstSanpham.Where(p => p.GiaBan >= 400000 && p.GiaBan < 500000).ToList())
+                            else if (item == "5")
                             {
-                                lstSanphamfn.Add(x);
+                                foreach (var x in lstSanpham.Where(p => p.GiaBan >= 400000 && p.GiaBan < 500000).ToList())
+                                {
+                                    lstSanphamfn.Add(x);
+                                }
                             }
-                        }
-                        else if (item == "6")
-                        {
-                            foreach (var x in lstSanpham.Where(p => p.GiaBan > 500000).ToList())
+                            else if (item == "6")
                             {
-                                lstSanphamfn.Add(x);
+                                foreach (var x in lstSanpham.Where(p => p.GiaBan > 500000).ToList())
+                                {
+                                    lstSanphamfn.Add(x);
+                                }
                             }
-                        }
 
-                    }
-                }
-                else
-                {
-                    lstSanphamfn = lstSanpham;
-                }
-                //loaiSP-filter
-                List<SanPhamViewModel> lsttam = new List<SanPhamViewModel>();
-                List<SanPhamViewModel> lsttam1 = new List<SanPhamViewModel>();
-                if (filter.loaiSP != null && filter.loaiSP.Count > 0)
-                {
-                    foreach (var x in filter.loaiSP)
-                    {
-                        lsttam = lstSanphamfn.Where(p => p.LoaiSP == x).ToList();
-                        foreach (var item in lsttam)
-                        {
-                            if (lsttam1.FirstOrDefault(p => p.ID == item.ID) == null)
-                            {
-                                lsttam1.Add(item);
-                            }
-                        }
-                    }
-                    lstSanphamfn = lsttam1;
-                }
-                //Search
-                if (filter.search != null)
-                {
-                    lstSanphamfn = lstSanphamfn.Where(p => p.Ten.ToLower().Contains(filter.search.ToLower())).ToList();
-                }
-
-                //color-filter
-                //List<SanPhamViewModel> lstmautam = new List<SanPhamViewModel>();
-                //List<SanPhamViewModel> lstmautam1 = new List<SanPhamViewModel>();
-                //if (filter.mauSac != null && filter.mauSac.Count > 0)
-                //{
-                //    foreach (var x in filter.mauSac)
-                //    {
-                //        lstmautam = lstSanphamfn.Where(p => p.IDMauSac == x).ToList();
-                //        foreach (var item in lstmautam)
-                //        {
-                //            if (lstmautam1.FirstOrDefault(p => p.ID == item.ID) == null)
-                //            {
-                //                lstmautam1.Add(item);
-                //            }
-                //        }
-                //    }
-                //    lstSanphamfn = lstmautam1;
-                //}
-                //size-filter
-                List<SanPhamViewModel> lstcotam = new List<SanPhamViewModel>();
-                List<SanPhamViewModel> lstcotam1 = new List<SanPhamViewModel>();
-                if (filter.kichCo != null && filter.kichCo.Count > 0)
-                {
-                    foreach (var x in filter.kichCo)
-                    {
-                        lstcotam = lstSanphamfn.Where(p => p.IDKichCo == x).ToList();
-                        foreach (var item in lstcotam)
-                        {
-                            if (lstcotam1.FirstOrDefault(p => p.ID == item.ID) == null)
-                            {
-                                lstcotam1.Add(item);
-                            }
-                        }
-                    }
-                    lstSanphamfn = lstcotam1;
-                }
-                //material-filter
-                //List<SanPhamViewModel> lstchatlieutam = new List<SanPhamViewModel>();
-                //List<SanPhamViewModel> lstchatlieutam1 = new List<SanPhamViewModel>();
-                //if (filter.chatLieu != null && filter.chatLieu.Count > 0)
-                //{
-                //    foreach (var x in filter.chatLieu)
-                //    {
-                //        lstchatlieutam = lstSanphamfn.Where(p => p.IDChatLieu == x).ToList();
-                //        foreach (var item in lstchatlieutam)
-                //        {
-                //            if (lstchatlieutam1.FirstOrDefault(p => p.ID == item.ID) == null)
-                //            {
-                //                lstchatlieutam1.Add(item);
-                //            }
-                //        }
-                //    }
-                //    lstSanphamfn = lstchatlieutam1;
-                //}
-                //sort
-                if (filter.sortSP != null)
-                {
-                    if (filter.sortSP == "2")
-                    {
-                        lstSanphamfn = lstSanphamfn.OrderBy(p => p.GiaBan).ToList();
-                    }
-                    else if (filter.sortSP == "3")
-                    {
-                        lstSanphamfn = lstSanphamfn.OrderByDescending(p => p.GiaBan).ToList();
-                    }
-                    else if (filter.sortSP == "4")
-                    {
-                        lstSanphamfn = lstSanphamfn.OrderBy(p => p.GiaBan).ToList();
-                    }
-                    else if (filter.sortSP == "5")
-                    {
-                        lstSanphamfn = lstSanphamfn.OrderByDescending(p => p.GiaBan).ToList();
-                    }
-                    else if (filter.sortSP == "6")
-                    {
-                        lstSanphamfn = lstSanphamfn.OrderBy(p => p.NgayTao.Value).ToList();
-                    }
-                    else if (filter.sortSP == "7")
-                    {
-                        lstSanphamfn = lstSanphamfn.OrderByDescending(p => p.NgayTao.Value).ToList();
-                    }
-                    else if (filter.sortSP == "9")
-                    {
-                        lstSanphamfn = lstSanphamfn.OrderByDescending(p => p.SoLuong).ToList();
-                    }
-                }
-                List<SanPhamViewModel> lstSanPhamfnR = new List<SanPhamViewModel>();
-                foreach (var item in lstSanphamfn)
-                {
-                    if (item.TrangThaiCTSP == 1)
-                    {
-                        if (lstSanPhamfnR.FirstOrDefault(p => p.ID == item.ID) == null)
-                        {
-                            lstSanPhamfnR.Add(item);
                         }
                     }
                     else
                     {
-                        SanPhamViewModel sanPhamViewModel = lstSanpham.FirstOrDefault(p => p.ID == item.ID && p.TrangThaiCTSP == 1);
-                        if (sanPhamViewModel != null)
-                        {
-                            if (lstSanPhamfnR.FirstOrDefault(p => p.ID == sanPhamViewModel.ID) == null)
-                            {
-                                lstSanPhamfnR.Add(sanPhamViewModel);
-                            }
-                        }                       
+                        lstSanphamfn = lstSanpham;
                     }
-                }
-                //
+                    //loaiSP-filter
+                    List<SanPhamViewModel> lsttam = new List<SanPhamViewModel>();
+                    List<SanPhamViewModel> lsttam1 = new List<SanPhamViewModel>();
+                    if (filter.loaiSP != null && filter.loaiSP.Count > 0)
+                    {
+                        foreach (var x in filter.loaiSP)
+                        {
+                            lsttam = lstSanphamfn.Where(p => p.LoaiSP == x).ToList();
+                            foreach (var item in lsttam)
+                            {
+                                if (lsttam1.FirstOrDefault(p => p.ID == item.ID) == null)
+                                {
+                                    lsttam1.Add(item);
+                                }
+                            }
+                        }
+                        lstSanphamfn = lsttam1;
+                    }
+                    //Search
+                    if (filter.search != null)
+                    {
+                        lstSanphamfn = lstSanphamfn.Where(p => p.Ten.ToLower().Contains(filter.search.ToLower())).ToList();
+                    }
 
-                var model = lstSanPhamfnR.Skip((filter.page - 1) * filter.pageSize).Take(filter.pageSize).ToList();
-                return Json(new
-                {
-                    data = model,
-                    total = lstSanPhamfnR.Count,
-                    status = true
-                });
+                    List<SanPhamViewModel> lstcotam = new List<SanPhamViewModel>();
+                    List<SanPhamViewModel> lstcotam1 = new List<SanPhamViewModel>();
+                    if (filter.kichCo != null && filter.kichCo.Count > 0)
+                    {
+                        foreach (var x in filter.kichCo)
+                        {
+                            lstcotam = lstSanphamfn.Where(p => p.IDKichCo == x).ToList();
+                            foreach (var item in lstcotam)
+                            {
+                                if (lstcotam1.FirstOrDefault(p => p.ID == item.ID) == null)
+                                {
+                                    lstcotam1.Add(item);
+                                }
+                            }
+                        }
+                        lstSanphamfn = lstcotam1;
+                    }
+                    //sort
+                    if (filter.sortSP != null)
+                    {
+                        if (filter.sortSP == "2")
+                        {
+                            lstSanphamfn = lstSanphamfn.OrderBy(p => p.GiaBan).ToList();
+                        }
+                        else if (filter.sortSP == "3")
+                        {
+                            lstSanphamfn = lstSanphamfn.OrderByDescending(p => p.GiaBan).ToList();
+                        }
+                        else if (filter.sortSP == "4")
+                        {
+                            lstSanphamfn = lstSanphamfn.OrderBy(p => p.GiaBan).ToList();
+                        }
+                        else if (filter.sortSP == "5")
+                        {
+                            lstSanphamfn = lstSanphamfn.OrderByDescending(p => p.GiaBan).ToList();
+                        }
+                        else if (filter.sortSP == "6")
+                        {
+                            lstSanphamfn = lstSanphamfn.OrderBy(p => p.NgayTao.Value).ToList();
+                        }
+                        else if (filter.sortSP == "7")
+                        {
+                            lstSanphamfn = lstSanphamfn.OrderByDescending(p => p.NgayTao.Value).ToList();
+                        }
+                        else if (filter.sortSP == "9")
+                        {
+                            lstSanphamfn = lstSanphamfn.OrderByDescending(p => p.SoLuong).ToList();
+                        }
+                    }
+                    List<SanPhamViewModel> lstSanPhamfnR = new List<SanPhamViewModel>();
+                    foreach (var item in lstSanphamfn)
+                    {
+                        if (item.TrangThaiCTSP == 1)
+                        {
+                            if (lstSanPhamfnR.FirstOrDefault(p => p.ID == item.ID) == null)
+                            {
+                                lstSanPhamfnR.Add(item);
+                            }
+                        }
+                        else
+                        {
+                            SanPhamViewModel sanPhamViewModel = lstSanpham.FirstOrDefault(p => p.ID == item.ID && p.TrangThaiCTSP == 1);
+                            if (sanPhamViewModel != null)
+                            {
+                                if (lstSanPhamfnR.FirstOrDefault(p => p.ID == sanPhamViewModel.ID) == null)
+                                {
+                                    lstSanPhamfnR.Add(sanPhamViewModel);
+                                }
+                            }
+                        }
+                    }
+                    //
+
+                    var model = lstSanPhamfnR.Skip((filter.page - 1) * filter.pageSize).Take(filter.pageSize).ToList();
+                    return Json(new
+                    {
+                        data = model,
+                        total = lstSanPhamfnR.Count,
+                        status = true
+                    });
+                }
+                else return Json(new { status = false });
             }
-            else return Json(new { status = false });
+            catch
+            {
+                return Json(new { status = false });
+            }
         }
         [HttpGet]
         public IActionResult Shop()
@@ -439,294 +417,336 @@ namespace AppView.Controllers
         [HttpGet]
         public async Task<IActionResult> ProductDetailFromCart(Guid idctsp)
         {
-            HttpResponseMessage response = await _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetIDsanPhamByIdCTSP?idctsp=" + idctsp);
-            var idsanpham = JsonConvert.DeserializeObject<string>(response.Content.ReadAsStringAsync().Result);
-            return RedirectToAction("ProductDetail", "Home", new { idSanPham = idsanpham });
+            try 
+            {
+                HttpResponseMessage response = await _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetIDsanPhamByIdCTSP?idctsp=" + idctsp);
+                var idsanpham = JsonConvert.DeserializeObject<string>(response.Content.ReadAsStringAsync().Result);
+                return RedirectToAction("ProductDetail", "Home", new { idSanPham = idsanpham });
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
         [HttpGet]
         public JsonResult ShowDanhGiabyIdSP(Guid id, int page, int pageSize)
         {
-            HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + $"DanhGia/getbyIdSp/{id}").Result;
-            List<DanhGiaViewModel> lstDanhGiaSanpham = new List<DanhGiaViewModel>();
-            if (response.IsSuccessStatusCode)
+            try
             {
-                lstDanhGiaSanpham = JsonConvert.DeserializeObject<List<DanhGiaViewModel>>(response.Content.ReadAsStringAsync().Result);
-                var model = lstDanhGiaSanpham.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-                return Json(new
+                HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + $"DanhGia/getbyIdSp/{id}").Result;
+                List<DanhGiaViewModel> lstDanhGiaSanpham = new List<DanhGiaViewModel>();
+                if (response.IsSuccessStatusCode)
                 {
-                    data = model,
-                    total = lstDanhGiaSanpham.Count,
-                    status = true
-                });
+                    lstDanhGiaSanpham = JsonConvert.DeserializeObject<List<DanhGiaViewModel>>(response.Content.ReadAsStringAsync().Result);
+                    var model = lstDanhGiaSanpham.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+                    return Json(new
+                    {
+                        data = model,
+                        total = lstDanhGiaSanpham.Count,
+                        status = true
+                    });
+                }
+                else return Json(new { status = false });
             }
-            else return Json(new { status = false });
+            catch
+            {
+                return Json(new { status = false });
+            }
         }
         #endregion
 
         [HttpPost]
         public async Task<ActionResult> TongSoLuong(int? sl)
         {
-            var session = HttpContext.Session.GetString("LoginInfor");
-            if (String.IsNullOrEmpty(session))
+            try
             {
-                List<GioHangRequest> lstGioHang = new List<GioHangRequest>();
-                if (Request.Cookies["Cart"] != null)
+                var session = HttpContext.Session.GetString("LoginInfor");
+                if (String.IsNullOrEmpty(session))
                 {
-                    lstGioHang = JsonConvert.DeserializeObject<List<GioHangRequest>>(Request.Cookies["Cart"]);
-
-                }
-                // laam them
-                int cout = lstGioHang.Sum(c => c.SoLuong) + sl.Value;
-                TempData["SoLuong"] = cout.ToString();
-
-                if (Request.Cookies["Cart"] != null)
-                {
-                    var response = await _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCart?request=" + Request.Cookies["Cart"]);
-                    if (response.IsSuccessStatusCode)
+                    List<GioHangRequest> lstGioHang = new List<GioHangRequest>();
+                    if (Request.Cookies["Cart"] != null)
                     {
-                        var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response.Content.ReadAsStringAsync().Result);
-                        cout = temp.GioHangs.Sum(c => c.SoLuong) + sl.Value;
-                        TempData["SoLuong"] = cout.ToString();
-                        // lam end
+                        lstGioHang = JsonConvert.DeserializeObject<List<GioHangRequest>>(Request.Cookies["Cart"]);
 
-                        return Json(new { success = true, message = "Add to cart successfully", sl = cout });
                     }
-                    else return Json(new { error = true, message = "  Not Add to cart " });
-                }
-                return Json(new { success = true, message = "Add to cart successfully", sl = cout });
-                //else
-                //{
-                //    TempData["SoLuong"] = cout.ToString();
-                //    return View(new List<GioHangRequest>());
-                //}
-            }
-            else
-            {
-                var loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
-                if (loginInfor.vaiTro == 1)
-                {
-                    var response = await _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCartLogin?idNguoiDung=" + loginInfor.Id);
-                    if (response.IsSuccessStatusCode)
+                    // laam them
+                    int cout = lstGioHang.Sum(c => c.SoLuong) + sl.Value;
+                    TempData["SoLuong"] = cout.ToString();
+
+                    if (Request.Cookies["Cart"] != null)
                     {
-                        var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response.Content.ReadAsStringAsync().Result);
-                        if (temp.GioHangs.Sum(x => x.SoLuong) == 0)
+                        var response = await _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCart?request=" + Request.Cookies["Cart"]);
+                        if (response.IsSuccessStatusCode)
                         {
-                            TempData["SoLuong"] = sl.Value.ToString();
-                            return Json(new { success = true, message = "Add to cart successfully", sl = TempData["SoLuong"] });
+                            var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response.Content.ReadAsStringAsync().Result);
+                            cout = temp.GioHangs.Sum(c => c.SoLuong) + sl.Value;
+                            TempData["SoLuong"] = cout.ToString();
+                            // lam end
+
+                            return Json(new { success = true, message = "Add to cart successfully", sl = cout });
                         }
-
-                        // lam them
-                        int cout = temp.GioHangs.Sum(c => c.SoLuong) + sl.Value;
-
-                        TempData["SoLuong"] = cout.ToString();
-                        // lam end
-                        TempData["TrangThai"] = "true";
-                        return Json(new { success = true, message = "Add to cart successfully", sl = cout });
+                        else return Json(new { error = true, message = "  Not Add to cart " });
                     }
-                    else return BadRequest();
+                    return Json(new { success = true, message = "Add to cart successfully", sl = cout });
                 }
                 else
                 {
-                    TempData["SoLuong"] = "0";
-                    return Json(new { error = false, message = "  Not Add to cart " });
+                    var loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
+                    if (loginInfor.vaiTro == 1)
+                    {
+                        var response = await _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCartLogin?idNguoiDung=" + loginInfor.Id);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response.Content.ReadAsStringAsync().Result);
+                            if (temp.GioHangs.Sum(x => x.SoLuong) == 0)
+                            {
+                                TempData["SoLuong"] = sl.Value.ToString();
+                                return Json(new { success = true, message = "Add to cart successfully", sl = TempData["SoLuong"] });
+                            }
+
+                            // lam them
+                            int cout = temp.GioHangs.Sum(c => c.SoLuong) + sl.Value;
+
+                            TempData["SoLuong"] = cout.ToString();
+                            // lam end
+                            TempData["TrangThai"] = "true";
+                            return Json(new { success = true, message = "Add to cart successfully", sl = cout });
+                        }
+                        else return BadRequest();
+                    }
+                    else
+                    {
+                        TempData["SoLuong"] = "0";
+                        return Json(new { error = false, message = "  Not Add to cart " });
+                    }
                 }
+            }
+            catch
+            {
+                return Json(new { error = false, message = "  Not Add to cart " });
             }
         }
         #region Cart
         [HttpGet]
         public async Task<IActionResult> ShoppingCart()
         {
-            var session = HttpContext.Session.GetString("LoginInfor");
-            //Không đăng nhập
-            if (String.IsNullOrEmpty(session))
+            try
             {
-                List<GioHangRequest> lstGioHang = new List<GioHangRequest>();
-                if (Request.Cookies["Cart"] != null)
+                var session = HttpContext.Session.GetString("LoginInfor");
+                //Không đăng nhập
+                if (String.IsNullOrEmpty(session))
                 {
-                    lstGioHang = JsonConvert.DeserializeObject<List<GioHangRequest>>(Request.Cookies["Cart"]);
-                }
-                // laam them
-                int cout = lstGioHang.Sum(c => c.SoLuong);
-                TempData["SoLuong"] = cout.ToString();
-                
-
-                if (Request.Cookies["Cart"] != null)
-                {
-                    var response = await _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCart?request=" + Request.Cookies["Cart"]);
-                    if (response.IsSuccessStatusCode)
+                    List<GioHangRequest> lstGioHang = new List<GioHangRequest>();
+                    if (Request.Cookies["Cart"] != null)
                     {
-                        var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response.Content.ReadAsStringAsync().Result);
-                        TempData["TongTien"] = temp.TongTien.ToString();
-
-                        // lam end
-                        TempData["ListBienThe"] = JsonConvert.SerializeObject(temp.GioHangs);
-                        TempData["TrangThai"] = "false";
-                        TempData["Quantity"] = temp.GioHangs.Sum(x => x.SoLuong).ToString();
-                        return View(temp.GioHangs);
+                        lstGioHang = JsonConvert.DeserializeObject<List<GioHangRequest>>(Request.Cookies["Cart"]);
                     }
-                    else return BadRequest();
-                }
+                    // laam them
+                    int cout = lstGioHang.Sum(c => c.SoLuong);
+                    TempData["SoLuong"] = cout.ToString();
+
+
+                    if (Request.Cookies["Cart"] != null)
+                    {
+                        var response = await _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCart?request=" + Request.Cookies["Cart"]);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response.Content.ReadAsStringAsync().Result);
+                            TempData["TongTien"] = temp.TongTien.ToString();
+
+                            // lam end
+                            TempData["ListBienThe"] = JsonConvert.SerializeObject(temp.GioHangs);
+                            TempData["TrangThai"] = "false";
+                            TempData["Quantity"] = temp.GioHangs.Sum(x => x.SoLuong).ToString();
+                            return View(temp.GioHangs);
+                        }
+                        else return BadRequest();
+                    }
+                    else
+                    {
+                        TempData["TongTien"] = "0";
+                        return View(new List<GioHangRequest>());
+                    }
+                }//Có đăng nhập
                 else
                 {
-                    TempData["TongTien"] = "0";
-                    return View(new List<GioHangRequest>());
-                }
-            }//Có đăng nhập
-            else
-            {
-                var loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
-                if (loginInfor.vaiTro == 1)
-                {
-                    var response = await _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCartLogin?idNguoiDung=" + loginInfor.Id);
-                    if (response.IsSuccessStatusCode)
+                    var loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
+                    if (loginInfor.vaiTro == 1)
                     {
-                        var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response.Content.ReadAsStringAsync().Result);
-                        TempData["TongTien"] = temp.TongTien.ToString();
-                        TempData["ListBienThe"] = JsonConvert.SerializeObject(temp.GioHangs);
-                        // lam them
-                        int cout = temp.GioHangs.Sum(c => c.SoLuong);
+                        var response = await _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCartLogin?idNguoiDung=" + loginInfor.Id);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response.Content.ReadAsStringAsync().Result);
+                            TempData["TongTien"] = temp.TongTien.ToString();
+                            TempData["ListBienThe"] = JsonConvert.SerializeObject(temp.GioHangs);
+                            // lam them
+                            int cout = temp.GioHangs.Sum(c => c.SoLuong);
 
-                        TempData["SoLuong"] = cout.ToString();
-                        // lam end
-                        TempData["TrangThai"] = "true";
-                        TempData["Quantity"] = temp.GioHangs.Sum(x => x.SoLuong).ToString();
-                        return View(temp.GioHangs);
+                            TempData["SoLuong"] = cout.ToString();
+                            // lam end
+                            TempData["TrangThai"] = "true";
+                            TempData["Quantity"] = temp.GioHangs.Sum(x => x.SoLuong).ToString();
+                            return View(temp.GioHangs);
+                        }
+                        else return BadRequest();
                     }
-                    else return BadRequest();
+                    else
+                    {
+                        TempData["SoLuong"] = "0";
+                        return View(new List<GioHangRequest>());
+                    }
                 }
-                else
-                {
-                    TempData["SoLuong"] = "0";
-                    return View(new List<GioHangRequest>());
-                }
+            }
+            catch
+            {
+                return View(new List<GioHangRequest>());
             }
         }
         [HttpGet]
         public async Task<IActionResult> CheckCart()
         {
-            var session = HttpContext.Session.GetString("LoginInfor");
-            if (String.IsNullOrEmpty(session))
+            try
             {
-                if (Request.Cookies["Cart"] != null)
+                var session = HttpContext.Session.GetString("LoginInfor");
+                if (String.IsNullOrEmpty(session))
                 {
-                    var response = await _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCart?request=" + Request.Cookies["Cart"]);
-                    if (response.IsSuccessStatusCode)
+                    if (Request.Cookies["Cart"] != null)
                     {
-                        var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response.Content.ReadAsStringAsync().Result);
+                        var response = await _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCart?request=" + Request.Cookies["Cart"]);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response.Content.ReadAsStringAsync().Result);
 
-                        return Json(temp.GioHangs);
+                            return Json(temp.GioHangs);
+                        }
+                        else return BadRequest();
                     }
-                    else return BadRequest();
+                    else
+                    {
+                        return View(new List<GioHangRequest>());
+                    }
                 }
                 else
                 {
-                    return View(new List<GioHangRequest>());
+                    var loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
+                    if (loginInfor.vaiTro == 1)
+                    {
+                        var response = await _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCartLogin?idNguoiDung=" + loginInfor.Id);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response.Content.ReadAsStringAsync().Result);
+                            return Json(temp.GioHangs);
+                        }
+                        else return BadRequest();
+                    }
+                    else
+                    {
+                        return View(new List<GioHangRequest>());
+                    }
                 }
             }
-            else
+            catch
             {
-                var loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
-                if (loginInfor.vaiTro == 1)
-                {
-                    var response = await _httpClient.GetAsync(_httpClient.BaseAddress + "GioHang/GetCartLogin?idNguoiDung=" + loginInfor.Id);
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var temp = JsonConvert.DeserializeObject<GioHangViewModel>(response.Content.ReadAsStringAsync().Result);
-                        return Json(temp.GioHangs);
-                    }
-                    else return BadRequest();
-                }
-                else
-                {
-                    return View(new List<GioHangRequest>());
-                }
+                return View(new List<GioHangRequest>());
             }
         }
         [HttpGet]
         public ActionResult DeleteFromCart(Guid id)
         {
-            List<GioHangRequest> bienThes = new List<GioHangRequest>();
-            string? result = Request.Cookies["Cart"];
-            if (result != null)
+            try
             {
-                bienThes = JsonConvert.DeserializeObject<List<GioHangRequest>>(result);
-            }
-            bienThes.Remove(bienThes.Find(p => p.IDChiTietSanPham == id));
-            //
-            var session = HttpContext.Session.GetString("LoginInfor");
-            if (session == null)
-            {
-                CookieOptions cookie = new CookieOptions();
-                cookie.Expires = DateTime.Now.AddDays(30);
-                Response.Cookies.Append("Cart", JsonConvert.SerializeObject(bienThes), cookie);
-                return RedirectToAction("ShoppingCart");
-            }
-            else
-            {
-                var loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
-                if (loginInfor.vaiTro == 1)
+                List<GioHangRequest> bienThes = new List<GioHangRequest>();
+                string? result = Request.Cookies["Cart"];
+                if (result != null)
                 {
-                    var response = _httpClient.DeleteAsync(_httpClient.BaseAddress + $"GioHang/Deletebyid?idctsp={id}&idNguoiDung={loginInfor.Id}").Result;
-                    if (response.IsSuccessStatusCode) return RedirectToAction("ShoppingCart");
+                    bienThes = JsonConvert.DeserializeObject<List<GioHangRequest>>(result);
+                }
+                bienThes.Remove(bienThes.Find(p => p.IDChiTietSanPham == id));
+                //
+                var session = HttpContext.Session.GetString("LoginInfor");
+                if (session == null)
+                {
+                    CookieOptions cookie = new CookieOptions();
+                    cookie.Expires = DateTime.Now.AddDays(30);
+                    Response.Cookies.Append("Cart", JsonConvert.SerializeObject(bienThes), cookie);
+                    return RedirectToAction("ShoppingCart");
+                }
+                else
+                {
+                    var loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
+                    if (loginInfor.vaiTro == 1)
+                    {
+                        var response = _httpClient.DeleteAsync(_httpClient.BaseAddress + $"GioHang/Deletebyid?idctsp={id}&idNguoiDung={loginInfor.Id}").Result;
+                        if (response.IsSuccessStatusCode) return RedirectToAction("ShoppingCart");
+                        else return RedirectToAction("ShoppingCart");
+                    }
                     else return RedirectToAction("ShoppingCart");
                 }
-                else return RedirectToAction("ShoppingCart");
             }
-            //
-
+            catch
+            {
+                return RedirectToAction("ShoppingCart");
+            }
         }
         [HttpPost]
         public ActionResult AddToCart(string id, int? sl)
         {
-            List<GioHangRequest> lstGioHang;
-            string? result = Request.Cookies["Cart"];
-            var session = HttpContext.Session.GetString("LoginInfor");
-            if (session == null)
+            try
             {
-                if (string.IsNullOrEmpty(result))
+                List<GioHangRequest> lstGioHang;
+                string? result = Request.Cookies["Cart"];
+                var session = HttpContext.Session.GetString("LoginInfor");
+                if (session == null)
                 {
-                    //chiTietSanPham.SoLuong = (sl != null)?sl.Value:1;
-                    lstGioHang = new List<GioHangRequest>() { new GioHangRequest() { IDChiTietSanPham = new Guid(id), SoLuong = (sl != null) ? sl.Value : 1 } };
-                }
-                else
-                {
-                    lstGioHang = JsonConvert.DeserializeObject<List<GioHangRequest>>(result);
-                    var tempBienThe = lstGioHang.FirstOrDefault(x => x.IDChiTietSanPham == new Guid(id));
-                    if (tempBienThe != null)
+                    if (string.IsNullOrEmpty(result))
                     {
-                        //Sua 
-                        if (sl == null)
-                        {
-                            tempBienThe.SoLuong++;
-                        }
-                        else
-                        {
-                            tempBienThe.SoLuong = tempBienThe.SoLuong + sl.Value;
-                        }
-
+                        //chiTietSanPham.SoLuong = (sl != null)?sl.Value:1;
+                        lstGioHang = new List<GioHangRequest>() { new GioHangRequest() { IDChiTietSanPham = new Guid(id), SoLuong = (sl != null) ? sl.Value : 1 } };
                     }
                     else
                     {
-                        lstGioHang.Add(new GioHangRequest() { IDChiTietSanPham = new Guid(id), SoLuong = (sl != null) ? sl.Value : 1 });
-                    }
-                }
-                CookieOptions cookie = new CookieOptions();
-                cookie.Expires = DateTime.Now.AddDays(30);
-                Response.Cookies.Append("Cart", JsonConvert.SerializeObject(lstGioHang), cookie);
-                return Json(new { success = true, message = "Thêm vào giỏ hàng thành công" });
-            }
-            else
-            {
-                var loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
-                if (loginInfor.vaiTro == 1)
-                {
-                    var chiTietGioHang = new ChiTietGioHang() { ID = Guid.NewGuid(), SoLuong = (sl != null) ? sl.Value : 1, IDCTSP = new Guid(id), IDNguoiDung = loginInfor.Id };
-                    var response = _httpClient.PostAsJsonAsync(_httpClient.BaseAddress + "GioHang/AddCart", chiTietGioHang).Result;
+                        lstGioHang = JsonConvert.DeserializeObject<List<GioHangRequest>>(result);
+                        var tempBienThe = lstGioHang.FirstOrDefault(x => x.IDChiTietSanPham == new Guid(id));
+                        if (tempBienThe != null)
+                        {
+                            //Sua 
+                            if (sl == null)
+                            {
+                                tempBienThe.SoLuong++;
+                            }
+                            else
+                            {
+                                tempBienThe.SoLuong = tempBienThe.SoLuong + sl.Value;
+                            }
 
-                    if (response.IsSuccessStatusCode) return Json(new { success = true, message = "Thêm vào giỏ hàng thành công" });
-                    else return Json(new { success = false, message = "Thêm vào giỏ hàng thất bại" });
+                        }
+                        else
+                        {
+                            lstGioHang.Add(new GioHangRequest() { IDChiTietSanPham = new Guid(id), SoLuong = (sl != null) ? sl.Value : 1 });
+                        }
+                    }
+                    CookieOptions cookie = new CookieOptions();
+                    cookie.Expires = DateTime.Now.AddDays(30);
+                    Response.Cookies.Append("Cart", JsonConvert.SerializeObject(lstGioHang), cookie);
+                    return Json(new { success = true, message = "Thêm vào giỏ hàng thành công" });
                 }
-                else return Json(new { success = false, message = "Chỉ khách hàng mới thêm được vào giỏ hàng" });
+                else
+                {
+                    var loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
+                    if (loginInfor.vaiTro == 1)
+                    {
+                        var chiTietGioHang = new ChiTietGioHang() { ID = Guid.NewGuid(), SoLuong = (sl != null) ? sl.Value : 1, IDCTSP = new Guid(id), IDNguoiDung = loginInfor.Id };
+                        var response = _httpClient.PostAsJsonAsync(_httpClient.BaseAddress + "GioHang/AddCart", chiTietGioHang).Result;
+
+                        if (response.IsSuccessStatusCode) return Json(new { success = true, message = "Thêm vào giỏ hàng thành công" });
+                        else return Json(new { success = false, message = "Thêm vào giỏ hàng thất bại" });
+                    }
+                    else return Json(new { success = false, message = "Chỉ khách hàng mới thêm được vào giỏ hàng" });
+                }
+            }
+            catch
+            {
+                return Json(new { success = false, message = "Thêm vào giỏ hàng thất bại" });
             }
         }
         [HttpPost]
@@ -799,64 +819,71 @@ namespace AppView.Controllers
         [HttpPost]
         public ActionResult BuyNow(string id, int soLuong)
         {
-            HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + $"SanPham/GetChiTietSanPhamByID?id=" + id).Result;
-            if (response.IsSuccessStatusCode)
+            try
             {
-                //moiw
-                List<GioHangRequest> lstGioHang;
-                //ChiTietSanPhamViewModel chiTietSanPham = JsonConvert.DeserializeObject<ChiTietSanPhamViewModel>(response.Content.ReadAsStringAsync().Result);
-                string? result = Request.Cookies["Cart"];
-                if (string.IsNullOrEmpty(result))
+                HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + $"SanPham/GetChiTietSanPhamByID?id=" + id).Result;
+                if (response.IsSuccessStatusCode)
                 {
-                    //chiTietSanPham.SoLuong = (sl != null)?sl.Value:1;
-                    lstGioHang = new List<GioHangRequest>() { new GioHangRequest() { IDChiTietSanPham = new Guid(id), SoLuong = (soLuong != null) ? soLuong : 1 } };
-                }
-                else
-                {
-                    lstGioHang = JsonConvert.DeserializeObject<List<GioHangRequest>>(result);
-                    var tempBienThe = lstGioHang.FirstOrDefault(x => x.IDChiTietSanPham == new Guid(id));
-                    if (tempBienThe != null)
+                    //moiw
+                    List<GioHangRequest> lstGioHang;
+                    //ChiTietSanPhamViewModel chiTietSanPham = JsonConvert.DeserializeObject<ChiTietSanPhamViewModel>(response.Content.ReadAsStringAsync().Result);
+                    string? result = Request.Cookies["Cart"];
+                    if (string.IsNullOrEmpty(result))
                     {
-                        //Sua 
-                        if (soLuong == null)
-                        {
-                            tempBienThe.SoLuong++;
-                        }
-                        else
-                        {
-                            tempBienThe.SoLuong = tempBienThe.SoLuong + soLuong;
-                        }
-
+                        //chiTietSanPham.SoLuong = (sl != null)?sl.Value:1;
+                        lstGioHang = new List<GioHangRequest>() { new GioHangRequest() { IDChiTietSanPham = new Guid(id), SoLuong = (soLuong != null) ? soLuong : 1 } };
                     }
                     else
                     {
-                        //chiTietSanPham.SoLuong = (sl != null) ? sl.Value : 1;
-                        lstGioHang.Add(new GioHangRequest() { IDChiTietSanPham = new Guid(id), SoLuong = (soLuong != null) ? soLuong : 1 });
-                    }
-                }
-                var session = HttpContext.Session.GetString("LoginInfor");
-                if (session == null)
-                {
-                    CookieOptions cookie = new CookieOptions();
-                    cookie.Expires = DateTime.Now.AddDays(30);
-                    Response.Cookies.Append("Cart", JsonConvert.SerializeObject(lstGioHang), cookie);
-                    return Json(new { success = true, message = "Add to cart successfully" });
-                }
-                else
-                {
-                    var loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
-                    if (loginInfor.vaiTro == 1)
-                    {
-                        var chiTietGioHang = new ChiTietGioHang() { ID = Guid.NewGuid(), SoLuong = (soLuong != null) ? soLuong : 1, IDCTSP = new Guid(id), IDNguoiDung = loginInfor.Id };
-                        var response1 = _httpClient.PostAsJsonAsync(_httpClient.BaseAddress + "GioHang/AddCart", chiTietGioHang).Result;
-                        if (response1.IsSuccessStatusCode) return Json(new { success = true, message = "Thêm vào giỏ hàng thành công" });
-                        else return Json(new { success = false, message = "Thêm vào giỏ hàng thất bại" });
-                    }
-                    else return Json(new { success = false, message = "Chỉ khách hàng mới thêm được vào giỏ hàng" });
-                }
+                        lstGioHang = JsonConvert.DeserializeObject<List<GioHangRequest>>(result);
+                        var tempBienThe = lstGioHang.FirstOrDefault(x => x.IDChiTietSanPham == new Guid(id));
+                        if (tempBienThe != null)
+                        {
+                            //Sua 
+                            if (soLuong == null)
+                            {
+                                tempBienThe.SoLuong++;
+                            }
+                            else
+                            {
+                                tempBienThe.SoLuong = tempBienThe.SoLuong + soLuong;
+                            }
 
+                        }
+                        else
+                        {
+                            //chiTietSanPham.SoLuong = (sl != null) ? sl.Value : 1;
+                            lstGioHang.Add(new GioHangRequest() { IDChiTietSanPham = new Guid(id), SoLuong = (soLuong != null) ? soLuong : 1 });
+                        }
+                    }
+                    var session = HttpContext.Session.GetString("LoginInfor");
+                    if (session == null)
+                    {
+                        CookieOptions cookie = new CookieOptions();
+                        cookie.Expires = DateTime.Now.AddDays(30);
+                        Response.Cookies.Append("Cart", JsonConvert.SerializeObject(lstGioHang), cookie);
+                        return Json(new { success = true, message = "Add to cart successfully" });
+                    }
+                    else
+                    {
+                        var loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(session);
+                        if (loginInfor.vaiTro == 1)
+                        {
+                            var chiTietGioHang = new ChiTietGioHang() { ID = Guid.NewGuid(), SoLuong = (soLuong != null) ? soLuong : 1, IDCTSP = new Guid(id), IDNguoiDung = loginInfor.Id };
+                            var response1 = _httpClient.PostAsJsonAsync(_httpClient.BaseAddress + "GioHang/AddCart", chiTietGioHang).Result;
+                            if (response1.IsSuccessStatusCode) return Json(new { success = true, message = "Thêm vào giỏ hàng thành công" });
+                            else return Json(new { success = false, message = "Thêm vào giỏ hàng thất bại" });
+                        }
+                        else return Json(new { success = false, message = "Chỉ khách hàng mới thêm được vào giỏ hàng" });
+                    }
+
+                }
+                else return Json(new { success = false, message = "Mua hàng thất bại" });
             }
-            else return Json(new { success = false, message = "Mua hàng thất bại" });
+            catch
+            {
+                return Json(new { success = false, message = "Mua hàng thất bại" });
+            }
         }
         #endregion
 
@@ -864,42 +891,57 @@ namespace AppView.Controllers
         [HttpGet]
         public IActionResult Login(string actionName)
         {
-            TempData["ActionName"] = actionName;
-            return View();
+            try
+            {
+                TempData["ActionName"] = actionName;
+                return View();
+            }
+            catch
+            {
+                TempData["ActionName"] = "Index";
+                return View();
+            }
         }
         [HttpPost]
         public async Task<ActionResult> Login(string login, string password)
         {
-            if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password))
+            try
             {
-                ViewBag.ErrorMessage = "Vui lòng nhập đầy đủ thông tin đăng nhập.";
-                return View();
-            }
-            if (login.Contains('@'))
-            {
-                login = login.Replace("@", "%40");
-            }
-            HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + $"QuanLyNguoiDung/DangNhap?lg={login}&password={password}").Result;
-            if (response.IsSuccessStatusCode)
-            {
-                string result = await response.Content.ReadAsStringAsync();
-                HttpContext.Session.SetString("LoginInfor", result);
-                var user = JsonConvert.DeserializeObject<LoginViewModel>(result);
-                if (user.vaiTro == 1)
+                if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password))
                 {
-                    string actionName = TempData["ActionName"].ToString();
-                    return RedirectToAction("Index","TrangChu");
+                    ViewBag.ErrorMessage = "Vui lòng nhập đầy đủ thông tin đăng nhập.";
+                    return View();
                 }
-                else return RedirectToAction("BanHang", "BanHangTaiQuay");
+                if (login.Contains('@'))
+                {
+                    login = login.Replace("@", "%40");
+                }
+                HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + $"QuanLyNguoiDung/DangNhap?lg={login}&password={password}").Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    string result = await response.Content.ReadAsStringAsync();
+                    HttpContext.Session.SetString("LoginInfor", result);
+                    var user = JsonConvert.DeserializeObject<LoginViewModel>(result);
+                    if (user.vaiTro == 1)
+                    {
+                        string actionName = TempData["ActionName"].ToString();
+                        return RedirectToAction("Index", "TrangChu");
+                    }
+                    else return RedirectToAction("BanHang", "BanHangTaiQuay");
+                }
+                else if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    ViewBag.ErrorMessage = "Bạn không có quyền truy cập vào tài khoản này.";
+                    return View();
+                }
+                else
+                {
+                    ViewBag.ErrorMessage = "Email hoặc password không chính xác.";
+                    return View();
+                }
             }
-            else if (response.StatusCode == HttpStatusCode.Unauthorized)
+            catch
             {
-                ViewBag.ErrorMessage = "Bạn không có quyền truy cập vào tài khoản này.";
-                return View();
-            }
-            else
-            {
-                ViewBag.ErrorMessage = "Email hoặc password không chính xác.";
                 return View();
             }
         }
@@ -909,42 +951,54 @@ namespace AppView.Controllers
         }
         [HttpPost]
         public IActionResult Register(KhachHangViewModel khachHang)
-
         {
-            khachHang.Id = Guid.NewGuid();
-            khachHang.DiemTich = 0;
-            khachHang.TrangThai = 1;
-            HttpResponseMessage response = _httpClient.PostAsJsonAsync(_httpClient.BaseAddress + $"QuanLyNguoiDung/DangKyKhachHang", khachHang).Result;
-            if (response.IsSuccessStatusCode)
+            try
             {
-                TempData["SuccessMessage"] = "Tài khoản đã được đăng ký thành công!";
-                //return RedirectToAction("Login", new { actionName = "Index" });
-                return View("RegisterSuccess");
+                khachHang.Id = Guid.NewGuid();
+                khachHang.DiemTich = 0;
+                khachHang.TrangThai = 1;
+                HttpResponseMessage response = _httpClient.PostAsJsonAsync(_httpClient.BaseAddress + $"QuanLyNguoiDung/DangKyKhachHang", khachHang).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    TempData["SuccessMessage"] = "Tài khoản đã được đăng ký thành công!";
+                    //return RedirectToAction("Login", new { actionName = "Index" });
+                    return View("RegisterSuccess");
+                }
+                ViewBag.ErrorMessage = "Tài khoản đã được đăng ký với email hoặc số điện thoại này!";
+                return View();
             }
-            ViewBag.ErrorMessage = "Tài khoản đã được đăng ký với email hoặc số điện thoại này!";
-            return View();
-
+            catch
+            {
+                return View();
+            }
         }
         [HttpGet]
         public IActionResult Profile()
         {
-            var session = HttpContext.Session.GetString("LoginInfor");
-            if (session != null)
+            try
             {
-                LoginViewModel loginViewModel = JsonConvert.DeserializeObject<LoginViewModel>(session);
-                //LoginViewModel loginViewModel = JsonConvert.DeserializeObject<LoginViewModel>(loginInfor);
-                var response = _httpClient.GetAsync(_httpClient.BaseAddress + $"KhachHang/GetById?id={loginViewModel.Id}").Result;
-                if (response.IsSuccessStatusCode)
+                var session = HttpContext.Session.GetString("LoginInfor");
+                if (session != null)
                 {
-                    loginViewModel.DiemTich = JsonConvert.DeserializeObject<KhachHang>(response.Content.ReadAsStringAsync().Result).DiemTich;
-                    return View(loginViewModel);
+                    LoginViewModel loginViewModel = JsonConvert.DeserializeObject<LoginViewModel>(session);
+                    //LoginViewModel loginViewModel = JsonConvert.DeserializeObject<LoginViewModel>(loginInfor);
+                    var response = _httpClient.GetAsync(_httpClient.BaseAddress + $"KhachHang/GetById?id={loginViewModel.Id}").Result;
+                    if (response.IsSuccessStatusCode)
+                    {
+                        loginViewModel.DiemTich = JsonConvert.DeserializeObject<KhachHang>(response.Content.ReadAsStringAsync().Result).DiemTich;
+                        return View(loginViewModel);
+                    }
+                    else
+                    {
+                        return View(loginViewModel);
+                    }
                 }
-                else
-                {
-                    return View(loginViewModel);
-                }
+                return Redirect("https://localhost:5001/");
             }
-            return Redirect("https://localhost:5001/");
+            catch
+            {
+                return Redirect("https://localhost:5001/");
+            }
            
         }
         [HttpPut]
@@ -1217,15 +1271,22 @@ namespace AppView.Controllers
         [HttpPost]
         public IActionResult ChangePassword(string newPassword, string oldPassword)
         {
-            var session = HttpContext.Session.GetString("LoginInfor");
-            ChangePasswordRequest request = new ChangePasswordRequest();
-            request.ID = JsonConvert.DeserializeObject<LoginViewModel>(session).Id;
-            request.NewPassword = newPassword;
-            request.OldPassword = oldPassword;
-            var response = _httpClient.PutAsJsonAsync(_httpClient.BaseAddress + "QuanLyNguoiDung/ChangePassword", request).Result;
-            HttpContext.Session.Remove("LoginInfor");
-            if (response.IsSuccessStatusCode) return RedirectToAction("Login",new {actionName="Index"});
-            else return BadRequest();
+            try
+            {
+                var session = HttpContext.Session.GetString("LoginInfor");
+                ChangePasswordRequest request = new ChangePasswordRequest();
+                request.ID = JsonConvert.DeserializeObject<LoginViewModel>(session).Id;
+                request.NewPassword = newPassword;
+                request.OldPassword = oldPassword;
+                var response = _httpClient.PutAsJsonAsync(_httpClient.BaseAddress + "QuanLyNguoiDung/ChangePassword", request).Result;
+                HttpContext.Session.Remove("LoginInfor");
+                if (response.IsSuccessStatusCode) return RedirectToAction("Login", new { actionName = "Index" });
+                else return BadRequest();
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
         public IActionResult DanhGiaSanPham([FromBody] DanhGiaCTHDViewModel danhGiaCTHDView)
         {
@@ -1319,69 +1380,82 @@ namespace AppView.Controllers
         }
         public IActionResult XacNhanGHTC(Guid idHoaDon)
         {
-            HttpResponseMessage responseDonMua = _httpClient.PutAsync(_httpClient.BaseAddress + $"HoaDon?idhoadon={idHoaDon}&trangthai=6", null).Result;
-            if (responseDonMua.IsSuccessStatusCode)
+            try
             {
-                RedirectToAction("PurchaseOrderDetail", idHoaDon);
+                HttpResponseMessage responseDonMua = _httpClient.PutAsync(_httpClient.BaseAddress + $"HoaDon?idhoadon={idHoaDon}&trangthai=6", null).Result;
+                if (responseDonMua.IsSuccessStatusCode)
+                {
+                    RedirectToAction("PurchaseOrderDetail", idHoaDon);
+                }
+                return RedirectToAction("PurchaseOrder");
             }
-            return RedirectToAction("PurchaseOrder");
+            catch
+            {
+                return RedirectToAction("PurchaseOrder");
+            }
         }
         public IActionResult GetHoaDonByTrangThai(HoaDon danhGiaCTHDView, int page, int pageSize, string Search)
         {
-            var session = HttpContext.Session.GetString("LoginInfor");
-            LoginViewModel loginViewModel = JsonConvert.DeserializeObject<LoginViewModel>(session);
-            List<DonMuaViewModel> donMuaViewModels = new List<DonMuaViewModel>();
-            HttpResponseMessage responseDonMua = _httpClient.GetAsync(_httpClient.BaseAddress + $"LichSuTichDiem/GetAllDonMua?IDkhachHang={loginViewModel.Id}").Result;
-            if (responseDonMua.IsSuccessStatusCode)
+            try
             {
-                donMuaViewModels = JsonConvert.DeserializeObject<List<DonMuaViewModel>>(responseDonMua.Content.ReadAsStringAsync().Result);
-                donMuaViewModels = donMuaViewModels.OrderByDescending(p => p.NgayTao).ToList();
+                var session = HttpContext.Session.GetString("LoginInfor");
+                LoginViewModel loginViewModel = JsonConvert.DeserializeObject<LoginViewModel>(session);
+                List<DonMuaViewModel> donMuaViewModels = new List<DonMuaViewModel>();
+                HttpResponseMessage responseDonMua = _httpClient.GetAsync(_httpClient.BaseAddress + $"LichSuTichDiem/GetAllDonMua?IDkhachHang={loginViewModel.Id}").Result;
+                if (responseDonMua.IsSuccessStatusCode)
+                {
+                    donMuaViewModels = JsonConvert.DeserializeObject<List<DonMuaViewModel>>(responseDonMua.Content.ReadAsStringAsync().Result);
+                    donMuaViewModels = donMuaViewModels.OrderByDescending(p => p.NgayTao).ToList();
 
-                foreach (var item in donMuaViewModels)
-                {
-                    item.Ngaytao1 = item.NgayTao.ToString("dd/MM/yyyy");
-                    item.Ngaythanhtoan1 = item.NgayThanhToan != null ? item.NgayThanhToan.Value.ToString("dd/MM/yyyy") : null;
-                    item.Ngaynhanhang1 = item.NgayNhanHang != null ? item.NgayNhanHang.Value.ToString("dd/MM/yyyy") : null;
-                }
-                if (Search != null)
-                {
-                    donMuaViewModels = donMuaViewModels.Where(p => p.MaHD.ToLower().Contains(Search.ToLower())).ToList();
-                }
-                if (danhGiaCTHDView.TrangThaiGiaoHang != 0 && danhGiaCTHDView.TrangThaiGiaoHang != null)
-                {
-                    if (danhGiaCTHDView.TrangThaiGiaoHang == 5)
+                    foreach (var item in donMuaViewModels)
                     {
-                        donMuaViewModels = donMuaViewModels.Where(p => p.TrangThaiGiaoHang == 4 || p.TrangThaiGiaoHang == 5 || p.TrangThaiGiaoHang == 9).ToList();
+                        item.Ngaytao1 = item.NgayTao.ToString("dd/MM/yyyy");
+                        item.Ngaythanhtoan1 = item.NgayThanhToan != null ? item.NgayThanhToan.Value.ToString("dd/MM/yyyy") : null;
+                        item.Ngaynhanhang1 = item.NgayNhanHang != null ? item.NgayNhanHang.Value.ToString("dd/MM/yyyy") : null;
                     }
-                    else if (danhGiaCTHDView.TrangThaiGiaoHang == 2)
+                    if (Search != null)
                     {
-                        donMuaViewModels = donMuaViewModels.Where(p => p.TrangThaiGiaoHang == 2 || p.TrangThaiGiaoHang == 8).ToList();
+                        donMuaViewModels = donMuaViewModels.Where(p => p.MaHD.ToLower().Contains(Search.ToLower())).ToList();
+                    }
+                    if (danhGiaCTHDView.TrangThaiGiaoHang != 0 && danhGiaCTHDView.TrangThaiGiaoHang != null)
+                    {
+                        if (danhGiaCTHDView.TrangThaiGiaoHang == 5)
+                        {
+                            donMuaViewModels = donMuaViewModels.Where(p => p.TrangThaiGiaoHang == 4 || p.TrangThaiGiaoHang == 5 || p.TrangThaiGiaoHang == 9).ToList();
+                        }
+                        else if (danhGiaCTHDView.TrangThaiGiaoHang == 2)
+                        {
+                            donMuaViewModels = donMuaViewModels.Where(p => p.TrangThaiGiaoHang == 2 || p.TrangThaiGiaoHang == 8).ToList();
+                        }
+                        else
+                        {
+                            donMuaViewModels = donMuaViewModels.Where(p => p.TrangThaiGiaoHang == danhGiaCTHDView.TrangThaiGiaoHang).ToList();
+                        }
+                        var model = donMuaViewModels.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+                        return Json(new
+                        {
+                            data = model,
+                            total = donMuaViewModels.Count,
+                            status = true
+                        });
                     }
                     else
                     {
-                        donMuaViewModels = donMuaViewModels.Where(p => p.TrangThaiGiaoHang == danhGiaCTHDView.TrangThaiGiaoHang).ToList();
+                        var model = donMuaViewModels.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+                        return Json(new
+                        {
+                            data = model,
+                            total = donMuaViewModels.Count,
+                            status = true
+                        });
                     }
-                    var model = donMuaViewModels.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-                    return Json(new
-                    {
-                        data = model,
-                        total = donMuaViewModels.Count,
-                        status = true
-                    });
                 }
-                else
-                {
-                    var model = donMuaViewModels.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-                    return Json(new
-                    {
-                        data = model,
-                        total = donMuaViewModels.Count,
-                        status = true
-                    });
-                }
+                else return Json(new { status = false });
             }
-            else return Json(new { status = false });
-
+            catch
+            {
+                return Json(new { status = false });
+            }
         }
         public IActionResult LogOut()
         {
@@ -1402,20 +1476,27 @@ namespace AppView.Controllers
         [HttpPost]
         public IActionResult ForgotPassword(string email)
         {
-            var khachHang = JsonConvert.DeserializeObject<KhachHangViewModel>(_httpClient.GetAsync(_httpClient.BaseAddress + "KhachHang/GetKhachHangByEmail?email=" + email).Result.Content.ReadAsStringAsync().Result);
-            if (khachHang.Id != null)
+            try
             {
-                string ma = Guid.NewGuid().ToString().Substring(0, 5);
-                MailData mailData = new MailData() { EmailToId = email, EmailToName = email, EmailSubject = "Mã xác nhận", EmailBody = "Mã xác nhận: " + ma };
-                HttpResponseMessage response = _httpClient.PostAsJsonAsync(_httpClient.BaseAddress + "Mail/SendMail", mailData).Result;
-                if (response.IsSuccessStatusCode)
+                var khachHang = JsonConvert.DeserializeObject<KhachHangViewModel>(_httpClient.GetAsync(_httpClient.BaseAddress + "KhachHang/GetKhachHangByEmail?email=" + email).Result.Content.ReadAsStringAsync().Result);
+                if (khachHang.Id != null)
                 {
-                    HttpContext.Session.SetString("ForgotPassword", khachHang.Id + ":" + ma);
-                    return RedirectToAction("SubmitForgotPassword");
+                    string ma = Guid.NewGuid().ToString().Substring(0, 5);
+                    MailData mailData = new MailData() { EmailToId = email, EmailToName = email, EmailSubject = "Mã xác nhận", EmailBody = "Mã xác nhận: " + ma };
+                    HttpResponseMessage response = _httpClient.PostAsJsonAsync(_httpClient.BaseAddress + "Mail/SendMail", mailData).Result;
+                    if (response.IsSuccessStatusCode)
+                    {
+                        HttpContext.Session.SetString("ForgotPassword", khachHang.Id + ":" + ma);
+                        return RedirectToAction("SubmitForgotPassword");
+                    }
+                    else return BadRequest();
                 }
-                else return BadRequest();
+                else return BadRequest("Không tìm thấy email");
             }
-            else return BadRequest("Không tìm thấy email");
+            catch
+            {
+                return BadRequest();
+            }
         }
         [HttpGet]
         public IActionResult SubmitForgotPassword()
@@ -1425,12 +1506,19 @@ namespace AppView.Controllers
         [HttpPost]
         public IActionResult SubmitForgotPassword(string code)
         {
-            string[] submit = HttpContext.Session.GetString("ForgotPassword").Split(":");
-            if (code == submit[1])
+            try
             {
-                return RedirectToAction("ChangeForgotPassword");
+                string[] submit = HttpContext.Session.GetString("ForgotPassword").Split(":");
+                if (code == submit[1])
+                {
+                    return RedirectToAction("ChangeForgotPassword");
+                }
+                else return BadRequest("Mã không hợp lệ");
             }
-            else return BadRequest("Mã không hợp lệ");
+            catch
+            {
+                return BadRequest("Mã không hợp lệ");
+            }
         }
         [HttpGet]
         public IActionResult ChangeForgotPassword()
@@ -1440,36 +1528,44 @@ namespace AppView.Controllers
         [HttpPost]
         public IActionResult ChangeForgotPassword(string password, string confirmPassword)
         {
-            if (string.IsNullOrEmpty(password))
+            try
             {
-                ViewData["PasswordError"] = "Mật khẩu không được bỏ trống";
-                return View();
-            }
-            else if (password.Length < 8)
-            {
-                ViewData["PasswordError"] = "Mật khẩu phải lớn hơn 8 ký tự";
-                return View();
-            }
-
-            if (string.IsNullOrEmpty(confirmPassword))
-            {
-                ViewData["ConfirmPasswordError"] = "Xác nhận mật khẩu không được bỏ trống";
-                return View();
-            }
-            else if (password != confirmPassword)
-            {
-                ViewData["ConfirmPasswordError"] = "Mật khẩu và xác nhận mật khẩu không khớp";
-                return View();
-            }
-
-            if (password == confirmPassword)
-            {
-                string[] submit = HttpContext.Session.GetString("ForgotPassword").Split(":");
-                KhachHangViewModel khachHang = new KhachHangViewModel() { Id = new Guid(submit[0]), Password = password };
-                HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + "KhachHang/ChangeForgotPassword?id=" + khachHang.Id + "&password=" + khachHang.Password).Result;
-                if (response.IsSuccessStatusCode)
+                if (string.IsNullOrEmpty(password))
                 {
-                    return RedirectToAction("Login",new {actionName = "Index"});
+                    ViewData["PasswordError"] = "Mật khẩu không được bỏ trống";
+                    return View();
+                }
+                else if (password.Length < 8)
+                {
+                    ViewData["PasswordError"] = "Mật khẩu phải lớn hơn 8 ký tự";
+                    return View();
+                }
+
+                if (string.IsNullOrEmpty(confirmPassword))
+                {
+                    ViewData["ConfirmPasswordError"] = "Xác nhận mật khẩu không được bỏ trống";
+                    return View();
+                }
+                else if (password != confirmPassword)
+                {
+                    ViewData["ConfirmPasswordError"] = "Mật khẩu và xác nhận mật khẩu không khớp";
+                    return View();
+                }
+
+                if (password == confirmPassword)
+                {
+                    string[] submit = HttpContext.Session.GetString("ForgotPassword").Split(":");
+                    KhachHangViewModel khachHang = new KhachHangViewModel() { Id = new Guid(submit[0]), Password = password };
+                    HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + "KhachHang/ChangeForgotPassword?id=" + khachHang.Id + "&password=" + khachHang.Password).Result;
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return RedirectToAction("Login", new { actionName = "Index" });
+                    }
+                    else
+                    {
+                        ViewData["ErrorMessage"] = "Không thể đặt lại mật khẩu. Vui lòng kiểm tra lại thông tin.";
+                        return View();
+                    }
                 }
                 else
                 {
@@ -1477,65 +1573,76 @@ namespace AppView.Controllers
                     return View();
                 }
             }
-            else
+            catch
             {
-                ViewData["ErrorMessage"] = "Không thể đặt lại mật khẩu. Vui lòng kiểm tra lại thông tin.";
+                ViewData["ConfirmPasswordError"] = "Error";
                 return View();
             }
-
         }
 
 
         [HttpGet]
         public IActionResult ResetPassword(string email)
         {
-            // Kiểm tra email và chuyển đến trang ResetPassword nếu email hợp lệ
-            if (!string.IsNullOrEmpty(email))
+            try
             {
-                ResetPasswordRequest request = new ResetPasswordRequest
+                // Kiểm tra email và chuyển đến trang ResetPassword nếu email hợp lệ
+                if (!string.IsNullOrEmpty(email))
                 {
-                    Email = email
-                };
-                return View(request);
+                    ResetPasswordRequest request = new ResetPasswordRequest
+                    {
+                        Email = email
+                    };
+                    return View(request);
+                }
+                else
+                {
+                    // Xử lý khi email không hợp lệ
+                    TempData["Message"] = "Invalid email.";
+                    return RedirectToAction("Login", new {actionNam = "Index"});
+                }
             }
-            else
-            {
-                // Xử lý khi email không hợp lệ
+            catch {
                 TempData["Message"] = "Invalid email.";
-                return RedirectToAction("Login");
+                return RedirectToAction("Login", new { actionNam = "Index" });
             }
-
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResetPassword(ResetPasswordRequest request)
         {
-
-            if (ModelState.IsValid)
+            try
             {
-                // Validate password and confirm password match
-                if (request.Password != request.ConfirmPassword)
+                if (ModelState.IsValid)
                 {
-                    ModelState.AddModelError("", "Passwords do not match");
-                    return View("ResetPassword");
+                    // Validate password and confirm password match
+                    if (request.Password != request.ConfirmPassword)
+                    {
+                        ModelState.AddModelError("", "Passwords do not match");
+                        return View("ResetPassword");
+                    }
+
+                    // Implement the code to save the new password in your QuanLyNguoiDungService
+                    string apiUrl = "https://localhost:7095/api/QuanLyNguoiDung/ResetPassword";
+                    var response = await _httpClient.PostAsync(apiUrl, new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                    {
+                        TempData["Message"] = "Password reset successfully";
+                        return RedirectToAction("Login", new { actionNam = "Index" });
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Không thể đặt lại mật khẩu");
+                    }
                 }
 
-                // Implement the code to save the new password in your QuanLyNguoiDungService
-                string apiUrl = "https://localhost:7095/api/QuanLyNguoiDung/ResetPassword";
-                var response = await _httpClient.PostAsync(apiUrl, new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json"));
-                if (response.IsSuccessStatusCode)
-                {
-                    TempData["Message"] = "Password reset successfully";
-                    return RedirectToAction("Login");
-                }
-                else
-                {
-                    ModelState.AddModelError("", "Không thể đặt lại mật khẩu");
-                }
+                return View("ResetPassword");
             }
-
-            return View("ResetPassword");
+            catch
+            {
+                return View("ResetPassword");
+            }
         }
 
         #endregion
@@ -1544,20 +1651,27 @@ namespace AppView.Controllers
         [HttpGet]
         public JsonResult UseDiemTich(int diem, string id, int tongTien)
         {
-            var response = _httpClient.GetAsync(_httpClient.BaseAddress + $"QuanLyNguoiDung/UseDiemTich?diem={diem}&id={id}").Result;
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var soTienGiam = Convert.ToInt32(response.Content.ReadAsStringAsync().Result);
-                if (soTienGiam <= (tongTien / 5))
+                var response = _httpClient.GetAsync(_httpClient.BaseAddress + $"QuanLyNguoiDung/UseDiemTich?diem={diem}&id={id}").Result;
+                if (response.IsSuccessStatusCode)
                 {
-                    return Json(new { SoTienGiam = soTienGiam, TrangThai = true });
+                    var soTienGiam = Convert.ToInt32(response.Content.ReadAsStringAsync().Result);
+                    if (soTienGiam <= (tongTien / 5))
+                    {
+                        return Json(new { SoTienGiam = soTienGiam, TrangThai = true });
+                    }
+                    else
+                    {
+                        return Json(new { Loi = "Số tiền giảm khi sử dụng điểm phải nhỏ hơn 20% giá trị đơn hàng", TrangThai = false });
+                    }
                 }
-                else
-                {
-                    return Json(new { Loi = "Số tiền giảm khi sử dụng điểm phải nhỏ hơn 20% giá trị đơn hàng", TrangThai = false });
-                }
+                else return Json(new { Loi = "Không kết nối được với server", TrangThai = false });
             }
-            else return Json(new { Loi = "Không kết nối được với server", TrangThai = false });
+            catch
+            {
+                return Json(new { Loi = "Không kết nối được với server", TrangThai = false });
+            }
         }
         [HttpGet]
         public IActionResult CheckOut()
@@ -1567,211 +1681,246 @@ namespace AppView.Controllers
         [HttpPost]
         public string Order(HoaDonViewModel hoaDon)
         {
-            List<ChiTietHoaDonViewModel> lstChiTietHoaDon = new List<ChiTietHoaDonViewModel>();
-            string temp = TempData.Peek("ListBienThe") as string;
-            string trangThai = TempData.Peek("TrangThai") as string;
-            foreach (var item in JsonConvert.DeserializeObject<List<GioHangRequest>>(temp))
+            try
             {
-                ChiTietHoaDonViewModel chiTietHoaDon = new ChiTietHoaDonViewModel();
-                chiTietHoaDon.IDChiTietSanPham = item.IDChiTietSanPham;
-                chiTietHoaDon.SoLuong = item.SoLuong;
-                chiTietHoaDon.DonGia = item.DonGia.Value;
-                lstChiTietHoaDon.Add(chiTietHoaDon);
-            }
-            hoaDon.ChiTietHoaDons = lstChiTietHoaDon;
-            hoaDon.TrangThai = Convert.ToBoolean(trangThai);
-            var session = HttpContext.Session.GetString("LoginInfor");
-            if (session != null)
-            {
-                hoaDon.IDNguoiDung = JsonConvert.DeserializeObject<LoginViewModel>(session).Id;
-            }
-            TempData.Remove("TongTien");
-            TempData.Remove("Quantity");
-            if (hoaDon.PhuongThucThanhToan == "COD")
-            {
-                HttpResponseMessage response = _httpClient.PostAsJsonAsync("HoaDon", hoaDon).Result;
-                if (response.IsSuccessStatusCode)
+                List<ChiTietHoaDonViewModel> lstChiTietHoaDon = new List<ChiTietHoaDonViewModel>();
+                string temp = TempData.Peek("ListBienThe") as string;
+                string trangThai = TempData.Peek("TrangThai") as string;
+                foreach (var item in JsonConvert.DeserializeObject<List<GioHangRequest>>(temp))
                 {
-                    TempData["CheckOutSuccess"] = response.Content.ReadAsStringAsync().Result;
-                    if (!hoaDon.TrangThai) Response.Cookies.Delete("Cart");
-                    // lam them
-                    TempData["SoLuong"] = "0";
-                    // lam end
-                    return "https://localhost:5001/Home/CheckOutSuccess";
+                    ChiTietHoaDonViewModel chiTietHoaDon = new ChiTietHoaDonViewModel();
+                    chiTietHoaDon.IDChiTietSanPham = item.IDChiTietSanPham;
+                    chiTietHoaDon.SoLuong = item.SoLuong;
+                    chiTietHoaDon.DonGia = item.DonGia.Value;
+                    lstChiTietHoaDon.Add(chiTietHoaDon);
+                }
+                hoaDon.ChiTietHoaDons = lstChiTietHoaDon;
+                hoaDon.TrangThai = Convert.ToBoolean(trangThai);
+                var session = HttpContext.Session.GetString("LoginInfor");
+                if (session != null)
+                {
+                    hoaDon.IDNguoiDung = JsonConvert.DeserializeObject<LoginViewModel>(session).Id;
+                }
+                TempData.Remove("TongTien");
+                TempData.Remove("Quantity");
+                if (hoaDon.PhuongThucThanhToan == "COD")
+                {
+                    HttpResponseMessage response = _httpClient.PostAsJsonAsync("HoaDon", hoaDon).Result;
+                    if (response.IsSuccessStatusCode)
+                    {
+                        TempData["CheckOutSuccess"] = response.Content.ReadAsStringAsync().Result;
+                        if (!hoaDon.TrangThai) Response.Cookies.Delete("Cart");
+                        // lam them
+                        TempData["SoLuong"] = "0";
+                        // lam end
+                        return "https://localhost:5001/Home/CheckOutSuccess";
+                    }
+                    else return "";
+                }
+                else if (hoaDon.PhuongThucThanhToan == "VNPay")
+                {
+                    TempData["HoaDon"] = JsonConvert.SerializeObject(hoaDon);
+                    string vnp_Returnurl = "https://localhost:5001/Home/PaymentCallBack"; //URL nhan ket qua tra ve 
+                    string vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"; //URL thanh toan cua VNPAY 
+                    string vnp_TmnCode = "P4VW9FD1"; //Ma định danh merchant kết nối (Terminal Id)
+                    string vnp_HashSecret = "OPHRXNCKQAUVHIJNWXXTMPPYBVPAXUTF"; //Secret Key
+                    string ipAddr = HttpContext.Connection.RemoteIpAddress?.ToString();
+                    //Get payment input
+                    OrderInfo order = new OrderInfo();
+                    order.OrderId = DateTime.Now.Ticks; // Giả lập mã giao dịch hệ thống merchant gửi sang VNPAY
+                    order.Amount = hoaDon.TongTien;
+                    order.Status = "0"; //0: Trạng thái thanh toán "chờ thanh toán" hoặc "Pending" khởi tạo giao dịch chưa có IPN
+                    order.CreatedDate = DateTime.Now;
+                    //Save order to db
+
+                    //Build URL for VNPAY
+                    VnPayLibrary vnpay = new VnPayLibrary();
+
+                    vnpay.AddRequestData("vnp_Version", VnPayLibrary.VERSION);
+                    vnpay.AddRequestData("vnp_Command", "pay");
+                    vnpay.AddRequestData("vnp_TmnCode", vnp_TmnCode);
+                    vnpay.AddRequestData("vnp_Amount", (order.Amount * 100).ToString());
+                    vnpay.AddRequestData("vnp_CreateDate", order.CreatedDate.ToString("yyyyMMddHHmmss"));
+                    vnpay.AddRequestData("vnp_CurrCode", "VND");
+                    vnpay.AddRequestData("vnp_IpAddr", ipAddr);
+                    vnpay.AddRequestData("vnp_Locale", "vn");
+                    vnpay.AddRequestData("vnp_OrderInfo", "Thanh toan don hang:" + order.OrderId);
+                    vnpay.AddRequestData("vnp_OrderType", "other"); //default value: other
+
+                    vnpay.AddRequestData("vnp_ReturnUrl", vnp_Returnurl);
+                    vnpay.AddRequestData("vnp_TxnRef", order.OrderId.ToString()); // Mã tham chiếu của giao dịch tại hệ thống của merchant. Mã này là duy nhất dùng để phân biệt các đơn hàng gửi sang VNPAY. Không được trùng lặp trong ngày
+
+                    //Add Params of 2.1.0 Version
+                    //Billing
+
+                    string paymentUrl = vnpay.CreateRequestUrl(vnp_Url, vnp_HashSecret);
+                    //log.InfoFormat("VNPAY URL: {0}", paymentUrl);
+
+                    return paymentUrl;
                 }
                 else return "";
             }
-            else if (hoaDon.PhuongThucThanhToan == "VNPay")
+            catch
             {
-                TempData["HoaDon"] = JsonConvert.SerializeObject(hoaDon);
-                string vnp_Returnurl = "https://localhost:5001/Home/PaymentCallBack"; //URL nhan ket qua tra ve 
-                string vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"; //URL thanh toan cua VNPAY 
-                string vnp_TmnCode = "P4VW9FD1"; //Ma định danh merchant kết nối (Terminal Id)
-                string vnp_HashSecret = "OPHRXNCKQAUVHIJNWXXTMPPYBVPAXUTF"; //Secret Key
-                string ipAddr = HttpContext.Connection.RemoteIpAddress?.ToString();
-                //Get payment input
-                OrderInfo order = new OrderInfo();
-                order.OrderId = DateTime.Now.Ticks; // Giả lập mã giao dịch hệ thống merchant gửi sang VNPAY
-                order.Amount = hoaDon.TongTien;
-                order.Status = "0"; //0: Trạng thái thanh toán "chờ thanh toán" hoặc "Pending" khởi tạo giao dịch chưa có IPN
-                order.CreatedDate = DateTime.Now;
-                //Save order to db
-
-                //Build URL for VNPAY
-                VnPayLibrary vnpay = new VnPayLibrary();
-
-                vnpay.AddRequestData("vnp_Version", VnPayLibrary.VERSION);
-                vnpay.AddRequestData("vnp_Command", "pay");
-                vnpay.AddRequestData("vnp_TmnCode", vnp_TmnCode);
-                vnpay.AddRequestData("vnp_Amount", (order.Amount * 100).ToString());
-                vnpay.AddRequestData("vnp_CreateDate", order.CreatedDate.ToString("yyyyMMddHHmmss"));
-                vnpay.AddRequestData("vnp_CurrCode", "VND");
-                vnpay.AddRequestData("vnp_IpAddr", ipAddr);
-                vnpay.AddRequestData("vnp_Locale", "vn");
-                vnpay.AddRequestData("vnp_OrderInfo", "Thanh toan don hang:" + order.OrderId);
-                vnpay.AddRequestData("vnp_OrderType", "other"); //default value: other
-
-                vnpay.AddRequestData("vnp_ReturnUrl", vnp_Returnurl);
-                vnpay.AddRequestData("vnp_TxnRef", order.OrderId.ToString()); // Mã tham chiếu của giao dịch tại hệ thống của merchant. Mã này là duy nhất dùng để phân biệt các đơn hàng gửi sang VNPAY. Không được trùng lặp trong ngày
-
-                //Add Params of 2.1.0 Version
-                //Billing
-
-                string paymentUrl = vnpay.CreateRequestUrl(vnp_Url, vnp_HashSecret);
-                //log.InfoFormat("VNPAY URL: {0}", paymentUrl);
-
-                return paymentUrl;
+                return "https://localhost:5001/Home/CheckOutSuccess";
             }
-            else return "";
         }
         [HttpGet]
         public IActionResult PaymentCallBack()
         {
-            if (Request.Query.Count > 0)
+            try
             {
-                string vnp_HashSecret = "OPHRXNCKQAUVHIJNWXXTMPPYBVPAXUTF"; //Chuoi bi mat
-                var vnpayData = Request.Query;
-                VnPayLibrary vnpay = new VnPayLibrary();
-
-                foreach (var s in vnpayData)
+                if (Request.Query.Count > 0)
                 {
-                    //get all querystring data
-                    if (!string.IsNullOrEmpty(s.Key) && s.Key.StartsWith("vnp_"))
-                    {
-                        vnpay.AddResponseData(s.Key, vnpayData[s.Key]);
-                    }
-                }
-                //vnp_TxnRef: Ma don hang merchant gui VNPAY tai command=pay    
-                //vnp_TransactionNo: Ma GD tai he thong VNPAY
-                //vnp_ResponseCode:Response code from VNPAY: 00: Thanh cong, Khac 00: Xem tai lieu
-                //vnp_SecureHash: HmacSHA512 cua du lieu tra ve
+                    string vnp_HashSecret = "OPHRXNCKQAUVHIJNWXXTMPPYBVPAXUTF"; //Chuoi bi mat
+                    var vnpayData = Request.Query;
+                    VnPayLibrary vnpay = new VnPayLibrary();
 
-                long orderId = Convert.ToInt64(vnpay.GetResponseData("vnp_TxnRef"));
-                long vnpayTranId = Convert.ToInt64(vnpay.GetResponseData("vnp_TransactionNo"));
-                string vnp_ResponseCode = vnpay.GetResponseData("vnp_ResponseCode");
-                string vnp_TransactionStatus = vnpay.GetResponseData("vnp_TransactionStatus");
-                String vnp_SecureHash = Request.Query["vnp_SecureHash"];
-                String TerminalID = Request.Query["vnp_TmnCode"];
-                long vnp_Amount = Convert.ToInt64(vnpay.GetResponseData("vnp_Amount")) / 100;
-                String bankCode = Request.Query["vnp_BankCode"];
-
-                bool checkSignature = vnpay.ValidateSignature(vnp_SecureHash, vnp_HashSecret);
-                if (checkSignature)
-                {
-                    if (vnp_ResponseCode == "00" && vnp_TransactionStatus == "00")
+                    foreach (var s in vnpayData)
                     {
-                        //Thanh toan thanh cong
-                        TempData.Remove("TongTien");
-                        TempData.Remove("Quantity");
-                        var hoaDon = JsonConvert.DeserializeObject<HoaDonViewModel>(TempData["HoaDon"].ToString());
-                        hoaDon.NgayThanhToan = DateTime.Now;
-                        HttpResponseMessage response = _httpClient.PostAsJsonAsync("HoaDon", hoaDon).Result;
-                        if (response.IsSuccessStatusCode)
+                        //get all querystring data
+                        if (!string.IsNullOrEmpty(s.Key) && s.Key.StartsWith("vnp_"))
                         {
-                            TempData["CheckOutSuccess"] = response.Content.ReadAsStringAsync().Result;
-                            if (!hoaDon.TrangThai) Response.Cookies.Delete("Cart");
-                            // lam them
-                            TempData["SoLuong"] = "0";
-                            // lam end
-                            return RedirectToAction("CheckOutSuccess");
+                            vnpay.AddResponseData(s.Key, vnpayData[s.Key]);
                         }
-                        else return BadRequest();
+                    }
+                    //vnp_TxnRef: Ma don hang merchant gui VNPAY tai command=pay    
+                    //vnp_TransactionNo: Ma GD tai he thong VNPAY
+                    //vnp_ResponseCode:Response code from VNPAY: 00: Thanh cong, Khac 00: Xem tai lieu
+                    //vnp_SecureHash: HmacSHA512 cua du lieu tra ve
+
+                    long orderId = Convert.ToInt64(vnpay.GetResponseData("vnp_TxnRef"));
+                    long vnpayTranId = Convert.ToInt64(vnpay.GetResponseData("vnp_TransactionNo"));
+                    string vnp_ResponseCode = vnpay.GetResponseData("vnp_ResponseCode");
+                    string vnp_TransactionStatus = vnpay.GetResponseData("vnp_TransactionStatus");
+                    String vnp_SecureHash = Request.Query["vnp_SecureHash"];
+                    String TerminalID = Request.Query["vnp_TmnCode"];
+                    long vnp_Amount = Convert.ToInt64(vnpay.GetResponseData("vnp_Amount")) / 100;
+                    String bankCode = Request.Query["vnp_BankCode"];
+
+                    bool checkSignature = vnpay.ValidateSignature(vnp_SecureHash, vnp_HashSecret);
+                    if (checkSignature)
+                    {
+                        if (vnp_ResponseCode == "00" && vnp_TransactionStatus == "00")
+                        {
+                            //Thanh toan thanh cong
+                            TempData.Remove("TongTien");
+                            TempData.Remove("Quantity");
+                            var hoaDon = JsonConvert.DeserializeObject<HoaDonViewModel>(TempData["HoaDon"].ToString());
+                            hoaDon.NgayThanhToan = DateTime.Now;
+                            HttpResponseMessage response = _httpClient.PostAsJsonAsync("HoaDon", hoaDon).Result;
+                            if (response.IsSuccessStatusCode)
+                            {
+                                TempData["CheckOutSuccess"] = response.Content.ReadAsStringAsync().Result;
+                                if (!hoaDon.TrangThai) Response.Cookies.Delete("Cart");
+                                // lam them
+                                TempData["SoLuong"] = "0";
+                                // lam end
+                                return RedirectToAction("CheckOutSuccess");
+                            }
+                            else return BadRequest();
+                        }
+                        else
+                        {
+                            //Thanh toan khong thanh cong. Ma loi: vnp_ResponseCode
+                            return BadRequest();
+                        }
                     }
                     else
                     {
-                        //Thanh toan khong thanh cong. Ma loi: vnp_ResponseCode
                         return BadRequest();
                     }
                 }
-                else
-                {
-                    return BadRequest();
-                }
+                else return BadRequest();
             }
-            else return BadRequest();
+            catch
+            {
+                return BadRequest();
+            }
         }
         [HttpGet]
         public IActionResult CheckOutSuccess()
         {
-            var donMua = JsonConvert.DeserializeObject<DonMuaSuccessViewModel>(TempData.Peek("CheckOutSuccess") as string);
-            var temp = HttpContext.Session.GetString("LoginInfor");
-            if(temp!=null && donMua!=null)
+            try
             {
-                var loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(temp);
-                loginInfor.DiemTich -= donMua.DiemSuDung;
-                HttpContext.Session.SetString("LoginInfor", JsonConvert.SerializeObject(loginInfor));
+                var donMua = JsonConvert.DeserializeObject<DonMuaSuccessViewModel>(TempData.Peek("CheckOutSuccess") as string);
+                var temp = HttpContext.Session.GetString("LoginInfor");
+                if (temp != null && donMua != null)
+                {
+                    var loginInfor = JsonConvert.DeserializeObject<LoginViewModel>(temp);
+                    loginInfor.DiemTich -= donMua.DiemSuDung;
+                    HttpContext.Session.SetString("LoginInfor", JsonConvert.SerializeObject(loginInfor));
+                }
+                return View(donMua);
             }
-            return View(donMua);
+            catch
+            {
+                return View(new DonMuaSuccessViewModel());
+            }
         }
         [HttpGet]
         public async Task<JsonResult> UseVoucher(string ma, int tongTien)
         {
-            HttpResponseMessage response = await _httpClient.GetAsync(_httpClient.BaseAddress + "Voucher/GetVoucherByMa?ma=" + ma);
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var voucher = JsonConvert.DeserializeObject<Voucher>(await response.Content.ReadAsStringAsync());
-                if (voucher != null)
+                HttpResponseMessage response = await _httpClient.GetAsync(_httpClient.BaseAddress + "Voucher/GetVoucherByMa?ma=" + ma);
+                if (response.IsSuccessStatusCode)
                 {
-                    if (voucher.NgayKetThuc > DateTime.Now && voucher.NgayApDung < DateTime.Now)
+                    var voucher = JsonConvert.DeserializeObject<Voucher>(await response.Content.ReadAsStringAsync());
+                    if (voucher != null)
                     {
-                        if (voucher.SoLuong > 0)
+                        if (voucher.NgayKetThuc > DateTime.Now && voucher.NgayApDung < DateTime.Now)
                         {
-                            if (voucher.SoTienCan < tongTien)
+                            if (voucher.SoLuong > 0)
                             {
-                                return Json(new { HinhThuc = voucher.HinhThucGiamGia, GiaTri = voucher.GiaTri, TrangThai = true });
+                                if (voucher.SoTienCan < tongTien)
+                                {
+                                    return Json(new { HinhThuc = voucher.HinhThucGiamGia, GiaTri = voucher.GiaTri, TrangThai = true });
+                                }
+                                else
+                                {
+                                    return Json(new { Loi = "Voucher chưa đạt đủ điều kiện: Tổng tiền sản phẩm lớn hơn " + voucher.SoTienCan.ToString("n0") + " VNĐ", TrangThai = false });
+                                }
                             }
                             else
                             {
-                                return Json(new { Loi = "Voucher chưa đạt đủ điều kiện: Tổng tiền sản phẩm lớn hơn " + voucher.SoTienCan.ToString("n0") + " VNĐ", TrangThai = false });
+                                return Json(new { Loi = "Voucher đã sử dụng hết", TrangThai = false });
                             }
                         }
                         else
                         {
-                            return Json(new { Loi = "Voucher đã sử dụng hết", TrangThai = false });
+                            return Json(new { Loi = "Mã voucher hết hạn", TrangThai = false });
                         }
                     }
                     else
                     {
-                        return Json(new { Loi = "Mã voucher hết hạn", TrangThai = false });
+                        return Json(new { Loi = "Không tìm thấy voucher", TrangThai = false });
                     }
                 }
-                else
-                {
-                    return Json(new { Loi = "Không tìm thấy voucher", TrangThai = false });
-                }
+                else return Json(new { HinhThuc = false, GiaTri = 0 });
             }
-            else return Json(new { HinhThuc = false, GiaTri = 0 });
+            catch
+            {
+                return Json(new { HinhThuc = false, GiaTri = 0 });
+            }
         }
         [HttpGet]
         public JsonResult GetAllVoucherByTien(int tongTien)
         {
-            var response = _httpClient.GetAsync("Voucher/GetAllVoucherByTien?tongTien=" + tongTien).Result;
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var lst = JsonConvert.DeserializeObject<List<Voucher>>(response.Content.ReadAsStringAsync().Result);
-                return Json(new { TrangThai = true, KetQua = lst });
+                var response = _httpClient.GetAsync("Voucher/GetAllVoucherByTien?tongTien=" + tongTien).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    var lst = JsonConvert.DeserializeObject<List<Voucher>>(response.Content.ReadAsStringAsync().Result);
+                    return Json(new { TrangThai = true, KetQua = lst });
+                }
+                else return Json(new { TrangThai = false });
             }
-            else return Json(new { TrangThai = false });
+            catch
+            {
+                return Json(new { TrangThai = false });
+            }
         }
         #endregion
 
