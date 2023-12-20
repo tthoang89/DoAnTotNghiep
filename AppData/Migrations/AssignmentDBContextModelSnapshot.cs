@@ -58,6 +58,7 @@ namespace AppData.Migrations
 
                     b.Property<string>("Ten")
                         .IsRequired()
+                        .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<int>("TrangThai")
@@ -281,7 +282,6 @@ namespace AppData.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("varchar(250)");
 
                     b.Property<int?>("GioiTinh")
@@ -347,9 +347,11 @@ namespace AppData.Migrations
 
                     b.Property<string>("Ten")
                         .IsRequired()
+                        .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
 
-                    b.Property<int>("TrangThai")
+                    b.Property<int?>("TrangThai")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.HasKey("ID");
@@ -400,8 +402,7 @@ namespace AppData.Migrations
 
                     b.Property<string>("Ten")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<int>("TrangThai")
                         .HasColumnType("int");
@@ -424,7 +425,8 @@ namespace AppData.Migrations
 
                     b.Property<string>("Ten")
                         .IsRequired()
-                        .HasColumnType("nvarchar(10)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<int?>("TrangThai")
                         .IsRequired()
@@ -443,10 +445,12 @@ namespace AppData.Migrations
 
                     b.Property<string>("DiaChi")
                         .IsRequired()
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("Email")
                         .IsRequired()
+                        .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<Guid>("IDVaiTro")
@@ -462,10 +466,10 @@ namespace AppData.Migrations
 
                     b.Property<string>("Ten")
                         .IsRequired()
+                        .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<int?>("TrangThai")
-                        .IsRequired()
                         .HasColumnType("int");
 
                     b.HasKey("ID");
@@ -533,13 +537,12 @@ namespace AppData.Migrations
                         .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("MoTa")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<string>("Ten")
                         .IsRequired()
-                        .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<int>("TrangThai")
                         .HasColumnType("int");

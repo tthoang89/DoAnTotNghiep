@@ -20,8 +20,8 @@
                     <div class="breadcrumb__text">
                     <h4>Giỏ hàng</h4>
                         <div class="breadcrumb__links">
-                            <a href="./index.html">Trang chủ</a>
-                            <a href="./shop.html">Cửa hàng</a>
+                            <a href="https://localhost:5001/">Trang chủ</a>
+                            <a href="https://localhost:5001/Home/Shop">Cửa hàng</a>
                         <span>Giỏ hàng</span>
                         </div>
                     </div>
@@ -53,7 +53,7 @@
                                 <tr>
                                     <td class="product__cart__item">
                                         <div class="product__cart__item__pic">
-                                            <a asp-controller="Home" asp-action="ProductDetailFromCart" asp-route-idctsp="@item.IDChiTietSanPham"><img style="height:100px;width:100px" src="/img/product/@item.Anh" alt=""></a>
+                                            <a asp-controller="Home" asp-action="ProductDetailFromCart" asp-route-idctsp="@item.IDChiTietSanPham"><img style="height:120px;width:100px" src="/img/product/@item.Anh" alt=""></a>
                                         </div>
                                         <div class="product__cart__item__text">
                                             <h6>@item.Ten</h6>
