@@ -246,14 +246,14 @@ namespace AppView.Controllers
                 var reponsen = await _httpClient.PutAsync(apiUrl, content);
                 if (reponsen.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("GetLoaiSpById");
+                    return RedirectToAction("GetLoaiSpById", "LoaiSP", new { id = lsp.IDLoaiSPCha });
                 }
                 else if (reponsen.StatusCode == HttpStatusCode.BadRequest)
                 {
                     ViewBag.ErrorMessage = "Loại sản phẩm này đã có trong danh sách";
                     return View();
                 }
-                return View(lsp);
+                return RedirectToAction("GetLoaiSpById", "LoaiSP", new { id = lsp.IDLoaiSPCha });
             }
             catch (Exception)
             {

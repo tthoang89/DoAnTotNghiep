@@ -278,11 +278,11 @@ namespace AppView.Controllers
                     }
                     else if (filter.sortSP == "6")
                     {
-                        lstSanphamfn = lstSanphamfn.OrderBy(p => p.NgayTao.Value.Date).ThenBy(p => p.NgayTao.Value.TimeOfDay).ToList();
+                        lstSanphamfn = lstSanphamfn.OrderBy(p => p.NgayTao.Value).ToList();
                     }
                     else if (filter.sortSP == "7")
                     {
-                        lstSanphamfn = lstSanphamfn.OrderByDescending(p => p.NgayTao.Value.Date).ThenBy(p => p.NgayTao.Value.TimeOfDay).ToList();
+                        lstSanphamfn = lstSanphamfn.OrderByDescending(p => p.NgayTao.Value).ToList();
                     }
                     else if (filter.sortSP == "9")
                     {
@@ -376,10 +376,10 @@ namespace AppView.Controllers
                             // lam end
 
                             TempData["TrangThai"] = "false";
-
                             HttpResponseMessage response = await _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllChiTietSanPhamHome?idSanPham=" + idSanPham);
                             var chiTietSanPham = JsonConvert.DeserializeObject<ChiTietSanPhamViewModelHome>(response.Content.ReadAsStringAsync().Result);
                             return View(chiTietSanPham);
+
                         }
                         else return BadRequest();
                     }
@@ -389,6 +389,7 @@ namespace AppView.Controllers
                         HttpResponseMessage response = await _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllChiTietSanPhamHome?idSanPham=" + idSanPham);
                         var chiTietSanPham = JsonConvert.DeserializeObject<ChiTietSanPhamViewModelHome>(response.Content.ReadAsStringAsync().Result);
                         return View(chiTietSanPham);
+
                     }
                 }
                 else
@@ -411,6 +412,7 @@ namespace AppView.Controllers
                             HttpResponseMessage response = await _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllChiTietSanPhamHome?idSanPham=" + idSanPham);
                             var chiTietSanPham = JsonConvert.DeserializeObject<ChiTietSanPhamViewModelHome>(response.Content.ReadAsStringAsync().Result);
                             return View(chiTietSanPham);
+
                         }
                         else return BadRequest();
                     }
@@ -420,9 +422,11 @@ namespace AppView.Controllers
                         HttpResponseMessage response = await _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/GetAllChiTietSanPhamHome?idSanPham=" + idSanPham);
                         var chiTietSanPham = JsonConvert.DeserializeObject<ChiTietSanPhamViewModelHome>(response.Content.ReadAsStringAsync().Result);
                         return View(chiTietSanPham);
+
                     }
 
                 }
+
                 // lam end
             }
             catch (Exception)

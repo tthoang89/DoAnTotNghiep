@@ -428,7 +428,7 @@ namespace AppAPI.Services
                                    GiaLuu = cthd.DonGia == null ? 0 : cthd.DonGia,
                                    GiaKM = km == null ? ctsp.GiaBan :
                     (km.TrangThai == 1 ? (int)(ctsp.GiaBan / 100 * (100 - km.GiaTri)) :
-                    (km.GiaTri < ctsp.GiaBan ? (ctsp.GiaBan - (int)km.GiaTri) : ctsp.GiaBan)),
+                    (km.GiaTri < ctsp.GiaBan ? (ctsp.GiaBan - (int)km.GiaTri) : 0)),
                                }).ToList();
 
                 var result = (from hd in context.HoaDons
@@ -513,7 +513,7 @@ namespace AppAPI.Services
                                                         GiaGoc = ctsp.GiaBan,
                                                         GiaKM = km == null ? ctsp.GiaBan :
                     (km.TrangThai == 1 ? (int)(ctsp.GiaBan / 100 * (100 - km.GiaTri)) :
-                    (km.GiaTri < ctsp.GiaBan ? (ctsp.GiaBan - (int)km.GiaTri) : ctsp.GiaBan)),
+                    (km.GiaTri < ctsp.GiaBan ? (ctsp.GiaBan - (int)km.GiaTri) : 0)),
 
                                                     }).AsEnumerable().Reverse().ToList();
             var result = (from hd in reposHoaDon.GetAll()
@@ -816,7 +816,7 @@ namespace AppAPI.Services
                                   on ctsp.IDKhuyenMai equals km.ID into kmGroup
                               from km in kmGroup.DefaultIfEmpty()
                               where ctsp.ID == item.IDCTSP
-                              select km != null ? (km.TrangThai == 0 ? (km.GiaTri < ctsp.GiaBan ? (ctsp.GiaBan - km.GiaTri) : ctsp.GiaBan) : (ctsp.GiaBan * (100 - km.GiaTri) / 100)): ctsp.GiaBan)
+                              select km != null ? (km.TrangThai == 0 ? (km.GiaTri < ctsp.GiaBan ? (ctsp.GiaBan - km.GiaTri) : 0) : (ctsp.GiaBan * (100 - km.GiaTri) / 100)): ctsp.GiaBan)
                              .FirstOrDefault();
                 item.DonGia = result;
                 context.ChiTietHoaDons.Update(item);

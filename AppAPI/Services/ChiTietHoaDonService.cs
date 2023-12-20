@@ -122,7 +122,7 @@ namespace AppAPI.Services
                                                               GiaGoc = ctsp.GiaBan,
                                                               GiaKM = km == null ? ctsp.GiaBan :
                     (km.TrangThai == 1 ? (int)(ctsp.GiaBan / 100 * (100 - km.GiaTri)) :
-                    (km.GiaTri < ctsp.GiaBan ? (ctsp.GiaBan - (int)km.GiaTri) : ctsp.GiaBan)),
+                    (km.GiaTri < ctsp.GiaBan ? (ctsp.GiaBan - (int)km.GiaTri) : 0)),
                                                               
                                                           }).ToListAsync();
             return lsthdct;
