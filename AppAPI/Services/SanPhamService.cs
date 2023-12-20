@@ -220,22 +220,22 @@ namespace AppAPI.Services
             try
             {
                 List<ChiTietSanPhamRequest> lst = new List<ChiTietSanPhamRequest>();
-                LoaiSP? loaiSPCon = _context.LoaiSPs.Where(x => x.IDLoaiSPCha != null).FirstOrDefault(x => x.Ten == request.TenLoaiSPCon);
-                ChatLieu? chatLieu = _context.ChatLieus.FirstOrDefault(x => x.Ten == request.TenChatLieu);
+                LoaiSP? loaiSPCon = _context.LoaiSPs.Where(x => x.IDLoaiSPCha != null).FirstOrDefault(x => x.Ten.ToUpper() == request.TenLoaiSPCon.Trim().ToUpper());
+                ChatLieu? chatLieu = _context.ChatLieus.FirstOrDefault(x => x.Ten.ToUpper() == request.TenChatLieu.Trim().ToUpper());
                 if (loaiSPCon == null)
                 {
-                    LoaiSP? loaiSPCha = _context.LoaiSPs.Where(x => x.IDLoaiSPCha == null).FirstOrDefault(x => x.Ten == request.TenLoaiSPCha);
+                    LoaiSP? loaiSPCha = _context.LoaiSPs.Where(x => x.IDLoaiSPCha == null).FirstOrDefault(x => x.Ten.ToUpper() == request.TenLoaiSPCha.Trim().ToUpper());
                     if (loaiSPCha == null)
                     {
-                        loaiSPCha = new LoaiSP() { ID = Guid.NewGuid(), Ten = request.TenLoaiSPCha, TrangThai = 1 };
+                        loaiSPCha = new LoaiSP() { ID = Guid.NewGuid(), Ten = request.TenLoaiSPCha.Trim(), TrangThai = 1 };
                         _context.LoaiSPs.AddAsync(loaiSPCha);
                     }
-                    loaiSPCon = new LoaiSP() { ID = Guid.NewGuid(), Ten = request.TenLoaiSPCon, IDLoaiSPCha = loaiSPCha.ID, TrangThai = 1 };
+                    loaiSPCon = new LoaiSP() { ID = Guid.NewGuid(), Ten = request.TenLoaiSPCon.Trim(), IDLoaiSPCha = loaiSPCha.ID, TrangThai = 1 };
                     await _context.LoaiSPs.AddAsync(loaiSPCon);
                 }
                 if (chatLieu == null)
                 {
-                    chatLieu = new ChatLieu() { ID = Guid.NewGuid(), Ten = request.TenChatLieu, TrangThai = 1 };
+                    chatLieu = new ChatLieu() { ID = Guid.NewGuid(), Ten = request.TenChatLieu.Trim(), TrangThai = 1 };
                     await _context.AddAsync(chatLieu);
                 }
                 var max = 0;
@@ -253,7 +253,7 @@ namespace AppAPI.Services
                         lst.Add(CreateChiTietSanPhamFromSanPham(x, y, null).Result);
                     }
                 }
-                return new ChiTietSanPhamUpdateRequest() { IDSanPham = sanPham.ID, ChiTietSanPhams = lst, Ma = sanPham.Ma, Location = 0 };
+                return new ChiTietSanPhamUpdateRequest() { IDSanPham = sanPham.ID, ChiTietSanPhams = lst.GroupBy(x=> new {MauSac = x.IDMauSac,KichCo = x.IDKichCo}).Select(y=>y.First()).ToList(), Ma = sanPham.Ma, Location = 0 };
             }
             catch { return new ChiTietSanPhamUpdateRequest(); }
         }
@@ -362,7 +362,7 @@ namespace AppAPI.Services
                         mauSac.Add(x);
                     }
                 }
-                return new ChiTietSanPhamUpdateRequest() { IDSanPham = request.IDSanPham, ChiTietSanPhams = lst, Location = 1, MauSacs = mauSac, Ma = _context.SanPhams.First(x => x.ID == request.IDSanPham).Ma };
+                return new ChiTietSanPhamUpdateRequest() { IDSanPham = request.IDSanPham, ChiTietSanPhams = lst.GroupBy(x => new { MauSac = x.IDMauSac, KichCo = x.IDKichCo }).Select(y => y.First()).ToList(), Location = 1, MauSacs = mauSac, Ma = _context.SanPhams.First(x => x.ID == request.IDSanPham).Ma };
             }
             catch { return new ChiTietSanPhamUpdateRequest(); }
         }
@@ -509,10 +509,10 @@ namespace AppAPI.Services
                     mauSac = new MauSac() { ID = Guid.NewGuid(), Ten = mauSacRequest.Ten, Ma = mauSacRequest.Ma.ToLower(), TrangThai = 1 };
                     _context.Add(mauSac);
                 }
-                var kichCo = _context.KichCos.FirstOrDefault(x => x.Ten == tenKichCo);
+                var kichCo = _context.KichCos.FirstOrDefault(x => x.Ten.ToUpper() == tenKichCo.Trim().ToUpper());
                 if (kichCo == null)
                 {
-                    kichCo = new KichCo() { ID = Guid.NewGuid(), Ten = tenKichCo, TrangThai = 1 };
+                    kichCo = new KichCo() { ID = Guid.NewGuid(), Ten = tenKichCo.Trim(), TrangThai = 1 };
                     _context.Add(kichCo);
 
                 }

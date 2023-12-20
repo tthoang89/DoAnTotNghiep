@@ -210,13 +210,19 @@ namespace AppView.Controllers
                 HttpResponseMessage response = _httpClient.PostAsJsonAsync(_httpClient.BaseAddress + "SanPham/AddSanPham", sanPhamRequest).Result;
                 if (response.IsSuccessStatusCode)
                 {
-                    TempData["UpdateChiTietSanPham"] = response.Content.ReadAsStringAsync().Result;
+                    var temp = response.Content.ReadAsStringAsync().Result;
+                    var chiTietSanPham = JsonConvert.DeserializeObject<ChiTietSanPhamUpdateRequest>(temp);
+                    if(!chiTietSanPham.ChiTietSanPhams.Any() || chiTietSanPham.ChiTietSanPhams == null)
+                    {
+                        return RedirectToAction("ProductManager");
+                    }
+                    TempData["UpdateChiTietSanPham"] = temp;
                     TempData["MauSac"] = JsonConvert.SerializeObject(sanPhamRequest.MauSacs);
                     return RedirectToAction("UpdateChiTietSanPham");
                 }
                 else return BadRequest();
             }
-            catch { return BadRequest(); }
+            catch { return RedirectToAction("ProductManager"); }
         }
         private static bool XoaMau(MauSac mau)
         {
@@ -399,8 +405,13 @@ namespace AppView.Controllers
                 var response = await _httpClient.PostAsJsonAsync(_httpClient.BaseAddress + "SanPham/AddChiTietSanPham", request);
                 if (response.IsSuccessStatusCode)
                 {
-                    TempData["UpdateChiTietSanPham"] = response.Content.ReadAsStringAsync().Result;
-
+                    var temp = response.Content.ReadAsStringAsync().Result;
+                    var chiTietSanPham = JsonConvert.DeserializeObject<ChiTietSanPhamUpdateRequest>(temp);
+                    if (!chiTietSanPham.ChiTietSanPhams.Any() || chiTietSanPham.ChiTietSanPhams == null)
+                    {
+                        return RedirectToAction("ProductDetail", new { idSanPham = idSanPham });
+                    }
+                    TempData["UpdateChiTietSanPham"] = temp;
                     return RedirectToAction("UpdateChiTietSanPham");
                 }
                 else return BadRequest();
