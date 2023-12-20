@@ -126,60 +126,62 @@ namespace AppView.Controllers
         [HttpPost]
         public JsonResult ShowProduct(FilterData filter)
         {
-            HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/getAll").Result;
-            List<SanPhamViewModel> lstSanpham = new List<SanPhamViewModel>();
-            if (response.IsSuccessStatusCode)
+            try
             {
-                lstSanpham = JsonConvert.DeserializeObject<List<SanPhamViewModel>>(response.Content.ReadAsStringAsync().Result);
-                //
-                List<SanPhamViewModel> lstSanphamfn = new List<SanPhamViewModel>();
-                //price-filter
-                if (filter.priceRange != null && filter.priceRange.Count > 0 && !filter.priceRange.Contains("all"))
+                HttpResponseMessage response = _httpClient.GetAsync(_httpClient.BaseAddress + "SanPham/getAll").Result;
+                List<SanPhamViewModel> lstSanpham = new List<SanPhamViewModel>();
+                if (response.IsSuccessStatusCode)
                 {
-                    foreach (var item in filter.priceRange)
+                    lstSanpham = JsonConvert.DeserializeObject<List<SanPhamViewModel>>(response.Content.ReadAsStringAsync().Result);
+                    //
+                    List<SanPhamViewModel> lstSanphamfn = new List<SanPhamViewModel>();
+                    //price-filter
+                    if (filter.priceRange != null && filter.priceRange.Count > 0 && !filter.priceRange.Contains("all"))
                     {
-                        if (item == "1")
+                        foreach (var item in filter.priceRange)
                         {
-                            foreach (var x in lstSanpham.Where(p => p.GiaBan < 100000 && p.TrangThaiCTSP == 1).ToList())
+                            if (item == "1")
                             {
-                                lstSanphamfn.Add(x);
+                                foreach (var x in lstSanpham.Where(p => p.GiaBan < 100000 && p.TrangThaiCTSP == 1).ToList())
+                                {
+                                    lstSanphamfn.Add(x);
+                                }
                             }
-                        }
-                        else if (item == "2")
-                        {
-                            foreach (var x in lstSanpham.Where(p => p.GiaBan >= 100000 && p.GiaBan < 200000 && p.TrangThaiCTSP == 1).ToList())
+                            else if (item == "2")
                             {
-                                lstSanphamfn.Add(x);
+                                foreach (var x in lstSanpham.Where(p => p.GiaBan >= 100000 && p.GiaBan < 200000 && p.TrangThaiCTSP == 1).ToList())
+                                {
+                                    lstSanphamfn.Add(x);
+                                }
                             }
-                        }
-                        else if (item == "3")
-                        {
-                            foreach (var x in lstSanpham.Where(p => p.GiaBan >= 200000 && p.GiaBan < 300000 && p.TrangThaiCTSP == 1).ToList())
+                            else if (item == "3")
                             {
-                                lstSanphamfn.Add(x);
+                                foreach (var x in lstSanpham.Where(p => p.GiaBan >= 200000 && p.GiaBan < 300000 && p.TrangThaiCTSP == 1).ToList())
+                                {
+                                    lstSanphamfn.Add(x);
+                                }
                             }
-                        }
-                        else if (item == "4")
-                        {
-                            foreach (var x in lstSanpham.Where(p => p.GiaBan >= 300000 && p.GiaBan < 400000 && p.TrangThaiCTSP == 1).ToList())
+                            else if (item == "4")
                             {
-                                lstSanphamfn.Add(x);
+                                foreach (var x in lstSanpham.Where(p => p.GiaBan >= 300000 && p.GiaBan < 400000 && p.TrangThaiCTSP == 1).ToList())
+                                {
+                                    lstSanphamfn.Add(x);
+                                }
                             }
-                        }
-                        else if (item == "5")
-                        {
-                            foreach (var x in lstSanpham.Where(p => p.GiaBan >= 400000 && p.GiaBan < 500000 && p.TrangThaiCTSP == 1).ToList())
+                            else if (item == "5")
                             {
-                                lstSanphamfn.Add(x);
+                                foreach (var x in lstSanpham.Where(p => p.GiaBan >= 400000 && p.GiaBan < 500000 && p.TrangThaiCTSP == 1).ToList())
+                                {
+                                    lstSanphamfn.Add(x);
+                                }
                             }
-                        }
-                        else if (item == "6")
-                        {
-                            foreach (var x in lstSanpham.Where(p => p.GiaBan > 500000 && p.TrangThaiCTSP == 1).ToList())
+                            else if (item == "6")
                             {
-                                lstSanphamfn.Add(x);
+                                foreach (var x in lstSanpham.Where(p => p.GiaBan > 500000 && p.TrangThaiCTSP == 1).ToList())
+                                {
+                                    lstSanphamfn.Add(x);
+                                }
                             }
-                        }
 
                         }
                     }
