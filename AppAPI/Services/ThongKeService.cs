@@ -38,87 +38,101 @@ namespace AppAPI.Services
 
         public ThongKeViewModel ThongKe(string startDate, string endDate)
         {
-            //Lấy 3 cột đầu
-            var soLuongThanhVien = context.KhachHangs.Count();
-            var soLuongDonHangCho = context.HoaDons.Where(x => x.TrangThaiGiaoHang == 2).Count();
-            var soLuongSanPham = context.ChiTietSanPhams.Sum(x => x.SoLuong);
-            List<ChiTietHoaDon> lstChiTietHoaDon = new List<ChiTietHoaDon>();
-            var start = Convert.ToDateTime(startDate);
-            var end = Convert.ToDateTime(endDate);
-            //Sua
-            List<HoaDon> lstHoaDon = context.HoaDons.Where(x => (x.TrangThaiGiaoHang == 6 || x.TrangThaiGiaoHang==7 || x.TrangThaiGiaoHang==5) && x.NgayThanhToan >= start && x.NgayThanhToan<=end).ToList();
-            //End
-            var tongHoaDonTron = lstHoaDon.Count();
-            //Lấy biểu đồ cột
-            foreach (var hoaDon in lstHoaDon.Where(x=>x.TrangThaiGiaoHang == 6))
+            try
             {
-                lstChiTietHoaDon.AddRange(context.ChiTietHoaDons.Where(x => x.IDHoaDon == hoaDon.ID));
+                //Lấy 3 cột đầu
+                var soLuongThanhVien = context.KhachHangs.Count();
+                var soLuongDonHangCho = context.HoaDons.Where(x => x.TrangThaiGiaoHang == 2).Count();
+                var soLuongSanPham = context.ChiTietSanPhams.Sum(x => x.SoLuong);
+                List<ChiTietHoaDon> lstChiTietHoaDon = new List<ChiTietHoaDon>();
+                var start = Convert.ToDateTime(startDate);
+                var end = Convert.ToDateTime(endDate);
+                //Sua
+                List<HoaDon> lstHoaDon = context.HoaDons.Where(x => (x.TrangThaiGiaoHang == 6 || x.TrangThaiGiaoHang == 7 || x.TrangThaiGiaoHang == 5) && x.NgayThanhToan >= start && x.NgayThanhToan <= end).ToList();
+                //End
+                var tongHoaDonTron = lstHoaDon.Count();
+                //Lấy biểu đồ cột
+                foreach (var hoaDon in lstHoaDon.Where(x => x.TrangThaiGiaoHang == 6))
+                {
+                    lstChiTietHoaDon.AddRange(context.ChiTietHoaDons.Where(x => x.IDHoaDon == hoaDon.ID));
+                }
+                List<ThongKeCotViewModel> thongKeCot = (from a in lstChiTietHoaDon
+                                                        group a by a.IDCTSP into g
+                                                        select new ThongKeCotViewModel()
+                                                        {
+                                                            TenSP = g.Key.ToString(),
+                                                            SoLuong = g.Sum(x => x.SoLuong),
+                                                        }).OrderByDescending(x => x.SoLuong).Take(10).ToList();
+                ChiTietSanPham chiTietSanPham;
+                MauSac mauSac;
+                KichCo kichCo;
+                SanPham sanPham;
+                foreach (var item in thongKeCot)
+                {
+                    chiTietSanPham = context.ChiTietSanPhams.First(x => x.ID == new Guid(item.TenSP));
+                    mauSac = context.MauSacs.First(x => x.ID == chiTietSanPham.IDMauSac);
+                    kichCo = context.KichCos.First(x => x.ID == chiTietSanPham.IDKichCo);
+                    sanPham = context.SanPhams.First(x => x.ID == chiTietSanPham.IDSanPham);
+                    item.TenSP = sanPham.Ten + "_" + mauSac.Ten + "_" + kichCo.Ten;
+                }
+                //Lấy biểu đồ đường
+                List<ThongKeDuongViewModel> thongKeDuong = new List<ThongKeDuongViewModel>();
+                for (var i = start; i <= end; i = i.AddDays(1))
+                {
+                    thongKeDuong.Add(new ThongKeDuongViewModel() { Ngay = i.Date, DoanhThu = context.HoaDons.Where(x => x.TrangThaiGiaoHang == 6 && x.NgayThanhToan.Value.Date == i.Date).Sum(x => x.TongTien - x.TienShip).Value });
+                }
+                //Lấy biểu đồ tròn
+                List<ThongKeTronViewModel> thongKeTron = (from a in lstHoaDon
+                                                          group a by a.TrangThaiGiaoHang into g
+                                                          select new ThongKeTronViewModel()
+                                                          {
+                                                              TrangThaiHoaDon = g.Key == 6 ? "Thành công" : g.Key == 5 ? "Hoàn trả" : "Hủy",
+                                                              PhanTram = (g.Count() * 100) / tongHoaDonTron,
+                                                          }).ToList();
+                return new ThongKeViewModel() { SoLuongThanhVien = soLuongThanhVien, SoLuongDonHang = soLuongDonHangCho, SoLuongSanPham = soLuongSanPham, BieuDoCot = thongKeCot, BieuDoDuong = thongKeDuong.OrderBy(x => x.Ngay).ToList(), BieuDoTron = thongKeTron, Start = start.ToString("MM/dd/yyyy"), End = end.ToString("MM/dd/yyyy") };
             }
-            List<ThongKeCotViewModel> thongKeCot = (from a in lstChiTietHoaDon
-                                                    group a by a.IDCTSP into g
-                                                    select new ThongKeCotViewModel()
-                                                    {
-                                                        TenSP = g.Key.ToString(),
-                                                        SoLuong = g.Sum(x => x.SoLuong),
-                                                    }).OrderByDescending(x => x.SoLuong).Take(10).ToList();
-            ChiTietSanPham chiTietSanPham;
-            MauSac mauSac;
-            KichCo kichCo;
-            SanPham sanPham;
-            foreach(var item  in thongKeCot)
+            catch
             {
-                chiTietSanPham = context.ChiTietSanPhams.First(x=>x.ID==new Guid(item.TenSP));
-                mauSac = context.MauSacs.First(x => x.ID == chiTietSanPham.IDMauSac);
-                kichCo = context.KichCos.First(x => x.ID == chiTietSanPham.IDKichCo);
-                sanPham = context.SanPhams.First(x => x.ID == chiTietSanPham.IDSanPham);
-                item.TenSP = sanPham.Ten+"_"+mauSac.Ten+"_"+kichCo.Ten;
+                return new ThongKeViewModel();
             }
-            //Lấy biểu đồ đường
-            List<ThongKeDuongViewModel> thongKeDuong = new List<ThongKeDuongViewModel>();
-            for (var i = start; i <= end; i=i.AddDays(1))
-            {
-                thongKeDuong.Add(new ThongKeDuongViewModel() { Ngay = i.Date, DoanhThu = context.HoaDons.Where(x => x.TrangThaiGiaoHang == 6 && x.NgayThanhToan.Value.Date == i.Date).Sum(x=>x.TongTien-x.TienShip).Value });
-            }
-            //Lấy biểu đồ tròn
-            List<ThongKeTronViewModel> thongKeTron = (from a in lstHoaDon
-                                                      group a by a.TrangThaiGiaoHang into g
-                                                      select new ThongKeTronViewModel()
-                                                      {
-                                                          TrangThaiHoaDon = g.Key == 6 ? "Thành công" :g.Key == 5? "Hoàn trả":"Hủy",
-                                                          PhanTram = (g.Count() * 100) / tongHoaDonTron,
-                                                      }).ToList();
-            return new ThongKeViewModel() { SoLuongThanhVien = soLuongThanhVien, SoLuongDonHang = soLuongDonHangCho, SoLuongSanPham = soLuongSanPham, BieuDoCot = thongKeCot, BieuDoDuong = thongKeDuong.OrderBy(x=>x.Ngay).ToList(), BieuDoTron = thongKeTron, Start = start.ToString("MM/dd/yyyy"), End = end.ToString("MM/dd/yyyy") };
         }
 
         public List<ThongKeSanPham> ThongKeSanPham()
         {
-            List<ChiTietHoaDon> lstChiTietHoaDon = new List<ChiTietHoaDon>();
-            List<HoaDon> lstHoaDon = context.HoaDons.Where(x => x.TrangThaiGiaoHang == 6).ToList();
-            foreach (var hoaDon in lstHoaDon)
+            try
             {
-                lstChiTietHoaDon.AddRange(context.ChiTietHoaDons.Where(x => x.IDHoaDon == hoaDon.ID));
+                List<ChiTietHoaDon> lstChiTietHoaDon = new List<ChiTietHoaDon>();
+                List<HoaDon> lstHoaDon = context.HoaDons.Where(x => x.TrangThaiGiaoHang == 6).ToList();
+                foreach (var hoaDon in lstHoaDon)
+                {
+                    lstChiTietHoaDon.AddRange(context.ChiTietHoaDons.Where(x => x.IDHoaDon == hoaDon.ID));
+                }
+                List<ThongKeSanPham> thongKeSanPham = (from a in lstChiTietHoaDon
+                                                       group a by a.IDCTSP into g
+                                                       select new ThongKeSanPham()
+                                                       {
+                                                           TenSP = g.Key.ToString(),
+                                                           SoLuong = g.Sum(x => x.SoLuong),
+                                                           DoanhThu = g.Sum(x => x.SoLuong * x.DonGia),
+                                                       }).OrderByDescending(x => x.SoLuong).Take(10).ToList();
+                ChiTietSanPham chiTietSanPham;
+                MauSac mauSac;
+                KichCo kichCo;
+                SanPham sanPham;
+                foreach (var item in thongKeSanPham)
+                {
+                    chiTietSanPham = context.ChiTietSanPhams.First(x => x.ID == new Guid(item.TenSP));
+                    mauSac = context.MauSacs.First(x => x.ID == chiTietSanPham.IDMauSac);
+                    kichCo = context.KichCos.First(x => x.ID == chiTietSanPham.IDKichCo);
+                    sanPham = context.SanPhams.First(x => x.ID == chiTietSanPham.IDSanPham);
+                    item.TenSP = sanPham.Ten + "_" + mauSac.Ten + "_" + kichCo.Ten;
+                }
+                return thongKeSanPham;
             }
-            List<ThongKeSanPham> thongKeSanPham = (from a in lstChiTietHoaDon
-                                                    group a by a.IDCTSP into g
-                                                    select new ThongKeSanPham()
-                                                    {
-                                                        TenSP = g.Key.ToString(),
-                                                        SoLuong = g.Sum(x => x.SoLuong),
-                                                        DoanhThu = g.Sum(x => x.SoLuong*x.DonGia),
-                                                    }).OrderByDescending(x => x.SoLuong).Take(10).ToList();
-            ChiTietSanPham chiTietSanPham;
-            MauSac mauSac;
-            KichCo kichCo;
-            SanPham sanPham;
-            foreach (var item in thongKeSanPham)
+            catch
             {
-                chiTietSanPham = context.ChiTietSanPhams.First(x => x.ID == new Guid(item.TenSP));
-                mauSac = context.MauSacs.First(x => x.ID == chiTietSanPham.IDMauSac);
-                kichCo = context.KichCos.First(x => x.ID == chiTietSanPham.IDKichCo);
-                sanPham = context.SanPhams.First(x => x.ID == chiTietSanPham.IDSanPham);
-                item.TenSP = sanPham.Ten + "_" + mauSac.Ten + "_" + kichCo.Ten;
+                return new List<ThongKeSanPham>();
             }
-            return thongKeSanPham;
         }
 
     }

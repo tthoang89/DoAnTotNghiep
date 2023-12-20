@@ -329,14 +329,21 @@ namespace AppView.Controllers
         [HttpGet]
         public async Task<IActionResult> ThongKeAdmin(string startDate, string endDate)
         {
-            if(startDate == null || endDate == null)
+            try
             {
-                startDate = DateTime.Now.AddDays(-7).ToString();
-                endDate = DateTime.Now.ToString();
+                if (startDate == null || endDate == null)
+                {
+                    startDate = DateTime.Now.AddDays(-7).ToString();
+                    endDate = DateTime.Now.ToString();
+                }
+                var response = await _httpClient.GetAsync("https://localhost:7095/api/ThongKe/ThongKe?startDate=" + startDate + "&endDate=" + endDate);
+                var lst = JsonConvert.DeserializeObject<ThongKeViewModel>(response.Content.ReadAsStringAsync().Result);
+                return View(lst);
             }
-            var response = await _httpClient.GetAsync("https://localhost:7095/api/ThongKe/ThongKe?startDate=" + startDate + "&endDate=" + endDate);
-            var lst = JsonConvert.DeserializeObject<ThongKeViewModel>(response.Content.ReadAsStringAsync().Result);
-            return View(lst);
+            catch
+            {
+                return View(new ThongKeViewModel());
+            }
         }
         public async Task<FileResult> ExportExcel()
         {
