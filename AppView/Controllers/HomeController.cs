@@ -142,42 +142,42 @@ namespace AppView.Controllers
                         {
                             if (item == "1")
                             {
-                                foreach (var x in lstSanpham.Where(p => p.GiaBan < 100000).ToList())
+                                foreach (var x in lstSanpham.Where(p => p.GiaBan < 100000 && p.TrangThaiCTSP == 1).ToList())
                                 {
                                     lstSanphamfn.Add(x);
                                 }
                             }
                             else if (item == "2")
                             {
-                                foreach (var x in lstSanpham.Where(p => p.GiaBan >= 100000 && p.GiaBan < 200000).ToList())
+                                foreach (var x in lstSanpham.Where(p => p.GiaBan >= 100000 && p.GiaBan < 200000 && p.TrangThaiCTSP == 1).ToList())
                                 {
                                     lstSanphamfn.Add(x);
                                 }
                             }
                             else if (item == "3")
                             {
-                                foreach (var x in lstSanpham.Where(p => p.GiaBan >= 200000 && p.GiaBan < 300000).ToList())
+                                foreach (var x in lstSanpham.Where(p => p.GiaBan >= 200000 && p.GiaBan < 300000 && p.TrangThaiCTSP == 1).ToList())
                                 {
                                     lstSanphamfn.Add(x);
                                 }
                             }
                             else if (item == "4")
                             {
-                                foreach (var x in lstSanpham.Where(p => p.GiaBan >= 300000 && p.GiaBan < 400000).ToList())
+                                foreach (var x in lstSanpham.Where(p => p.GiaBan >= 300000 && p.GiaBan < 400000 && p.TrangThaiCTSP == 1).ToList())
                                 {
                                     lstSanphamfn.Add(x);
                                 }
                             }
                             else if (item == "5")
                             {
-                                foreach (var x in lstSanpham.Where(p => p.GiaBan >= 400000 && p.GiaBan < 500000).ToList())
+                                foreach (var x in lstSanpham.Where(p => p.GiaBan >= 400000 && p.GiaBan < 500000 && p.TrangThaiCTSP == 1).ToList())
                                 {
                                     lstSanphamfn.Add(x);
                                 }
                             }
                             else if (item == "6")
                             {
-                                foreach (var x in lstSanpham.Where(p => p.GiaBan > 500000).ToList())
+                                foreach (var x in lstSanpham.Where(p => p.GiaBan > 500000 && p.TrangThaiCTSP == 1).ToList())
                                 {
                                     lstSanphamfn.Add(x);
                                 }
@@ -1112,7 +1112,7 @@ namespace AppView.Controllers
                 {
                     listLSTD = JsonConvert.DeserializeObject<List<LichSuTichDiemTieuDiemViewModel>>(responseDonMua.Content.ReadAsStringAsync().Result);
                     listLSTD = listLSTD.OrderBy(p => p.TrangThaiLSTD).ToList();
-
+                    listLSTD = listLSTD.Where(p => p.Diem > 0).ToList();
                     //foreach (var item in listLSTD)
                     //{
                     //    item.Ngaytao1 = item.NgayTao.ToString("dd/MM/yyyy");
@@ -1175,6 +1175,7 @@ namespace AppView.Controllers
                             }
                         }
                         listLSTDFN = listLSTDFN.OrderBy(p => p.TrangThaiLSTD).ToList();
+                        listLSTDFN = listLSTDFN.OrderBy(p => p.NgayTao).ToList();
                         var model = listLSTDFN.Skip((page - 1) * pageSize).Take(pageSize).ToList();
                         return Json(new
                         {
@@ -1232,6 +1233,7 @@ namespace AppView.Controllers
                             listLSTDFN.Add(item);
                         }
                         listLSTDFN = listLSTDFN.OrderBy(p => p.TrangThaiLSTD).ToList();
+                        listLSTDFN = listLSTDFN.OrderBy(p => p.NgayTao).ToList();
                         var model = listLSTDFN.Skip((page - 1) * pageSize).Take(pageSize).ToList();
                         return Json(new
                         {
