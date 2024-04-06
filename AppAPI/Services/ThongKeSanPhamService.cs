@@ -9,9 +9,9 @@ namespace AppAPI.Services
     {
         private readonly AssignmentDBContext context;
 
-        public ThongKeSanPhamService(AssignmentDBContext context)
+        public ThongKeSanPhamService()
         {
-            this.context = context;
+            this.context = new AssignmentDBContext();
         }
 
         public async Task<List<SanPham>> Top10SanPhamTrongNam(int year)

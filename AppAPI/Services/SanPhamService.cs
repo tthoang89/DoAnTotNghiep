@@ -11,9 +11,9 @@ namespace AppAPI.Services
     public class SanPhamService : ISanPhamService
     {
         private readonly AssignmentDBContext _context;
-        public SanPhamService(AssignmentDBContext dBContext)
+        public SanPhamService()
         {
-            this._context = dBContext;
+            _context = new AssignmentDBContext();
         }
 
         #region SanPham

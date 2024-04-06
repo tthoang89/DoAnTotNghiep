@@ -12,9 +12,9 @@ namespace AppAPI.Controllers
     public class SanPhamController : ControllerBase
     {
         private readonly ISanPhamService _sanPhamServices;
-        public SanPhamController(AssignmentDBContext dBContext)
+        public SanPhamController(ISanPhamService sanPhamService)
         {
-            this._sanPhamServices = new SanPhamService(dBContext);
+            this._sanPhamServices = sanPhamService;
         }
         #region SanPham
 
