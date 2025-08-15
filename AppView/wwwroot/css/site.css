@@ -1,4 +1,4 @@
-html {
+﻿/*html {
   font-size: 14px;
 }
 
@@ -15,4 +15,140 @@ html {
 
 body {
   margin-bottom: 60px;
+}*/
+
+
+/* Custom Styles for a Brighter Interface */
+
+/* Base HTML and Body styles - Keep original font-size for responsiveness */
+html {
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+body {
+    margin-bottom: 60px; /* Space for footer */
+    background-color: #f8f9fa; /* Nền xám nhạt cho toàn bộ trang */
+    color: #333333; /* Màu chữ tối hơn để dễ đọc trên nền sáng */
+}
+
+/* Make main sections background brighter */
+.hero,
+.product,
+.instagram,
+.latest,
+.banner { /* Include .banner section if applicable */
+    background-color: #ffffff; /* Nền trắng tinh khiết cho các khu vực nội dung */
+}
+
+/* Footer: Often darker, but can be made lighter for a brighter feel */
+.footer {
+    background-color: #f2f2f2; /* Màu xám sáng cho footer */
+    color: #555555; /* Màu chữ hơi tối cho footer */
+}
+
+/* Accent Colors - Using a fresh green for highlights */
+/* You can change #28a745 to any vibrant color you prefer, e.g., #007bff (blue), #fd7e14 (orange), #6f42c1 (purple) */
+
+/* Link colors */
+a {
+    color: #28a745; /* Màu xanh lá cây tươi mới cho liên kết */
+}
+
+    a:hover {
+        color: #218838; /* Đậm hơn khi hover */
+    }
+
+/* Primary Buttons - Apply to the template's primary button class */
+.primary-btn {
+    background-color: #28a745; /* Màu xanh lá cây tươi mới cho nút */
+    border-color: #28a745;
+    color: #ffffff !important; /* Đảm bảo màu chữ trắng */
+    /* Add padding for a slightly larger, more inviting button */
+    padding: 12px 30px; /* Adjust as needed */
+    font-size: 16px;
+}
+
+    .primary-btn:hover {
+        background-color: #218838; /* Đậm hơn khi hover */
+        border-color: #1e7e34;
+    }
+
+/* Section Titles / Highlighted text - Override template's default highlight color */
+.section-title span {
+    color: #28a745; /* Màu xanh lá cây tươi mới cho các phần tiêu đề nhấn mạnh */
+}
+
+/* Header Menu Navigation - Active and Hover states */
+.header__menu ul li.active a,
+.header__menu ul li:hover a {
+    color: #28a745; /* Màu xanh lá cây tươi mới cho menu khi active/hover */
+}
+
+/* Top Header Links */
+.header__top__links ul li a:hover {
+    color: #28a745; /* Màu xanh lá cây tươi mới cho liên kết ở top header */
+}
+
+/* Product Item Details - Example adjustments */
+.product__item__text h6 a {
+    color: #333333; /* Đảm bảo màu chữ sản phẩm dễ đọc */
+}
+
+.product__item__text h5 {
+    color: #28a745; /* Màu xanh lá cây cho giá sản phẩm để nổi bật */
+}
+
+/* Adjust Spacing for a more open feel */
+.hero,
+.banner,
+.product,
+.instagram,
+.latest {
+    padding-top: 80px; /* Tăng khoảng cách trên/dưới của các section chính */
+    padding-bottom: 80px;
+}
+
+.product__item {
+    margin-bottom: 30px; /* Tăng khoảng cách dưới giữa các sản phẩm */
+}
+
+/* Ensure text on hero banner is visible if background image is light */
+.hero__text h2 {
+    color: #222222; /* Màu chữ tối hơn cho tiêu đề hero nếu nền sáng */
+}
+
+.hero__text p {
+    color: #555555; /* Màu chữ nội dung hero */
+}
+
+/* Consider adding subtle box-shadows for depth on light backgrounds */
+.product__item,
+.latest__item {
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.05); /* Bóng đổ nhẹ nhàng */
+    border-radius: 8px; /* Bo tròn góc nhẹ */
+}
+
+/* Adjust search model input background for consistency */
+.search-model-form input {
+    background-color: #ffffff;
+    color: #333333;
+    border: 1px solid #e1e1e1;
+}
+
+    .search-model-form input::placeholder {
+        color: #aaaaaa;
+    }
+
+/* Adjust for other specific elements as needed */
+/* For example, if there's a specific counter or progress bar: */
+.categories__deal__countdown__timer span {
+    color: #28a745;
 }

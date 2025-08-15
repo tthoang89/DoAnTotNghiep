@@ -1,4 +1,4 @@
-using AppAPI.IServices;
+﻿using AppAPI.IServices;
 using AppAPI.Services;
 using AppData.Models;
 using AppData.ViewModels.Mail;
@@ -26,13 +26,13 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo()
     {
-        Title = "Example API",
+        Title = "Clothing Store API",
         Version = "v1",
-        Description = "An example of an ASP.NET Core Web API",
+        Description = "API cho website bán hàng quần áo",
         Contact = new OpenApiContact
         {
-            Name = "Example Contact",
-            Email = "example@example.com",
+            Name = "Tang Thanh Hoang",
+            Email = "tthoang89@gmail.com",
             Url = new Uri("https://example.com/contact"),
         },
     });

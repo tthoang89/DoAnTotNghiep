@@ -1,0 +1,15 @@
+D:\DoAn\AppData\bin\Debug\net8.0\AppData.deps.json
+D:\DoAn\AppData\bin\Debug\net8.0\AppData.runtimeconfig.json
+D:\DoAn\AppData\bin\Debug\net8.0\AppData.dll
+D:\DoAn\AppData\bin\Debug\net8.0\AppData.pdb
+D:\DoAn\AppData\obj\Debug\net8.0\AppData.csproj.AssemblyReference.cache
+D:\DoAn\AppData\obj\Debug\net8.0\AppData.GeneratedMSBuildEditorConfig.editorconfig
+D:\DoAn\AppData\obj\Debug\net8.0\AppData.AssemblyInfoInputs.cache
+D:\DoAn\AppData\obj\Debug\net8.0\AppData.AssemblyInfo.cs
+D:\DoAn\AppData\obj\Debug\net8.0\AppData.csproj.CoreCompileInputs.cache
+D:\DoAn\AppData\obj\Debug\net8.0\AppData.sourcelink.json
+D:\DoAn\AppData\obj\Debug\net8.0\AppData.dll
+D:\DoAn\AppData\obj\Debug\net8.0\refint\AppData.dll
+D:\DoAn\AppData\obj\Debug\net8.0\AppData.pdb
+D:\DoAn\AppData\obj\Debug\net8.0\AppData.genruntimeconfig.cache
+D:\DoAn\AppData\obj\Debug\net8.0\ref\AppData.dll

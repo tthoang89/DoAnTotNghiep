@@ -1,0 +1,5010 @@
+[
+  {
+    "ContainingType": "AppAPI.Controllers.ChatLieuController",
+    "Method": "Put",
+    "RelativePath": "api/ChatLieu/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "ten",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "trangthai",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ChatLieuController",
+    "Method": "DeleteChatLieu",
+    "RelativePath": "api/ChatLieu/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ChatLieuController",
+    "Method": "GetAllChatLieu",
+    "RelativePath": "api/ChatLieu/GetAllChatLieu",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ChatLieuController",
+    "Method": "GetChatLieuById",
+    "RelativePath": "api/ChatLieu/GetChatLieuById",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ChatLieuController",
+    "Method": "Add",
+    "RelativePath": "api/ChatLieu/ThemChatLieu",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ten",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "trangthai",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ChatLieuController",
+    "Method": "GetAllChatLieu",
+    "RelativePath": "api/ChatLieu/TimKiemChatLieu",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "name",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.Models.ChatLieu, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ChiTietGioHangController",
+    "Method": "Get",
+    "RelativePath": "api/ChiTietGioHang",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.Models.ChiTietGioHang, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ChiTietGioHangController",
+    "Method": "Post",
+    "RelativePath": "api/ChiTietGioHang",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "IdBienThe",
+        "Type": "System.Guid",
+        "IsRequired": false
+      },
+      {
+        "Name": "IdKhachHang",
+        "Type": "System.Guid",
+        "IsRequired": false
+      },
+      {
+        "Name": "soluong",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.String",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ChiTietGioHangController",
+    "Method": "Get",
+    "RelativePath": "api/ChiTietGioHang/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "AppData.Models.ChiTietGioHang",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ChiTietGioHangController",
+    "Method": "Put",
+    "RelativePath": "api/ChiTietGioHang/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "IdBienThe",
+        "Type": "System.Guid",
+        "IsRequired": false
+      },
+      {
+        "Name": "IdKhachHang",
+        "Type": "System.Guid",
+        "IsRequired": false
+      },
+      {
+        "Name": "soluong",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.String",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ChiTietGioHangController",
+    "Method": "Delete",
+    "RelativePath": "api/ChiTietGioHang/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ChiTietHoaDonController",
+    "Method": "getAll",
+    "RelativePath": "api/ChiTietHoaDon",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.Models.ChiTietHoaDon, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ChiTietHoaDonController",
+    "Method": "DeleteLoaiSP",
+    "RelativePath": "api/ChiTietHoaDon/delete/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ChiTietHoaDonController",
+    "Method": "GetById",
+    "RelativePath": "api/ChiTietHoaDon/getByIdHD/{idhd}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idhd",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ChiTietHoaDonController",
+    "Method": "Save",
+    "RelativePath": "api/ChiTietHoaDon/saveHDCT",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "AppData.ViewModels.BanOffline.HoaDonChiTietRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ChiTietHoaDonController",
+    "Method": "UpdateSL",
+    "RelativePath": "api/ChiTietHoaDon/UpdateSL",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": false
+      },
+      {
+        "Name": "sl",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.DanhGiaController",
+    "Method": "UpdateDanhGia",
+    "RelativePath": "api/DanhGia",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idCTHD",
+        "Type": "System.Guid",
+        "IsRequired": false
+      },
+      {
+        "Name": "soSao",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "binhLuan",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.DanhGiaController",
+    "Method": "AnDanhGia",
+    "RelativePath": "api/DanhGia/anDanhGia",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.DanhGiaController",
+    "Method": "GetByIdBt",
+    "RelativePath": "api/DanhGia/getbyIdBt/{idbt}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idbt",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.DanhGiaController",
+    "Method": "GetByIdSp",
+    "RelativePath": "api/DanhGia/getbyIdSp/{idsp}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idsp",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.DanhGiaController",
+    "Method": "GetHDCTChuaDanhGia",
+    "RelativePath": "api/DanhGia/getChuaDanhGia/{idkh}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idkh",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.DanhGiaController",
+    "Method": "GetHDCTDaDanhGia",
+    "RelativePath": "api/DanhGia/getDaDanhGia/{idkh}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idkh",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.DanhGiaController",
+    "Method": "SaveDanhGia",
+    "RelativePath": "api/DanhGia/save",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dg",
+        "Type": "AppData.Models.DanhGia",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.GioHangController",
+    "Method": "Get",
+    "RelativePath": "api/GioHang",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.Models.GioHang, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.GioHangController",
+    "Method": "Post",
+    "RelativePath": "api/GioHang",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "IdKhachHang",
+        "Type": "System.Guid",
+        "IsRequired": false
+      },
+      {
+        "Name": "ngaytao",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.GioHangController",
+    "Method": "Get",
+    "RelativePath": "api/GioHang/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "AppData.Models.GioHang",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.GioHangController",
+    "Method": "Put",
+    "RelativePath": "api/GioHang/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "ngaytao",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.GioHangController",
+    "Method": "Delete",
+    "RelativePath": "api/GioHang/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.GioHangController",
+    "Method": "AddCart",
+    "RelativePath": "api/GioHang/AddCart",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "chiTietGioHang",
+        "Type": "AppData.Models.ChiTietGioHang",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.GioHangController",
+    "Method": "Deletebyidctsp",
+    "RelativePath": "api/GioHang/Deletebyid",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idctsp",
+        "Type": "System.Guid",
+        "IsRequired": false
+      },
+      {
+        "Name": "idNguoiDung",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.GioHangController",
+    "Method": "GetCart",
+    "RelativePath": "api/GioHang/GetCart",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "AppData.ViewModels.SanPham.GioHangViewModel",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.GioHangController",
+    "Method": "GetCartLogin",
+    "RelativePath": "api/GioHang/GetCartLogin",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idNguoiDung",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "AppData.ViewModels.SanPham.GioHangViewModel",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.GioHangController",
+    "Method": "UpdateCart",
+    "RelativePath": "api/GioHang/UpdateCart",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idctsp",
+        "Type": "System.Guid",
+        "IsRequired": false
+      },
+      {
+        "Name": "soluong",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "idNguoiDung",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.HoaDonController",
+    "Method": "CreateHoaDon",
+    "RelativePath": "api/HoaDon",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "hoaDon",
+        "Type": "AppData.ViewModels.HoaDonViewModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "AppData.ViewModels.SanPham.DonMuaSuccessViewModel",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.HoaDonController",
+    "Method": "UpdateTrangThai",
+    "RelativePath": "api/HoaDon",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idhoadon",
+        "Type": "System.Guid",
+        "IsRequired": false
+      },
+      {
+        "Name": "trangthai",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "idnhanvien",
+        "Type": "System.Nullable\u00601[[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.HoaDonController",
+    "Method": "CheckKHUseVoucher",
+    "RelativePath": "api/HoaDon/CheckCustomerUseVoucher",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idkh",
+        "Type": "System.Guid",
+        "IsRequired": false
+      },
+      {
+        "Name": "idvoucher",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.HoaDonController",
+    "Method": "CheckLichSuGiaoDichHD",
+    "RelativePath": "api/HoaDon/CheckLSGDHD/{idhd}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idhd",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.HoaDonController",
+    "Method": "CheckVoucher",
+    "RelativePath": "api/HoaDon/CheckVoucher",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ten",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "tongtien",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Int32",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.HoaDonController",
+    "Method": "ChiTietHoaDonQL",
+    "RelativePath": "api/HoaDon/ChiTietHoaDonQL/{idhd}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idhd",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.HoaDonController",
+    "Method": "TraHD",
+    "RelativePath": "api/HoaDon/CopyHD",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idhd",
+        "Type": "System.Guid",
+        "IsRequired": false
+      },
+      {
+        "Name": "idnv",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.HoaDonController",
+    "Method": "Delete",
+    "RelativePath": "api/HoaDon/deleteHoaDon/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.HoaDonController",
+    "Method": "Get",
+    "RelativePath": "api/HoaDon/GetAll",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.Models.HoaDon, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.HoaDonController",
+    "Method": "GetAllHDCho",
+    "RelativePath": "api/HoaDon/GetAllHDCho",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.HoaDonController",
+    "Method": "GetAllHDQly",
+    "RelativePath": "api/HoaDon/GetAllHDQly",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.HoaDonController",
+    "Method": "GetById",
+    "RelativePath": "api/HoaDon/GetById/{idhd}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idhd",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "AppData.Models.HoaDon",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.HoaDonController",
+    "Method": "GetHDBanHang",
+    "RelativePath": "api/HoaDon/GetHDBanHang/{idhd}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idhd",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.HoaDonController",
+    "Method": "GiaoThanhCong",
+    "RelativePath": "api/HoaDon/GiaoThanhCong",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idhd",
+        "Type": "System.Guid",
+        "IsRequired": false
+      },
+      {
+        "Name": "idnv",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.HoaDonController",
+    "Method": "HoanHD",
+    "RelativePath": "api/HoaDon/HoanHD",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idhd",
+        "Type": "System.Guid",
+        "IsRequired": false
+      },
+      {
+        "Name": "idnv",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.HoaDonController",
+    "Method": "HoanTCHD",
+    "RelativePath": "api/HoaDon/HoanTCHD",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idhd",
+        "Type": "System.Guid",
+        "IsRequired": false
+      },
+      {
+        "Name": "idnv",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.HoaDonController",
+    "Method": "HuyHD",
+    "RelativePath": "api/HoaDon/HuyHD",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idhd",
+        "Type": "System.Guid",
+        "IsRequired": false
+      },
+      {
+        "Name": "idnv",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.HoaDonController",
+    "Method": "LichSuGiaoDich",
+    "RelativePath": "api/HoaDon/LichSuGiaoDich",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idNguoidung",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.Models.HoaDon, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.HoaDonController",
+    "Method": "LichSuGiaoDichByIdHD",
+    "RelativePath": "api/HoaDon/LichSuGiaoDich/{idhd}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idhd",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "AppData.Models.LichSuTichDiem",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.HoaDonController",
+    "Method": "CreateHoaDonOffline",
+    "RelativePath": "api/HoaDon/Offline/{idnhanvien}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idnhanvien",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.HoaDonController",
+    "Method": "TimKiemVaLoc",
+    "RelativePath": "api/HoaDon/TimKiem",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ten",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "loc",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.Models.HoaDon, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.HoaDonController",
+    "Method": "UpdateGhiChuHD",
+    "RelativePath": "api/HoaDon/UpdateGhichu",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idhd",
+        "Type": "System.Guid",
+        "IsRequired": false
+      },
+      {
+        "Name": "idnv",
+        "Type": "System.Guid",
+        "IsRequired": false
+      },
+      {
+        "Name": "ghichu",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.HoaDonController",
+    "Method": "UpDateHoaDon",
+    "RelativePath": "api/HoaDon/UpdateHoaDon",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "hoaDon",
+        "Type": "AppData.ViewModels.BanOffline.HoaDonThanhToanRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.KhachHangController",
+    "Method": "GetAllKhachHang",
+    "RelativePath": "api/KhachHang",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.Models.KhachHang, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.KhachHangController",
+    "Method": "Post",
+    "RelativePath": "api/KhachHang",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "khachHang",
+        "Type": "AppData.ViewModels.KhachHangViewModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.KhachHangController",
+    "Method": "Delete",
+    "RelativePath": "api/KhachHang/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.KhachHangController",
+    "Method": "ChangeForgotPassword",
+    "RelativePath": "api/KhachHang/ChangeForgotPassword",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "password",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.KhachHangController",
+    "Method": "GetAllHDKH",
+    "RelativePath": "api/KhachHang/getAllHDKH",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idkh",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.Models.HoaDon, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.KhachHangController",
+    "Method": "GetById",
+    "RelativePath": "api/KhachHang/GetById",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "AppData.Models.KhachHang",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.KhachHangController",
+    "Method": "GetBySDT",
+    "RelativePath": "api/KhachHang/getBySDT",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "sdt",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "AppData.Models.KhachHang",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.KhachHangController",
+    "Method": "GetKhachHangByEmail",
+    "RelativePath": "api/KhachHang/GetKhachHangByEmail",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "email",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "AppData.ViewModels.KhachHangViewModel",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.KhachHangController",
+    "Method": "PostKHView",
+    "RelativePath": "api/KhachHang/PostKHView",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "khv",
+        "Type": "AppData.ViewModels.KhachHangView",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.KhachHangController",
+    "Method": "PutKhView",
+    "RelativePath": "api/KhachHang/PutKhView",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "khv",
+        "Type": "AppData.ViewModels.KhachHangView",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.KhachHangController",
+    "Method": "GetAllKhachHang",
+    "RelativePath": "api/KhachHang/TimKiemKH",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Ten",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "SDT",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.Models.KhachHang, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.KhuyenMaiController",
+    "Method": "Get",
+    "RelativePath": "api/KhuyenMai",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.Models.KhuyenMai, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.KhuyenMaiController",
+    "Method": "Post",
+    "RelativePath": "api/KhuyenMai",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "kmv",
+        "Type": "AppData.ViewModels.KhuyenMaiView",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.KhuyenMaiController",
+    "Method": "Get",
+    "RelativePath": "api/KhuyenMai/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "AppData.Models.KhuyenMai",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.KhuyenMaiController",
+    "Method": "Put",
+    "RelativePath": "api/KhuyenMai/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "kmv",
+        "Type": "AppData.ViewModels.KhuyenMaiView",
+        "IsRequired": true
+      },
+      {
+        "Name": "id",
+        "Type": "",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.KhuyenMaiController",
+    "Method": "Delete",
+    "RelativePath": "api/KhuyenMai/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.KhuyenMaiController",
+    "Method": "AddKMVoBienThe",
+    "RelativePath": "api/KhuyenMai/AddKmVoBT",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "bienThes",
+        "Type": "System.Collections.Generic.List\u00601[[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": true
+      },
+      {
+        "Name": "IdKhuyenMai",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.KhuyenMaiController",
+    "Method": "GetAllCTSPBySp",
+    "RelativePath": "api/KhuyenMai/GetAllCTSPBySP",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idSanPham",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.ViewModels.AllViewCTSP, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.KhuyenMaiController",
+    "Method": "GetAllSP",
+    "RelativePath": "api/KhuyenMai/GetAllSP",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.ViewModels.AllViewSp, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.KhuyenMaiController",
+    "Method": "GetAllSPByKhuyenMai",
+    "RelativePath": "api/KhuyenMai/GetAllSPByKhuyenMai",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idkm",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.ViewModels.AllViewSp, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.KhuyenMaiController",
+    "Method": "GetAllSPByKm",
+    "RelativePath": "api/KhuyenMai/GetAllSPByKmLoaiSPChatLieu",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idkm",
+        "Type": "System.Nullable\u00601[[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "idLoaiSP",
+        "Type": "System.Nullable\u00601[[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "idChatLieu",
+        "Type": "System.Nullable\u00601[[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.ViewModels.AllViewSp, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.KhuyenMaiController",
+    "Method": "GetAllSPNoKm",
+    "RelativePath": "api/KhuyenMai/GetAllSPNoKM",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.ViewModels.AllViewSp, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.KhuyenMaiController",
+    "Method": "TKGetAllSPNoKmByLoaiSPChatLieu",
+    "RelativePath": "api/KhuyenMai/GetAllSPNoKMByLoaiSPChatLieu",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": false
+      },
+      {
+        "Name": "idLoaiSP",
+        "Type": "System.Nullable\u00601[[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "idChatLieu",
+        "Type": "System.Nullable\u00601[[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.ViewModels.AllViewSp, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.KhuyenMaiController",
+    "Method": "GetAllCTSPByIdKhuyenMai",
+    "RelativePath": "api/KhuyenMai/GetCTSPByIdKm",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idkm",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.ViewModels.AllViewCTSP, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.KhuyenMaiController",
+    "Method": "GetByTen",
+    "RelativePath": "api/KhuyenMai/TimKiemTenKM",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Ten",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.Models.KhuyenMai, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.KhuyenMaiController",
+    "Method": "XoaKMRaBienThe",
+    "RelativePath": "api/KhuyenMai/XoaKmRaBT",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "bienThes",
+        "Type": "System.Collections.Generic.List\u00601[[System.Guid, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.KichCoController",
+    "Method": "Put",
+    "RelativePath": "api/KichCo/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "ten",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "trangthai",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.KichCoController",
+    "Method": "DeleteKichCo",
+    "RelativePath": "api/KichCo/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.KichCoController",
+    "Method": "GetAllKichCo",
+    "RelativePath": "api/KichCo/GetAllKichCo",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.KichCoController",
+    "Method": "GetKichCoById",
+    "RelativePath": "api/KichCo/GetKichCoById",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.KichCoController",
+    "Method": "Add",
+    "RelativePath": "api/KichCo/ThemKichCo",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ten",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "trangthai",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.KichCoController",
+    "Method": "GetAllKichCo",
+    "RelativePath": "api/KichCo/TimKiemKichCo",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "name",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.LichSuTichDiemController",
+    "Method": "Get",
+    "RelativePath": "api/LichSuTichDiem",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.Models.LichSuTichDiem, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.LichSuTichDiemController",
+    "Method": "Post",
+    "RelativePath": "api/LichSuTichDiem",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "diem",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "trangthai",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "IdKhachHang",
+        "Type": "System.Guid",
+        "IsRequired": false
+      },
+      {
+        "Name": "IdQuyDoiDiem",
+        "Type": "System.Guid",
+        "IsRequired": false
+      },
+      {
+        "Name": "IdHoaDon",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.LichSuTichDiemController",
+    "Method": "Get",
+    "RelativePath": "api/LichSuTichDiem/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "AppData.Models.LichSuTichDiem",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.LichSuTichDiemController",
+    "Method": "Put",
+    "RelativePath": "api/LichSuTichDiem/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "diem",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "trangthai",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "IdKhachHang",
+        "Type": "System.Guid",
+        "IsRequired": false
+      },
+      {
+        "Name": "IdQuyDoiDiem",
+        "Type": "System.Guid",
+        "IsRequired": false
+      },
+      {
+        "Name": "IdHoaDon",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.LichSuTichDiemController",
+    "Method": "Delete",
+    "RelativePath": "api/LichSuTichDiem/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.LichSuTichDiemController",
+    "Method": "GetAllDonMua",
+    "RelativePath": "api/LichSuTichDiem/GetAllDonMua",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "IDkhachHang",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.ViewModels.DonMuaViewModel, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.LichSuTichDiemController",
+    "Method": "GetAllDonMuaCT",
+    "RelativePath": "api/LichSuTichDiem/GetAllDonMuaChiTiet",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idHoaDon",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.ViewModels.DonMuaChiTietViewModel, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.LichSuTichDiemController",
+    "Method": "GetALLLichSuTichDiembyIdUser",
+    "RelativePath": "api/LichSuTichDiem/GetALLLichSuTichDiembyIdUser",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "IDkhachHang",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.ViewModels.LichSuTichDiemTieuDiemViewModel, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.LichSuTichDiemController",
+    "Method": "getCTHDDanhGia",
+    "RelativePath": "api/LichSuTichDiem/GetCTHDDANHGIA",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idhdct",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "AppData.ViewModels.ChiTietHoaDonDanhGiaViewModel",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.LichSuTichDiemController",
+    "Method": "GetAllLSTDByKH",
+    "RelativePath": "api/LichSuTichDiem/GetLSTDByIdKH",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idkh",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.ViewModels.LichSuTichDiemView, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.LichSuTichDiemController",
+    "Method": "ListDonHoanHang",
+    "RelativePath": "api/LichSuTichDiem/ListDonHoanHang",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.ViewModels.ListDon, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.LichSuTichDiemController",
+    "Method": "ListDonHuy",
+    "RelativePath": "api/LichSuTichDiem/ListDonHuy",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.ViewModels.ListDon, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.LichSuTichDiemController",
+    "Method": "ListDonThanhCong",
+    "RelativePath": "api/LichSuTichDiem/ListDonThanhCong",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.ViewModels.ListDon, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.LichSuTichDiemController",
+    "Method": "TongDonHoanHang",
+    "RelativePath": "api/LichSuTichDiem/TongDonHoanHang",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "AppData.ViewModels.TongDon",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.LichSuTichDiemController",
+    "Method": "TongDonHuy",
+    "RelativePath": "api/LichSuTichDiem/TongDonHuy",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "AppData.ViewModels.TongDon",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.LichSuTichDiemController",
+    "Method": "TongDonThanhCong",
+    "RelativePath": "api/LichSuTichDiem/TongDonThanhCong",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "AppData.ViewModels.TongDon",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.LoaiSPController",
+    "Method": "GetLoaiSpTheoCha",
+    "RelativePath": "api/LoaiSP",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.LoaiSPController",
+    "Method": "AddLoaiSPCha",
+    "RelativePath": "api/LoaiSP",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idLoaiSPCha",
+        "Type": "System.Guid",
+        "IsRequired": false
+      },
+      {
+        "Name": "ten",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "trangthai",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.LoaiSPController",
+    "Method": "DeleteLoaiSP",
+    "RelativePath": "api/LoaiSP/delete/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.LoaiSPController",
+    "Method": "GetAll",
+    "RelativePath": "api/LoaiSP/getAll",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.LoaiSPController",
+    "Method": "GetById",
+    "RelativePath": "api/LoaiSP/getById/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.LoaiSPController",
+    "Method": "SaveLoaiSP",
+    "RelativePath": "api/LoaiSP/save",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "lsp",
+        "Type": "AppData.ViewModels.SanPham.LoaiSPRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.LoaiSPController",
+    "Method": "SaveLoaiSP",
+    "RelativePath": "api/LoaiSP/save",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "lsp",
+        "Type": "AppData.ViewModels.SanPham.LoaiSPRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.LoaiSPController",
+    "Method": "GetAllLoaiSP",
+    "RelativePath": "api/LoaiSP/TimKiemLoaiSP",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "name",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.MailController",
+    "Method": "SendMail",
+    "RelativePath": "api/Mail/SendMail",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "mailData",
+        "Type": "AppData.ViewModels.Mail.MailData",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.MauSacController",
+    "Method": "Put",
+    "RelativePath": "api/MauSac/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "ten",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ma",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "trangthai",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.MauSacController",
+    "Method": "DeleteMauSac",
+    "RelativePath": "api/MauSac/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.MauSacController",
+    "Method": "GetAllMauSac",
+    "RelativePath": "api/MauSac/GetAllMauSac",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.MauSacController",
+    "Method": "GetMauSacById",
+    "RelativePath": "api/MauSac/GetMauSacById",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.MauSacController",
+    "Method": "Add",
+    "RelativePath": "api/MauSac/ThemMauSac",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ten",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ma",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "trangthai",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.MauSacController",
+    "Method": "GetAllMauSac",
+    "RelativePath": "api/MauSac/TimKiemMauSac",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "name",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.Models.MauSac, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.NhanVienController",
+    "Method": "Put",
+    "RelativePath": "api/NhanVien/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "ten",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "email",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "password",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sdt",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "diachi",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "trangthai",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "idvaitro",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.NhanVienController",
+    "Method": "Delete",
+    "RelativePath": "api/NhanVien/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.NhanVienController",
+    "Method": "Add",
+    "RelativePath": "api/NhanVien/DangKyNhanVien",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ten",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "email",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "password",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "sdt",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "diachi",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "trangthai",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "idvaitro",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.NhanVienController",
+    "Method": "GetAllNhanVien",
+    "RelativePath": "api/NhanVien/GetAll",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.Models.NhanVien, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.NhanVienController",
+    "Method": "GetById",
+    "RelativePath": "api/NhanVien/GetById",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "AppData.Models.NhanVien",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.NhanVienController",
+    "Method": "GetAllNhanVien",
+    "RelativePath": "api/NhanVien/TimKiemNhanVien",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "name",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.Models.NhanVien, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.QuanLyNguoiDungController",
+    "Method": "AddNhanhKH",
+    "RelativePath": "api/QuanLyNguoiDung/AddNhanhKH",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "kh",
+        "Type": "AppData.Models.KhachHang",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.QuanLyNguoiDungController",
+    "Method": "DoiMatKhau",
+    "RelativePath": "api/QuanLyNguoiDung/ChangePassword",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "AppData.ViewModels.ChangePasswordRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.QuanLyNguoiDungController",
+    "Method": "DangKyKhachHang",
+    "RelativePath": "api/QuanLyNguoiDung/DangKyKhachHang",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "khachHang",
+        "Type": "AppData.ViewModels.KhachHangViewModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.QuanLyNguoiDungController",
+    "Method": "Login",
+    "RelativePath": "api/QuanLyNguoiDung/DangNhap",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "lg",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "password",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.QuanLyNguoiDungController",
+    "Method": "DoiMatKhau",
+    "RelativePath": "api/QuanLyNguoiDung/DoiMatKhau",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "email",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "oldPassword",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "newPassword",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.QuanLyNguoiDungController",
+    "Method": "ForgotPassword",
+    "RelativePath": "api/QuanLyNguoiDung/ForgotPassword",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.QuanLyNguoiDungController",
+    "Method": "ResetPassword",
+    "RelativePath": "api/QuanLyNguoiDung/ResetPassword",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "AppData.ViewModels.QLND.ResetPasswordRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.QuanLyNguoiDungController",
+    "Method": "UpdateProfile",
+    "RelativePath": "api/QuanLyNguoiDung/UpdateProfile1",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "AppData.ViewModels.LoginViewModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.QuanLyNguoiDungController",
+    "Method": "UseDiemTich",
+    "RelativePath": "api/QuanLyNguoiDung/UseDiemTich",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "diem",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Int32",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.QuyDoiDiemController",
+    "Method": "Get",
+    "RelativePath": "api/QuyDoiDiem",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.Models.QuyDoiDiem, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.QuyDoiDiemController",
+    "Method": "Post",
+    "RelativePath": "api/QuyDoiDiem",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "TiLeTichDiem",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "TiLeTieuDiem",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "TrangThai",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.QuyDoiDiemController",
+    "Method": "Get",
+    "RelativePath": "api/QuyDoiDiem/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "AppData.Models.QuyDoiDiem",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.QuyDoiDiemController",
+    "Method": "Put",
+    "RelativePath": "api/QuyDoiDiem/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "TrangThai",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.QuyDoiDiemController",
+    "Method": "Delete",
+    "RelativePath": "api/QuyDoiDiem/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.SanPhamController",
+    "Method": "AddAnhToSanPham",
+    "RelativePath": "api/SanPham/AddAnh",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "System.Collections.Generic.List\u00601[[AppData.ViewModels.SanPham.AnhRequest, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.SanPhamController",
+    "Method": "AddChiTietSanPham",
+    "RelativePath": "api/SanPham/AddChiTietSanPham",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "AppData.ViewModels.SanPham.ChiTietSanPhamAddRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.SanPhamController",
+    "Method": "AddChiTietSanPhamFromSanPham",
+    "RelativePath": "api/SanPham/AddChiTietSanPhamFromSanPham",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "AppData.ViewModels.SanPham.ChiTietSanPhamUpdateRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.SanPhamController",
+    "Method": "AddImageNoColor",
+    "RelativePath": "api/SanPham/AddImageNoColor",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "anh",
+        "Type": "AppData.Models.Anh",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.SanPhamController",
+    "Method": "CreateSanPham",
+    "RelativePath": "api/SanPham/AddSanPham",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "AppData.ViewModels.SanPham.SanPhamRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.SanPhamController",
+    "Method": "CheckTrung",
+    "RelativePath": "api/SanPham/checkTrungTen",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "AppData.ViewModels.SanPham.SanPhamRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.SanPhamController",
+    "Method": "DeleteChiTietSanPham",
+    "RelativePath": "api/SanPham/DeleteChiTietSanPham",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.SanPhamController",
+    "Method": "DeleteImage",
+    "RelativePath": "api/SanPham/DeleteImage",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.SanPhamController",
+    "Method": "GetAllSanPham",
+    "RelativePath": "api/SanPham/getAll",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.SanPhamController",
+    "Method": "GetAllAnhSanPham",
+    "RelativePath": "api/SanPham/GetAllAnhSanPham",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idSanPham",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.ViewModels.SanPham.AnhViewModel, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.SanPhamController",
+    "Method": "GetAllChatLieu",
+    "RelativePath": "api/SanPham/GetAllChatLieu",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.SanPhamController",
+    "Method": "GetAllChiTietSanPham",
+    "RelativePath": "api/SanPham/GetAllChiTietSanPham",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.SanPhamController",
+    "Method": "GetAllChiTietSanPham",
+    "RelativePath": "api/SanPham/GetAllChiTietSanPhamAdmin",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idSanPham",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.SanPhamController",
+    "Method": "GetAllChiTietSanPhamHome",
+    "RelativePath": "api/SanPham/GetAllChiTietSanPhamHome",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idSanPham",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.SanPhamController",
+    "Method": "GetAllKichCo",
+    "RelativePath": "api/SanPham/GetAllKichCo",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.SanPhamController",
+    "Method": "GetAllLoaiSPCha",
+    "RelativePath": "api/SanPham/GetAllLoaiSPCha",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.SanPhamController",
+    "Method": "GetAllLoaiSPCon",
+    "RelativePath": "api/SanPham/GetAllLoaiSPCon",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "tenLoaiSPCha",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.SanPhamController",
+    "Method": "GetAllMauSac",
+    "RelativePath": "api/SanPham/GetAllMauSac",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.SanPhamController",
+    "Method": "GetAllSanPhamAdmin",
+    "RelativePath": "api/SanPham/GetAllSanPhamAdmin",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.ViewModels.SanPham.SanPhamViewModelAdmin, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.SanPhamController",
+    "Method": "GetAllSanPhamBanHang",
+    "RelativePath": "api/SanPham/getAllSPBanHang",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.SanPhamController",
+    "Method": "GetAllSanPhamTrangChu",
+    "RelativePath": "api/SanPham/getAllSPTrangChu",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.SanPhamController",
+    "Method": "GetSanPhamByIdDanhMuc",
+    "RelativePath": "api/SanPham/getByIdLsp/{idLsp}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idLsp",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.SanPhamController",
+    "Method": "GetChiTietCTSPBHById",
+    "RelativePath": "api/SanPham/getChiTietCTSPBHById/{idsp}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idsp",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.SanPhamController",
+    "Method": "GetChiTietSanPhamByID",
+    "RelativePath": "api/SanPham/GetChiTietSanPhamByID",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.SanPhamController",
+    "Method": "GetChiTietSPBHById",
+    "RelativePath": "api/SanPham/getChiTietSPBHById/{idsp}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idsp",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.SanPhamController",
+    "Method": "GetIDsanPhamByIdCTSP",
+    "RelativePath": "api/SanPham/GetIDsanPhamByIdCTSP",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "idctsp",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Guid",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.SanPhamController",
+    "Method": "GetSanPhamById",
+    "RelativePath": "api/SanPham/GetSanPhamById",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.SanPhamController",
+    "Method": "TimKiemSanPham",
+    "RelativePath": "api/SanPham/timKiemNC",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "sp",
+        "Type": "AppData.ViewModels.SanPham.SanPhamTimKiemNangCao",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.SanPhamController",
+    "Method": "UndoChiTietSanPham",
+    "RelativePath": "api/SanPham/UndoChiTietSanPham",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.SanPhamController",
+    "Method": "UpdateGiaBanChiTietSanPham",
+    "RelativePath": "api/SanPham/UpdateGiaBanChiTietSanPham",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "AppData.ViewModels.SanPham.ChiTietSanPhamRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Int32",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.SanPhamController",
+    "Method": "UpdateImage",
+    "RelativePath": "api/SanPham/UpdateImage",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "anh",
+        "Type": "AppData.Models.Anh",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.SanPhamController",
+    "Method": "UpdateSanPham",
+    "RelativePath": "api/SanPham/UpdateSanPham",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "AppData.ViewModels.SanPham.SanPhamUpdateRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.SanPhamController",
+    "Method": "UpdateSoluongChiTietSanPham",
+    "RelativePath": "api/SanPham/UpdateSoluongChiTietSanPham",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "AppData.ViewModels.SanPham.ChiTietSanPhamRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.SanPhamController",
+    "Method": "UpdateTrangThaiChiTietSanPham",
+    "RelativePath": "api/SanPham/UpdateTrangThaiChiTietSanPham",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.SanPhamController",
+    "Method": "UpdateTrangThaiSanPham",
+    "RelativePath": "api/SanPham/UpdateTrangThaiSanPham",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": false
+      },
+      {
+        "Name": "trangThai",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ThongKeController",
+    "Method": "GetTotalByYear",
+    "RelativePath": "api/ThongKe/DoanhThuTheoNam",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "year",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ThongKeController",
+    "Method": "GetTotalByDay",
+    "RelativePath": "api/ThongKe/DoanhThuTheoNgay",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "date",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ThongKeController",
+    "Method": "GetTotalByMonth",
+    "RelativePath": "api/ThongKe/DoanhThuTheoThang",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "month",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "year",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ThongKeController",
+    "Method": "ThongKe",
+    "RelativePath": "api/ThongKe/ThongKe",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "startDate",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "endDate",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "AppData.ViewModels.ThongKe.ThongKeViewModel",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ThongKeController",
+    "Method": "ThongKeSanPham",
+    "RelativePath": "api/ThongKe/ThongKeSanPham",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.ViewModels.ThongKe.ThongKeSanPham, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ThongKeKhachHangController",
+    "Method": "ThongKeKhachHangCuTheoNgay",
+    "RelativePath": "api/ThongKeKhachHang/Khach-hang-cu-theo-ngay",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "date",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Int32",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ThongKeKhachHangController",
+    "Method": "ThongKeKhachHangCuTheoThang",
+    "RelativePath": "api/ThongKeKhachHang/Khach-hang-cu/{month}/{year}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "month",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "year",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Int32",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ThongKeKhachHangController",
+    "Method": "ThongKeKhachHangCuTheoNam",
+    "RelativePath": "api/ThongKeKhachHang/Khach-hang-cu/{year}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "year",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Int32",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ThongKeKhachHangController",
+    "Method": "ThongKeKhachHangMoiTheoNgay",
+    "RelativePath": "api/ThongKeKhachHang/Khach-hang-moi-theo-ngay",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "date",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Int32",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ThongKeKhachHangController",
+    "Method": "ThongKeKhachHangMoiTheoThang",
+    "RelativePath": "api/ThongKeKhachHang/Khach-hang-moi/{month}/{year}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "month",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "year",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Int32",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ThongKeKhachHangController",
+    "Method": "ThongKeKhachHangMoiTheoNam",
+    "RelativePath": "api/ThongKeKhachHang/Khach-hang-moi/{year}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "year",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Int32",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ThongKeKhachHangController",
+    "Method": "ThongKeKhachHangTheoNgay",
+    "RelativePath": "api/ThongKeKhachHang/Tong-Khach-hang/{date}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "date",
+        "Type": "System.DateTime",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ThongKeKhachHangController",
+    "Method": "ThongKeKhachHangTheoNam",
+    "RelativePath": "api/ThongKeKhachHang/Tong-Khach-hang/{year}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "year",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ThongKeKhachHangController",
+    "Method": "ThongKeKhachHangTheoThang",
+    "RelativePath": "api/ThongKeKhachHang/Tong-Khach-thang/{mont}/{year}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "month",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "year",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "mont",
+        "Type": "",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ThongKeSanPhamController",
+    "Method": "GetTop10SanphamTrongNam",
+    "RelativePath": "api/ThongKeSanPham/top10sanphamtrongnam",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "year",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ThongKeSanPhamController",
+    "Method": "GetTop10SanphamTrongNgay",
+    "RelativePath": "api/ThongKeSanPham/top10sanphamtrongngay",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "date",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ThongKeSanPhamController",
+    "Method": "GetTop10SanphamTrongThang",
+    "RelativePath": "api/ThongKeSanPham/top10sanphamtrongthang",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "month",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "year",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ThongKeViewController",
+    "Method": "LocThongKeDoanhThuTheoNam",
+    "RelativePath": "api/ThongKeView/LocThongKeDoanhThuTheoNam",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "NgayStart",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "NgayEnd",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.ViewModels.ThongKe.ThongKeDoanhThu, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ThongKeViewController",
+    "Method": "LocThongKeDoanhThuTheoNgay",
+    "RelativePath": "api/ThongKeView/LocThongKeDoanhThuTheoNgay",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "NgayStart",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "NgayEnd",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ThongKeViewController",
+    "Method": "LocThongKeDoanhThuTheoThang",
+    "RelativePath": "api/ThongKeView/LocThongKeDoanhThuTheoThang",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "NgayStart",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "NgayEnd",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.ViewModels.ThongKe.ThongKeDoanhThu, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ThongKeViewController",
+    "Method": "ThongKeDoanhThuTheoNam",
+    "RelativePath": "api/ThongKeView/ThongKeDoanhThuTheoNam",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.ViewModels.ThongKe.ThongKeDoanhThu, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ThongKeViewController",
+    "Method": "ThongKeDoanhThuTheoNgay",
+    "RelativePath": "api/ThongKeView/ThongKeDoanhThuTheoNgay",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ThongKeViewController",
+    "Method": "ThongKeDoanhThuTheoNgayOffline",
+    "RelativePath": "api/ThongKeView/ThongKeDoanhThuTheoNgayOffline",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ThongKeViewController",
+    "Method": "ThongKeDoanhThuTheoThang",
+    "RelativePath": "api/ThongKeView/ThongKeDoanhThuTheoThang",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.ViewModels.ThongKe.ThongKeDoanhThu, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ThongKeViewController",
+    "Method": "ThongKeDoanhThuTheoThangOffline",
+    "RelativePath": "api/ThongKeView/ThongKeDoanhThuTheoThangOffline",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.ViewModels.ThongKe.ThongKeDoanhThu, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ThongKeViewController",
+    "Method": "ThongKeKHTheoSoLuongHoaDon",
+    "RelativePath": "api/ThongKeView/ThongKeKHTheoSoLuongHoaDon",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.ViewModels.ThongKe.ThongKeKHMuaNhieu, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ThongKeViewController",
+    "Method": "ThongKeSanPhamMuaSapXep",
+    "RelativePath": "api/ThongKeView/ThongKeMSSanPhamBan",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.ViewModels.ThongKe.ThongKeMSSanPhamTheoSoLuong, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ThongKeViewController",
+    "Method": "DemSanPham",
+    "RelativePath": "api/ThongKeView/ThongKeSLCTSP",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Int32",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ThongKeViewController",
+    "Method": "DemSanPhamBan",
+    "RelativePath": "api/ThongKeView/ThongKeSLCTSPBan",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "AppData.ViewModels.ThongKe.ThongKeSLSPDaBan",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ThongKeViewController",
+    "Method": "DemSanPhamBanOffline",
+    "RelativePath": "api/ThongKeView/ThongKeSLCTSPBanOffline",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "AppData.ViewModels.ThongKe.ThongKeSLSPDaBan",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ThongKeViewController",
+    "Method": "TongSoDon",
+    "RelativePath": "api/ThongKeView/ThongKeSoDonTrongThang",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "AppData.ViewModels.ThongKe.ThongKeSDonTrongThang",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ThongKeViewController",
+    "Method": "TongSoDonOffline",
+    "RelativePath": "api/ThongKeView/ThongKeSoDonTrongThangOffline",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "AppData.ViewModels.ThongKe.ThongKeSDonTrongThang",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ThongKeViewController",
+    "Method": "TongDoanhThu",
+    "RelativePath": "api/ThongKeView/ThongKeTongDTTrongThang",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "AppData.ViewModels.ThongKe.ThongKeDTTrongThang",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.ThongKeViewController",
+    "Method": "TongDoanhThuOffline",
+    "RelativePath": "api/ThongKeView/ThongKeTongDTTrongThangOffline",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "AppData.ViewModels.ThongKe.ThongKeDTTrongThang",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.VaiTroController",
+    "Method": "GetAllVaiTros",
+    "RelativePath": "api/VaiTro",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.VaiTroController",
+    "Method": "AddVaiTro",
+    "RelativePath": "api/VaiTro",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ten",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "trangthai",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.VaiTroController",
+    "Method": "GetById",
+    "RelativePath": "api/VaiTro/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.VaiTroController",
+    "Method": "UpdateVaiTro",
+    "RelativePath": "api/VaiTro/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "ten",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "trnagthai",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.VaiTroController",
+    "Method": "DeleteVaiTro",
+    "RelativePath": "api/VaiTro/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.VoucherController",
+    "Method": "Get",
+    "RelativePath": "api/Voucher",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.Models.Voucher, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.VoucherController",
+    "Method": "Post",
+    "RelativePath": "api/Voucher",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "voucher",
+        "Type": "AppData.ViewModels.VoucherView",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.VoucherController",
+    "Method": "Get",
+    "RelativePath": "api/Voucher/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "AppData.Models.Voucher",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.VoucherController",
+    "Method": "Put",
+    "RelativePath": "api/Voucher/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "voucherview",
+        "Type": "AppData.ViewModels.VoucherView",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.VoucherController",
+    "Method": "Delete",
+    "RelativePath": "api/Voucher/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.VoucherController",
+    "Method": "GetAllVoucherByTien",
+    "RelativePath": "api/Voucher/GetAllVoucherByTien",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "tongTien",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[AppData.Models.Voucher, AppData, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "AppAPI.Controllers.VoucherController",
+    "Method": "GetVoucherByMa",
+    "RelativePath": "api/Voucher/GetVoucherByMa",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ma",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "AppData.Models.Voucher",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  }
+]
